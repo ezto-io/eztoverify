@@ -1,0 +1,17 @@
+<div class="user-list-heading-container">
+    <h1 class="user-list-heading">{{:: 'users' | translate}}</h1>
+    <div data-ng-show="(access.manageUsers && users.length !== 0) || (searchLoaded && users.length === 0 && lastSearch)" data-step='{{(access.manageUsers && users.length !== 0) || (searchLoaded && users.length === 0 && lastSearch)?1:0}}' data-title="{{:: 'intro-no-users-available-title' | translate}}" data-intro="{{:: 'intro-no-users-available' | translate}}">
+        <a class="text-decoration-none" id="createUser" href="#/create/user/{{realm.realm}}" data-ng-if="realm.mode !== 'bo'">
+            <button class="create-btn" id="createUserBtn">
+              <i class="os-icon os-icon-plus plus-icon"></i>
+                {{:: 'add-user' | translate}} 
+            </button>
+        </a>
+    </div>
+    <ul class="nav nav-tabs">
+        <li ng-class="{active: path[2] == 'users-permissions'}" data-ng-show="serverInfo.featureEnabled('ADMIN_FINE_GRAINED_AUTHZ') && access.manageUsers && access.manageAuthorization">
+            <a href="#/realms/{{realm.realm}}/users-permissions" id="managePermissionsUserBtn" >{{:: 'authz-permissions' | translate}}</a>
+            <kc-tooltip>{{:: 'manage-permissions-users.tooltip' | translate}}</kc-tooltip>
+        </li>
+    </ul>
+</div>

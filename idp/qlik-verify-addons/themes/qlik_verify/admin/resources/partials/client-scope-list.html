@@ -1,0 +1,152 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="role-list-container">
+                            <h1 class="user-list-heading">{{:: 'scopes' | translate}}</h1>
+                            <div data-ng-show="(access.manageClients && slicedClientScopes.length > 0) || (!slicedClientScopes.length && clientRolesearch)"
+                                data-step='{{!searchQueryLoaded && clientScopes && clientScopes.length !== 0 ?1:0}}'
+                                data-title="{{:: 'intro-client-scopes-title' | translate}}"
+                                data-intro="{{:: 'intro-client-scopes-desc' | translate}}">
+                                <a class="text-decoration-none" href="#/create/client-scope/{{realm.realm}}">
+                                    <button class="create-btn" id="createScopeBtn">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-scope' | translate}}
+                                    </button>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="controls-above-table d-flex my-4 pt-2">
+                            <div class="form-inline justify-content-between w-100">
+                                <div class="form-group">
+                                    <div class="element-search" data-ng-hide="!slicedClientScopes.length && !clientRolesearch">
+                                        <input id="scopeSearchInput"
+                                            class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched action-search-container "
+                                            type="text" placeholder="{{:: 'search-for-scope' | translate}}"
+                                            ng-model="search"
+                                            onkeydown="if (event.keyCode === 13) document.getElementById('clientRoleSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="clientRoleSearch"
+                                            data-ng-click="updateQuery(search)"></i>
+                                    </div>
+                                </div>
+                                <select data-ng-if="!searchKey" id="pageScopeCountSelector" ng-model="limit" ng-change="selectQuery(limit)"
+                                    data-ng-options="itemCount for itemCount in [5,10,50,100]"
+                                    data-ng-show="(clientScopes && clientScopes.length > 5 )"
+                                    class="form-control form-control-sm rounded bright events-admin-search client-list-count-select">
+                                    <option data-ng-repeat="itemCount in [5,10,50,100]"
+                                        data-ng-selected="limit === itemCount" data-ng-value="itemCount">
+                                        {{ itemCount }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="element-box element-box-medium top-align" data-ng-show="!slicedClientScopes.length">
+                            <div class="no-entry-svg">
+                                <div class="no-entry-display text-center">
+                                    <i class="ti-target opacity-40 no-entry-icon"></i>
+                                </div>
+                                <p class="no-results-msg no-entry-display mt-2" data-ng-show="clientRolesearch">
+                                    {{:: 'no-scopes-found'| translate}}
+                                </p>
+                                <button id="clearSearchBtn" data-ng-show="clientRolesearch" class="create-btn no-entry-display cursor-pointer" data-ng-click="clearSearch()">
+                                    <i class="os-icon os-icon-close mr-2"></i>
+                                    {{ ::  'clear-search' | translate}}
+                                </button>
+                                <p class="no-results-msg no-entry-display mt-2" data-ng-hide="clientRolesearch">
+                                    {{::'no-scopes-available' | translate}}
+                                <p>
+                                <a class="text-decoration-none" href="#/create/client-scope/{{realm.realm}}" data-ng-hide="clientRolesearch">
+                                    <button id="createScopeBtn" data-ng-click="create()" class="create-btn no-entry-display">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-scope' | translate}}
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="table-responsive-md clients-list" data-ng-show="slicedClientScopes.length > 0">
+                            <table class="table table-light-bordered table-padded table-layout-fixed w-100">
+                                <thead>
+                                    <tr class="position-relative fadeUp" data-ng-hide="clients.length == 0">
+                                        <th class="w-50">{{:: 'name' | translate}}</th>
+                                        <th class="w-30">{{:: 'protocol' | translate}}</th>
+                                        <th class="w-35">{{:: 'roles' | translate}}</th>
+                                        <th class="w-20 text-center ">{{:: 'actions' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="p-3">
+                                    <tr class="position-relative fadeUp"
+                                        ng-repeat="clientScope in slicedClientScopes | orderBy:'name'">
+                                        <td class="cursor-pointer overflow-ellipsis w-40" id="scope-{{clientScope.name.toLowerCase().replaceAll(' ','-')}}"
+                                            kc-open="/realms/{{realm.realm}}/client-scopes/{{clientScope.id}}">
+                                            <a
+                                                href="#/realms/{{realm.realm}}/client-scopes/{{clientScope.id}}" class="pr-1 header-text-primary">{{clientScope.name}}</a>
+                                            <span ng-if="clientScope.default"><strong class="badge badge-danger">Default</strong></span>
+                                        </td>
+                                        <td>{{clientScope.protocol === "openid-connect" ? "OpenID" : "SAML" }}</td>
+                                        <td class="overflow-ellipsis mb-0 w-45">
+                                            <span>{{clientScope.rolesCount}}</span>
+                                        </td>
+                                        <td class="row-actions">
+                                            <a kc-open="/realms/{{realm.realm}}/client-scopes/{{clientScope.id}}" >
+                                                <i class="os-icon os-icon-ui-49" tooltip="{{:: 'edit' | translate}}" id="{{clientScope.name.toLowerCase().replaceAll(' ','-')}}-copyIcon" tooltip-placement="top"
+                                                    tooltip-trigger="mouseover mouseout"></i>
+                                            </a>
+                                            <a data-ng-click="removeClientScope(clientScope)" class="danger">
+                                                <i class="os-icon os-icon-ui-15" id="{{clientScope.name.toLowerCase().replaceAll(' ','-')}}-deleteIcon"
+                                                    tooltip="{{:: 'tooltip-delete-label' | translate}}"
+                                                    tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot ng-if="!clientRolesearch">
+                                    <tr>
+                                        <div class="d-flex w-100 fadeUp-delayed">
+                                            <td class="pl-0 fadeUp-delayed" >
+                                                <p class="m-0 d-flex align-items-center"
+                                                    data-ng-show="( clientScopes && clientScopes.length > 5)">{{:: 'showing' | translate}}
+                                                    {{first + 1}} - {{ first + slicedClientScopes.length }} {{:: 'of' | translate}}
+                                                    {{clientScopes.length}} {{ :: 'scopes' | translate }}</p>
+                                            </td>
+                                            <td class="pr-0 fadeUp-delayed" colspan="4">
+                                                <div align="right" class="table-nav"
+                                                    data-ng-if="clientScopes.length > limit">
+                                                    <div class="pagination justify-content-end">
+                                                        <button data-ng-click="firstPage()" id="firstPageBtn"
+                                                            class="btn btn-sm btn-outline-primary table-pagination"
+                                                            ng-disabled="first === 0"
+                                                            data-ng-class="first === 0 && 'text-muted'"> <i
+                                                                class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon"></i>
+                                                            <i>{{:: 'first-page' | translate}}</i> </button>
+                                                        <button class="btn btn-sm btn-outline-primary table-pagination" id="previousPageBtn"
+                                                            data-ng-class="first === 0 && 'text-muted'"
+                                                            ng-click="previous()" ng-disabled="first === 0">
+                                                            <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon"></i>
+                                                            <i>{{:: 'previous' | translate}}</i>
+                                                        </button>
+                                                        <button
+                                                            class="btn btn-sm btn-outline-primary table-pagination pr-0"
+                                                            id="nextPageBtn"
+                                                            data-ng-class="last >= clientScopes.length && 'text-muted'"
+                                                            ng-click="next()" ng-disabled="last >= clientScopes.length">
+                                                            <i> {{:: 'next' | translate}} </i>
+                                                            <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon mr-0"></i>
+                                                         </button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </div>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

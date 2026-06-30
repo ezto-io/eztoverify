@@ -1,0 +1,150 @@
+<kc-menu></kc-menu>
+<div class="position-relative"> 
+  <div class="position-absolute">
+    <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+    <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon" data-ng-click="toggleSideBarShow()" >
+      <div id="setting-icon h1">
+        <i class="ti-angle-right cursor-pointer"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content-w bo-setting-menu-main-content">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row" >
+                <!-- Link to Access keys List Page -->
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/realm-access-keys/" id="backToAccessKeyList">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-access-keys' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper"> 
+                        <!-- Access Key Details -->
+                        <div class="element-box mt-3">
+                            <form class="form-horizontal" novalidate >
+                                <fieldset class="application-step-1">
+                                    <div class="form-group row align-items-center  my-4">
+                                        <label class="col-md-3 control-label" for="id">{{:: 'id' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" id="id" name="id" disabled data-ng-model="accessKey.id" >
+                                        </div> 
+                                    </div>
+                                    <div class="form-group row align-items-center my-4">
+                                        <label class="col-md-3 control-label" for="name">{{:: 'name' | translate}} <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" id="name" name="name" data-ng-model="accessKey.name" maxlength="64">
+                                        </div> 
+                                    </div>
+                                    <div class="form-group row align-items-center  my-4">
+                                        <label class="col-md-3 control-label" for="secret">{{:: 'secret' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <div class="workspace-input-group workspace-input-disabled mb-2">
+                                                <input class="form-control" type="password" id="accessKeySecret" name="secret" disabled data-ng-model="accessKey.secret">
+                                                <div class="workspace-actions-container">
+                                                    <button class="icon-holder-btn" id="secret-eyeIcon" data-ng-click="showHide()" tooltip="{{showSecretHelperTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout">
+                                                        <i class="os-icon os-icon-eye" data-ng-show="!isSecretVisible"></i>
+                                                        <i class="os-icon os-icon-eye-off" data-ng-show="isSecretVisible"></i>
+                                                    </button>
+                                                    <button class="icon-holder-btn" id="secret-rotateIcon" data-ng-click="rotateSecret()" tooltip="{{::'rotate-secret-title' | translate}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout">
+                                                        <i class="os-icon os-icon-rotate-cw"></i>
+                                                    </button>
+                                                    <button class="icon-holder-btn" id="secret-copyIcon" data-ng-click="copyToClipboard(accessKey.secret)" data-ng-mouseleave="resetCopy()" tooltip="{{copyTooltipTxt}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout">
+                                                        <i class="os-icon os-icon-copy"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="form-group row align-items-center  my-4">
+                                        <label class="col-md-3 control-label" for="enabled">{{:: 'enable' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="enabled">
+                                                <div  class="os-toggler-w" ng-class="{on: accessKey.enabled}">
+                                                    <div class="os-toggler-i" id="enabled-toogle">
+                                                        <div class="os-toggler-pill" ng-model="accessKey.enabled" name="enabled" id="enabled" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row align-items-center  my-4" data-ng-show="realm.sandboxMode === false">
+                                        <label class="col-md-3 control-label" for="sandboxMode">{{:: 'sandbox-mode' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="sandboxMode">
+                                                <div  class="os-toggler-w" ng-class="{on: accessKey.sandboxMode}">
+                                                    <div class="os-toggler-i" id="enabled-toogle">
+                                                        <div class="os-toggler-pill" ng-model="accessKey.sandboxMode" name="sandboxMode" id="sandboxMode" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row align-items-center  my-4">
+                                        <label class="col-md-3 control-label" for="expiryTime">{{:: 'expiry-time' | translate}} <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="datetime-local" id="expiryTime" min="{{currentDateTime}}" name="expiryTime" data-ng-model="expiryTime">
+                                        </div> 
+                                    </div>
+                                    <div class="form-group row  my-4">
+                                        <label class="col-md-3 control-label" for="requestedBy">{{:: 'requested-by' | translate}}</label>
+                                        <div class="col-md-9">
+                                            {{:: accessKey.requestedBy.username}}
+                                        </div> 
+                                    </div>
+                                    <div class="form-group row  my-4">
+                                        <label class="col-md-3 control-label" for="secret">{{:: 'access-key-created-at' | translate}}</label>
+                                        <div class="col-md-9">
+                                            {{:: accessKey.createdDate | timeago}}
+                                        </div> 
+                                    </div>
+                                    <div class="form-group row  my-4">
+                                        <label class="col-md-3 control-label" for="secret">{{:: 'last-edited' | translate}}</label>
+                                        <div class="col-md-9">
+                                            {{:: accessKey.lastUpdatedDate | timeago}}
+                                        </div> 
+                                    </div>
+                                    <div class="form-group row  my-4">
+                                        <label class="col-md-3 control-label" for="secret">{{:: 'last-used' | translate}}</label>
+                                        <div class="col-md-9">
+                                            {{:: accessKey.lastUsedDate | timeago}}
+                                        </div> 
+                                    </div>
+                                    <div class="form-group row my-4">
+                                        <label class="col-md-3 control-label" for="name">{{:: 'permissions' | translate}} </label>
+                                        <div class="col-md-9">
+                                            <div class="form-control h-9rem overflow-scroll">
+                                                <ul class="list-style-none p-0">    
+                                                    <li class="my-1 cursor-pointer d-flex align-items-center" ng-repeat="(key, value) in accessKey.permissions"><input id="{{key}}-id" type="checkbox" data-ng-model="accessKey.permissions[key]"/> <label for="{{key}}-label-id" class="ml-2">{{:: key | translate}}</label></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                       
+                                    <div class="form-group row">
+                                        <div class="col-md-12 d-flex flex-row-reverse">
+                                            <button class="ml-3 btn btn-primary" data-ng-click="save()" id="saveBtn" data-ng-disabled="!changed">
+                                                <span>{{:: 'save' | translate}}</span>
+                                                <div ng-show=" stage === 2 ">
+                                                    <kc-action-button-loading></kc-action-button-loading>
+                                                </div>
+                                            </button>
+                                            <button id="cancelBtn" class="btn btn-secondary" data-ng-click="reset()" data-ng-disabled="!changed">{{:: 'cancel' |
+                                                translate}}</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

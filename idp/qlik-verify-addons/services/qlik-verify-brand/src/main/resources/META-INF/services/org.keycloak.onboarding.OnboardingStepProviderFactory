@@ -1,0 +1,5 @@
+com.qlikverify.services.theme.onboarding.OBAdminSetup
+com.qlikverify.services.theme.onboarding.OBAdminEmailSetup
+com.qlikverify.services.theme.onboarding.OBAdminSmsSetup
+com.qlikverify.services.theme.onboarding.OBAdminWhatsappSetup
+com.qlikverify.services.theme.onboarding.OBAdminWorkspaceSetup

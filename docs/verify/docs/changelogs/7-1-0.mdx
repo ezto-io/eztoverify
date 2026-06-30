@@ -1,0 +1,29 @@
+---
+id: "7.1.0"
+title: "7.1.0"
+sidebar_label: "7.1.0"
+---
+
+import GifPlayer from "@site/src/components/changelogs/GifPlayer";
+
+### New Features
+
+- **Selfie Verification:** The Selfie Verification process allows users to securely compare their stored facial template from the earlier Selfie Registration process, ensuring a smooth and secure verification experience.
+
+ <GifPlayer name="7.1.0/selfie-verification"/>
+
+### Improvements
+
+- Enhanced the **"How to use?"** section in applications to include a test mode, allowing for smoother testing of your onboarding and verification flow.
+
+### Bug Fixes
+
+- We've addressed an issue with **WebHooks** where, when a **WebHook** fails, the notification email wasn't being sent to admin or co-admins in the selected language. Now, the email is received in the preferred language (Arabic or English).
+
+- An issue with the **Verify Phone** workflow where, upon providing the correct mobile number, the OTP was not received to the given number, and an error was displayed instead. This issue has been fixed.
+
+- Fixed an issue in the **Users'** device list where the transaction status' color code and filters would break when the device list exceeded the pagination. Now, it displays the appropriate color codes and status correctly.
+
+- In the **Subscription** page, the status of the current plan was not reflected whenever the plan was updated. Instead, it displayed **"Pay As Go"** as the default status. This has been fixed to display the exact plan name whenever updated.
+
+- Implemented fixes for few UI bugs to improve overall user experience.

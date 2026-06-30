@@ -1,0 +1,108 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/clients/type/{{ client.appType.replaceAll('_', '-') }}" >
+                        <i class="os-icon os-icon-arrow-left6 breadcrumb-back-icon" id="backToApplicationsList"></i>{{ :: 'back-to-applications' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <kc-tabs-app></kc-tabs-app>
+                    <kc-tabs-client></kc-tabs-client>
+                    <div class="element-box">
+                        <form class="form-horizontal" name="realmForm" novalidate kc-read-only="!access.manageClients">
+                            <div class="form-group">
+                                <label class="col-md-12 control-label mb-2">
+                                    <h5 class="font-weight-normal">{{:: 'client-scopes.default' | translate}}</h5>
+                                    <kc-tooltip>{{:: 'client-scopes.default.tooltip' | translate}}</kc-tooltip>
+                                </label>
+
+                                <div class="col-md-10">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="control-label" for="available-default-client-scopes">{{:: 'client-scopes.default.available' | translate}}</label>
+                                            <kc-tooltip>{{:: 'client-scopes.default.available.tooltip' | translate}}</kc-tooltip>
+                                            <select id="available-default-client-scopes" class="form-control overflow-select" multiple size="5"
+                                                    ng-multiple="true"
+                                                    ng-model="selectedDefaultClientScopes">
+                                                <option ng-repeat="r in availableClientScopes | orderBy:'name'"
+                                                        value="{{r}}" title="{{r.name}}">
+                                                    {{r.name}}
+                                                </option>
+                                            </select>
+                                            <button id="add-default-client-scopes" ng-disabled="selectedDefaultClientScopes.length == 0" class="btn btn-primary btn-sm mt-2 w-100 selected-role-btn" type="submit" ng-click="addDefaultClientScope()">
+                                                {{:: 'add-selected' | translate}} <i class="icon-feather-chevrons-right"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="control-label" for="assigned-default-client-scopes">{{:: 'client-scopes.default.assigned' | translate}}</label>
+                                            <kc-tooltip>{{:: 'client-scopes.default.assigned.tooltip' | translate}}</kc-tooltip>
+                                            <select id="assigned-default-client-scopes" class="form-control overflow-select" multiple size=5
+                                                    ng-multiple="true"
+                                                    ng-model="selectedDefDefaultClientScopes">
+                                                <option ng-repeat="r in clientDefaultClientScopes | orderBy:'name'"
+                                                        value="{{r}}" title="{{r.name}}">
+                                                    {{r.name}}
+                                                </option>
+                                            </select>
+                                            <button id="remove-default-client-scopes" ng-disabled="selectedDefDefaultClientScopes.length == 0" class="btn btn-primary btn-sm mt-2 w-100 selected-role-btn" type="submit" ng-click="deleteDefaultClientScope()">
+                                                <i class="icon-feather-chevrons-left"></i> {{:: 'remove-selected' | translate}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mt-5" data-ng-show="client.protocol == 'openid-connect'">
+                                <label class="col-md-12 control-label mb-2">
+                                    <h5 class="font-weight-normal">{{:: 'client-scopes.optional' | translate}}</h5>
+                                    <kc-tooltip>{{:: 'client-scopes.optional.tooltip' | translate}}</kc-tooltip>
+                                </label>
+
+                                <div class="col-md-10">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="control-label" for="available-optional-client-scopes">{{:: 'client-scopes.optional.available' | translate}}</label>
+                                            <kc-tooltip>{{:: 'client-scopes.optional.available.tooltip' | translate}}</kc-tooltip>
+                                            <select id="available-optional-client-scopes" class="form-control overflow-select" multiple size="5"
+                                                    ng-multiple="true"
+                                                    ng-model="selectedOptionalClientScopes">
+                                                <option ng-repeat="r in availableClientScopes | orderBy:'name'"
+                                                        value="{{r}}" title="{{r.name}}">
+                                                    {{r.name}}
+                                                </option>
+                                            </select>
+                                            <button id="add-optional-client-scopes" ng-disabled="selectedOptionalClientScopes.length == 0" class="btn btn-primary btn-sm mt-2 w-100 selected-role-btn" type="submit" ng-click="addOptionalClientScope()">
+                                                {{:: 'add-selected' | translate}} <i class="icon-feather-chevrons-right"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="control-label" for="assigned-optional-client-scopes">{{:: 'client-scopes.optional.assigned' | translate}}</label>
+                                            <kc-tooltip>{{:: 'client-scopes.optional.assigned.tooltip' | translate}}</kc-tooltip>
+                                            <select id="assigned-optional-client-scopes" class="form-control overflow-select" multiple size=5
+                                                    ng-multiple="true"
+                                                    ng-model="selectedDefOptionalClientScopes">
+                                                <option ng-repeat="r in clientOptionalClientScopes | orderBy:'name'"
+                                                        value="{{r}}" title="{{r.name}}">
+                                                    {{r.name}}
+                                                </option>
+                                            </select>
+                                            <button id="remove-optional-client-scopes" ng-disabled="selectedDefOptionalClientScopes.length == 0" class="btn btn-primary btn-sm mt-2 w-100 selected-role-btn" type="submit" ng-click="deleteOptionalClientScope()">
+                                                <i class="icon-feather-chevrons-left"></i> {{:: 'remove-selected' | translate}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

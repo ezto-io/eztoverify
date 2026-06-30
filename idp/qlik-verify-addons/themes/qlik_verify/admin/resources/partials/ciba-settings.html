@@ -1,0 +1,88 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <!-- Back to applications -->
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/clients/type/{{ client.appType.replaceAll('_', '-') }}{{realm.mode==='bo' ? client.sandboxMode ? '/sandbox' : '/live' : ''}}" id="back-to-applications">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-applications' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-app></kc-tabs-app>
+                        <kc-tabs-client></kc-tabs-client>
+                        <div class="element-box">
+                            <form class="form-horizontal" name="clientForm" novalidate kc-read-only="!client.access.configure">
+                                <div class="mb-5" data-ng-if="cibaAuthProviders && cibaAuthProviders.length > 0">
+                                    <div class="d-flex align-items-center client-auth-section-header">
+                                        <h6 class="mb-0">{{:: 'secured-plus-authorizers' | translate}}</h6>
+                                        <i class="ti-info-alt mx-2" tooltip="{{ 'secured-plus-authorizers-configuration-description' | translate }}" tooltip-placement="bottom" tooltip-trigger="mouseover mouseout"></i>
+                                    </div>
+                                    <div>
+                                        <ul class="realm-list p-0">
+                                            <li class="nw-market-card d-flex align-items-center pr-0" data-ng-click="loadAuthorizerConfig(provider)" data-ng-repeat="provider in cibaAuthProviders" id="{{provider.displayName.toLowerCase().replaceAll(' ','-')}}" ng-hide="provider.id === 'api-authorizer'" ng-class="provider.configured ? 'cursor-pointer' : 'ciba-authorizer-disabled text-muted'" tooltip="{{ !provider.configured ? ('ciba-authorizer-not-configured-tooltip' | translate) : '' }}" tooltip-placement="bottom" tooltip-trigger="mouseover mouseout">
+                                                <div class="nw-market-header d-flex align-items-center position-relative w-100" >
+                                                      <p class="text-center word-break-all pr-5 mb-0 w-100">{{:: provider.displayName | translate}}</p>
+                                                      <img data-ng-if="provider.id === client.authenticationFlowBindingOverrides.ciba_auth" ng-src="{{resourceUrl}}/themes/img/success.svg" alt="ciba provider logo" class="position-absolute ciba-success-img">
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mb-5" data-ng-show="showNotificationWay">
+                                    <div class="d-flex align-items-center client-auth-section-header">
+                                        <h6 class="mb-0">{{:: 'notification-way' | translate}}</h6>
+                                        <i class="ti-info-alt mx-2" tooltip="{{ 'notification-way-configuration-description' | translate }}" tooltip-placement="bottom" tooltip-trigger="mouseover mouseout"></i>
+                                    </div>
+                                    <div>
+                                        <ul class="realm-list p-0">
+                                            <li class="nw-market-card cursor-pointer d-flex align-items-center pr-0" data-ng-click="loadNotificationConfig(provider)" data-ng-repeat="provider in cibaNotificationProviders" id="{{provider.displayName.toLowerCase().replaceAll(' ','-')}}">
+                                                <div class="nw-market-header d-flex align-items-center position-relative w-100" >
+                                                      <p class="text-center word-break-all pr-5 mb-0 w-100">{{:: provider.displayName | translate}}</p>
+                                                      <img data-ng-if="provider.id === client.attributes['ciba.backchannel.token.delivery.mode'] " ng-src="{{resourceUrl}}/themes/img/success.svg" alt="ciba provider logo" class="position-absolute ciba-success-img">
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <!-- <ul class="realm-list p-0">
+                                            <li data-ng-click="openNotificationTypePanel(notificationType)" data-ng-repeat="notificationType in supportedCibaAuthenticationMethods">
+                                                 <button class="realm-list-card position-relative">
+                                                    <img data-ng-if="notificationType.trim() === client.attributes['ciba.backchannel.token.delivery.mode'].trim()" src="{{resourceUrl}}/themes/img/success.svg" alt="" class="position-absolute ciba-success-img">
+                                                     <div class="realm-list-card-content d-flex flex-column align-items-center justify-content-evenly w-100">
+                                                        <img class="realm-logo mb-1" ng-src="{{resourceUrl+'/themes/img/'+notificationType.trim()+'.svg'}}" alt="logo-img"> 
+                                                        <p class="realm-name-prop m-0 mt-1 p-0 text-truncate w-100 px-2 text-capitalize" title="{{r.realm | capitalize}}">{{:: notificationType | translate}}</p>
+                                                     </div>
+                                                </button>
+                                             </li>
+                                        </ul> -->
+                                    </div>
+                                </div>
+                                <div  data-ng-show="showNotificationWay">
+                                    <div class="d-flex align-items-center client-auth-section-header">
+                                        <h6 class="mb-0">{{:: 'dead-letter' | translate}}</h6>
+                                        <i class="ti-info-alt mx-2" tooltip="{{ 'dead-letter-configuration-description' | translate }}" tooltip-placement="bottom" tooltip-trigger="mouseover mouseout"></i>
+                                    </div>
+                                    <div>
+                                        <ul class="realm-list p-0">
+                                            <li class="nw-market-card cursor-pointer d-flex align-items-center pr-0" data-ng-click="loadResultHookConfig(provider)" data-ng-repeat="provider in cibaResultProviders" id="dead-letter-{{provider.displayName.toLowerCase().replaceAll(' ','-')}}">
+                                                <div class="nw-market-header d-flex align-items-center position-relative w-100" >
+                                                    <p class="text-center word-break-all pr-5 mb-0 w-100">{{:: provider.displayName | translate}}</p>
+                                                    <img data-ng-if="provider.id === client.attributes['ciba.backchannel.dead.letter.hook.delivery.mode'] " ng-src="{{resourceUrl}}/themes/img/success.svg" alt="ciba provider logo" class="position-absolute ciba-success-img">
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+

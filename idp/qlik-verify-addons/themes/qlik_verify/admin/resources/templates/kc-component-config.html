@@ -1,0 +1,94 @@
+<div>
+    <div data-ng-repeat="option in properties" class="form-group row" data-ng-controller="ProviderConfigCtrl">
+        <label for="kc{{option.name}}" class="col-md-3 control-label">{{:: option.label | translate}}<span data-ng-if="option.required" class="required">*</span></label>
+
+        <div class="col-md-9" data-ng-if="option.type === 'String'">
+            <input class="form-control" id="{{option.label.toLowerCase().replaceAll(' ','-')}}" type="text" data-ng-model="config[ option.name ][0]" >
+            <kc-tooltip>{{:: option.helpText | translate}}</kc-tooltip>
+        </div>
+        <div class="col-md-9" data-ng-if="option.type == 'ExpiryTime'">
+            <input class="form-control" id="{{option.label.toLowerCase().replaceAll(' ','-')}}" type="text" data-ng-model="config[ option.name ]" >
+            <div class="help-block form-text text-muted form-control-feedback" data-ng-if="option.helpText">{{:: option.helpText| translate}}</div>
+        </div>
+        <div class="col-md-9" data-ng-if="option.type ==='Password'">
+            <input class="form-control" id="{{option.label.toLowerCase().replaceAll(' ','-')}}" type="password" data-ng-model="config[ option.name ][0]" >
+            <kc-tooltip>{{:: option.helpText | translate}}</kc-tooltip>
+        </div>
+        <div class="col-md-9" data-ng-if="option.type === 'boolean'">
+            <label for="kc{{option.name}}" class="pl-0">
+                <div class="pl-0">
+                    <div  class="os-toggler-w mr-0" ng-class="{on: config[ option.name ][0] == 'true' }">
+                        <div class="os-toggler-i" id="{{option.name}}-toggle">
+                            <div class="os-toggler-pill" ng-model="config[ option.name ][0]"  value="'true'" name="option.name" id="option.name" onoffswitchstring>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </label>
+            <div class="help-block form-text text-muted form-control-feedback" data-ng-if="option.helpText">{{:: option.helpText| translate}}</div>
+        </div>
+        <div class="col-md-9" data-ng-if="option.type === 'List'">
+            <select ng-model="config[ option.name ][0]" id="{{option.label.toLowerCase().replaceAll(' ','-')}}-selector"  ng-options="data for data in option.options" class="form-control">
+                <option value="" selected> {{:: 'selectOne' | translate}} </option>
+            </select>
+            <kc-tooltip>{{:: option.helpText | translate}}</kc-tooltip>
+        </div>
+        <div class="col-md-9" data-ng-if="option.type === 'MultivaluedList'">
+            <input ui-select2="option.mvOptions" ng-model="config[ option.name ]" id="{{option.label.toLowerCase().replaceAll(' ','-')}}" data-placeholder="{{:: 'selectMultiple' | translate}}..."/>
+            <kc-tooltip>{{:: option.helpText | translate}}</kc-tooltip>
+        </div>
+        <div class="col-md-9" data-ng-if="option.type === 'Role'">
+            <div class="row">
+                <div class="col-md-9">
+                    <input class="form-control" type="text" data-ng-model="config[ option.name ]" >
+                </div>
+                <div class="col-md-3">
+                    <button type="button" data-ng-click="openRoleSelector(option.name, config)" class="btn btn-secondary" tooltip-placement="top" tooltip-trigger="mouseover mouseout" tooltip="{{:: 'selectRole.tooltip' | translate}}">{{:: 'selectRole.label' | translate}}</button>
+                </div>
+            </div>
+            <kc-tooltip>{{:: option.helpText | translate}}</kc-tooltip>
+        </div>
+        <div class="col-md-9" data-ng-if="option.type === 'ClientList'">
+            <input type="hidden" ui-select2="clientsUiSelect" id="clients" data-ng-init="initSelectedClient(option.name, config)" data-ng-model="selectedClient" data-ng-change="changeClient(option.name, config, selectedClient);" data-placeholder="{{:: 'selectOne' | translate}}...">
+            </input>
+            <kc-tooltip>{{:: option.helpText | translate}}</kc-tooltip>
+        </div>
+        <div class="col-md-8" data-ng-if="option.type === 'PoliciesList'">
+            <select class="form-control" ng-model="config[option.name]" id="{{option.label.toLowerCase().replaceAll(' ','-')}}-selector" data-ng-init="initPolicyStreams()" ng-options="policy for policy in policies">
+                <option value="" selected> {{:: 'selectOne' | translate}} </option>
+            </select>
+            <kc-tooltip>{{:: option.helpText | translate}}</kc-tooltip>
+        </div>
+
+        <div class="col-md-9" data-ng-if="option.type === 'File'">
+            <div class="controls kc-button-input-file row">
+                <div class="col-md-8">
+                    <label for="{{option.name}}" class="btn btn-secondary select-btn-container">{{:: 'select-file' | translate}} <i class="pficon pficon-import"></i></label>
+                    <span data-ng-if="config[option.name]">{{fileNames[option.name]}}</span>
+                </div>
+                <input id="{{option.name}}" type="file" class="hidden" data-ng-file-select="uploadFile($files, option.name, config, 'true')" accept= '{{option.accept ? option.accept : ""}}' >
+            </div>
+            <kc-tooltip>{{:: option.helpText | translate}}</kc-tooltip>
+        </div>
+
+        <div class="col-md-9" data-ng-if="option.type === 'Script'">
+            <div ng-model="config[option.name]" placeholder="Enter your script..." ui-ace="{ onLoad : initEditor, useWrapMode: true, showGutter: true, theme:'github', mode: 'javascript'}">
+                {{config[option.name]}}
+            </div>
+            <kc-tooltip>{{:: option.helpText | translate}}</kc-tooltip>
+        </div>
+
+        <div class="col-md-9" data-ng-if="option.type === 'MultivaluedString'">
+            <div class="input-group" ng-repeat="(i, currentOption) in config[option.name] track by $index">
+                <input class="form-control" ng-model="config[option.name][i]" id="{{option.label.toLowerCase().replaceAll(' ','-')}}-input" >
+                <div class="input-group-btn" data-ng-if="$index < config[option.name].length - 1">
+                    <button class="btn btn-secondary" type="button" id="{{currentOption}}-minusBtn" data-ng-click="deleteValueFromMultivalued(option.name, $index)"><span class="fa fa-minus"></span></button>
+                </div>
+                <div class="input-group-btn" data-ng-if="$index === config[option.name].length - 1">
+                    <button class="btn btn-secondary" type="button" id="{{currentOption}}-plusBtn" data-ng-click="addValueToMultivalued(option.name)"><span class="fa fa-plus"></span></button>
+                </div>
+            </div>
+            <kc-tooltip>{{:: option.helpText | translate}}</kc-tooltip>
+        </div>
+    </div>
+</div>

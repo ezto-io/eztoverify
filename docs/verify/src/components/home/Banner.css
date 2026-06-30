@@ -1,0 +1,333 @@
+.banner {
+  max-width: 1440px;
+  width: 100%;
+  position: relative;
+  height: max-content;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("/img/home-banner-light.svg");
+}
+
+.line {
+  display: block;
+  background-color: white;
+  position: absolute;
+}
+
+html[data-theme="dark"] .line {
+  background-color: #727272;
+}
+
+.line1 {
+  height: 100%;
+  width: 1.2px;
+  left: 10%;
+}
+
+.line2 {
+  height: 1.2px;
+  width: 90%;
+  top: 15%;
+}
+
+.line3 {
+  height: 100%;
+  width: 1.2px;
+  right: 10%;
+}
+
+.line4 {
+  height: 1.2px;
+  width: 100%;
+  left: 10%;
+  bottom: 15%;
+}
+
+.banner-content {
+  position: relative;
+  z-index: 1;
+}
+
+.banner-background {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 0;
+}
+
+html[data-theme="dark"] .banner {
+  background-image: url("/img/home-banner-dark.svg");
+}
+
+.banner-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  min-height: 40rem;
+}
+
+.banner-brand-name {
+  font-weight: bold;
+  font-size: 2.25rem;
+  margin: 0;
+}
+
+.banner-brand-name .hightlight {
+  color: #2952e3;
+}
+
+.banner-title {
+  color: #2952e3;
+  text-align: center;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+  font-family: Inter;
+  font-size: 4.75rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 5.95456rem;
+  border: 3px dashed rgba(44, 85, 228, 0.3);
+  letter-spacing: 0.2375rem;
+  padding: 0.5rem 1rem;
+  margin: 0;
+}
+
+.banner-description {
+  text-align: center;
+  font-family: Inter;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.75rem; /* 116.667% */
+}
+
+.banner-btn {
+  color: white;
+  background-color: #2952e3;
+  border: none;
+  font-size: 1.1rem;
+  width: 13rem;
+  padding: 1rem 0.625rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-weight: 600;
+}
+
+.banner-btn:hover {
+  text-decoration: none;
+  color: white;
+  background-color: #0e30aa;
+}
+
+.banner-icon1,
+.banner-icon2,
+.banner-icon3,
+.banner-icon4 {
+  position: absolute;
+}
+
+.banner-icon1 {
+  top: 7rem;
+  left: 9rem;
+}
+
+.banner-icon2 {
+  top: 5rem;
+  right: 7.5rem;
+}
+
+.banner-icon3 {
+  bottom: 8rem;
+  left: 13rem;
+}
+
+.banner-icon4 {
+  bottom: 1rem;
+  right: 7rem;
+}
+
+.floating {
+  animation-name: floating;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  margin-left: 30px;
+  margin-top: 5px;
+}
+
+@keyframes floating {
+  from {
+    transform: translate(0, 0px);
+  }
+  65% {
+    transform: translate(0, 15px);
+  }
+  to {
+    transform: translate(0, -0px);
+  }
+}
+
+.scroll-down {
+  position: absolute;
+  color: #818fbf;
+  font-size: 0.8rem;
+  line-height: 1rem;
+  font-weight: 400;
+  bottom: 1rem;
+  left: 47%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.scroll-down-icon {
+  width: 1.6rem;
+  height: 2.8rem;
+  display: block;
+  border-radius: 0.8rem;
+  border: 3px solid #2952E333;
+}
+
+.scroll-down-icon::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #2952e3;
+  border-radius: 50%;
+  left: 44%;
+  top: 0.5rem;
+  animation: wheel 2s infinite;
+		-webkit-animation: wheel 2s infinite;
+}
+
+
+
+html[data-theme="dark"] .scroll-down {
+  color: #fff;
+}
+
+html[data-theme="dark"] .scroll-down-icon {
+  border-color: #ffffff63;
+}
+
+html[data-theme="dark"] .scroll-down-icon::before{
+   background-color: #fff;
+}
+
+@keyframes wheel {
+	to {
+		opacity: 0;
+		top: 35px;
+	}
+}
+
+@-webkit-keyframes wheel {
+	to {
+		opacity: 0;
+		top: 35px;
+	}
+}
+
+@media only screen and (max-width: 1160px) {
+  .scroll-down{
+    display: none;
+  }
+  
+  .floating {
+    display: none;
+  }
+
+  .banner-content {
+    min-height: 30rem;
+  }
+
+  .banner-brand-name {
+    font-size: 2rem;
+  }
+
+  .banner-title {
+    font-size: 4rem;
+    line-height: 5rem;
+  }
+
+  .banner-description {
+    font-size: 1.3rem;
+  }
+
+  .banner-btn {
+    font-size: 0.9rem;
+    padding: 0.8rem 0;
+    width: 11rem;
+  }
+
+  .banner-content {
+    gap: 1rem;
+  }
+}
+
+@media only screen and (max-width: 980px) {
+  .banner-content {
+    min-height: 25rem;
+  }
+
+  .banner-brand-name {
+    font-size: 1.8rem;
+  }
+
+  .banner-title {
+    font-size: 3rem;
+    line-height: 3rem;
+  }
+
+  .banner-description {
+    font-size: 1.3rem;
+  }
+
+  .banner-btn {
+    font-size: 0.9rem;
+    padding: 0.8rem 0;
+  }
+
+  .banner-content {
+    gap: 0.8rem;
+  }
+}
+
+@media only screen and (max-width: 780px) {
+  .banner-brand-name {
+    font-size: 1.125rem;
+  }
+
+  .banner-title {
+    font-size: 1.3rem;
+    line-height: normal;
+  }
+
+  .banner-description {
+    font-size: 0.75rem;
+    line-height: normal;
+    margin: 0;
+  }
+
+  .banner-btn {
+    font-size: 0.75rem;
+    width: 8rem;
+    gap: 0.3rem;
+    font-weight: normal;
+    padding: 0.5rem 0;
+  }
+
+  .banner-content {
+    min-height: 18rem;
+  }
+}

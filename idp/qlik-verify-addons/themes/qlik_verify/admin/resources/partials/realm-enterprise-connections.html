@@ -1,0 +1,84 @@
+<kc-menu></kc-menu>
+<kc-auth-sub-menu></kc-auth-sub-menu>
+<div class="content-w min-h-100">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="element-actions d-flex align-items-center">
+                            <!-- <div class="form-group mb-auto mr-2" data-ng-show="configuredProviders.length > 0">
+                                <form class="form-inline">
+                                    <div class="element-search">
+                                        <input class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched action-search-container" type="text" placeholder="Search..."  ng-model="search" onkeydown="if (event.keyCode === 13) document.getElementById('actionsSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="actionsSearch" data-ng-click="changeSearchKey(search)"></i>
+                                    </div>
+                                </form>
+                            </div> -->
+                            <div data-ng-if="instances && instances.length > 0">
+                                <a class="text-decoration-none" href="#/realms/{{realm.realm}}/connections/enterprise/create" id="create-enterprise-conn-btn">
+                                    <button class="create-btn no-entry-display" data-step='{{instances.length > 0 ? 1 : 0}}' data-title="{{:: 'intro-no-connections-found-title' | translate}}" data-intro="{{:: 'intro-no-connections-found' | translate}}">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-enterprise-conn-btn' | translate}}
+                                    </button>
+                                </a>
+                            </div>
+                            </div>
+                            <h1 class="element-header" ng-class="{'mb-0': instances.length!=0}"> {{:: 'enterprise-connections' | translate}}</h1>
+                            <div class="mt-4" data-ng-show="instances && instances.length > 0">
+                                <div class="element-box-tp">
+                                    <div class="table-responsive-md">
+                                        <table class="table table-padded">
+                                            <thead> </thead>
+                                            <tbody class="p-3">
+                                                <tr ng-repeat="connection in instances" class="fadeUp"> 
+                                                    <td class="cursor-pointer" id="{{connection.name.toLowerCase().replaceAll(' ','-')}}" kc-open="/realms/{{realm.realm}}/user-storage/providers/{{connection.providerId}}/{{connection.id}}">
+                                                        <div class="conn-with-logo">
+                                                            <div class="social-conn-logo-container">
+                                                                <img alt="" data-ng-src="{{resourceUrl}}/themes/img/{{connection.providerId}}-logo.svg">
+                                                            </div>
+                                                            <div>
+                                                                <a class="text-decoration-none header-text-primary" href="#/realms/{{realm.realm}}/user-storage/providers/{{connection.providerId}}/{{connection.id}}">
+                                                                    <span data-ng-show="connection.name">{{connection.name | capitalize}}</span>
+                                                                </a><br>
+                                                                <span>{{connection.providerId}}</span>
+                                                            </div>
+                                                        </div> 
+                                                    </td>
+                                                    <td class="nowrap text-center">
+                                                        <div class="info-card-state bg-danger small" data-ng-if="connection.config.enabled == 'false'"><div class="info-state-circle"></div>{{:: 'disabled' | translate}}</div>
+                                                        <div class="info-card-state bg-success small" data-ng-if="connection.config.enabled == 'true'"><div class="info-state-circle"></div>{{:: 'enabled-txt' | translate}}</div>
+                                                    </td> 
+                                                    <td class="row-actions">
+                                                        <a kc-open="/realms/{{realm.realm}}/user-storage/providers/{{connection.providerId}}/{{connection.id}}" id="{{connection.name}}-edit" >
+                                                            <i class="os-icon os-icon-ui-49" tooltip="{{:: 'edit' | translate}}" tooltip-placement="top"
+                                                            tooltip-trigger="mouseover mouseout"></i>
+                                                        </a>
+                                                        <a class="danger" data-ng-show="access.manageIdentityProviders" data-ng-click="removeInstance(connection)" id="{{connection.name}}-delete" >
+                                                            <i class="os-icon os-icon-ui-15" tooltip="{{:: 'tooltip-delete-label' | translate}}" tooltip-placement="top"
+                                                            tooltip-trigger="mouseover mouseout"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="element-box" data-ng-hide="!instancesLoaded || (instances && instances.length > 0)">
+                                <div class="no-policy-img" data-step='{{instances.length === 0 ? 1 : 0}}' data-title="{{:: 'intro-no-connections-found-title' | translate}}" data-intro="{{:: 'intro-no-connections-found' | translate}}">
+                                    <i class="os-icon os-icon-hierarchy-structure-2 opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                    <p class="text-center no-entry-display">{{:: 'no-social-conn-configured' | translate}}</p>
+                                    <a class="text-decoration-none create-btn no-entry-display" href="#/realms/{{realm.realm}}/connections/enterprise/create" id="create-social-conn-btn">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-social-conn-btn' | translate}}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

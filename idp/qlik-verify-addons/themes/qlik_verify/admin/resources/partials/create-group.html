@@ -1,0 +1,44 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+      <div class="content-i">
+          <div class="content-box">
+              <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/groups" id="backToGroups">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-groups' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                  <div class="col-sm-12">
+                      <div class="element-wrapper">
+                        <h3 class="element-header role-detail-rolename">
+                            {{:: 'create-group' | translate}}
+                        </h3>
+                        <div class="element-box py-5">
+                            <form class="form-horizontal" name="clientForm" novalidate>
+                                <fieldset>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label"for="name">{{:: 'name' | translate}} <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" id="name" name="name" data-ng-model="group.name" autofocus
+                                                   required >
+                                        </div>
+                                    </div>
+                                </fieldset>
+                        
+                                <div class="form-group row">
+                                    <div class="col-md-12 col-md-offset-2 d-flex flex-row-reverse">
+                                        <button kc-save data-ng-disabled="!group.name" id="saveBtn" class="ml-2">{{:: 'save' | translate}}</button>
+                                        <button kc-cancel data-ng-click="cancel()" id="cancelBtn">{{:: 'cancel' | translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

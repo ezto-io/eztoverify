@@ -1,0 +1,134 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+  <div class="content-i">
+    <div class="content-box">
+      <div class="row">
+        <ol class="breadcrumb pl-2">
+          <li>
+            <a href="#/realms/{{realm.realm}}/users" id="backToUserList">
+              <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-users' | translate}}
+            </a>
+          </li>
+        </ol>
+        <div class="col-sm-12">
+          <div class="element-wrapper">
+            <kc-tabs-user></kc-tabs-user>
+
+            <div class="element-box element-box-medium" data-ng-if="transactionDetails.length === 0 && !requestId && !status && searchLoaded">
+              <div class="no-attributes-svg">
+                <img data-ng-src="{{resourceUrl}}/themes/img/{{'no-apps-bo.svg'}}" alt="no-apps-svg" class="opacity-40 no-entry-display" />
+                <p class="no-results-msg no-entry-display">{{:: 'no-user-transactions' | translate}}</p>
+              </div>
+            </div>
+
+            <div data-ng-if="transactionDetails.length === 0 && (requestId || status) && searchLoaded" class="element-box d-flex flex-column align-items-center justify-content-center">
+              <p class="mb-4">{{:: 'transactions-not-available' | translate}}</p>
+              <button data-ng-click="reset()" class="create-btn" id="refreshBtn">
+                <i class="os-icon os-icon-refresh-cw plus-icon"></i>
+                {{:: 'refresh' | translate}}
+              </button>
+            </div>
+
+            <div ng-if="!(searchLoaded)" >
+              <kc-loader loadertype="loaderTypeName"></kc-loader>
+            </div>
+
+            <div class="" ng-show="searchLoaded && transactionDetails.length > 0">
+              <form class="row">
+                <div class="form-group col-3">
+                  <label class="row-md-3 control-label" for="requestId">{{:: 'transaction-id' | translate}}</label>
+                  <div class="row-md-9">
+                    <input type="text" class="form-control"
+                           data-ng-model="requestId"
+                           ng-change="handleInputChange()"
+                           id="requestId"
+                           placeholder="{{:: 'enter-transaction-id' | translate}}" />
+                  </div>
+                </div>
+                <div class="form-group col-3">
+                  <label class="row-md-3 control-label" for="transaction-status">{{:: 'transaction-status' | translate}}</label>
+                  <select id="transaction-status" data-ng-model="status" class="form-control"
+                          ng-change="transactionStatusChanged()">
+                    <option value="" disabled selected>{{:: 'select-transaction-status' | translate}}...</option>
+                    <option ng-repeat="status in transactionStatusOptions" data-ng-value="status">{{:: status | translate}}</option>
+                  </select>
+                </div>
+              </form>
+
+              <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center mt-3">
+                <button class="btn btn-primary" id="filterBtn" data-ng-click="filter()">{{:: 'filter' |
+                  translate}}</button>
+                <button class="btn btn-danger" id="resetBtn" data-ng-click="reset()">{{:: 'reset' |
+                  translate}}</button>
+              </div>
+                <div class="d-flex flex-column" data-ng-show="(transactionDetails && transactionDetails.length > 5 && totalPages===totalUserTransactions) || (totalUserTransactions > 5)">
+                  <label class="row-md-3 control-label" for="page-count">{{:: 'results-per-page' | translate}}</label>
+                  <select id="page-count" data-ng-model="itemsPerPage" data-ng-options="itemCount for itemCount in [5,10,50,100]"
+                          class="form-control form-control-sm rounded bright events-admin-search w-100 audit-list-count-select"
+                          ng-change="pageCountChanged()">
+                    <option data-ng-repeat="itemCount in [5,10,50,100]" data-ng-selected="itemsPerPage == itemCount"
+                            data-ng-value="itemCount">
+                      {{ itemCount }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="table-responsive-md mt-3">
+                <form class="form-horizontal" name="realmForm" novalidate>
+                  <div>
+                    <table class="table  table table-light-bordered table-padded table-layout-fixed w-100">
+                      <thead>
+                      <tr class="position-relative fadeUp">
+                        <th class="w-50 ng-binding">{{:: 'transaction-id' | translate}}</th>
+                        <th class="w-30 ng-binding">{{:: 'status' | translate}}</th>
+                        <th class="w-50 ng-binding">{{:: 'created-at' | translate}}</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr class="user-row position-relative fadeUp" ng-repeat="transaction in transactionDetails | toOrderedMapSortedByKey">
+                        <td>{{transaction.trxId}}</td>
+                        <td> <span class="px-2 py-1 text-light bo-badge-{{transaction.status.replaceAll(' ','-').toLowerCase()}} rounded">{{:: transaction.status | translate}}</span></td>
+                         <td>{{transaction.timestamp}}</td>
+                      </tr>
+                      </tbody>
+                      <tfoot>
+                      <tr>
+                        <td class="pl-0"  colspan="2" data-ng-show="transactionDetails && transactionDetails.length > 0">
+                          <p class="mt-3">{{:: 'showing' | translate}} {{pagination.firstResult + 1}} - {{pagination.firstResult + transactionDetails.length}} {{:: 'of' | translate}} {{totalUserTransactions}} {{:: 'transactions' | translate}}</p>
+                        </td>
+                        <td class="pr-0 pb-0 pt-0" align="right" colspan="9">
+                          <div data-ng-hide="totalUserTransactions < transactionDetails.length">
+                            <button class="btn btn-sm btn-outline-primary table-pagination border-0 bg-transparent" id="firstPageBtn" data-ng-click="changePage(1)" ng-disabled="pagination.firstResult === 0" data-ng-class="pagination.firstResult === 0 && 'text-muted'">
+                              <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left' }} pagination-icon"></i> <i>{{:: 'first-page' | translate}}</i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary table-pagination border-0 bg-transparent" id="previousPageBtn" data-ng-click="changePage(currentPage - 1)" ng-disabled="currentPage === 1" data-ng-class="currentPage === 1 && 'text-muted'">
+                              <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left' }} pagination-icon"></i> <i>{{:: 'previous' | translate}}</i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary table-pagination pr-0 border-0 bg-transparent" id="nextPageBtn"
+                                    data-ng-click="changePage(currentPage + 1)" class="next"
+                                    ng-disabled="totalUserTransactions === (pagination.firstResult + transactionDetails.length)"
+                                    data-ng-class="totalUserTransactions === (pagination.firstResult + transactionDetails.length) && 'text-muted'"> <i>{{::
+                              'next' | translate}}</i> <i
+                                    class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right' }} pagination-icon"></i></button>
+                          </div>
+                        </td>
+                      </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  //Dumb iti init to avoid undeclared var error on page reload
+  var iti = undefined;
+</script>

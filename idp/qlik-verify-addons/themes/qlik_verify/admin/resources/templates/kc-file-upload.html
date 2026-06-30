@@ -1,0 +1,29 @@
+<div class="col-md-9" data-ng-controller="kcFileUploadCtrl">
+    <div ng-if="file" class="form-control d-flex justify-content-between align-items-center">
+            <img ng-src="{{resourceUrl}}/img/pdf.svg" class="pr-2 mr-2" ng-show="!isImage">
+            <img ng-src="{{resourceUrl}}/img/img.svg" class="pr-2 mr-2" ng-show="isImage">
+            <div class="mr-auto" ng-if="uploadType =='single' || config[ option.name ]">
+                <p class="font-weight-bold m-0 word-break-all break-word" id="tc-file-name">{{getFileDetails().fileName}}</p>
+                <p class="font-weight-bold m-0 word-break-all break-word" id="tc-file-name" ng-show="isImage && !getFileDetails().fileName">{{config[ option.name ].split(":")[0]}}</p>
+                <p class="font-bold m-0" ng-show="!isImage">
+                    {{:: 'updated-on' | translate}}: {{getFileDetails().updatedAt}}
+                    <span id="tc-date"></span> 
+                    <a class="mr-auto text-decoration-none font-weight-bold" data-ng-if="!isNewFile && !isImage" href="{{config.terms_and_condition_type == 'PDF' ? config.terms_and_condition_pdf : config.terms_and_condition_image}}" target="_blank" >(view)</a>
+                </p>
+            </div>
+        <button ng-hide="config.isReadOnly" class="btn px-1 mx-1 d-flex justify-content-center bg-transparent" ng-click="removeFile()"><img ng-src="{{resourceUrl}}/img/remove-pdf.svg"></button>
+    </div>
+    <div  ng-if="!file || (uploadType =='multi' && !file)" class="form-control d-flex flex-column justify-content-between align-items-center"  
+        id="dropZone" ng-init="initFileUpload()">
+        <img ng-src="{{resourceUrl}}/img/cloud-upload.svg" class="pr-2 mr-2">
+        <p class="font-weight-bold" id="dropZoneInfo">{{'drag-drop-file' | translate}} <button class="btn bg-transparent text-primary px-1" ng-click="clickFileInput()">{{:: 'browse' | translate}}</button></p>
+        <div ng-if="uploadType =='multi' && files.length" class="w-full col-12 border-top border-2 px-0 py-1">
+            <label class="file-badge px-2 m-1" ng-repeat="file in files">{{file.name}} <i ng-click="deleteFile($index)" class="ml-2 os-icon os-icon-close cursor-pointer"></i></label>
+        </div>
+    </div>
+    <div class="controls kc-button-input-file">
+        <input id="fileUpload" class="d-none" type="file" accept="{{type}}"/>
+    </div>
+    <div class="help-block form-text text-muted form-control-feedback" data-ng-if="option.helperLink && config[ option.name ]"><span class="text-primary cursor-pointer" id="click-navigator" data-ng-click="navigateToLink(option.helperLink, config[ option.name ])">Click </span>{{:: option.helperLinkText | translate}}</div>
+    <div class="help-block form-text text-muted form-control-feedback" data-ng-if="option.helpText">{{:: option.helpText| translate}}</div>
+</div>

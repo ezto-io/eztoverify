@@ -1,0 +1,35 @@
+
+<div id="content-area" class="col-sm-12" role="main">
+    <div class="big-error-w">
+        <h1>
+            403
+        </h1>
+        <h5>
+            {{:: 'forbidden' | translate}}
+        </h5>
+        <h4>
+            {{:: 'access-denied' | translate}}
+        </h4>
+        <form>
+            <div class="input-group">
+                <div class="input-group-btn">
+                        <button class="btn btn-primary" onclick="redirectFunction()">{{:: 'goto-home' | translate}}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    // Can't access serverinfo, so changing color using vairant.
+
+    var ssoUrl = window.location.origin + '/auth';
+    var redirectFunction = () => window.location.replace(ssoUrl);
+
+    if(variant === "ezto auth") {
+        const root = document.querySelector(':root');
+        const style = getComputedStyle(root);
+        root.style.setProperty('--btnPrimary', '#4CA355');
+        root.style.setProperty('--btnPrimaryHover', '#45914F');
+        root.style.setProperty('--primary', '#4CA355');
+    }
+</script>

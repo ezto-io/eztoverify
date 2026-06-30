@@ -1,0 +1,112 @@
+<div class="modal-header pb-1">
+    <div class="form-inline justify-content-between w-100" >
+        <h5 class="modal-title">{{:: 'add-groups' | translate}}</h5>
+        <div class="form-inline">
+            <div class="element-wrapper pb-0">
+                <div class="form-group">
+                    <div class="element-search">
+                        <input class="form-control" type="text" id="groupSearchInputField"
+                            placeholder="{{:: 'search-groups-placeholder' | translate}}" data-ng-model="query.search"
+                            onkeydown="if (event.keyCode == 13) document.getElementById('groupSearch').click()" class="py-2">
+                        <i class="os-icon os-icon-search2 search-icon" id="groupSearch" data-ng-click="searchQuery()"></i>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="close ml-4" ng-click="cancel()">
+                <span class="os-icon os-icon-close" id="closeModalBtn"></span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="modal-body">
+    <div data-ng-show="checkedGroups && (checkedGroups | json) != '{}'">
+        <h4 class="font-size-14 text-muted">{{:: 'selected-groups' | translate}}</h4>
+        <div class="w-100 border rounded p-2 form-inline selected-tag-wrapper">
+            <div class="form-inline rounded py-1 px-2 mr-1 mb-1 selected-tag" ng-repeat="(key, group) in checkedGroups">
+                <p class="m-0">{{group.name}}</p>
+                <button type="button"  class="close ml-2" ng-click="unCheckGroups(key)">
+                    <span class="os-icon os-icon-close" id="closeBtn"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div ng-if="searchLoaded" data-ng-show="!groupList || groupList.length === 0">
+        <div class="element-box element-box-medium">
+            <div class="no-entry-svg">
+                <i class="os-icon os-icon-users opacity-75 no-entry-display mb-3 icon-custom-70"></i>
+                <p class="no-results-msg no-entry-display">{{:: 'noGroupsAvailable' | translate}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="user-role">
+        <div ng-if="!(searchLoaded)">
+            <kc-loader loadertype="loaderTypeName"></kc-loader>
+        </div>
+        <div class="table-responsive-md clients-list" ng-show="searchLoaded && groupList.length > 0">
+            <div class="table-responsive-md clients-list">
+                <table class="table table-layout-fixed w-100 mb-0 border-0">
+                    <thead>
+                        <tr class="position-relative fadeUp">
+                            <th colspan="9" class="pl-0 border-0">{{:: 'name' | translate}}</th>
+                            <th class="text-center pr-0 border-0" colspan="1">{{:: 'select' | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody data-ng-show="groupList && groupList.length > 0">
+                        <tr class="user-row position-relative fadeUp border-0" ng-repeat="group in groupList">
+                            <td class="overflow-ellipsis mb-0 pl-0 py-2" colspan="9">
+                                <p class="my-1">{{group.name}}</p>
+                            </td>
+                            <td class="row-actions pr-0 py-2 " colspan="1" data-ng-hide="group.isAssigned">
+                                <input type="checkbox" value="group.isChecked" checked="group.isChecked"
+                                    ng-model="group.isChecked" id="{{group.id}}">
+                            </td>
+                            <td data-ng-hide="!group.isAssigned" class="text-center py-1 pr-0 w-10">
+                                <i class="os-icon os-icon-check font-25"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr
+                            data-ng-hide="(!searchLoaded && groupList && groupList.length < 5) || (groupList && groupList.length ===0)">
+                            <td class="pl-0 py-2" colspan="4" 
+                                data-ng-show="(groupList && groupList.length > 5 && pageCount===entries) || (entries > 5)">
+                                    <p class="m-0">{{:: 'showing' | translate}} {{startCount}} - {{pageCount}} of {{entries}}
+                                        {{:: 'groups' | translate}}</p>
+                            </td>
+                            <td colspan="6" align="right" class="table-nav pull-right pr-0 py-2"
+                                data-ng-show="(groupList && groupList.length > 5 && pageCount === entries) || (entries > 5)">
+                                <div class="pagination justify-content-end " data-ng-hide="(entries <= query.max)">
+                                    <button class="btn btn-sm btn-outline-primary border-0 table-pagination" id="firstPageBtn"
+                                        data-ng-click="firstPage()" class="prev" ng-disabled="query.first === 0">
+                                        <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon"
+                                            data-ng-class="query.first === 0 && 'text-muted'"></i>
+                                        <i data-ng-class="query.first === 0 && 'text-muted'"> {{:: 'first-page' | translate}}
+                                        </i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary border-0 table-pagination" id="previousPageBtn"
+                                        data-ng-click="previousPage()" class="prev" ng-disabled="query.first === 0">
+                                        <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon"
+                                            data-ng-class="query.first === 0 && 'text-muted'"></i>
+                                        <i data-ng-class="query.first === 0 && 'text-muted'"> {{:: 'previous' | translate}}
+                                        </i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary border-0 table-pagination" id="nextPageBtn"
+                                        data-ng-click="nextPage()" class="next" ng-disabled="pageCount === entries">
+                                        <i data-ng-class="groupList.length <= query.max-1 && 'text-muted'">
+                                            {{:: 'next' | translate}} </i>
+                                        <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon"
+                                            data-ng-class="groupList.length <= query.max-1 && 'text-muted'"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer pt-2">
+    <button type="button" class="btn btn-secondary" id="cancelBtn" ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+    <button type="button" class="btn btn-primary" id="addGroupsBtn" ng-click="addGroupsToUser(role)" data-ng-disabled="!enableBtn">{{::'add-groups' | translate}}</button>
+</div>

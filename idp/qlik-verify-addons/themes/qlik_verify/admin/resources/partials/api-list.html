@@ -1,0 +1,105 @@
+<kc-menu></kc-menu>
+<div class="content-w clients-list-dropdown-parent" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/api" id="backToApplicationsList">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-applications' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper pb-0">
+                        <div class="element-actions d-flex align-items-center application-step-1">
+                            <div>
+                                <a class="text-decoration-none" href="">
+                                    <button class="create-btn" id="create-application-btn" data-ng-click="createApp()">
+                                        {{:: 'create-api-application' | translate}}
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="element-header">{{ :: 'play-ground' | translate }}</h3>
+                        <kc-loader loadertype="loaderTypeName" ng-show="isLoading"></kc-loader>
+                        <div class="element-box  position-relative">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <div class="d-flex align-items-center w-40">
+                                    <label class="d-block w-40">{{:: "app-name" | translate }}</label>
+                                    <select  class="form-control" ng-model="selectedApp">
+                                        <option ng-repeat="app in apps" value="{{app.clientId}}">{{app.name}}</option>
+                                    </select>
+                                </div>
+                                <div class="element-search">
+                                    <input class="form-control bg-color-transparent searchTerm" type="text"
+                                        id="api-search-input"
+                                        placeholder="{{:: 'search-api-placeholder' | translate}}"
+                                        data-ng-model="apiSearchName"
+                                        class="form-control form-control-sm rounded bright search"
+                                        onkeydown="if (event.keyCode == 13) document.getElementById('apiSearch').click()">
+                                    <i class="os-icon os-icon-search2 search-icon" id="apiSearch"
+                                        data-ng-click="searchApi()"></i>
+                                </div>
+                            </div>
+                            <p class="helper-text w-100">
+                                {{:: 'select-the-category-api' | translate}}
+                            </p>
+                            <ul class="d-flex gap-1 list-unstyled flex-wrap">
+                                <li class="api-category-tag min-w-120 text-center" ng-repeat="category in apiCategories" ng-class="{active : category === selectedCategory}" id="{{category}}" data-ng-click="handleCategoryChange(category)">
+                                    {{:: category | translate}}
+                                </li>
+                            </ul>
+                            <div class="api-cards-holder" id="card-holder" ng-show="apiArray.length > 0">
+                                <ul class="d-flex list-unstyled flex-wrap gap-1 justify-content-start" >
+                                    <li class="api-card p-3 d-flex flex-column" ng-repeat="api in apiArray" id="{{api.verifierName}}" data-element="element-{{$index}}">
+                                        <span class="text-capitalize">{{:: api.verifierName | translateOrReplaceWithSpace}}</span>
+                                        <p class="helper-text w-100">
+                                            {{:: 'extract-details-instantly' | translate}}
+                                        </p>
+                                        <div class="d-flex w-100 mt-auto">
+                                            <a class="btn api-app-btn lh-normal w-50 p-1 d-flex align-items-center" target="_blank" id="documentation-btn-{{$index+1}}" href="https://documenter.getpostman.com/view/22795732/2sAYk7QiV2#intro">
+                                                <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M7.33341 0.833496V3.50016C7.33341 3.85378 7.47389 4.19292 7.72394 4.44297C7.97399 4.69302 8.31313 4.8335 8.66675 4.8335H11.3334M4.66675 5.50016H3.33341M8.66675 8.16683H3.33341M8.66675 10.8335H3.33341M8.00008 0.833496H2.00008C1.64646 0.833496 1.30732 0.973972 1.05727 1.22402C0.807224 1.47407 0.666748 1.81321 0.666748 2.16683V12.8335C0.666748 13.1871 0.807224 13.5263 1.05727 13.7763C1.30732 14.0264 1.64646 14.1668 2.00008 14.1668H10.0001C10.3537 14.1668 10.6928 14.0264 10.9429 13.7763C11.1929 13.5263 11.3334 13.1871 11.3334 12.8335V4.16683L8.00008 0.833496Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                                <span class="ml-1">{{ :: 'documentation' | translate}}</span>
+                                            </a>
+                                            <a class="btn api-app-btn p-0 lh-normal w-50 p-1 ml-1 d-flex align-items-center"  data-ng-if="!api.isEnabled" target="_blank" id="request-access-btn-{{$index+1}}" 
+                                                href="mailto:support@ezto.io">
+                                                    <span class="mr-1">  {{ :: 'request-access' | translate}}</span>
+                                                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M4.08325 8.50016H13.4166M13.4166 8.50016L8.74992 3.8335M13.4166 8.50016L8.74992 13.1668" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                            </a>
+                                            <button class="btn api-app-btn p-0 lh-normal w-50 p-1 ml-1 d-flex align-items-center"
+                                                    ng-click="openCurl(api.verifierName)" data-ng-if="api.isEnabled" id="view-curl-btn-{{$index+1}}">
+                                                <span class="mr-1"> {{ :: 'view-curl' | translate}}</span>
+                                                <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M4.08325 8.50016H13.4166M13.4166 8.50016L8.74992 3.8335M13.4166 8.50016L8.74992 13.1668" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <kc-loader loadertype="loaderType" ng-show="isLoading"></kc-loader>
+                            </div>
+                            <div class="api-view-more d-flex align-items-center justify-content-center" ng-show="showViewMore && apiCount > 9 && !isLoading">
+                                <button class="btn api-app-btn px-2 py-1 lh-normal view-more-btn" id="view-more-btn" data-ng-click="viewMore()">
+                                    <span class="mr-1">{{::"view-more" | translate}}</span>
+                                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11.1666 7.16683L8.49992 9.8335L5.83325 7.16683M15.1666 8.50016C15.1666 12.1821 12.1818 15.1668 8.49992 15.1668C4.81802 15.1668 1.83325 12.1821 1.83325 8.50016C1.83325 4.81826 4.81802 1.8335 8.49992 1.8335C12.1818 1.8335 15.1666 4.81826 15.1666 8.50016Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div>
+                                <li class="mt-2 p-2 border rounded d-flex justify-content-center p-2 align-items-center" ng-hide="apiArray.length > 0">
+                                    <label>{{ :: 'no-result-found' | translate}}</label>
+                                </li>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,139 @@
+---
+id: Branding
+title: Branding
+sidebar_label: Branding
+--- 
+
+import DropBox from "../../../../src/components/docs/DropBox"
+import TableRow from '@site/src/components/docs/TableRow';
+import customFontData from './custom-font.json';
+
+
+Create a consistently branded experience for your users by styling your verification prompts with **ezto verify's** no-code editor. It allows you to easily customize the colors, texts, fonts, borders, and backgrounds of the prompts displayed throughout the verification flow. 
+
+
+With the no-code editor, you can effortlessly customize your verification branding theme to match your brand's unique identity.
+
+## Custom Branding Implementation
+
+*1* Navigate to you **Workspace** and click on **Brandings**
+
+*2* Click on `+ CREATE BRANDING`
+
+*3* Provide a descriptive name and click on **CREATE**.
+
+*4* Select a theme component (e.g., Layout) from the right-side menu and customize the available options.
+
+*5* After customizing your theme, click on **Publish**.
+
+Once you've published your theme, you can access a live preview of your verification experience to review and test your screens. To do this, you need to attach the branding to an application. To know how to, see here.
+
+:::note
+To revert to the default settings and undo any changes you've made, simply click on the **RESET** button. This action will restore the original configuration, allowing you to start fresh or go back to the previous state.
+:::
+
+![Branding](https://images.tango.us/workflows/d67f45fb-2495-4a2f-9cc3-f069cf623593/steps/0d670b48-9312-4ea5-bddf-7960fafb5689/ac2d3e05-8795-4c23-9f85-84b60b73d8be.png)
+
+## Theme Components
+To create your preferred **Verification** theme, the branding menu includes the following components.
+
+<DropBox title="Layout">
+
+Select how the **Verification** layout should be positioned.
+- Use the drop-down options to choose the positioning.
+- Provide a font and select your background type.
+
+<table>
+    <thead>
+        <tr>
+            <td>Elements</td>
+            <td>Descriptions</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Layout</td>
+            <td>This dictates the orientation <b>(Left, Right, or Center)</b> of the flow form box. (<b>NOTE:</b> When the alignment is kept as <b>Left</b> or <b>Right</b>, the <b>Section</b> configuration will be displayed.)</td>
+        </tr>
+        <TableRow title="Font preference" jsonData={customFontData} defaultSelection="Default" defaultDesc="Modify the font of the displayed content using this option. Click the dropdown to choose from the available fonts." />
+        <tr>
+            <td>Body Background Type</td>
+            <td>Modify the font of the displayed content using this option. Click the dropdown to choose from the available fonts.</td>
+        </tr>
+        <tr>
+            <td>Body Background Image</td>
+            <td>Alter the background to your preference with your choice of color or image. Opt for a color and select from the available palette, or opt for an image and upload it accordingly.</td>
+        </tr>
+        <tr>
+            <td>Body Image Opacity</td>
+            <td>Specify the opacity value for the body image.</td>
+        </tr>
+    </tbody>
+</table>
+
+
+After you make a change, the preview window displays an example reflecting the changes you specified.
+
+![Layout](https://images.tango.us/workflows/d67f45fb-2495-4a2f-9cc3-f069cf623593/steps/32a067ff-246c-470a-b64e-0b3ab3ac53c2/84891183-c0e9-44ef-8b61-5bb9507b77fa.png)
+
+</DropBox>
+
+<DropBox title="Section">
+This allows you to include necessary information for display on the page. It supports plain colors, images, or text. If you select text, you can input the number of lines, choose content colors, provide a content description, and include a list of features.
+
+![Section](https://images.tango.us/workflows/d67f45fb-2495-4a2f-9cc3-f069cf623593/steps/303dbac1-2f53-47b9-b708-286b98c74b3b/b3d369c3-e3df-4a2f-bedc-ddd04a1dc1e5.png?mark-x=2171&mark-y=213&m64=aHR0cHM6Ly9pbWFnZXMudGFuZ28udXMvc3RhdGljL2JsYW5rLnBuZz9tYXNrPWNvcm5lcnMmYm9yZGVyPTQlMkNEQjMwMzAmdz01NTImaD03NjEmZml0PWNyb3AmY29ybmVyLXJhZGl1cz0xMA%3D%3D)
+</DropBox>
+
+<DropBox title="Form">
+
+This allows you to customize the form to your preferences by modifying various aspects such as border colors, button color, text color, logo positioning, and more. This ensures that the form aligns perfectly with your branding and design requirements, providing a cohesive user experience.
+
+| Elements | Descriptions |
+|----------|--------------|
+| TextBox Border Color | Use this field to modify the color of the border surrounding the text box.|
+| TextBox Active Color| Use this field to set the color of the text box when it is focused.|
+| Text Box Background Color | Choose the background color of the text box. |
+| Text Box Text Color | Set the text color inside the text box.|
+| Form Text Color | Configure the color of the text within the form.|
+| Form Background Color | You can choose the background color for the form.|
+| Form Border Color | Utilize this field to modify the color of the form's border.|
+| Form Border Width| Set the width of the form's border using this field.|
+| Form Border Radius|  Adjust the border radius of the form using this field.|
+| Button Background Color|  You can choose the background color for the button.|
+| Button Border Radius| Adjust the button's border radius using this field.|
+| Button Text Color| Set the text color of the button here.|
+| Logo Position| You can configure the alignment of the logo, choosing from options such as **Left, Right, or Center.**|
+| Logo Height| Use this field to specify the size of the logo.|
+| Custom Logo Position| Utilize this field to establish a personalized position for the logo within the form.|
+
+![Form](https://images.tango.us/workflows/d67f45fb-2495-4a2f-9cc3-f069cf623593/steps/ee5349ab-8cbc-4d12-a29c-4781e9fd61cd/cdbcc687-0ffc-4f61-a01e-45ceb76b7954.png)
+</DropBox>
+
+<DropBox title="Footer">
+Customize the footer message and color for your <strong>Verification</strong> page to align with your branding and enhance the overall visual appeal.
+
+| Elements | Descriptions |
+|----------|--------------|
+| Footer Text | The text or sentence displayed in the bottom of the page layout. |
+| Footer Text Color | The color of the text provided in the footer. |
+</DropBox>
+
+<br/>
+
+#### For further assistance or related topics, you may explore the following resource 
+
+<DropBox title="Attach Brandings to Application">
+
+To observe the custom brandings in action, simply select the branding you've established within your application and execute the process.
+
+*1* Navigate to **Workspace**, and click on **Applications**.
+
+*2* Choose the application to which you want to attach the branding. To know how to create an application, refer [here](/verify/docs/EV/StartAnIntegration/CreateApplication/).
+
+*3* You will be directed to its **General** tab. From this section, find the **Theme** field, and choose your custom branding from the drop-down.
+
+![General Tab](https://images.tango.us/workflows/d67f45fb-2495-4a2f-9cc3-f069cf623593/steps/47441708-5b24-4d62-ad4d-37150cb86598/d379ef6b-5990-4735-9a95-824556d67087.png)
+
+*4* Click on the `SAVE` button.
+
+</DropBox>

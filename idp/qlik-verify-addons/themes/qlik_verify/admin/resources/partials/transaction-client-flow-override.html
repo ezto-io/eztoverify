@@ -1,0 +1,217 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+  <div class="content-i">
+    <div class="content-box">
+      <div class="row">
+        <ol class="breadcrumb pl-2">
+          <li>
+            <a href="#/realms/{{realm.realm}}/clients/type/{{ client.appType.replaceAll('_', '-') }}{{realm.mode==='bo' ? client.sandboxMode ? '/sandbox' : '/live' : ''}}"
+              id="backToApplicationsList">
+              <i class="os-icon  {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{
+              :: 'back-to-applications' | translate}}
+            </a>
+          </li>
+        </ol>
+        <div class="col-sm-12">
+          <div class="element-wrapper">
+            <kc-tabs-app></kc-tabs-app>
+            <kc-tabs-client></kc-tabs-client>
+
+            <form class="form-horizontal" name="clientForm" novalidate>
+              <div class="element-box">
+                <fieldset class="margin-top-16 border-bottom">
+                  <div class="form-group row">
+                    <label for="actions" class="col-md-3 control-label">{{:: 'ob-templates' | translate}}</label>
+                    <div class="col-md-9">
+                      <div data-ng-if="allPolicies.length > 0">
+                        <div class="d-flex align-items-center">
+                          <select id="onboarding-action"
+                            ng-model="clientEdit.authenticationFlowBindingOverrides['onboarding-action']"
+                            class="form-control" ng-options="action.actionId as action.alias for action in allPolicies">
+                            <option value="">{{:: 'none' | translate}}</option>
+                          </select>
+                          <!-- OSS: workflow gif preview removed (assets served from proprietary cloud CDN, absent on-prem). -->
+                          <button class="text-primary btn p-0 ml-3 bg-light p-1 rounded" data-ng-disabled="!clientEdit.authenticationFlowBindingOverrides['onboarding-action'] || isTemplatePreviewVisible" tooltip="{{:: 'view-workflow' |translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" data-ng-click="navigateToLink(clientEdit.authenticationFlowBindingOverrides['onboarding-action'])"><i class="os-icon os-icon-external-link plus-icon m-0"></i></button>
+                        </div>
+                        <small>{{:: 'ob-templates.tooltip' | translate}}</small>
+                        </div>
+                      <div data-ng-if="allPolicies.length === 0">
+                        <p class="mb-1">
+                          {{:: 'ob-templates-not-available' | translate}}
+                        </p>
+                        <p>
+                          <a href="#/realms/{{realm.realm}}/authentication/templates" id="create-template-empty">{{::
+                            'click-here' | translate}}</a>
+                          {{:: 'create-one' | translate}}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row clearfix block">
+                    <label class="col-md-3 control-label" for="enableCustomOnboardingMsg">{{:: 'enable-custom-message' | translate}}</label>
+                    <div class="col-md-9">
+                      <label for="enableCustomOnboardingMsg">
+                         <div class="os-toggler-w" ng-class="{on: clientEdit.attributes.enableCustomOnboardingMsg}">
+                             <div class="os-toggler-i" id="enableToggle">
+                                 <div class="os-toggler-pill" ng-model="clientEdit.attributes.enableCustomOnboardingMsg" name="enableCustomOnboardingMsg" id="enableCustomOnboardingMsg" onoffswitch ></div>
+                             </div>
+                         </div>
+                      </label>
+                    </div>
+                    <!-- <kc-tooltip>{{:: 'enableCustomOnboardingMsg.tooltip' | translate}}</kc-tooltip> -->
+                 </div>
+                 <div class="form-group row" ng-show="clientEdit.attributes.enableCustomOnboardingMsg">
+                     <label class="col-md-3 control-label">{{:: 'success-message' | translate}}</label>
+                     <div class="col-md-8 bg-gray p-3 rounded">
+                         <div class="row">
+                             <label class="col-12 control-label" for="customSuccessOnboardingMsgTitle">{{:: 'title' | translate}} <span class="required">*</span></label>
+                             <div class="col-12">
+                                 <input maxlength="60" class="form-control" type="text" id="customSuccessOnboardingMsgTitle" name="customSuccessOnboardingMsgTitle" data-ng-model="clientEdit.attributes.customSuccessOnboardingMsgTitle" autofocus>
+                                 <p class="helper-text" ng-bind-html="helptxt"></p>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <label class="col-12 control-label" for="name">{{:: 'description' | translate}} <span class="required">*</span></label>
+                             <div class="col-12">
+                                 <input maxlength="200" class="form-control" type="text" id="customSuccessOnboardingMsgDesc" name="customSuccessOnboardingMsgDesc" data-ng-model="clientEdit.attributes.customSuccessOnboardingMsgDesc" autofocus>
+                                 <p class="helper-text" ng-bind-html="helptxt"></p>
+                             </div>
+                        </div>
+                     </div>
+                     <button class="text-primary btn p-0 ml-3 bg-light p-1 rounded md-1 h-max" tooltip="{{:: 'view-preview' |translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" data-ng-click="openPreview('onboarding', 'success')" >
+                         <i class="os-icon os-icon-eye plus-icon m-0"></i>
+                     </button>
+                 </div>
+                 <div class="form-group row" ng-show="clientEdit.attributes.enableCustomOnboardingMsg">
+                     <label class="col-md-3 control-label" >{{:: 'failure-message' | translate}}</label>
+                     <div class="col-md-8 bg-gray p-3 rounded">
+                         <div class="row">
+                             <label class="col-12 control-label" for="customFailureOnboardingMsgTitle">{{:: 'title' | translate}} <span class="required">*</span></label>
+                             <div class="col-12">
+                                 <input maxlength="60" class="form-control" type="text" id="customFailureOnboardingMsgTitle" name="customFailureOnboardingMsgTitle" data-ng-disabled="isInBuilt" data-ng-model="clientEdit.attributes.customFailureOnboardingMsgTitle" autofocus>
+                                 <p class="helper-text" ng-bind-html="helptxt"></p>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <label class="col-12 control-label" for="customFailureOnboardingMsgDesc">{{:: 'description' | translate}} <span class="required">*</span></label>
+                             <div class="col-12">
+                                 <input maxlength="200" class="form-control" type="text" id="customFailureOnboardingMsgDesc" name="customFailureOnboardingMsgDesc" data-ng-disabled="isInBuilt" data-ng-model="clientEdit.attributes.customFailureOnboardingMsgDesc" autofocus>
+                                 <p class="helper-text" ng-bind-html="helptxt"></p>
+                             </div>
+                         </div>
+                     </div>
+                     <button class="text-primary btn p-0 ml-3 bg-light p-1 rounded md-1 h-max"  tooltip="{{:: 'view-preview' |translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" data-ng-click="openPreview('onboarding', 'failure')">
+                         <i class="os-icon os-icon-eye plus-icon m-0"></i>
+                     </button>
+                 </div>
+                </fieldset>
+                <br/>
+                <!-- Flow Bindings  -->
+                <fieldset class="margin-top-16">
+                  <div class="form-group row">
+                    <label for="actions" class="col-md-3 control-label">{{:: 'ver-templates' | translate}} <span class="required">*</span></label>
+                    <div class="col-md-9">
+                      <div data-ng-if="allPolicies.length > 0">
+                        <div class="d-flex align-items-center">
+                          <select id="verification-action"
+                            ng-model="clientEdit.authenticationFlowBindingOverrides['verification-action']"
+                            class="form-control" ng-options="action.actionId as action.alias for action in allPolicies">
+                            <option data-ng-disabled="true" value="">{{:: 'none' | translate}}</option>
+                          </select>
+                          <!-- OSS: workflow gif preview removed (assets served from proprietary cloud CDN, absent on-prem). -->
+                          <button class="text-primary btn p-0 ml-3 bg-light p-1 rounded" data-ng-disabled="!clientEdit.authenticationFlowBindingOverrides['verification-action'] || isTemplatePreviewVisible" tooltip="{{:: 'view-workflow' |translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" data-ng-click="navigateToLink(clientEdit.authenticationFlowBindingOverrides['verification-action'])"><i class="os-icon os-icon-external-link plus-icon m-0"></i></button>
+                        </div>
+                        <small>{{:: 'ver-templates.tooltip' | translate}}</small>
+                      </div>
+                      <div data-ng-if="allPolicies.length === 0">
+                        <p class="mb-1">
+                          {{:: 'ver-templates-not-available' | translate}}
+                        </p>
+                        <p>
+                          <a href="#/realms/{{realm.realm}}/authentication/templates" id="template-click-here">{{::
+                            'click-here' | translate}}</a>
+                          {{:: 'create-one' | translate}}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row clearfix block">
+                    <label class="col-md-3 control-label" for="enableCustomVerificationMsg">{{:: 'enable-custom-message' | translate}}</label>
+                    <div class="col-md-9">
+                      <label for="enableCustomVerificationMsg">
+                         <div class="os-toggler-w" ng-class="{on: clientEdit.attributes.enableCustomVerificationMsg}">
+                             <div class="os-toggler-i" id="enableToggle">
+                                 <div class="os-toggler-pill" ng-model="clientEdit.attributes.enableCustomVerificationMsg" name="enableCustomVerificationMsg" id="enableCustomVerificationMsg" onoffswitch ></div>
+                             </div>
+                         </div>
+                      </label>
+                    </div>
+                    <!-- <kc-tooltip>{{:: 'enableCustomVerificationMsg.tooltip' | translate}}</kc-tooltip> -->
+                 </div>
+                 <div class="form-group row" ng-show="clientEdit.attributes.enableCustomVerificationMsg">
+                     <label class="col-md-3 control-label">{{:: 'success-message' | translate}}</label>
+                     <div class="col-md-8 bg-gray p-3 rounded">
+                         <div class="row">
+                             <label class="col-12 control-label" for="customSuccessVerificationMsgTitle">{{:: 'title' | translate}} <span class="required">*</span></label>
+                             <div class="col-12">
+                                 <input maxlength="60" class="form-control" type="text" id="customSuccessVerificationMsgTitle" name="customSuccessVerificationMsgTitle" data-ng-model="clientEdit.attributes.customSuccessVerificationMsgTitle" autofocus>
+                                 <p class="helper-text" ng-bind-html="helptxt"></p>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <label class="col-12 control-label" for="name">{{:: 'description' | translate}} <span class="required">*</span></label>
+                             <div class="col-12">
+                                 <input maxlength="200" class="form-control" type="text" id="customSuccessVerificationMsgDesc" name="customSuccessVerificationMsgDesc" data-ng-model="clientEdit.attributes.customSuccessVerificationMsgDesc" autofocus>
+                                 <p class="helper-text" ng-bind-html="helptxt"></p>
+                             </div>
+                        </div>
+                     </div>
+                     <button class="text-primary btn p-0 ml-3 bg-light p-1 rounded md-1 h-max" tooltip="{{:: 'view-preview' |translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" data-ng-click="openPreview('verification', 'success')"  >
+                         <i class="os-icon os-icon-eye plus-icon m-0"></i>
+                     </button>
+                 </div>
+                 <div class="form-group row" ng-show="clientEdit.attributes.enableCustomVerificationMsg">
+                     <label class="col-md-3 control-label" >{{:: 'failure-message' | translate}}</label>
+                     <div class="col-md-8 bg-gray p-3 rounded">
+                         <div class="row">
+                             <label class="col-12 control-label" for="customFailureVerificationMsgTitle">{{:: 'title' | translate}} <span class="required">*</span></label>
+                             <div class="col-12">
+                                 <input maxlength="60" class="form-control" type="text" id="customFailureVerificationMsgTitle" name="customFailureVerificationMsgTitle" data-ng-disabled="isInBuilt" data-ng-model="clientEdit.attributes.customFailureVerificationMsgTitle" autofocus>
+                                 <p class="helper-text" ng-bind-html="helptxt"></p>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <label class="col-12 control-label" for="customFailureVerificationMsgDesc">{{:: 'description' | translate}} <span class="required">*</span></label>
+                             <div class="col-12">
+                                 <input maxlength="200" class="form-control" type="text" id="customFailureVerificationMsgDesc" name="customFailureVerificationMsgDesc" data-ng-disabled="isInBuilt" data-ng-model="clientEdit.attributes.customFailureVerificationMsgDesc" autofocus>
+                                 <p class="helper-text" ng-bind-html="helptxt"></p>
+                             </div>
+                         </div>
+                     </div>
+                     <button class="text-primary btn p-0 ml-3 bg-light p-1 rounded md-1 h-max"  tooltip="{{:: 'view-preview' |translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" data-ng-click="openPreview('verification', 'failure')" >
+                         <i class="os-icon os-icon-eye plus-icon m-0"></i>
+                     </button>
+                 </div>
+                </fieldset>
+                <br />
+                <div class="form-group row">
+                  <div class="col-md-12 d-flex flex-row-reverse" data-ng-show="client.access.configure">
+                    <button class="ml-3" kc-save data-ng-disabled="!changed" id="saveBtn">
+                      <span ng-show=" stage === 1 ">{{:: 'save' | translate}}</span>
+                      <div ng-show=" stage === 2 ">
+                        <kc-action-button-loading></kc-action-button-loading>
+                      </div>
+                    </button>
+                    <button id="cancelBtn" kc-reset data-ng-disabled="!changed">
+                      {{:: 'cancel' | translate}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

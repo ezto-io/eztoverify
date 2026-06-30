@@ -1,0 +1,155 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper pb-2">
+                        <h3 class="element-header">
+                            {{ :: 'getting-started' | translate }}
+                        </h3>
+                        <div ng-if="dataLoaded">
+                            <div class="blue-zone-container getting-started-list shadow getting-started-box" data-ng-if="serverInfo.systemInfo.offering == 'CLOUD'" ng-class="{ 'caution-zone-container': licenseInfo.body.days <= 10 && licenseInfo.body.days > 5,'red-bg' : ((licenseInfo.body.days <= 5 && licenseInfo.body.days !== -1) || !licenseInfo.body.days)  }">
+                                <div>
+                                    <h4 class="blue-zone-title">{{:: 'subscription-status' | translate}}</h4>
+                                    <p class="mb-0">{{:: licenseMessage | translate}}</p>
+                                </div>
+                                <div class="gs-action">
+                                    <a href="#/realms/{{realm.realm}}/realm-subscription" class="gs-action-link" id="qv-gettingStarted-viewAccountStatus" >
+                                        <button class="account-status {{isRTL() ? ' slick-prev' : ' slick-next'}} slick-arrow pr-3 blue-zone-title pb-0 position-relative" aria-label="Next" type="button" aria-disabled="false"> {{ :: 'view-account-status' | translate }}  </button>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+                                <div class="gs-card bg-white shadow mb-2 getting-started-box">
+                                    <p class="gs-heading"> {{ :: 'workspace-details' | translate }} </p>
+                                    <p class="gs-desc-key my-1"> {{ :: 'getting-started-workspace-name' | translate }}</p>
+                                    <div class="d-flex gs-desc-value-wrapper">
+                                        <span class="gs-desc-value text-truncate d-inline-block" id="realm-name"> {{ realm.realm }}</span>
+                                        <i class="os-icon os-icon-copy copy-paste-icon cursor-pointer mt-1" id="copy-icon"
+                                            data-ng-click="copytoClipboard(realm.realm)" tooltip-placement="top"
+                                            tooltip="{{tooltipMessage}}" tooltip-trigger="mouseenter">
+                                        </i>
+                                    </div>
+                                    <p class="gs-desc-key my-1"> {{ :: 'getting-started-workspace-url' | translate }} </p>
+                                    <div class="d-flex gs-desc-value-wrapper">
+                                        <span class="gs-desc-value text-truncate d-inline-block"> {{ realm.workspace }}</span>
+                                        <i class="os-icon os-icon-copy copy-paste-icon cursor-pointer mt-1" id="copy-icon"
+                                            data-ng-click="copytoClipboard(realm.workspace)" tooltip="{{tooltipMessage}}" tooltip-placement="top"
+                                            tooltip-trigger="mouseenter">
+                                        </i>
+                                    </div>
+                                </div>
+                                <div data-ng-click="openTab()" class="gs-card bg-white shadow  mb-2 d-flex flex-column justify-content-start position-relative getting-started-box" id="qv-gettingStarted-createApplication">
+                                    <img class="dropdown-avatar-w" ng-src="{{resourceUrl}}/img/sso-getting-started.svg">
+                                    <div class="gs-content grid-text mt-4 mx-0">
+                                        <h5 class="gs-title">{{ :: 'sso-dashboard-title' | translate }}</h5>
+                                        <p class="gs-desc-grid"> {{ :: 'sso-dashboard-desc' | translate }} </p>
+                                    </div>
+                                    <div class="d-flex next-arrow-grid" ng-class="{'rotate-180' : isRTL()}">
+                                        <img ng-src="{{resourceUrl}}/img/right-arrow.svg">
+                                    </div>
+                                </div>
+                                <a href="https://support.ezto.io/support/home" target="_blank" class="gs-card bg-white shadow  mb-2 d-flex flex-column justify-content-start position-relative text-decoration-none getting-started-box" id="qv-gettingStarted-QvSupport">
+                                    <img class="dropdown-avatar-w" ng-src="{{resourceUrl}}/img/gs-help-and-support.svg">
+                                    <div class="gs-content grid-text mt-4 mx-0">
+                                        <h5 class="gs-title">{{ ::'help-and-support-title' | translate }}</h5>
+                                        <p class="gs-desc-grid"> {{ :: 'help-and-support-desc' | translate | replaceWithVariant:serverInfo.variant}} </p>
+                                    </div>
+                                    <div class="d-flex next-arrow-grid" ng-class="{'rotate-180' : isRTL()}">
+                                        <img ng-src="{{resourceUrl}}/img/right-arrow.svg">
+                                    </div>
+                                </a>
+                            </div>
+                            <a href="#/realms/{{realm.realm}}/marketplace/templates/sso-integrations" class="gs-action-link">
+                                <div class="getting-started-list shadow mt-3" id="app_list">
+                                    <div class="getting-started-box" data-title="{{ :: 'intro-qv-application-title' | translate }}"  data-intro="{{ :: 'intro-qv-application' | translate | replaceWithVariant:serverInfo.variant}}">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <div class="icon-w">
+                                                    <img ng-src="{{resourceUrl}}/img/sso-marketplace.svg">
+                                                </div>
+                                            </div>
+                                            <div class="gs-content">
+                                                <h5 class="gs-title">{{ :: 'install-sso-title' | translate}} </h5>
+                                                <p class="gs-desc w-80">{{ :: 'install-sso-desc' | translate}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex next-arrow" ng-class="{'rotate-180' : isRTL()}">
+                                            <img class="w-1-5rem" ng-src="{{resourceUrl}}/img/right-arrow.svg">
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a href="#/realms/{{realm.realm}}/email/providers" data-ng-if="workspaceSetupStatus.enabledOwnEmailProvider" class="gs-action-link" id="qv-gettingStarted-addEmailProvider" ng-click="openSupportWidget( 'add-email-article-id' | translate )">
+                                <div class="getting-started-list shadow">
+                                    <div class="getting-started-box" data-title="{{ :: 'intro-add-email-provider-title' | translate }}"  data-intro="{{ :: 'intro-add-email-provider' | translate }}">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <div class="icon-w">
+                                                    <img ng-src="{{resourceUrl}}/img/gs-email-provider.svg">
+                                                </div>
+                                            </div>
+                                            <div class="gs-content">
+                                                <h5 class="gs-title"> {{ ::'add-emailprov-title' | translate }} </h5>
+                                                <p class="gs-desc w-80"> {{ ::'add-emailprov-desc' | translate }} </p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex next-arrow" ng-class="{'rotate-180' : isRTL()}">
+                                            <img class="w-1-5rem" ng-src="{{resourceUrl}}/img/right-arrow.svg">
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a href="#/realms/{{realm.realm}}/sms/providers" data-ng-if="workspaceSetupStatus.enabledOwnSmsProvider" class="gs-action-link" id="qv-gettingStarted-addSmsProvider" ng-click="openSupportWidget( 'add-sms-article-id' | translate)">
+                                <div class="getting-started-list shadow"  data-title="{{ :: 'intro-add-sms-provider-title' | translate }}" data-intro="{{ :: 'intro-add-sms-provider' | translate }}">
+                                    <div class="getting-started-box">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <div class="icon-w">
+                                                    <img ng-src="{{resourceUrl}}/img/gs-sms-provider.svg">
+                                                </div>
+                                            </div>
+                                            <div class="gs-content">
+                                                <h5 class="gs-title"> {{ ::'add-smsprov-title' | translate }} </h5>
+                                                <p class="gs-desc w-80"> {{ ::'add-smsprov-desc' | translate }} </p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex next-arrow" ng-class="{'rotate-180' : isRTL()}">
+                                            <img class="w-1-5rem" ng-src="{{resourceUrl}}/img/right-arrow.svg">
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a href="#/realms/{{realm.realm}}/dashboard-admins" class="gs-action-link" id="qv-gettingStarted-addOtherAdmin" ng-click="openSupportWidget( 'add-tenant-admin-article-id' | translate)">
+                                <div class="getting-started-list shadow"  data-title="{{ :: 'intro-add-team-members-title' | translate }}" data-intro="{{ :: 'intro-add-team-members' | translate }}">
+                                    <div class="getting-started-box">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <div class="icon-w">
+                                                    <img ng-src="{{resourceUrl}}/img/gs-add-member.svg">
+                                                </div>
+                                            </div>
+                                            <div class="gs-content">
+                                                <h5 class="gs-title"> {{ ::'add-admin-title' | translate }} </h5>
+                                                <p class="gs-desc">{{ ::'add-admin-desc' | translate }} </p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex next-arrow" ng-class="{'rotate-180' : isRTL()}">
+                                            <img class="w-1-5rem" ng-src="{{resourceUrl}}/img/right-arrow.svg">
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="!(dataLoaded)" class="col-12">
+                    <kc-loader loadertype="loaderTypeName" ></kc-loader>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,52 @@
+package io.ezto.license.templates;
+
+import io.ezto.bg.core.IEmailTemplate;
+
+import java.util.Map;
+
+public class AccountRestoreTemplate extends IEmailTemplate {
+
+    private String toEmail;
+    private Map<String, String> placeHolders;
+    @Override
+    public String getTemplatePath() {
+        return "accountrestore.ftl";
+    }
+
+    @Override
+    public String getSubject() {
+        return "account_restore_subject";
+    }
+
+    @Override
+    public void setSubject(String subject) {
+        // NOP
+    }
+
+    @Override
+    public String getId() {
+        return "account_restore";
+    }
+
+    @Override
+    public String getToEmail() {
+        return toEmail;
+    }
+
+    @Override
+    public IEmailTemplate setToEmail(String toEmail) {
+        this.toEmail = toEmail;
+        return this;
+    }
+
+    @Override
+    public IEmailTemplate setPlaceHolders(Map<String, String> params) {
+        this.placeHolders = params;
+        return this;
+    }
+
+    @Override
+    public Map<String, String> getPlaceHolders() {
+        return this.placeHolders;
+    }
+}

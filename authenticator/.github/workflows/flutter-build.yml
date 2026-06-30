@@ -1,0 +1,156 @@
+name: Flutter Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      flavor_name:
+        description: "Flavor name"
+        required: true
+        default: "ezto_prod"
+        type: choice
+        options:
+          - ezto_prod
+          - ezto_dev
+      build_type:
+        description: "Build type"
+        required: true
+        default: "android"
+        type: choice
+        options:
+          - android
+          - ios
+          - all
+
+env:
+  FLAVOR_NAME: ${{ github.event.inputs.flavor_name || 'ezto_prod' }}
+  BUILD_TYPE: ${{ github.event.inputs.build_type || 'android' }}
+
+jobs:
+  build-android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.build_type == 'android' || github.event.inputs.build_type == 'all' || github.event_name != 'workflow_dispatch' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate intl
+        run: |
+          flutter pub global activate intl_utils
+          flutter pub global run intl_utils:generate
+
+      - name: Write keystore file
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > branding/lib/branding/config/flavor/${{ env.FLAVOR_NAME }}/keystore/android_keystore.keystore
+
+      - name: Write google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" > branding/lib/branding/config/flavor/${{ env.FLAVOR_NAME }}/push/google-services.json
+
+      - name: Generate flavor
+        run: |
+          cd branding
+          dart run bin/branding.dart --generate --flavor=${{ env.FLAVOR_NAME }}
+          cd ..
+
+      - name: Build APK
+        env:
+          EZTO_PROD_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          EZTO_PROD_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          EZTO_PROD_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          EZTO_DEV_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          EZTO_DEV_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          EZTO_DEV_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: flutter build apk
+
+      - name: Build AAB
+        env:
+          EZTO_PROD_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          EZTO_PROD_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          EZTO_PROD_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          EZTO_DEV_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          EZTO_DEV_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          EZTO_DEV_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: flutter build appbundle
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.aab
+          path: build/app/outputs/bundle/release/app-release.aab
+
+  build-ios:
+    name: Build iOS
+    runs-on: macos-latest
+    if: ${{ github.event.inputs.build_type == 'ios' || github.event.inputs.build_type == 'all' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate intl
+        run: |
+          flutter pub global activate intl_utils
+          flutter pub global run intl_utils:generate
+
+      - name: Write GoogleService-Info.plist
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}" > branding/lib/branding/config/flavor/${{ env.FLAVOR_NAME }}/push/GoogleService-Info.plist
+
+      - name: Generate flavor
+        run: |
+          cd branding
+          dart run bin/branding.dart --generate --flavor=${{ env.FLAVOR_NAME }}
+          cd ..
+
+      - name: Install pods
+        run: |
+          cd ios
+          pod install --repo-update
+          cd ..
+
+      - name: Build IPA
+        run: |
+          flutter build ipa --release \
+            --export-options-plist=ios/ExportOptions.plist
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.ipa
+          path: build/ios/ipa/*.ipa

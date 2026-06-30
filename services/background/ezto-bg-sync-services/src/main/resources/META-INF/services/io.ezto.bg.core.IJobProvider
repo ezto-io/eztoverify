@@ -1,0 +1,4 @@
+io.ezto.sync.job.GoogleSyncJobProvider
+io.ezto.sync.job.OktaSyncJobProvider
+io.ezto.sync.job.DuoSyncJobProvider
+io.ezto.sync.job.AzureSyncJobProvider

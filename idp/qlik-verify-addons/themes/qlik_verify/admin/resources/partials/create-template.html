@@ -1,0 +1,50 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/authentication/choose/flow">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-chooseflow' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="user-details-top">
+                            <h3>{{templatetype | capitalize}}</h1>
+                            <button class="btn btn-primary delete-btn black-0-border-button" 
+                            data-ng-click="install()">{{:: 'save' | translate}} <i class="os-icon os-icon-arrow-2-right margin-left-10"></i></button>
+                        </div>
+                        <p class="helper-text">{{:: 'customize-the' | translate}} {{ templatetype }} {{:: 'flow-of-applications' | translate}}</p>
+                        <br><br>
+                        <div class="element-box">
+                            <div class="add-action-flow-parent-container">
+                                <div class="crt-temp-sub-container">
+                                    <div class="crt-temp-scroll">
+                                        <div id="drawflow" ondrop="angular.element(this).scope().dropComp(event)"  ondragover="angular.element(this).scope().allowDropComp(event)">
+                                        </div>
+                                        <div class="auth-exec-playground">
+                                            <div class="auth-execs-container"> 
+                                                <div class="action-list">
+                                                                <h6>{{:: 'add-execution' | translate}}</h6>
+                                                            </header>
+                                                            <div class="list-container">
+                                                                <div class="single-action-container drag-drawflow" ng-repeat="authenticatorProvider in providers" draggable="true" ondragstart="angular.element(this).scope().dragComp(event)" data-id="{{authenticatorProvider.id}}" data-node="{{authenticatorProvider.displayName}}">
+                                                                    <i class="os-icon os-icon-code margin-right-5px"></i><span> {{:: authenticatorProvider.displayName | translate}}</span>
+                                                                </div> 
+                                                            </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

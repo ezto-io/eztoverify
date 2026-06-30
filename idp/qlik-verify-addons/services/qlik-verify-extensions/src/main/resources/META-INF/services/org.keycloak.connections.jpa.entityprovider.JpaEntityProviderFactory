@@ -1,0 +1,6 @@
+com.qlikverify.extensions.admin.controllers.hook.jpa.HookJpaEntityProviderFactory
+com.qlikverify.extensions.admin.controllers.billingAddress.jpa.BillingAddressEntityProviderFactory
+com.qlikverify.extensions.admin.controllers.ssodashboard.jpa.SSODashboardEntityProviderFactory
+com.qlikverify.extensions.admin.controllers.workflows.jpa.WorkflowsEntityProviderFactory
+com.qlikverify.extensions.admin.controllers.exchangeRates.jpa.ExchangeRatesEntityProviderFactory
+com.qlikverify.extensions.admin.controllers.apiconnector.jpa.ApiConnectorProvider

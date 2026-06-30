@@ -1,0 +1,50 @@
+<div id="close" data-ng-click="dismissPanel()">
+    <i class="os-icon os-icon-close"></i>
+</div>
+<p id="header2">{{:: 'settings' | translate}}</p>
+<div id="divisionthing"></div>
+<form class="form-horizontal mt-5" name="realmForm" novalidate >
+    <div class="proplist">
+        <div class="form-group row">
+            <label class="col-md-4 control-label" for="enabled">{{:: 'enable-tenant-events' | translate}}</label>
+            <div class="col-md-8">
+                <label >
+                    <div class="os-toggler-w" ng-class="{on: eventsConfig.adminEventsEnabled}">
+                        <div class="os-toggler-i">
+                            <div class="os-toggler-pill" ng-model="eventsConfig.adminEventsEnabled" name="enabled"
+                                id="enabled" onoffswitch>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-buttons-w border-top-0 mb-4 mt-2">
+            <div class="col-md-12 d-flex flex-row-reverse pr-0">
+                <button data-kc-save data-ng-disabled="!changed">{{:: 'save' |
+                    translate}}</button>
+            </div>
+        </div>
+        <div data-ng-if="eventsLength.adminLogs" class="position-relative">
+            <div id="divisionthing"></div>
+            <p id="header2" class="pt-4">{{:: 'danger-zone' | translate}}</p>
+            <div class="mt-2">
+                <ul class="danger-zone-list">
+                    <li>
+                        <div class="danger-zone-container">
+                            <div>
+                                <h4 class="danger-zone-title">{{:: 'delete-admin-events-title' | translate}}</h4>
+                                <p>{{:: 'delete-tenant-content' | translate}}</p>
+                            </div>
+                            <div class="dz-pull-right">
+                                <button class="delete-btn" type="submit" data-ng-click="clearEvents()">{{:: 'clear' |
+                                    translate}}</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</form>

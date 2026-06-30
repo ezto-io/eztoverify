@@ -1,0 +1,75 @@
+<div class="auth-config-container pb-3 ng-scope">
+    <div class="exec-logo-container">
+        <img height="30px" width="30px" data-ng-src="{{resourceUrl}}/themes/img/Twilio.png" alt="logo">
+    </div>
+    <div class="exec-title"> 
+        <p class="font-size-normal">{{::'twilio-settings'|translate}}</p>
+    </div>
+    <div id="close" data-ng-click="dismissPanel()" class="mt-0">
+        <i class="os-icon os-icon-close"></i>
+    </div>
+</div>
+<div id="divisionthing"></div>
+<form class="form-horizontal" name="realmForm" novalidate kc-read-only="!access.manageRealm">
+    <!-- Twilio Provider-->
+    <div class="pt-4">
+        <div class="form-group row clearfix">
+            <label class="col-xl-4 control-label" for="smsUrl">
+                <a>{{::'sms-gateway-url'|translate}} 
+                    <span class="required"> *</span> 
+                 </a></label>
+            <div class="col-xl-8">
+                <input class="form-control" id="smsUrl" type="text" ng-model="twilio.smsurl" placeholder="{{:: 'enter-twilio-sms-url-txt' | translate}}" required>
+                <p class="helper-text mt-0" ng-bind-html="'twilioSmsDocHlptxt' | translate"></p>
+            </div>
+        </div>
+        <div class="form-group row clearfix">
+            <label class="col-xl-4 control-label" for="callUrl"><a>{{::'call-gateway-url'|translate}}</a></label>
+            <div class="col-xl-8">
+                <input class="form-control" id="callUrl" type="text" ng-model="twilio.callurl" placeholder="{{:: 'enter-twilio-call-url-txt' | translate}}">
+                <p class="helper-text mt-0" ng-bind-html="'twilioVoiceDocHlptxt' | translate"></p>            
+            </div>
+            <kc-tooltip>{{::'twilio-tooltip'|translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row clearfix">
+            <label class="col-xl-4 control-label" for="phoneNumber">{{::'phone-number'|translate}} <span class="required"> *</span></label>
+            <div class="col-xl-8">
+                <input class="form-control" id="phoneNumber" type="tel" ng-model="twilio.from"
+                    placeholder="{{:: 'twilio-account-phonenumber' | translate}}" pattern="^\+?[0-9]*$" oninput="this.value = this.value.replace(/[^\+?^0-9]/g, '').replace(/(\..*)\./g, '$1');" required>
+            </div>
+        </div>
+        <div class="form-group row clearfix">
+            <label class="col-xl-4 control-label" for="accountSid">{{::'account-sid'|translate}} <span class="required"> *</span></label>
+            <div class="col-xl-8">
+                <input class="form-control" id="accountSid" type="text" ng-model="twilio.accountsid"
+                    placeholder="{{::'account-sid' | translate}}" required>
+            </div>
+        </div>
+        <div class="form-group row clearfix">
+            <label class="col-xl-4 control-label" for="authToken">{{::'auth-token'|translate}} <span class="required"> *</span></label>
+            <div class="col-xl-8">
+                <div class="input-group" id="show_hide_password">
+                    <input class="form-control social-password" id="authToken" type="password" ng-model="twilio.authtoken"
+                        placeholder="{{:: 'auth-token' | translate}}" required />
+                        <div class="input-group-prepend hide_show">
+                            <a href="" data-ng-click="hideShowPassword()"><span class="input-group-text tio hidden_outlined bottom-auto r-0"></span></a>
+                        </div>
+            </div>
+        </div>
+        <div class="form-buttons-w border-top-0" data-ng-show="access.manageRealm">
+            <div class="col-xl-12 col-md-offset-2 pl-0">
+                <button id="testSMSBtn" class="btn btn-secondary mr-2 mb-2" data-ng-disabled="!twilioTestConnectionEnabled" data-ng-click="testConnection()">
+                    {{:: 'test-connection' | translate}}
+                </button>
+                <button class="mr-2 ml-0 mb-2 btn btn-primary" type="submit" data-ng-click="save()" data-ng-disabled="!twilioSaveEnabled">
+                    <span ng-show=" stage === 1 " >{{:: 'save' | translate}}</span>
+                    <div ng-show=" stage === 2 ">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span>{{:: 'loading' | translate}}</span>
+                    </div>
+                </button>
+                <button class="ml-0 mb-2" data-kc-reset>{{:: 'cancel' | translate}}</button>
+            </div>
+        </div>
+    </div>
+</form>

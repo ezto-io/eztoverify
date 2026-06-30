@@ -1,0 +1,456 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li>
+                    <a href="#/realms/{{realm.realm}}/marketplace/templates/{{template.category | lowercase}}" id="backToMarketplace" class="ng-binding">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-marketplace' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div>
+                <div class="market-dtl-header-container mb-4">
+                    <div class="market-dtl-logo-container" >
+                        <img class="img-fluid" data-ng-src="{{template.logo}}" alt="logo" data-ng-if="template.logo && template.category !== 'Authentication' && template.category !== 'Passwordless' ">
+                        <img class="img-fluid" data-ng-src="{{realm.mode === 'wiam' ? template.logo.replaceAll('logo.svg','logo-wiam.svg') : template.logo.replaceAll('logo.svg','logo-ciam.svg') }}" alt="logo" data-ng-if="template.logo && (template.category === 'Authentication' || template.category === 'Passwordless' ) " >
+                    </div>
+                    <div class="market-dtl-content-container" >
+                            <div class="market-dtl-title-btn-container" >
+                                <h1 class="market-dtl-title" > {{:: template.title | translate}} </h1>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div data-ng-if="!template.constraints.success" class="p-2 helper-text note-container-2 mt-0">
+                <span class="os-icon os-icon-alert-triangle note-icon-container-2"></span>
+                <p class="help-text"> {{ :: 'mp-constraint-warning-txt-p1' | translate }} {{ template.constraints.data.length | numToWords}} {{ :: 'mp-constraint-warning-txt-p2' | translate }}</p>
+                <a data-ng-if='template.constraints.data[0].redirectUrl' class="ml-1" href="" id="showDetailsBtn" data-ng-click="openConstraintDetail(template.constraints.data)">{{ :: 'show-details-txt' | translate}}</a>
+            </div>
+           <kc-tabs-market-place></kc-tabs-market-place>
+            <div class="row mt-4">
+                <div class="col-lg-8" ng-class="{'col-lg-12' : isImplemented == false }">
+                    <div class="element-wrapper">
+                        <div class="tab-content" data-ng-if="isImplemented">
+                            <div class="tab-pane" ng-class="{active : initialCurrentTab === 'tab_overview'}" id="tab_overview">
+                                <div class="element-box p-6">
+                                    <div data-ng-if="overviewDoc" class='mdPreview mdTrigger' url='{{overviewDoc}}' data-ng-click="mdTrigger()">  
+                                    </div>
+                                    <div class="element-box-medium top-align" ng-show="!overviewDoc">
+                                        <div class="no-entry-svg">
+                                            <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'no-apps.svg' : 'no-apps-ciam.svg'}}" alt="no-results-svg"
+                                                class="opacity-40 no-entry-display" />
+                                            <p class="no-results-msg no-entry-display mt-2">{{:: 'no-data-found' | translate}}</p>
+                                        </div>
+                                    </div>
+                                    <div data-ng-if="overviewDoc" class="element-box-medium top-align d-none" id="mdFileNotFoundOverview">
+                                        <div class="no-entry-svg">
+                                            <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'no-apps.svg' : 'no-apps-ciam.svg'}}" alt="no-results-svg"
+                                                class="opacity-40 no-entry-display" />
+                                            <p class="no-results-msg no-entry-display mt-2">{{:: 'no-data-found' | translate}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" ng-class="{active : initialCurrentTab === 'tab_install'}" id="tab_install">
+                                <div class="element-box p-6">
+                                    <div data-ng-if="installDoc" class='mdPreview mdTrigger' url='{{installDoc}}' data-ng-click="mdTrigger()">  
+                                    </div>
+                                    <div class="element-box-medium top-align" ng-show="!installDoc">
+                                        <div class="no-entry-svg">
+                                            <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'no-apps.svg' : 'no-apps-ciam.svg'}}" alt="no-results-svg"
+                                                class="opacity-40 no-entry-display" />
+                                            <p class="no-results-msg no-entry-display mt-2">{{:: 'no-data-found' | translate}}</p>
+                                        </div>
+                                    </div>
+                                    <div data-ng-if="overviewDoc" class="element-box-medium top-align d-none" id="mdFileNotFoundInstallation">
+                                        <div class="no-entry-svg">
+                                            <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'no-apps.svg' : 'no-apps-ciam.svg'}}" alt="no-results-svg"
+                                                class="opacity-40 no-entry-display" />
+                                            <p class="no-results-msg no-entry-display mt-2">{{:: 'no-data-found' | translate}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="tab-pane active" ng-class="{active : initialCurrentTab === 'tab_flow' && currentTab === 'tab_onboarding'}" data-ng-if="initialCurrentTab === 'tab_flow' && currentTab === 'tab_onboarding'" id="tab_onboarding">
+                                <div data-ng-show="initialCurrentTab === 'tab_flow'">
+                                    <kc-tabs-market-place-flow></kc-tabs-market-place-flow>
+                                </div>
+                                <div class="element-box p-0">
+                                    <div data-ng-show="template.onboarding" class="property-single">
+                                        <div class="property-info-w">
+                                            <div class="property-info-main border-left-0 w-100">
+                                                <div class="property-description mt-0 mb-4 helper-text">
+                                                    {{:: template.onboarding.templateDescription | translate}}
+                                                </div>
+                                                <!-- <div class="property-section mb-3"
+                                                    data-ng-show="template.onboarding.thirdPartyProviders.length > 0">
+                                                    <div class="property-section-header border-bottom-0 border-top-0 pb-2 pt-2">
+                                                        3rd Party Providers
+                                                    </div>
+                                                    <div class="property-section-body py-0">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <ul ng-repeat="provider in template.onboarding.thirdPartyProviders">
+                                                                    <li>
+                                                                        <a href="{{provider.websiteUrl}}"
+                                                                            target="_blank"><small>{{provider.name}}</small></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                                                <div class="property-section" data-ng-show="template.onboarding.howItWorks">
+                                                    <div class="property-section-header">
+                                                        {{:: 'how-it-works' | translate}}
+                                                    </div>
+                                                    <div class="property-section-body py-0">
+                                                        <div class="row">
+                                                            <iframe width="560" height="315" ng-src="{{template.onboarding.howItWorks}}"
+                                                                title="YouTube video player" frameborder="0"
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allowfullscreen></iframe>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="property-section" data-ng-show="template.onboarding.templateFlow">
+                                                    <div class="property-section-header border-bottom-0 pt-0 pb-0 border-top-0">
+                                                        {{:: 'flow' | translate}}
+                                                    </div>
+                                                    <div class="property-section-body py-0">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class="element-wrapper market-temp-height pb-0"
+                                                                    data-title="{{:: 'visualize-flow' | translate}}"
+                                                                    data-intro="{{:: 'intro-market-default-onboarding-flows' | translate}}">
+                                                                    <kc-draw-flow kc-template-flow="template.onboarding.templateFlow">
+                                                                    </kc-draw-flow>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane active" ng-class="{active :  initialCurrentTab === 'tab_flow' && currentTab == 'tab_login'}" data-ng-if="initialCurrentTab === 'tab_flow' && currentTab == 'tab_login'" id="tab_login">
+                                <div data-ng-show="initialCurrentTab === 'tab_flow'">
+                                    <kc-tabs-market-place-flow></kc-tabs-market-place-flow>
+                                </div>
+                                <div class="element-box p-0">
+                                    <div data-ng-show="template.login" class="property-single">
+                                        <div class="property-info-w">
+                                            <div class="property-info-main border-left-0 w-100">
+                                                <div class="property-description mt-0 mb-4 helper-text">
+                                                    {{:: template.login.templateDescription | translate}}
+                                                </div>
+                                                <!-- <div class="property-section mb-3" data-ng-show="template.login.thirdPartyProviders.length > 0">
+                                                    <div class="property-section-header border-bottom-0 border-top-0 pb-2 pt-2">
+                                                        3rd Party Providers
+                                                    </div>
+                                                    <div class="property-section-body py-0">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <ul ng-repeat="provider in template.login.thirdPartyProviders">
+                                                                    <li>
+                                                                        <a href="{{provider.websiteUrl}}"
+                                                                            target="_blank"><small>{{provider.name}}</small></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                                                <div class="property-section" data-ng-show="template.login.howItWorks">
+                                                    <div class="property-section-header">
+                                                        {{:: 'how-it-works' | translate}}
+                                                    </div>
+                                                    <div class="property-section-body py-0">
+                                                        <div class="row">
+                                                            <iframe width="560" height="315" ng-src="{{template.login.howItWorks}}"
+                                                                title="YouTube video player" frameborder="0"
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allowfullscreen></iframe>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="property-section" data-ng-show="template.login.templateFlow">
+                                                    <div class="property-section-header border-bottom-0 pt-0 pb-0 border-top-0">
+                                                        {{:: 'flow' | translate}}
+                                                    </div>
+                                                    <div class="property-section-body py-0">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class="element-wrapper market-temp-height pb-0"
+                                                                    data-step='{{!template.onboarding && template.login && currentTab === "tab_login"? 5 : 0}}'
+                                                                    data-title="{{:: 'visualize-flow' | translate}}"
+                                                                    data-intro="{{:: 'intro-market-default-login-flows' | translate}}">
+                                                                    <kc-draw-flow kc-template-flow="template.login.templateFlow">
+                                                                    </kc-draw-flow>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane active" ng-class="{active :  initialCurrentTab === 'tab_flow' && currentTab == 'tab_recovery'}" data-ng-if="initialCurrentTab === 'tab_flow' && currentTab === 'tab_recovery'" id="tab_recovery">
+                                <div data-ng-show="initialCurrentTab === 'tab_flow'">
+                                    <kc-tabs-market-place-flow></kc-tabs-market-place-flow>
+                                </div>
+                                <div class="element-box p-0">
+                                    <div data-ng-show="template.recovery" class="property-single">
+                                        <div class="property-info-w">
+                                            <div class="property-info-main border-left-0 w-100">
+                                                <div class="property-description mt-0 mb-4 helper-text">
+                                                    {{:: template.recovery.templateDescription | translate}}
+                                                </div>
+                                                <!-- <div class="property-section mb-3" data-ng-show="template.recovery.thirdPartyProviders.length > 0">
+                                                    <div class="property-section-header border-bottom-0 border-top-0 pb-2 pt-2">
+                                                        3rd Party Providers
+                                                    </div>
+                                                    <div class="property-section-body py-0">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <ul ng-repeat="provider in template.recovery.thirdPartyProviders">
+                                                                    <li>
+                                                                        <a href="{{provider.websiteUrl}}"
+                                                                            target="_blank"><small>{{provider.name}}</small></a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                                                <div class="property-section" data-ng-show="template.recovery.howItWorks">
+                                                    <div class="property-section-header">
+                                                        {{:: 'how-it-works' | translate}}
+                                                    </div>
+                                                    <div class="property-section-body py-0">
+                                                        <div class="row">
+                                                            <iframe width="560" height="315" ng-src="{{template.recovery.howItWorks}}"
+                                                                title="YouTube video player" frameborder="0"
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allowfullscreen></iframe>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="property-section" data-ng-show="template.recovery.templateFlow">
+                                                    <div class="property-section-header border-bottom-0 pt-0 pb-0 border-top-0">
+                                                        {{:: 'flow' | translate}}
+                                                    </div>
+                                                    <div class="property-section-body py-0">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class="element-wrapper market-temp-height pb-0"
+                                                                    data-step='{{!template.onboarding && !template.login && template.recovery && currentTab === "tab_recovery" ? 5 : 0}}'
+                                                                    data-title="{{:: 'visualize-flow' | translate}}"
+                                                                    data-intro="{{:: 'intro-market-default-recovery-flows' | translate}}">
+                                                                    <kc-draw-flow kc-template-flow="template.recovery.templateFlow">
+                                                                    </kc-draw-flow>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane active" ng-class="{active :  initialCurrentTab === 'tab_flow' && currentTab == 'tab_redirect'}"
+                                data-ng-if="initialCurrentTab === 'tab_flow' && currentTab === 'tab_redirect'" id="tab_redirect">
+                                <div data-ng-show="initialCurrentTab === 'tab_flow'">
+                                    <kc-tabs-market-place-flow></kc-tabs-market-place-flow>
+                                </div>
+                                <div class="element-box p-0">
+                                    <div data-ng-show="template.redirect" class="property-single">
+                                        <div class="property-info-w">
+                                            <div class="property-info-main border-left-0 w-100">
+                                                <div class="property-description mt-0 mb-4 helper-text">
+                                                    {{:: template.redirect.templateDescription | translate}}
+                                                </div>
+                                                <!-- <div class="property-section mb-3" data-ng-show="template.recovery.thirdPartyProviders.length > 0">
+                                                                                <div class="property-section-header border-bottom-0 border-top-0 pb-2 pt-2">
+                                                                                    3rd Party Providers
+                                                                                </div>
+                                                                                <div class="property-section-body py-0">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-6">
+                                                                                            <ul ng-repeat="provider in template.recovery.thirdPartyProviders">
+                                                                                                <li>
+                                                                                                    <a href="{{provider.websiteUrl}}"
+                                                                                                        target="_blank"><small>{{provider.name}}</small></a>
+                                                                                                </li>
+                                                                                            </ul>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div> -->
+                                                <div class="property-section" data-ng-show="template.redirect.howItWorks">
+                                                    <div class="property-section-header">
+                                                        {{:: 'how-it-works' | translate}}
+                                                    </div>
+                                                    <div class="property-section-body py-0">
+                                                        <div class="row">
+                                                            <iframe width="560" height="315" ng-src="{{template.redirect.howItWorks}}"
+                                                                title="YouTube video player" frameborder="0"
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allowfullscreen></iframe>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="property-section" data-ng-show="template.redirect.templateFlow">
+                                                    <div class="property-section-header border-bottom-0 pt-0 pb-0 border-top-0">
+                                                        {{:: 'flow' | translate}}
+                                                    </div>
+                                                    <div class="property-section-body py-0">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class="element-wrapper market-temp-height pb-0"
+                                                                    data-step='{{!template.onboarding && !template.login && !template.recovery && template.redirect && currentTab === "tab_redirect" ? 5 : 0}}'
+                                                                    data-title="{{:: 'visualize-flow' | translate}}"
+                                                                    data-intro="{{:: 'intro-market-default-redirect-flows' | translate}}">
+                                                                    <kc-draw-flow kc-template-flow="template.redirect.templateFlow">
+                                                                    </kc-draw-flow>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-content" data-ng-if="!isImplemented">
+                            <div class="tab-pane active">
+                                <div class="element-box p-6">
+                                    <div class="element-box-medium top-align">
+                                        <div class="no-entry-svg">
+                                            <img data-ng-src="{{resourceUrl}}/themes/img/developer.svg" alt="Not-implemented"
+                                                class="opacity-40 no-entry-display" />
+                                            <p class="no-results-msg no-entry-display mt-2 font-s-24 font-weight-bold"> {{:: 'coders-at-work' | translate}} </p>
+                                            <h6 class="font-weight-normal text-center"> - {{:: 'coming-soon' | translate}} - </h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-4" data-ng-if="isImplemented">
+                    <div class="element-wrapper">
+                        <div class="element-box">
+                            <div class="row plugin-info">
+                                <button data-ng-if="!template.isUnderTrial" class="btn btn-primary w-100 mb-4" ng-class="{ 'installed': template.isInstalled  }" data-step='{{template.onboarding ? 3 : 0}}'
+                                            data-title="{{:: 'intro-market-install-flows-title' | translate}}"
+                                            id="{{template.title.toLowerCase().replaceAll(' ','-')}}-download-btn"
+                                            data-intro="{{:: 'intro-market-install-flows' | translate}}" 
+                                            data-ng-click="!template.isInstalled && install()"
+                                            data-ng-disabled="!template.constraints.success || (enableInstallBtn || stage === 2)">
+                                            <span data-ng-show="stage === 1">
+                                                <em ng-if="template.isInstalled" class="os-icon os-icon-check-circle font-weight-600 c-white "></em>
+                                                <span ng-if="!template.isInstalled" >{{ :: template.buttonNameBeforeInstall |translate}} </span>
+                                                <span ng-if="template.isInstalled" class="c-white">{{ :: template.buttonNameAfterInstall |translate}} </span>
+                                                <em ng-if="!template.isInstalled" class="os-icon os-icon-arrow-2-right margin-left-10" ng-class="{'rotate-180' : isRTL()}"></em>
+                                            </span>
+                                            <div ng-show=" stage === 2 ">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </div>
+                                </button>
+                                <button data-ng-if="template.showTrialOption && template.showTrialDays > 0 && !template.isInstalled" class="btn btn-secondary w-100 mb-4 ml-0" ng-class="{ 'installed': template.isUnderTrial  }"
+                                            data-ng-click="takeTrial(template.isUnderTrial)"
+                                            id="{{template.title.toLowerCase().replaceAll(' ','-')}}-trail-btn"
+                                            data-ng-disabled="!template.constraints.success || (enableTrialBtn || takeTrialBtnStage === 2)">
+                                            <span data-ng-show="takeTrialBtnStage === 1">
+                                                <span ng-if="!template.isUnderTrial" >{{:: 'free-trial-partners-text' | translate}} {{template.showTrialDays}} {{:: 'days-text' | translate}}  </span>
+                                                <span ng-if="template.isUnderTrial" class="c-white">{{:: 'upgrade' | translate}} <br/>
+                                                    <small>{{:: 'trial-ends-in' | translate}} {{template.showTrialDays}} {{:: 'days-text' | translate}}</small>
+                                                </span>
+                                            </span>
+                                            <div ng-show=" takeTrialBtnStage === 2 ">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </div>
+                                </button>
+                                <a data-ng-if="template.arrange1to1Meetings" id="{{template.title.toLowerCase().replaceAll(' ','-')}}-bookMeeting-btn" class="btn btn-grey w-100 mb-4 ml-0" href="{{template.meetingLink}}" target="_blank">
+                                    {{:: 'book-meeting' | translate}}
+                                </a>
+                                <div class="col-12 mb-4">
+                                    <div class="mb-2 font-weight-bold" >
+                                        <i class="os-icon os-icon-info mr-2"></i><span class="market-dlt-category">{{ :: 'marketplace-details' |
+                                            translate}}</span>
+                                    </div>
+                                    <p class="mb-0">{{:: template.description | translate | replaceWithVariant:serverInfo.variant}}</p>
+                                </div>
+                                <div class="col-12 mb-4">
+                                    <div class="mb-2 font-weight-bold" >
+                                        <i class="os-icon os-icon os-icon-ui-34 mr-2"></i><span class="market-dlt-category">{{ :: 'marketplace-published' |
+                                            translate}}</span>
+                                    </div>
+                                    <p class="font-weight-bold mb-0">{{template.author | uppercase}}</p>
+                                </div>
+                                <div class="col-12 mb-4">
+                                    <div class="mb-2 font-weight-bold" >
+                                        <i class="os-icon os-icon-grid-squares-22 mr-2"></i><span class="market-dlt-category">{{ :: 'marketplace-category' |
+                                            translate}}</span>  
+                                    </div>
+                                    <p class="font-weight-bold mb-0">{{:: template.category | translate}}</p>
+                                </div>
+                                <div class="col-12" ng-if="template.serviceLocations">
+                                    <div class="mb-2 font-weight-bold" >
+                                        <i class="os-icon os-icon-tag mr-2"></i><span class="market-dlt-category">{{:: 'marketplace-service-locations' | translate}}</span>
+                                    </div>
+                                    <div>
+                                        <code  class="user-id-code p-2 d-inline-block mb-2 marketplace-tag ml-0 mr-2"  ng-repeat="serviceLocation in template.serviceLocations">
+                                            {{serviceLocation}}
+                                        </code>
+                                    </div>
+                                </div>
+                                <div class="col-12" ng-if="template.keywords.length > 0">
+                                    <div class="mb-2 font-weight-bold" >
+                                        <i class="os-icon os-icon-tag mr-2"></i><span class="market-dlt-category">{{:: 'tags' | translate}}</span>
+                                    </div>
+                                    <div>
+                                        <code  class="user-id-code p-2 d-inline-block mb-2 marketplace-tag ml-0 mr-2"  ng-repeat="keywords in template.keywords">
+                                            {{keywords}}
+                                        </code>
+                                    </div>
+                                </div>  
+                                <div class="col-12" ng-if="template.thirdParty">
+                                    <div class="mb-2 font-weight-bold" >
+                                        <i class="os-icon os-icon-tag mr-2"></i><span class="market-dlt-category">{{:: 'powered-by' | translate}} <b style="color: #000;">{{:: template.thirdParty.name | translate}}</b></span>
+                                    </div>
+                                    <a ng-if="template.thirdParty.websiteUrl" id="website" href="{{template.thirdParty.websiteUrl}}" target="_blank"><p class="font-weight-bold mb-0">{{:: 'website' | translate}}</p></a>
+                                    <a ng-if="template.thirdParty.privacyUrl" id="privacy" href="{{template.thirdParty.privacyUrl}}" target="_blank"><p class="font-weight-bold mb-0">{{:: 'privacy' | translate}}</p></a>
+                                    <a ng-if="template.thirdParty.termsUrl" id="terms" href="{{template.thirdParty.termsUrl}}" target="_blank"><p class="font-weight-bold mb-0">{{:: 'terms-and-conditions' | translate}}</p></a>
+                                    <a ng-if="template.thirdParty.salesUrl" id="sales" href="{{template.thirdParty.salesUrl}}" target="_blank"><p class="font-weight-bold mb-0">{{:: 'contact-sales' | translate}}</p></a>
+                                </div>        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="template.isInstalled && path[4].toLowerCase() === 'partners'">
+                <div class="danger-zone-container">
+                    <div>
+                        <h4 class="danger-zone-title">{{::'uninstall-mfa-conn-title' | translate}}</h4>
+                        <p class="mb-0">{{uninstallInfo}}</p>
+                    </div>
+                    <div class="pull-right">
+                        <button class="btn btn-danger" data-ng-click="removeToMarketplace()" id="uninstallMfaBtn">{{::'uninstall-mfa-btn-name'|translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

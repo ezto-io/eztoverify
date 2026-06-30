@@ -1,0 +1,31 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li data-ng-show="newIdentityProvider"> 
+                    <a href="#/realms/{{realm.realm}}/connections/social/create" class="ng-binding" id="back-to-choose-social-connections" >
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-choose-social-conn' | translate}}
+                    </a>
+                </li>
+                <li data-ng-hide="newIdentityProvider"> 
+                    <a href="#/realms/{{realm.realm}}/connections/social" class="ng-binding" id="back-to-social-connections" >
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-social-conn' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-identity-provider></kc-tabs-identity-provider><br>
+                        <div class="element-box py-5">
+                            <div data-ng-include data-src="resourceUrl + '/partials/realm-identity-provider-social.html'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

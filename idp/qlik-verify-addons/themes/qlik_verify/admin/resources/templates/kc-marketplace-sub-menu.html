@@ -1,0 +1,9 @@
+<div class="mp-category-section">
+  <a class="category-name" id="marketplace-recommended-link" data-ng-class="(path[2] === 'marketplace' && path[4] === 'recommended' && !pattern) && 'active'" href="#/realms/{{realm.realm}}/marketplace/templates/recommended"><span class="mr-1">{{::'marketplaceRecommended' | translate}}</span><i class="os-icon os-icon-arrow-right6"></i></a>
+  <p class="font-size-normal font-weight-bold mt-3"> {{ :: 'categories' | translate }} </p>
+    <div class="mt-2">
+      <div class="category-menu" ng-repeat="cat in categories" data-ng-class="(path[2] === 'marketplace' && path[4] === '{{cat | lowercase}}' && !pattern) && 'active'" data-ng-hide="cat === 'Recommended'">
+        <a class="category-name" id="marketplace-{{cat}}" href="#/realms/{{realm.realm}}/marketplace/templates/{{cat | lowercase}}"><span id="marketplace-{{cat}}">{{:: cat | translate}}</span></a>
+      </div>
+    </div>
+</div>

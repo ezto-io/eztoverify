@@ -1,0 +1,16 @@
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "branding/lib/branding/config/flavor/{ezto_flavor}/assets/launcher/transparent.png"
+  image_path: "branding/lib/branding/config/flavor/{ezto_flavor}/assets/launcher/transparent.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  image_path_ios: "branding/lib/branding/config/flavor/{ezto_flavor}/assets/launcher/transparent.png"
+  remove_alpha_ios: true
+  background_color_ios: "{ezto_background_color}"
+  macos:
+    generate: true
+    image_path: "branding/lib/branding/config/flavor/{ezto_flavor}/assets/launcher/transparent.png"
+  windows:
+    generate: true
+    image_path: "branding/lib/branding/config/flavor/{ezto_flavor}/assets/launcher/transparent.png"

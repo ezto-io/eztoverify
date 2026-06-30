@@ -1,0 +1,136 @@
+<kc-menu></kc-menu>
+<div class="content-w" id="outside-content">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li>
+                    <a href="#/realms/{{path[1]}}/marketplace/details/{{path[4]}}" id="backToMarketplace">
+                        <i
+                            class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{
+                        :: 'back-to-marketplace' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <!-- <div>
+                <div class="market-dtl-header-container mb-4">
+                    <div class="market-dtl-content-container">
+                        <div class="market-dtl-title-btn-container d-block">
+                            <h1 class="market-dtl-title"> {{:: template.workflowName | translate}} </h1>
+                            <p class="helper-text"> {{:: 'marketplace-bo-template-description' | translate }} </p>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="element-wrapper">
+                        <div class="element-box pt-5">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="workflowName">
+                                    {{:: 'template-name' | translate}} 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="text" id="workflowName" name="workflowName" maxlength="48" data-ng-model="template.workflowName">
+                                </div>
+                                <kc-tooltip>{{:: 'bo-marketplace-workflow-name-help-txt' | translate}}</kc-tooltip>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="workflowCategory">
+                                    {{:: 'category' | translate}} 
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="col-md-9">
+                                    <select class="form-control" id="workflowCategory" name="workflowCategory" data-ng-model="template.workflowCategory">
+                                        <option value="" disabled selected>{{:: 'select-category' | translate}}</option>
+                                        <option value="{{category.category}}" ng-repeat="category in categories">{{category.category}}</option>
+                                    </select>
+                                    <p class="font-size-12px">{{'bo-marketplace-workflow-category-help-txt' | translate }} <span class="text-primary cursor-pointer" data-ng-click="createMarketplaceCategory()">{{'here' | translate }} </span>{{'to-create-new-one' | translate}}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">{{:: 'image' | translate}}</label>
+                                <div class="col-md-9" ng-controller="fileChangeCtrl">
+                                  <div class="logo-container">
+                                    <div>
+                                      <img ng-show="template.imageURL && template.imageURL.startsWith('http')" id="templateLogo-by-url" class="provider-image" data-ng-src="{{template.imageURL}}" alt="logo-img"> 
+                                      <img ng-show="!template.imageURL || !template.imageURL.startsWith('http')" id="templateLogo" class="provider-image" data-ng-src="{{resourceUrl}}/img/upload.svg" alt="logo-img"> 
+                                    </div>
+                                  </div>
+                                  <input type="file" id="updateLogo" class="display-none" accept="image/png, image/jpeg, image/jpg, image/svg+xml, image/webp" /> 
+                                  <a id="changeLogo" class="form-control logo-change-container" ng-click="uploadImage()">{{:: 'change-tenant-logo' | translate}}</a>
+                                </div>
+                                <kc-tooltip>{{:: 'bo-marketplace-workflow-image-help-txt' | translate}}</kc-tooltip>
+                              </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="description">{{:: 'description' | translate}} </label>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" id="description" rows="15" cols="30" ng-model="template.workflowDescription" required></textarea>
+                                    <p class="font-size-12px">{{:: 'bo-marketplace-workflow-description-help-txt-prefix' | translate}} <a href="https://www.markdownguide.org/" class="text-decoration-none" target="_blank">{{ 'bo-marketplace-workflow-description-help-txt' | translate}}</a> {{:: 'bo-marketplace-workflow-description-help-txt-suffix' | translate}}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="templateTags">{{:: 'template-tag' | translate}} </label>
+                                <!-- <div class="col-md-9">
+                                    <input class="form-control" type="text" id="templateTag" name="templateTag" data-ng-model="template.templateTag">
+                                </div> -->
+                                <div class="col-md-9">
+                                    <div class="w-100 markeplact-tags" ng-if="!isLoading">
+                                        <input id="workflow-tag-input" ui-select2="{'multiple':true,'simple_tags':true,'tags': templateTags}" placeholder="Select tags" data-ng-model="template.templateTag" />
+                                        <kc-tooltip>{{:: 'bo-marketplace-workflow-tag-help-txt' | translate}}</kc-tooltip>
+                                  </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="countries">{{:: 'countries' | translate}} </label>
+                                <div class="col-9 mb-3">
+                                    <div class="position-relative w-100 row m-0 custom-multi-select-container" ng-click="$event.stopPropagation()">
+                                        <div class="w-100 p-1 form-control custom-select pr-4 d-flex flex-wrap" ng-click="showCountries($event)">
+                                            <label ng-if="template.country.length === 0">{{:: "select-country" | translate}}</label>
+                                            <label ng-if="template.country.length > 0" class="custom-multi-select mb-0" ng-repeat="country in template.country">
+                                                <div class="iti__flag iti__{{country.iso2}} mr-2"></div>
+                                                <span>{{ :: country.name | translate }}</span>
+                                                <span class="os-icon os-icon-close" ng-click="removeCountry($index);$event.stopPropagation();"></span>
+                                            </label>
+                                        </div>
+                                        <ul class="p-0 list-unstyled form-control mt-2 input-select" ng-show="showingCountries">
+                                            <li>
+                                                <input type="text" placeholder="{{ :: 'search-country' | translate }}" class="w-100 border-top-0 border-right-0 border-left-0 border-bottom p-2" ng-model="searchCountry.name "/>
+                                            </li>
+                                            <li class="p-2 d-flex align-items-center" ng-repeat="country in availableCountries | filter : searchCountry" ng-click="addCountry(country.index)">
+                                                <div class="iti__flag iti__{{country.iso2}} mr-2"></div>
+                                                <span>{{ :: country.name | translate }}</span>
+                                            </li>
+                                            <li class="p-2" ng-if="availableCountries.length === 0 ">{{ :: "no-tag-found" | translate }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <kc-tooltip>{{:: 'bo-marketplace-workflow-country-help-txt' | translate}}</kc-tooltip>
+                            </div>
+                            <div class="d-flex mt-4 justify-content-end">
+                                <button id="cancelBtn" class="btn btn-secondary " ng-click="cancel()">
+                                    <span>{{:: 'cancel' | translate}}</span>
+                                </button>
+                                <button id="nextBtn" class="btn btn-primary " ng-disabled="!isChanged" ng-click="updateTemplate()">
+                                    <span data-ng-show="!loading">{{:: 'save' | translate}}</span>
+                                    <div data-ng-show="loading">
+                                        <kc-action-button-loading></kc-action-button-loading>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .select2-drop-mask {
+        display: none !important;
+    }
+    .select2-drop {
+        display: none !important;
+    }
+</style>

@@ -1,0 +1,34 @@
+
+    <div data-ng-if="isImplemented">
+    <div class="os-tabs-w mt-2">
+        <div class="os-tabs-controls mb-0">
+            <ul class="nav nav-tabs upper bg-white">
+                <li class="nav-item">
+                    <a aria-expanded="false" id="overview" class="nav-link cursor-pointer p-3" ng-class="{active : initialCurrentTab === 'tab_overview'}"
+                        data-toggle="tab" data-step='1'
+                    data-title="{{:: 'intro-market-tab-overview-title' | translate}}"
+                    data-intro="{{:: 'intro-market-tab-overview' | translate}}" data-ng-click="initialTab('tab_overview')">
+                        {{:: 'overview' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a aria-expanded="false" id="installation" class="nav-link cursor-pointer p-3"
+                        ng-class="{active : initialCurrentTab === 'tab_install'}" data-toggle="tab" data-step='2'
+                    data-title="{{:: 'intro-market-tab-install-title' | translate}}"
+                    data-intro="{{:: 'intro-market-tab-intall' | translate}}"
+                        data-ng-click="initialTab('tab_install')">
+                        {{:: 'installation' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item" ng-if=" template.login || template.onboarding || template.recovery ">
+                    <a aria-expanded="false" id="flow" class="nav-link cursor-pointer p-3" ng-class="{active : initialCurrentTab === 'tab_flow'}" data-step='3'
+                    data-title="{{:: 'intro-market-tab-flow-title' | translate}}"
+                    data-intro="{{:: 'intro-market-tab-flow' | translate}}"
+                        data-toggle="tab" data-ng-click="initialTab('tab_flow')">
+                        {{:: 'flow' | translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    </div>

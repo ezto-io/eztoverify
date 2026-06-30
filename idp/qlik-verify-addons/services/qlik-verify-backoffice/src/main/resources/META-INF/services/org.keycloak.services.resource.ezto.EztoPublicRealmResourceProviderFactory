@@ -1,0 +1,8 @@
+com.qlikverify.backoffice.extensions.ApplicationDetailsProviderFactory
+com.qlikverify.backoffice.extensions.EVSchedulerProviderFactory
+com.qlikverify.backoffice.extensions.DeepLinkingProviderFactory
+com.qlikverify.backoffice.liveness.controller.LivenessVerificationProviderFactory
+com.qlikverify.backoffice.notifiers.HookNotificationFallBackFactory
+com.qlikverify.backoffice.extensions.AddMoneyProviderFactory
+com.qlikverify.backoffice.notifiers.DeadLetterHookProviderFactory
+com.qlikverify.backoffice.extensions.APIConnectorSyncProviderFactory

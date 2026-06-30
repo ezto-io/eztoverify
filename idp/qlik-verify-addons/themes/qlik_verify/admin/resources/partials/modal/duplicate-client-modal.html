@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h5 class="modal-title overflow-ellipsis" ng-attr-title="{{title}}"> {{title}} </h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close" id="modal-close-btn"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="note-container">
+        <span class="os-icon os-icon-alert-triangle note-icon-container"></span>
+        <p class="mb-1" ng-bind-html="warnMsg"></p>
+    </div><br>
+
+    <p class="mb-1" ng-bind-html="label"></p>
+                <div class="pl-0 mb-0 form-group">
+                    <input class="form-control hide-input-arrow w-100 mb-1" type="text" id="newAppName" maxlength="64"  ng-model="duplicateAppName" />
+                    <span id="error_msg"></span>
+                </div>
+</div>
+<div class="modal-footer">
+    <button type="button" data-ng-class="btns.cancel.cssClass" id="cancel-btn" ng-click="cancel()">{{btns.cancel.label}}</button>
+    <button type="button" id="app-duplicate-confirm" ng-disabled="duplicateAppName.trim().length == 0" data-ng-class="btns.ok.cssClass" ng-click="ok($event, 'button')">
+        <div class="button-spinner d-none">
+            <div class="spinner-border spinner-border-sm" role="status">
+            </div>
+            <span>{{ btns.ok.label | translate}}</span>
+
+        </div>
+        <span class="button-content-spinner">
+            {{ btns.ok.label | translate}}
+        </span>
+    </button>
+</div>
+<script type="text/javascript">
+    $("#newAppName").on("input",function() {
+        if($("#error_msg")){
+            $("#error_msg").text("");
+        }
+    });
+</script>

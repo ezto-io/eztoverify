@@ -1,0 +1,107 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li>
+                    <a href="#/realms/{{realm.realm}}/sms/providers" id="backToSmsProviders" class="ng-binding">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-sms-conn' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="role-list-container">
+                            <h1 class="user-list-heading">{{:: 'new-sms-conn-title' | translate}}</h1>
+                        </div>
+                        <br>
+                        <kc-tabs-sms-providers></kc-tabs-sms-providers>
+                        <div class="element-box" ng-show="isEveryProvidersConfigured(initialCurrentTab) && resultLoaded">
+                            <div class="no-policy-img">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/smtp.svg" alt="no-social-conn-img" class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display mt-2" data-ng-if="initialCurrentTab === 'sms'"> {{ :: 'all-sms-provider-enabled' | translate }} </p>
+                                <p class="no-results-msg no-entry-display mt-2" data-ng-if="initialCurrentTab === 'whatsapp'"> {{ :: 'all-whatsapp-provider-enabled' | translate }} </p>
+                                <a href="#/realms/{{realm.realm}}/sms/providers" class="text-decoration-none">
+                                <button class="create-btn no-entry-display" id="backToSmsProviders">
+                                    <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                    {{:: 'back-to-sms-conn' | translate}}
+                                </button>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Search Containers -->
+                        <div>
+                            <div ng-show=" !isEveryProvidersConfigured(initialCurrentTab) && !isProviderDefault(initialCurrentTab) && resultLoaded">
+                                <form class="form-horizontal">
+                                    <div class="form-group element-search w-100">
+                                        <input class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched full-width-search-container" id="searchProviderInput" type="text" placeholder="{{ :: 'search-sms-prov-placeholder' | translate}}"  ng-model="search" onkeydown="if (event.keyCode === 13) document.getElementById('connectionsSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="connectionsSearch" data-ng-click="changeSearchKey(search)"></i>
+                                    </div>
+                                </form>
+                            </div>
+                        </div> 
+                        <!-- SMS Provider List -->
+                        <ul data-ng-if="renderProvider.length > 0 && !isProviderDefault(initialCurrentTab) && resultLoaded" class="cards-list email-cards" >
+                            <li class="info-card" ng-repeat="smsProvider in renderProvider | filter:{'displayName':searchKey}">
+                                <div kc-open="/realms/{{realm.realm}}/sms/providers/create/{{smsProvider.id}}" id="{{smsProvider.displayName.toLowerCase().replaceAll(' ','-')}}" class="cursor-pointer">
+                                    <div class="info-card-wrapper">
+                                        <div class="info-card-header">
+                                            <div class="info-card-avatar align-self-center pt-0">
+                                                <div>
+                                                    <img  data-ng-src="{{resourceUrl}}/themes/img/{{smsProvider.logo}}" alt="{{smsProvider.logo}}-logo">
+                                                </div>
+                                            </div>
+                                            <div class="align-self-center">
+                                                <h2 class="ml-2 mb-0 email-title">{{smsProvider.displayName}}</h2>
+                                                <p ng-if="smsProvider.description" class="ml-2 mb-0 info-card-description ng-binding">{{:: smsProvider.description | translate}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul> 
+                        <div class="element-box element-box-medium top-align" ng-show="nonConfiguredSmsProviders.length > 0 && !findConnections(searchKey) && resultLoaded">
+                            <div class="no-entry-svg">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/smtp.svg" alt="no-social-conn-img" class="opacity-40 no-entry-display" />
+                                <div data-ng-if="initialCurrentTab === 'sms'">
+                                    <p class="no-results-msg no-entry-display mt-2">{{:: 'no-sms-conn-found' | translate}}</p>
+                                    <button data-ng-click="clearSearch()" id="backToSmsProviders" class="create-btn no-entry-display">
+                                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                        {{:: 'back-to-sms-conn' | translate}}
+                                    </button>
+                                </div> 
+                                <div data-ng-if="initialCurrentTab === 'whatsapp'">
+                                    <p class="no-results-msg no-entry-display mt-2">{{:: 'no-whatsapp-conn-found' | translate}}</p>
+                                    <button data-ng-click="clearSearch()" id="backToWhatsapp" class="create-btn no-entry-display">
+                                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                        {{:: 'back-to-whatsapp-conn' | translate}}
+                                    </button>
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="element-box mt-4" ng-show="isProviderDefault(initialCurrentTab) && resultLoaded">
+                            <div class="no-policy-img">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/sms.svg"  alt="no-policy-img" class="opacity-40 no-entry-display"/>
+                                <div data-ng-if="initialCurrentTab ==='sms'">
+                                    <p class="no-results-msg no-entry-display"> <b>{{ :: 'sms-provider-not-included' | translate }} </b> </p>
+                                    <p class="no-results-msg no-entry-display"> {{ :: 'sms-provider-upgrade-anytime' | translate }} </p>
+                                </div>
+                                <div data-ng-if="initialCurrentTab ==='whatsapp'">
+                                    <p class="no-results-msg no-entry-display"> <b>{{ :: 'whatsapp-provider-not-included' | translate }} </b> </p>
+                                    <p class="no-results-msg no-entry-display"> {{ :: 'whatsapp-provider-upgrade-anytime' | translate }} </p>
+                                </div>
+                                <a class="create-btn no-entry-display" id="upgradeBtn" data-ng-if="userCanUpdate" href="#/realms/{{realm.realm}}/realm-subscription/update-plan">
+                                    {{ :: 'upgrade-now' | translate }}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-12 sms-loader-container px-0" data-ng-if="!resultLoaded">
+                            <kc-loader loadertype="'marketTemplateLoader'" ></kc-loader>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

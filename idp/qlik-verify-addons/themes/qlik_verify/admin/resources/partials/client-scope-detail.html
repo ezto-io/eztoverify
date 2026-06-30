@@ -1,0 +1,110 @@
+
+
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/client-scopes" id="backToScopes">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                            {{ :: 'back-to-client-scope' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-client-scope></kc-tabs-client-scope>
+                        <div class="element-box">
+                            <form class="form-horizontal" name="clientForm" novalidate kc-read-only="!access.manageClients">
+                                <fieldset>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="name">{{:: 'name' | translate}} <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" id="name" name="name" data-ng-model="clientScope.name" autofocus required>
+                                        </div>
+                                        <kc-tooltip>{{:: 'client-scope.name.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="description">{{:: 'description' | translate}} </label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" id="description" name="description" data-ng-model="clientScope.description">
+                                        </div>
+                                        <kc-tooltip>{{:: 'client-scope.description.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="protocol">{{:: 'protocol' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <div>
+                                                <select class="form-control" id="protocol"
+                                                        ng-change="changeProtocol()"
+                                                        ng-model="protocol"
+                                                        ng-options="aProtocol for aProtocol in protocols">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <kc-tooltip>{{:: 'client-scope.protocol.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+
+                                    <div class="form-group clearfix block row" data-ng-show="protocol != 'docker-v2'">
+                                        <label class="col-md-3 control-label" for="displayOnConsentScreen">{{:: 'client-scope.display-on-consent-screen' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="enableConsentScreen">
+                                                <div  class="os-toggler-w" ng-class="{on: displayOnConsentScreen}">
+                                                    <div class="os-toggler-i" id="enableConsentScreen-toggle">
+                                                        <div class="os-toggler-pill" ng-click="switchChange()" ng-model="displayOnConsentScreen" name="enableConsentScreen" id="enableConsentScreen" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'client-scope.display-on-consent-screen.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row" data-ng-show="protocol != 'docker-v2' && displayOnConsentScreen">
+                                        <label class="col-md-3 control-label" for="consentScreenText">{{:: 'client-scope.consent-screen-text' | translate}} </label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" id="consentScreenText" name="consentScreenText" data-ng-model="clientScope.attributes['consent.screen.text']">
+                                        </div>
+                                        <kc-tooltip>{{:: 'client-scope.consent-screen-text.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group clearfix block row" data-ng-show="protocol == 'openid-connect'">
+                                        <label class="col-md-3 control-label" for="includeInTokenScope">{{:: 'client-scope.include-in-token-scope' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="includeTokenScope">
+                                                <div  class="os-toggler-w" ng-class="{on: includeInTokenScope}">
+                                                    <div class="os-toggler-i" id="includeTokenScope-toggle">
+                                                        <div class="os-toggler-pill" ng-click="switchChange()" ng-model="includeInTokenScope" name="includeTokenScope" id="includeTokenScope" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'client-scope.include-in-token-scope.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="guiOrder">{{:: 'client-scope.gui-order' | translate}} </label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" id="guiOrder" name="guiOrder" data-ng-model="clientScope.attributes['gui.order']">
+                                        </div>
+                                        <kc-tooltip>{{:: 'client-scope.gui-order.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                </fieldset>
+
+                                <div class="form-group row">
+                                    <div class="col-md-12 d-flex flex-row-reverse" data-ng-show="create && access.manageClients">
+                                        <button class="ml-3" kc-save data-ng-disabled="!changed" id="saveBtn" >{{:: 'save' | translate}}</button>
+                                        <button kc-cancel data-ng-click="cancel()" id="cancelBtn">{{:: 'cancel' | translate}}</button>
+                                    </div>
+                                    <div class="col-md-12 d-flex flex-row-reverse" data-ng-show="!create && access.manageClients">
+                                        <button class="ml-3" kc-save  data-ng-disabled="!changed" id="saveBtn">{{:: 'save' | translate}}</button>
+                                        <button kc-reset data-ng-disabled="!changed" id="cancelBtn">{{:: 'cancel' | translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <h3 class="element-header">
+                            {{ :: 'realm-tab-security-defenses' | translate }}
+                        </h3>
+                        <kc-tabs-securitydefenses></kc-tabs-securitydefenses>
+                        <div class="element-box py-5">
+                            <form class="form-horizontal" name="realmForm" novalidate
+                                kc-read-only="!access.manageRealm">
+                                <fieldset class="mt-0">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="xFrameOptions"><a>{{::
+                                                'x-frame-options' | translate}}</a></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="xFrameOptions" type="text"
+                                                ng-model="realm.browserSecurityHeaders.xFrameOptions">
+                                                <a  class="helper-text" href="http://tools.ietf.org/html/rfc7034"
+                                                target="_blank"> {{:: 'see-header-field' | translate}} </a>
+                                        </div>
+                                        <kc-tooltip>{{:: 'x-frame-options-tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="contentSecurityPolicy"><a>{{::
+                                                'content-sec-policy' | translate}}</a></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="contentSecurityPolicy" type="text"
+                                                ng-model="realm.browserSecurityHeaders.contentSecurityPolicy">
+                                                <a  class="helper-text" href="http://www.w3.org/TR/CSP/"
+                                                target="_blank"> {{:: 'security-policy' | translate}} </a>
+                                        </div>
+                                        <kc-tooltip>{{:: 'content-sec-policy-tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="contentSecurityPolicyReportOnly"><a>{{::
+                                                'content-sec-policy-report-only' | translate}}</a></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="contentSecurityPolicyReportOnly" type="text"
+                                                ng-model="realm.browserSecurityHeaders.contentSecurityPolicyReportOnly">
+                                                <a  class="helper-text" href="http://www.w3.org/TR/CSP/"
+                                                target="_blank"> {{:: 'security-policy' | translate}} </a>
+                                        </div>
+                                        <kc-tooltip>{{:: 'content-sec-policy-report-only-tooltip' | translate}}
+                                        </kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="xContentTypeOptions"><a>{{:: 'x-content-type-options' | translate}}</a></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="xContentTypeOptions" type="text"
+                                                ng-model="realm.browserSecurityHeaders.xContentTypeOptions">
+                                                <a  class="helper-text" href="https://www.owasp.org/index.php/List_of_useful_HTTP_headers"
+                                                target="_blank"> {{:: 'see-content-type-options' | translate}} </a>
+                                        </div>
+                                        <kc-tooltip>{{:: 'content-type-options-tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="xContentTypeOptions"><a>{{:: 'robots-tag' | translate}}</a></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="xRobotsTag" type="text"
+                                                ng-model="realm.browserSecurityHeaders.xRobotsTag">
+                                                <a  class="helper-text" href="https://developers.google.com/webmasters/control-crawl-index/docs/robots_meta_tag"
+                                                target="_blank"> {{:: 'xbots-tag-specs' | translate}} </a>
+                                        </div>
+                                        <kc-tooltip>{{:: 'robots-tag-tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="xXSSProtection"><a>{{:: 'x-xss-protection' | translate}}</a></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="xXSSProtection" type="text"
+                                                ng-model="realm.browserSecurityHeaders.xXSSProtection">
+                                                <a  class="helper-text" href="https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#xxxsp"
+                                                target="_blank"> {{:: 'secure-header-project' | translate}} </a>
+                                        </div>
+                                        <kc-tooltip>{{:: 'x-xss-protection-tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="strictTransportSecurity"><a>{{:: 'strict-transport-security' |
+                                                translate}}</a></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="strictTransportSecurity" type="text"
+                                                ng-model="realm.browserSecurityHeaders.strictTransportSecurity">
+                                                <a  class="helper-text" href="https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#hsts"
+                                                target="_blank"> {{:: 'secure-header-project' | translate}} </a>
+                                        </div>
+                                        <kc-tooltip>{{:: 'strict-transport-security-tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                </fieldset>
+                                <div class="form-buttons-w border-top-0" data-ng-show="access.manageRealm">
+                                    <div class="col-md-12 d-flex flex-row-reverse pr-0">
+                                        <button class="ml-3" id="saveBtn" kc-save data-ng-disabled="!changed">{{:: 'save' | translate}}</button>
+                                        <button id="cancelBtn" kc-reset data-ng-disabled="!changed">{{:: 'cancel' |
+                                            translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,188 @@
+<kc-menu></kc-menu>
+<div class="content-w clients-list-dropdown-parent" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper pb-0">
+                        <div class="element-actions d-flex align-items-center application-step-1">
+                            <div>
+                                <a class="text-decoration-none" href="">
+                                    <button class="create-btn" id="create-application-btn" data-ng-click="createApp()">
+                                        {{:: 'create-api-application' | translate}}
+                                    </button>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="element-header">
+                            {{ :: 'api' | translate }}
+                            <kc-tooltip>{{:: 'api-tab.tooltip' | translate}}</kc-tooltip>
+                        </h3>
+                        <div class="api-playground-card px-4 py-3 d-flex align-items-center justify-content-between" kc-open="/realms/{{realm.realm}}/api-list" id="api-playground-card">
+                            <div class="w-80">
+                                <h6>{{:: 'play-ground' | translate}}</h6>
+                                <p>{{:: 'play-ground-hlp-txt' | translate }}</p>
+                            </div>
+                            <div>
+                                <a class="d-block" href="">
+                                   <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5 12.5H19M19 12.5L12 5.5M19 12.5L12 19.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="controls-above-table search-applications" style="margin-top: 1.6rem;">
+                            <div class="form-inline justify-content-end">
+                                <div class="form-group mr-auto">
+                                    <div class="element-search">
+                                        <input class="form-control bg-color-transparent searchTerm" type="text"
+                                            id="application-search-input"
+                                            placeholder="{{:: 'search-cli-placeholder' | translate}}"
+                                            data-ng-model="query.clientName"
+                                            class="form-control form-control-sm rounded bright search"
+                                            onkeydown="if (event.keyCode == 13) document.getElementById('clientSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="clientSearch"
+                                            data-ng-click="searchQuery()"></i>
+                                    </div>
+                                </div>
+                                <div ng-show="appCount > 5">
+                                    <select data-ng-model="query.max" ng-change="selectQuery()"
+                                        id="applicationsPerPage-count-selector"
+                                        data-ng-options="itemCount for itemCount in [5,10,50,100]"
+                                        class="form-control form-control-sm rounded bright events-admin-search client-list-count-select">
+                                        <option data-ng-repeat="itemCount in [5,10,50,100]"
+                                            data-ng-selected="query.max === itemCount" data-ng-value="itemCount">
+                                            {{ itemCount }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="position-relative ml-4">
+                                    <div class="form-control filter mr-0 cursor-pointer"
+                                        ng-click="showFilter=!showFilter">
+                                        <img ng-src="{{resourceUrl}}/img/filter.svg" class="pr-2">
+                                        <span>{{orderBy}}</span>
+                                    </div>
+                                    <ul ng-show="showFilter" class="position-absolute list-unstyled top-4 p-1 bg-white filter-list rounded d-flex flex-column gap-1 filter-list-bo">
+                                        <li class="p-2 rounded" data-ng-class="query.orderBy=='asc' && 'active'"
+                                            ng-click="setOrderBy('asc')">{{:: 'asc' | translate}}</li>
+                                        <li class="p-2 rounded" data-ng-class="query.orderBy=='desc' && 'active'"
+                                            ng-click="setOrderBy('desc')">{{:: 'desc' | translate}}</li>
+                                        <li class="p-2 rounded"
+                                            data-ng-class="query.orderBy=='last-updated' && 'active'"
+                                            ng-click="setOrderBy('last-updated')">{{:: 'last-updated' | translate}}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <kc-loader loadertype="loaderTypeName" ng-show="isLoading"></kc-loader>
+                        <div ng-show="!isLoading">
+                            <!-- No Api apps with search result -->
+                            <div class="element-box element-box-medium" data-ng-if="!isLoading && appCount <= 0">
+                                <div class="no-entry-svg">
+                                    <img data-ng-src="{{resourceUrl}}/themes/img/no-apps-bo.svg" alt="no-apps-svg"
+                                        class="opacity-40 no-entry-display" />
+                                    <p class="no-results-msg no-entry-display">{{:: 'no-apps' | translate}}</p>
+                                    <button class="create-btn no-entry-display cursor-pointer" id="clearSearchBtn" data-ng-click="clearSearch()">
+                                        <i class="os-icon os-icon-close mr-2"></i>
+                                        {{ ::  'clear-search' | translate}}
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-grey" data-ng-if="apps.length > 0 && !isLoading">{{:: 'api-app-list' | translate}}</p>
+                            <!-- API apps List -->
+                            <div class="table-responsive-md clients-list" data-ng-if="apps.length > 0 && !isLoading">
+                                <table class="table table-light-bordered table-padded table-layout-fixed w-100" id="app-table">
+                                    <tbody>
+                                        <tr class="user-row position-relative fadeUp" data-ng-repeat="app in apps">
+                                            <td class="cursor-pointer w-30" id="{{r.name}}">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="overflow-ellipsis" >
+                                                        <span class="ml-1" >{{app.name}}</span>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-1 ml-auto">
+                                                        <button class="btn bg-white px-3 api-app-btn border-radius-4px py-2 lh-normal d-flex align-items-center  ml-0"  id="copy-app-id-{{$index+1}}" ng-click="copyToClipboard(app, 'id')">
+                                                            <span class="mr-1">{{:: 'app-id' | translate}}</span>
+                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <g clip-path="url(#clip0_6400_11973)">
+                                                                    <path d="M2.66671 10.6668C1.93337 10.6668 1.33337 10.0668 1.33337 9.3335V2.66683C1.33337 1.9335 1.93337 1.3335 2.66671 1.3335H9.33337C10.0667 1.3335 10.6667 1.9335 10.6667 2.66683M6.66671 5.3335H13.3334C14.0698 5.3335 14.6667 5.93045 14.6667 6.66683V13.3335C14.6667 14.0699 14.0698 14.6668 13.3334 14.6668H6.66671C5.93033 14.6668 5.33337 14.0699 5.33337 13.3335V6.66683C5.33337 5.93045 5.93033 5.3335 6.66671 5.3335Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                                </g>
+                                                                <defs>
+                                                                    <clipPath id="clip0_6400_11973">
+                                                                        <rect width="16" height="16" fill="white"/>
+                                                                    </clipPath>
+                                                                </defs>
+                                                            </svg>
+                                                        </button>
+                                                        <button class="btn bg-white px-3 api-app-btn border-radius-4px py-2 lh-normal d-flex align-items-center ml-0"  id="copy-app-secret-{{$index+1}}" ng-click="copyToClipboard(app, 'secret')">
+                                                            <span class="mr-1">{{:: 'app-secret' | translate}}</span>
+                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <g clip-path="url(#clip0_6400_11973)">
+                                                                    <path d="M2.66671 10.6668C1.93337 10.6668 1.33337 10.0668 1.33337 9.3335V2.66683C1.33337 1.9335 1.93337 1.3335 2.66671 1.3335H9.33337C10.0667 1.3335 10.6667 1.9335 10.6667 2.66683M6.66671 5.3335H13.3334C14.0698 5.3335 14.6667 5.93045 14.6667 6.66683V13.3335C14.6667 14.0699 14.0698 14.6668 13.3334 14.6668H6.66671C5.93033 14.6668 5.33337 14.0699 5.33337 13.3335V6.66683C5.33337 5.93045 5.93033 5.3335 6.66671 5.3335Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                                </g>
+                                                                <defs>
+                                                                    <clipPath id="clip0_6400_11973">
+                                                                        <rect width="16" height="16" fill="white"/>
+                                                                    </clipPath>
+                                                                </defs>
+                                                            </svg>
+                                                        </button>
+                                                        <button class="btn bg-white px-3 api-app-btn border-radius-4px py-2 lh-normal d-flex align-items-center  ml-0" id="copy-app-basic-{{$index+1}}"  ng-click="copyToClipboard(app, 'basic')">
+                                                            <span class="mr-1">{{:: 'app-basic-auth' | translate}}</span>
+                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <g clip-path="url(#clip0_6400_11973)">
+                                                                    <path d="M2.66671 10.6668C1.93337 10.6668 1.33337 10.0668 1.33337 9.3335V2.66683C1.33337 1.9335 1.93337 1.3335 2.66671 1.3335H9.33337C10.0667 1.3335 10.6667 1.9335 10.6667 2.66683M6.66671 5.3335H13.3334C14.0698 5.3335 14.6667 5.93045 14.6667 6.66683V13.3335C14.6667 14.0699 14.0698 14.6668 13.3334 14.6668H6.66671C5.93033 14.6668 5.33337 14.0699 5.33337 13.3335V6.66683C5.33337 5.93045 5.93033 5.3335 6.66671 5.3335Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                                </g>
+                                                                <defs>
+                                                                    <clipPath id="clip0_6400_11973">
+                                                                        <rect width="16" height="16" fill="white"/>
+                                                                    </clipPath>
+                                                                </defs>
+                                                            </svg>
+                                                        </button>
+                                                        <div class="d-block w-2rem " data-ng-if="app.attributes.isInBuilt">
+                                                        </div>
+                                                        <button class="btn bg-white p-2 api-app-btn border-radius-4px api-app-btn-delete ml-0"
+                                                                data-ng-if="!app.attributes.isInBuilt" tooltip="{{deleteTooltipTxt}}"
+                                                                tooltip-placement="top"tooltip-trigger="mouseover mouseout" ng-click="removeApp(app)">
+                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M6.66667 7.3335V11.3335M9.33333 7.3335V11.3335M12.6667 4.00016V13.3335C12.6667 13.6871 12.5262 14.0263 12.2761 14.2763C12.0261 14.5264 11.687 14.6668 11.3333 14.6668H4.66667C4.31304 14.6668 3.97391 14.5264 3.72386 14.2763C3.47381 14.0263 3.33333 13.6871 3.33333 13.3335V4.00016M2 4.00016H14M5.33333 4.00016V2.66683C5.33333 2.31321 5.47381 1.97407 5.72386 1.72402C5.97391 1.47397 6.31304 1.3335 6.66667 1.3335H9.33333C9.68696 1.3335 10.0261 1.47397 10.2761 1.72402C10.5262 1.97407 10.6667 2.31321 10.6667 2.66683V4.00016" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div> 
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="d-flex justify-content-between mt-3" ng-show="!isLoading && appCount  > query.max">
+                                <p class="mt-1">
+                                    {{:: 'showing' | translate}}
+                                    {{query.first + 1}} - {{query.first + apps.length}} {{:: 'of' | translate}} {{appCount}} {{:: 'apps' | translate}}
+                                </p>
+                                <div>
+                                    <button data-ng-click="firstPage()" id="firstPageBtn" class="btn btn-sm btn-outline-primary border-none table-pagination" data-ng-class="query.first === 0 && 'text-muted'" ng-disabled="query.first === 0">
+                                        <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon"></i>
+                                        <span>{{::'first-page' | translate}}</span>
+                                    </button>
+                                    <button data-ng-click="previousPage()" id="previousPageBtn" class="btn btn-sm btn-outline-primary border-none table-pagination" data-ng-class="query.first === 0 && 'text-muted'" ng-disabled="query.first === 0">
+                                        <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon"></i>
+                                        <span>{{:: 'previous' | translate}}</span>
+                                    </button>
+                                    <button id="nextPageBtn" data-ng-click="nextPage()" class="btn btn-sm btn-outline-primary border-none table-pagination pr-0" ng-disabled="(presentIndex + apps.length) === appCount" data-ng-class="apps.length < query.max && 'text-muted'">
+                                        <span>{{:: 'next' | translate}}</span>
+                                        <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

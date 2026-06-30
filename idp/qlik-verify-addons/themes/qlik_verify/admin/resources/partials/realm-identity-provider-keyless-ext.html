@@ -1,0 +1,7 @@
+<div class="form-group row clearfix">
+	<label class="col-md-3 control-label" for="clientId">{{:: 'key' | translate}} <span class="required">*</span></label>
+	<div class="col-md-7">
+		<input class="form-control" id="clientId" type="text" ng-model="identityProvider.config.key" required>
+	</div>
+	<kc-tooltip>{{:: 'stackoverflow.key.tooltip' | translate}}</kc-tooltip>
+</div>

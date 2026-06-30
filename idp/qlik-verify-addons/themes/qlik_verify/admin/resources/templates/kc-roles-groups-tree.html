@@ -1,0 +1,90 @@
+<div class="content-w" data-ng-controller="KcRolesGroupsTree">
+    <div class="element-wrapper pb-0">
+        <div class="element-box element-box-medium top-align p-4">
+            <div class="holder scrollbar-none" id="holder" ng-class="{'justify-content-start scrollLeft' : currentGroup.id}">
+                <div class="roles-container roles-container-left" id="roles"
+                    data-ng-class="{'remove-roles-border' : realmMappings.length === 0}">
+                    <ul data-ng-class="{'remove-roles-top-left left-1' : realmMappings.length === 0}">
+                        <li data-ng-class="{'remove-roles-border' : realmMappings.length === 0}">
+                            <button class="add-group" ng-click="addRolesToUser()">{{:: 'add-roles' | translate}} +</button>
+                        </li>
+                        <li data-ng-repeat="role in roles">
+                            <div class="tree-label">
+                                <button class="roles-groups-delete-btn" ng-click="deleteRealmRole(role)"><i
+                                        class="os-icon os-icon-ui-15 px-0 "></i></button>
+                                <span class="roles-groups-name w-max-80 ">{{role.name}}</span>
+                            </div>
+                        </li>
+                        <li ng-if="roles.length !== realmMappings.length">
+                            <button class="add-group roles-show-more" ng-click="showMoreRoles()"><img
+                                    data-ng-src="{{resourceUrl}}/themes/img/down-arrow.svg" />
+                                    <span>
+                                        {{:: 'show-more' | translate}}
+                                    </span></button>
+                        </li>
+                    </ul>
+                </div>
+                <button class="roles roles-btn roles-container-left-btn">
+                    <span>{{:: 'roles' | translate}}</span>
+                    <div class="role-btn-line"></div>
+                </button>
+                <div class="user-holder">
+                    <div class="roles-user-avatar">
+                        <div ng-if="user.profPic">
+                            <img id="profileImage" class="user-detail-profilepic" data-ng-src="{{ user.profPic }}"
+                                alt="profile-pic" />
+                        </div>
+                        <div ng-if="!user.profPic">
+                            <img class="user-detail-profilepic-no-img"
+                                data-ng-src="data:image/png;base64,{{generatedProfilePic}}" alt="profile-pic" />
+                        </div>
+                    </div>
+                    <div class="user-holder-desc">
+                        <p><span>{{realmMappings.length}}</span><span> {{:: 'roles' | translate}}</span></p>
+                        <p><span>{{groupMemberships.length}}</span><span>{{:: 'user-groups' | translate}}</span></p>
+                    </div>
+                </div>
+                <button class="roles roles-btn">
+                    <span>{{:: 'groups' | translate}}</span>
+                    <div class="role-btn-line"></div>
+                </button>
+                <div class="roles-container groups"
+                    data-ng-class="{'remove-roles-border' : groupMemberships.length === 0}">
+                    <ul data-ng-class="{'remove-roles-top-left' : groupMemberships.length === 0}">
+                        <li data-ng-class="{'remove-roles-border' : groupMemberships.length === 0}">
+                            <button class="add-group" ng-click="addGroupsToUser()">+ {{:: 'add-groups' | translate}}</button>
+                        </li>
+                        <li data-ng-repeat="group in groups">
+                            <div class="tree-label">
+                                <button class="roles-groups-delete-btn" ng-click="deleteUserGroup(group)"><i
+                                        class="os-icon os-icon-ui-15 px-0 "></i></button>
+                                <span class="roles-groups-name">{{group.name}}</span>
+                                <div ng-if="group.rolesCount > 0" class="roles" ng-click="setCurrentGroup(group)"
+                                    data-ng-class="{'roles-label' : currentGroup.id === group.id}">
+                                    <span>{{group.rolesCount}} {{:: 'roles' | translate}}</span>
+                                </div>
+                                <div ng-if="group.rolesCount > 0 && currentGroup.id === group.id" id="group-roles"
+                                    ng-init="scrollToView()" class="roles-container absolute"
+                                    data-ng-class="{'remove-roles-border' : getGroupRoles(group).length === 1}">
+                                    <ul
+                                        data-ng-class="{'remove-roles-top-left top-1' : getGroupRoles(group).length === 1}">
+                                        <li data-ng-repeat="groupRole in getGroupRoles(group)"
+                                            data-ng-class="{'remove-roles-border' : getGroupRoles(group).length === 1}">
+                                            <span>{{groupRole.name}}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        <li ng-if="groups.length !== groupMemberships.length"> <button class="add-group roles-show-more"
+                                ng-click="showMoreGroups()"><img
+                                    data-ng-src="{{resourceUrl}}/themes/img/down-arrow.svg" />
+                                    <span>
+                                        {{:: 'show-more' | translate}}
+                                    </span></button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

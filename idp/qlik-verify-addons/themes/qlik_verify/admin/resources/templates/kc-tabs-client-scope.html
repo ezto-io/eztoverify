@@ -1,0 +1,26 @@
+<div data-ng-controller="ClientScopeTabCtrl">
+    <h3 class="element-header role-detail-rolename" data-ng-show="create">
+        {{ :: 'add-client-scope' | translate }}
+    </h3>
+    <div class="user-details-top action-details element-header pb-0" data-ng-hide="create">
+        <div class="text-overflow-control">
+            <div class="flex-start" >
+                <h1  class="role-detail-rolename word-break-all"> {{clientScope.name|capitalize}}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="os-tabs-w mt-2" data-ng-hide="create && !path[4]">
+        <div class="os-tabs-controls">
+            <ul class="nav nav-tabs upper bg-white">
+                <li class="nav-item">
+                    <a class="nav-link p-3" href="#/realms/{{realm.realm}}/client-scopes/{{clientScope.id}}" id="scope-settings"  data-ng-class="{active: !path[4]}">{{:: 'settings' | translate}}</a></li>
+                <li class="nav-item" ng-class="{active: path[4] == 'mappers'}">
+                    <a class="nav-link p-3" href="#/realms/{{realm.realm}}/client-scopes/{{clientScope.id}}/mappers" id="scope-mappers" data-ng-class="{active: path[4] == 'mappers'}">{{:: 'mappers' | translate}}</a>
+                </li>
+                <li class="nav-item" ng-class="{active: path[4] == 'scope-mappings'}" data-ng-show="client.protocol != 'docker-v2'">
+                    <a class="nav-link p-3" href="#/realms/{{realm.realm}}/client-scopes/{{clientScope.id}}/scope-mappings" id="scope-roles" data-ng-class="{active: path[4] == 'scope-mappings'}">{{:: 'roles' | translate}}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,167 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/groups" id="backToGroups">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                            {{ :: 'back-to-groups' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-group></kc-tabs-group>
+                        <div class="element-box element-box-medium" ng-show="searchLoaded && (!users || !users.length)">
+                            <div class="no-entry-svg">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'no-users.svg' : realm.mode === 'ciam' ? 'no-users-ciam.svg' : 'no-users-bo.svg' }}" alt="no-users-svg"
+                                    class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display">{{:: 'no-group-members' | translate}}</p>
+                                <a class="text-decoration-none" >
+                                    <button class="create-btn no-entry-display" data-ng-click="addUser()" id="createUser">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'add-users' | translate}}
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- <div ng-if="!(searchLoaded)">
+                            <kc-loader loadertype="loaderTypeName"></kc-loader>
+                        </div> -->
+                        <div ng-hide="!users || users.length === 0">
+                            <div class="w-100 d-flex justify-content-end gap-2">
+                                <div class="controls-above-table d-flex mr-2">
+                                    <div class="form-inline justify-content-between w-100">
+                                    </div>
+                                    <select data-ng-model="query.max" ng-change="searchQuery()" id="pageUsersInGroupCount"
+                                        data-ng-options="itemCount for itemCount in [5,10,50,100]"
+                                        data-ng-show="(users && users.length > 5 && pageCount===entries) || (entries > 5)"
+                                        class="form-control form-control-sm rounded bright events-admin-search w-auto pt-1 pb-1">
+                                        <option data-ng-repeat="itemCount in [5,10,50,100]"
+                                            data-ng-selected="query.max === itemCount" data-ng-value="itemCount">
+                                            {{ itemCount }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div data-ng-hide="!users || users.length === 0">
+                                    <a class="text-decoration-none" >
+                                        <button class="create-btn no-entry-display" data-ng-click="addUser()" id="createUser">
+                                            <i class="os-icon os-icon-plus plus-icon"></i>
+                                            {{:: 'add-users' | translate}}
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="table-responsive-md clients-list">
+                                <table class="table table-light-bordered table-padded table-layout-fixed w-100">
+                                    <caption data-ng-show="users" class="hidden">{{:: 'table-of-role-members' |
+                                        translate}}</caption>
+                                    <thead>
+                                        <tr data-ng-show="searchLoaded && users.length > 0">
+                                            <th class="w-40">{{:: 'user-username' | translate}}</th>
+                                            <th class="w-40">{{:: 'email' | translate}}</th>
+                                            <th class="text-center w-20">{{:: 'remove' | translate}}</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tfoot>
+                                        <tr data-ng-hide="searchQueryLoaded">
+                                            <td class="pl-0"
+                                                data-ng-show="(users && users.length > 5 && pageCount===entries) || (entries > 5)">
+                                                <p class="mt-1">{{:: 'showing' | translate}} {{startCount}} - {{pageCount}} {{:: 'of' | translate}} {{entries}}
+                                                    {{:: 'users' | translate}}</p>
+                                            </td>
+                                            <td class="pr-0" colspan="5"
+                                                data-ng-show="(users && users.length > 5 && pageCount === entries) || (entries > 5)">
+                                                <div class="table-nav pull-right" data-ng-hide="(entries <= query.max)">
+                                                    <button class="btn btn-sm btn-outline-primary table-pagination" id="firstPageBtn"
+                                                        data-ng-click="firstPage()" class="first"
+                                                        ng-disabled="query.first === 0">
+                                                        <i data-ng-class="query.first === 0 && 'text-muted'"
+                                                            class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon"></i>
+                                                        <i data-ng-class="query.first === 0 && 'text-muted'"> {{:: 'first-page' | translate}}
+                                                        </i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-primary table-pagination" id="previousPageBtn"
+                                                        data-ng-click="previousPage()" class="prev"
+                                                        ng-disabled="query.first === 0">
+                                                        <i data-ng-class="query.first === 0 && 'text-muted'"
+                                                            class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon"></i>
+                                                        <i data-ng-class="query.first === 0 && 'text-muted'"> {{:: 'previous' | translate}}
+                                                        </i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-primary table-pagination pr-0" id="nextPageBtn"
+                                                        data-ng-click="nextPage()" class="next"
+                                                        ng-disabled="pageCount === entries">
+                                                        <i data-ng-class="users.length < query.max-1 && 'text-muted'">
+                                                            {{:: 'next' | translate}} </i>
+                                                        <i data-ng-class="users.length < query.max-1 && 'text-muted'"
+                                                            class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        <tr class="user-row position-relative fadeUp" ng-repeat="user in users">
+                                            <td class="cursor-pointer"
+                                                kc-open="/realms/{{realm.realm}}/users/{{user.id}}" id="user-{{user.username.toLowerCase().replaceAll(' ','-')}}">
+                                                <a class="text-decoration-none"
+                                                    href="#/realms/{{realm.realm}}/users/{{user.id}}">
+                                                    <div ng-if="user.profPic" class=" d-flex">
+                                                        <div class="mr-3">
+                                                            <div class="img-container rounded-circle "><img class="irs "
+                                                                    data-ng-src="{{getImage(user.profPic)}}"
+                                                                    alt="profile-pic" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="name-container align-items-center">
+                                                            <p class="overflow-ellipsis mb-0">{{user.username}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="!user.profPic" class=" d-flex">
+                                                        <div class="mr-3">
+                                                            <div class="img-container rounded-circle "><img class="irs"
+                                                                    data-ng-src="{{resourceUrl}}/themes/img/default_avatar.svg"
+                                                                    alt="profile-pic" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="name-container align-items-center">
+                                                            <p class="overflow-ellipsis mb-0">{{user.username}}</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </td>
+                                            <td class="overflow-ellipsis mb-0">{{user.email}}</td>
+                                            <td class="kc-action-cell text-center row-actions ">
+                                                <a class="danger" data-ng-click="leaveUserFromGroup(user.id)">
+                                                    <i class="os-icon os-icon-ui-15 ng-scope" id="{{user.username.toLowerCase().replaceAll(' ','-')}}-deleteIcon"
+                                                        tooltip="{{:: 'tooltip-remove-label' | translate}}"
+                                                        tooltip-placement="top"
+                                                        tooltip-trigger="mouseover mouseout"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr data-ng-show="!users || users.length === 0">
+                                            <td class="text-muted"
+                                                data-ng-show="searchLoaded && !users.length && lastSearch">{{::
+                                                'no-role-members' | translate}}</td>
+                                            <td class="text-muted"
+                                                data-ng-show="searchLoaded && !users.length && !lastSearch">{{::
+                                                'no-role-members' | translate}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!(searchLoaded)">
+                <kc-loader loadertype="loaderTypeName"></kc-loader>
+            </div>
+        </div>
+    </div>
+</div>

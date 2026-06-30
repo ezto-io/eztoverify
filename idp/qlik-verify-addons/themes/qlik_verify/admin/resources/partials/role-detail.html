@@ -1,0 +1,108 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/roles" id="backToRoles">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                            {{ :: 'back-to-roles' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-role></kc-tabs-role>
+                        <div class="element-box">
+                            <form class="form-horizontal clearfix" name="realmForm" novalidate kc-read-only="!access.manageRealm">
+                                <fieldset class="mb-3">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="name"><span class="required" data-ng-show="create">*</span> {{:: 'role-name' | translate}}</label>
+                        
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" id="name" name="name" data-ng-model="role.name" autofocus
+                                                required data-ng-readonly="!create">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" data-ng-show="isWorkflow">
+                                        <label class="col-md-3 control-label" for="name">{{:: 'permissions' | translate}} <span class="required">*</span> </label>
+                                        <div class="col-md-9">
+                                            <div class="form-control h-275px overflow-scroll">
+                                                <ul class="list-style-none p-0">    
+                                                    <li class="my-1 cursor-pointer d-flex align-items-center" ng-repeat="permission in permissions"><input id="{{permission}}-id" type="checkbox" data-ng-model="permission.checked"/> <label for="{{permission}}-id" class="ml-2">{{permission.name}}</label></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="description">{{:: 'description' | translate}} </label>
+                        
+                                        <div class="col-md-9">
+                                            <textarea class="form-control" rows="3" cols="50" maxlength="160" id="description" name="description" data-ng-model="role.description" data-ng-readonly="role.inBuilt"></textarea>
+                                            <div ng-if="!role.inBuilt" class="help-block form-text text-muted form-control-feedback"> {{:: 'content-length-restriction' | translate}} </div>
+                                            <div ng-if="role.inBuilt" class="help-block form-text text-muted form-control-feedback"> {{:: 'role-edit-not-allowed' | translate}} </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="inBuiltSwitch">{{:: 'isInBuilt' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label>
+                                                <div class="os-toggler-w" ng-class="{on: role.inBuilt}">
+                                                    <div class="os-toggler-i">
+                                                        <div class="os-toggler-pill" ng-model="role.inBuilt" name="inBuiltSwitch" id="inBuiltSwitch"
+                                                            onoffswitch>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div> -->
+                                </fieldset>
+                        
+                                <div class="form-group row">
+                                    <div class="col-md-12 d-flex flex-row-reverse" data-ng-show="create">
+                                        <button class="ml-3" kc-save data-ng-show="changed" id="saveBtn">{{:: 'save' | translate}}</button>
+                                        <button kc-cancel data-ng-click="cancel()" id="cancelBtn" data-ng-show="changed">{{:: 'cancel' | translate}}</button>
+                                    </div>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <div class="col-md-12 d-flex flex-row-reverse" data-ng-show="!create && access.manageRealm">
+                                        <button class="ml-3" kc-save data-ng-disabled="!changed" id="saveBtn">
+                                            <span ng-show=" stage === 1 " >{{:: 'save' | translate}}</span>
+                                            <div ng-show=" stage === 2 ">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </div>
+                                        </button>
+                                        <button id="cancelBtn" kc-reset data-ng-disabled="!changed" ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <br>
+                            <div data-ng-controller="RoleTabCtrl" data-ng-if="!role.inBuilt">
+                                <h3 class="danger-zone-main-title">{{:: 'danger-zone' | translate}}</h3>
+                                <br>
+                                <ul class="danger-zone-list">
+                                    <li>
+                                        <div class="danger-zone-container">
+                                            <div>
+                                                <h4 class="danger-zone-title">{{:: 'delete-role-title' | translate}}</h4>
+                                                <p class="mb-0">{{:: 'delete-role-content' | translate}}</p>
+                                            </div>
+                                            <div class="pull-right">
+                                                <button id="removeRole" class="delete-btn btn" data-ng-show="!create && access.manageRealm" data-ng-disabled="changed" data-ng-click="remove()">{{::'delete-role-btn'|translate}}</button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+

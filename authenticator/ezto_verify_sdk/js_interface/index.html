@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="ezto.js"></script>
+</head>
+
+<body>
+    <input type="button" value="success" onclick="callSuccess()">
+    <br />
+    <br />
+    <input type="button" value="Failure" onclick="callFailure()">
+    <br />
+    <br />
+
+    <input type="button" value="Device Register" onclick="callDeviceRegister()">
+    <br />
+    <br />
+
+    <input type="button" value="Device Verify" onclick="callDeviceVerify()">
+    <br />
+    <br />
+
+    <input type="button" value="Register Bio" onclick="callRegisterBiometric()">
+    <br />
+    <br />
+
+    <input type="button" value="Verify Bio" onclick="callVerifyBiometric()">
+    <br />
+    <br />
+
+    <input type="button" value="Get FCM Token" onclick="callGetFcmToken()" />
+    <br />
+    <br />
+
+    <input type="button" value="Read device details" onclick="callReadDeviceDetails()">
+    <br />
+    <br />
+
+    <input type="button" value="Copy To Clipboard" onclick="callCopyToClipboard()">
+    <br />
+    <br />
+
+    <input type="button" value="Get current network" onclick="callGetCurrentNetwork()">
+    <br />
+    <br />
+
+    <a href="/deeplink/test">Https QR transaction deeplink (Assume this to be the transaction page)</a>
+    <br />
+    <br />
+
+    <br />
+    <br />
+    <input id="session_uri" type="text" />
+    <input type="button" value="Fetch" onclick="callHttpRequest()" />
+
+    <br />
+    <br />
+
+    <a href="https://your-liveness-url.example.com">Liveness</a>
+    <br />
+    <br />
+
+    <input type="button" value="Check App Scheme for uaepass" onclick="checkAppScheme()">
+    <br />
+    <br />
+
+    <input type="button" value="Uae pass app installed url" onclick="loadUaePassAppInstalledUrl()">
+    <br />
+    <br />
+
+
+    <a href="dummy.pdf">Download PDF</a>
+
+
+    <a href="myappb://open">Open App B</a>
+
+    <div id="result"></div>
+</body>
+
+<script>
+    const divToUpdate = document.getElementById('result');
+
+    async function callHttpRequest() {
+        var url = document.getElementById("session_uri").value;
+        var result = await loadSekuraSessionUrl(url)
+        showResult(result)
+    }
+
+    async function callSuccess() {
+        success()
+        showResult("Success completed")
+    }
+
+    async function callFailure() {
+        failure('failed due to x error')
+        showResult("Failure completed")
+    }
+
+    async function callDeviceRegister() {
+        var result = await registerSilentBinding('MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0jdWgPLId5NJYduOKZTdsXcHv8gm4ZoTokR485OD0NmXgKQHv7SpEk2VEElO0tcyW7UdTw4BWM2Z8eOQJeKzmD55A7MJz2EmLM0hFz48em/gefwrsnhPSQJmS4tSguc+ahFzuJEnwxCzfadAbTwlIzYF0+d+N7GyHmW0mCaofBIsFjZ38V/uin77dCG4fWU9loP7JY+Ztfl+mjOg89fdKBUq1s/7gNJoagKx49Qd/mxoPXQrfwoADLTiP+TzBBj0RZgK8FGtSMXW8UyEVx5wescir0nBgcy+/7G7xj6TiGnoSKU4nS3MEucl8MKFKn7ws6HTYY/10N/uyOuGAroxVQIDAQAB')
+        showResult(result)
+    }
+
+    async function callDeviceVerify() {
+        var result = await verifySilentBinding('PkyNgOVVlYvIVEBkq7PD/R6X5r/wy4dnyLaLO6Hazew=')
+        showResult(result)
+    }
+
+
+    async function callRegisterBiometric() {
+        var result = await registerBiometric('MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAnSr+fTFTaf92P1bhziPCJwNYj32UD5hmgS3knp35xPSu9BQAU+uuBVDsZGmoLa9830Xz/TxkpnEUYMGmdRjjUu2I/dvHzZ2kXmvopsFvmYki3maEtB/b6HuzsFtVBrtvsFhpHYOX3tIRe5uiwY2rPSnyqccZvDcGpb9tpFTe4G5XSdD/0TnJec8ZJzH/gfa7rhFSauYYBYSV1jDiCnSl2PiHN2pNL+GYdoDNEAOEqn7WFbqKzG7CeVvzbVUWYXQkPfIEtGOAxQikOOaMud8lwKPrvUMjSeQc74G30Dg+dro7XCEYT9RY/c90pLFbwy5w9S4UwaNmpqEDxYQko+rnHACH0XlrynUjTldBvcTzCo99t/ecXjrOaJV2FdHS76KE4huPtDAcX6nnSeIq/FU1eVcjBWCIDljw9A6E59S1SrbXYLuT/SUmEdq6zTIFx0uWEgDCU1X8/BeAFsIE1JKCCbDLZv2sxrEBiw9ZDkW52Fw0vVBXs/PCU2jtbvhhOhfd3A4mFV5k4dwMpDn4QYZ2Sf7tqXAZz71G2m/QTU6tvHWQzv8CeAVfrLmbPnYbbGomfLlbRUeSD5tUBSCzk3wQPhi2onixmmXwZCiqkQKTVo9G+TBUHBPOiLXMT+xhs7xG6AxgfKc9M51WsntqsrufOZncQMvyQvLS90EJPalFzQcCAwEAAQ==', '1234')
+        showResult(result)
+    }
+
+    async function callVerifyBiometric() {
+        var result = await verifyBiometric('7gHYl1aNApkONun3l4RUqkkvlTS9FhHs0xl/Yz168/I=')
+        showResult(result)
+    }
+
+    async function callGetFcmToken() {
+        var result = await getFcmToken()
+        showResult(result)
+    }
+
+    async function callReadDeviceDetails() {
+        var result = await readDeviceDetails()
+        showResult(result)
+    }
+
+    async function callCopyToClipboard() {
+        var result = await copyToClipboard('content copied from web')
+        showResult(result)
+    }
+
+    async function callGetCurrentNetwork() {
+        var result = await getCurrentNetwork()
+        showResult(result)
+    }
+
+    async function checkAppScheme() {
+        var result = await isCustomSchemeRegisteredOnApp("uaepass", "host")
+        showResult(result)
+    }
+
+    async function loadUaePassAppInstalledUrl() {
+        var result = await loadUrl("https://stg-id.uaepass.ae/idshub/authorize?acr_values=urn%3Adigitalid%3Aauthentication%3Aflow%3Amobileondevice&client_id=sandbox_stage&redirect_uri=https%3A%2F%2Fstg-selfcare.uaepass.ae&response_type=code&scope=urn%3Auae%3Adigitalid%3Aprofile%3Ageneral&state=ShNP22hyl1jUU2RGjTRkpg%3D%3D")
+        showResult(result)
+    }
+
+    async function showResult(data) {
+        divToUpdate.textContent = JSON.stringify(data);
+    }
+
+
+</script>
+
+</html>

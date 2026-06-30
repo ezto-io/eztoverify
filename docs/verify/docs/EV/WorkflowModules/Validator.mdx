@@ -1,0 +1,132 @@
+---
+id: Validator
+title: Validator
+sidebar_label: Validator
+---
+
+
+import ValidatorConditionRow from '@site/src/components/docs/ValidatorConditionRow';
+import GifPlayer from "@site/src/components/changelogs/GifPlayer";
+
+The **Validator** ensures that workflows proceed correctly based on predefined criteria.  It acts as a checkpoint within the workflow process, comparing the actual outcomes of previous workflows and configurations with the expected results. This comparison determines the appropriate next steps, ensuring that only workflows meeting the specified conditions are executed. Below is a detailed explanation of how the **Validator** functions with the workflows.
+
+- **Validation Process**: As the workflows are executed, the **Validator** compares the actual result of that workflow with the expected outcome specified in its configuration. The expected outcomes, or claims, are defined based on the particular workflow chosen before.
+
+- **Comparison Logic**: The Validator compares the actual result from the workflow against the specified value in the configuration, producing a boolean outcome—either **true(left-path)** or **false(right-path)**. The comparison logic is refined using the AND or OR conditions:
+  - **AND**: All specified conditions must be met for the comparison to yield a true result. If any condition fails, the result is false.
+  - **OR**: At least one specified condition must be met for the comparison to yield a true result. If any condition is satisfied, the result is true.
+
+
+  <GifPlayer name="8.0.0/Workflow-Flowchart-revamp"/>
+
+- **Determining the Next Workflow**: Based on whether the comparison yields `true` or `false`, the **Validator** determines the next action. If the result is `true`, it means the workflow’s outcome met the expected criteria, and the **Validator** allows the subsequent workflow to be triggered. If the result is `false`, the **Validator** will trigger an alternative workflow.
+
+### How to Setup
+
+*1* Navigate to **Workspace > Workflows,** and click on the flow created for **Validator.** 
+
+*2* Hover over the plus (+) symbol and select **Validator** to add it.
+
+
+:::note
+The **Validator** module can be used either **before** or **after** a workflow.
+
+**When added after a workflow module**: The Validator displays all claims associated with the previous workflow. You can select these claims in the configurations of the validator to check whether the workflow produced the expected results.
+
+**When added as the initial module in Workflows:** Instead of using claims from a previous workflow, you provide an object value. This object value is then checked against the message metadata to perform the validation. 
+
+**When added as the initial module in Sub Workflows:** If a [Sub Workflow](/docs/EV/WorkflowModules/SubWorkflow) module is placed after other workflow modules (e.g., Aadhaar) in the main workflow, and the **first module** in the sub workflow is a **Validator**, you must manually enter the claims from the main workflow into the **Validator** module within the sub workflow to validate the values. 
+:::
+
+![Validator](https://images.tango.us/workflows/cb36c514-7e99-40fe-af3c-3579a3ff2625/steps/b32261a6-05d3-478e-8c6b-ad3a1cd588a4/72152d92-967b-4c3f-a75d-d576f3698dcf.png)
+
+*3* Click on the newly added Validator, then select the **General** tab to customize your preferences.
+
+![General](https://images.tango.us/workflows/cb36c514-7e99-40fe-af3c-3579a3ff2625/steps/4698574a-52fc-44a6-adc7-2b9792956ec2/5c8dde7c-8473-4a0c-81b6-4b93a60a19b6.png)
+
+### Manage General
+
+(<span class="required-text">*</span>) Indicates an action to be mandatory.
+
+<table>
+   <thead>
+      <tr>
+         <th width="147">Name</th>
+         <th>Description</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td>Display Name<span class="required-text">*</span></td>
+         <td>Set a name to the workflow for easy identification.</td>
+      </tr>
+      <tr>
+         <td>Description</td>
+         <td>Summarize the purpose and functionality of this workflow module.</td>
+      </tr>
+      <tr>
+         <td>Enable</td>
+         <td>This toggle is enabled by default. When enabled, the particular workflow module begins its execution. Conversely, if disabled, the workflow module remains inactive and won't proceed.</td>
+      </tr>
+      <tr>
+         <td>Rule</td>
+         <td>This determines the criteria for triggering the particular workflow module. When the selected rule is evaluated, and is satisfied, the workflow proceeds as provided. If not, the workflow will not be executed. <strong>Note: If no rules are set, the workflow defaults to its standard action without any rule. For more information about the rules, refer <a href="/verify/docs/EV/ControlIntegration/WorkflowsLevel/">here.</a></strong></td>
+      </tr>
+   </tbody>
+</table>
+
+*4* Then, click on the **Configs** tab to set the necessary configurations.
+
+![Configs](https://images.tango.us/workflows/cb36c514-7e99-40fe-af3c-3579a3ff2625/steps/595d70f3-cf11-46c8-bf41-b29e54f447ff/0a407a19-e696-4107-a641-9c6a08836595.png)
+
+### Manage Configs
+
+(<span class="required-text">*</span>) Indicates an action to be mandatory.
+
+<table>
+    <thead>
+        <tr>
+            <th width="147">Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+         <td>Display Name<span class="required-text">*</span></td>
+            <td>This field allows you to assign a name to the validator for easy identification.</td>
+        </tr>
+        <tr>
+            <td>Validation Condition</td>
+            <td>
+                This setting determines the condition under which the validator will consider a workflow's result as true or false. Multiple conditions can be added, and there are two types of logical operators to define how these
+                conditions are evaluated:
+                <ul>
+                    <li>
+                        <code>AND</code>: When AND is selected, all claims specified for the workflow must be satisfied. If even one claim fails, the result will be considered false, and the workflow associated with a false outcome will be
+                        triggered.
+                    </li>
+                    <li>
+                        <code>OR</code>: When OR is selected, at least one of the claims specified for the workflow must be satisfied. If any claim is successful, the result will be considered true, and the workflow associated with a true
+                        outcome will proceed.
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>Claim</td>
+            <td>Select the specific claim to compare against the workflow's result. Note that the available claims may differ depending on the workflow selected previously.</td>
+        </tr>
+        <ValidatorConditionRow />
+        <tr>
+            <td>Value</td>
+            <td>Enter the value that the workflow's result should match. The comparison between the result and this value determines the outcome of the validation.</td>
+        </tr>
+    </tbody>
+</table>
+
+
+*5* After you've configured everything needed, click on **SAVE.**
+
+*6* Now, for both true and false outcomes, you can add the necessary workflows. There are no limitations on the number of workflows and validators that can be included in a single flow.
+
+![Many](https://images.tango.us/workflows/cb36c514-7e99-40fe-af3c-3579a3ff2625/steps/a8058c07-97cd-4c1c-99cb-eb71c241583f/3418f51b-a572-4cb9-841d-0d14aa6b0b68.jpeg)

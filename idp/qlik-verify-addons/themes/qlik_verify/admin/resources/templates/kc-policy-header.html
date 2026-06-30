@@ -1,0 +1,21 @@
+<div class="text-overflow-control d-flex">
+    <div class="mr-4">
+        <div class="policy-action-img-container">
+            <img class="policy-action-img" alt="logo" data-ng-if="realm.mode === 'wiam'" data-ng-src="{{resourceUrl}}/themes/img/{{policyRep.policyType === 'webauthn'? policyRep.policyType + '-policy.svg'  : policyRep.policyType + '.svg'}}">
+            <img class="policy-action-img" alt="logo" data-ng-if="realm.mode === 'ciam'" data-ng-src="{{resourceUrl}}/themes/img/{{policyRep.policyType === 'webauthn'? policyRep.policyType + '-policy-ciam.svg'  : policyRep.policyType + '-ciam.svg'}}">
+            <img class="policy-action-img" alt="logo" data-ng-if="realm.mode === 'bo'" data-ng-src="{{resourceUrl}}/themes/img/{{policyRep.policyType === 'webauthn'? policyRep.policyType + '-policy-bo.svg'  : policyRep.policyType + '-bo.svg'}}">
+        </div>
+    </div>
+    <div>
+            <h3 class="pt-0 font-weight-normal">{{policyRep.policyName}}</h3>
+            <span ng-if="policyRep.realmPolicy">
+                
+            </span>
+        </span> 
+        <p><strong>{{:: realm.mode === 'bo' ? 'rule-type' : 'policy-type' | translate}}: </strong>
+            <span class="text-capitalize" data-ng-hide="policyRep.policyType === 'ciba'">{{:: policyRep.policyType | translate}}</span>
+            <span class="text-capitalize" data-ng-if="policyRep.policyType === 'ciba'">{{:: 'secured-plus' | translate}}</span>
+            <span data-ng-if="policyRep.realmPolicy"> <strong  class="badge badge-danger ng-binding ng-scope">InBuilt</strong> </span>
+        </p>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="GROOTAN System" id="api-connector-config-changelog">
+        <!-- OSS: api-connector module is not shipped, so API_CONNECTOR_CONFIG /
+             API_PRIORITY are never created. Skip this ALTER gracefully when the
+             tables are absent (it still applies if api-connector is re-added). -->
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="API_CONNECTOR_CONFIG"/>
+                <tableExists tableName="API_PRIORITY"/>
+            </and>
+        </preConditions>
+        <addColumn tableName="API_CONNECTOR_CONFIG">
+            <column name="CATEGORY" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="API_PRIORITY">
+            <column name="CATEGORY" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

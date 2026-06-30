@@ -1,0 +1,139 @@
+{
+  "formId" : "id_ofthe_form",
+  "formDisplayTitle": {
+      "en": "Activation111",
+      "de": "Aktivierung",
+      "fr": "Activation",
+      "it": "Attivazione" ,
+      "zh" : "chineese"
+  },
+  "formDisplayTitleAlign": "left",
+  "formDisplayTitleClr": "red",
+  "formDescription": {
+      "en": "Welcome to the Interactive\nActivation System",
+      "de": "Bitte geben Sie Ihre E-Banking Vertragsnummer\nein und klicken Sie auf \"Weiter\"",
+      "fr": "Veuillez saisir votre numéro de contrat de banque en ligne et cliquer sur \"Continuer\"",
+      "it": "Inserisca il numero del suo contratto di online banking e clicchi su \"Avanti\".",
+      "zh" : "chineese"
+    },
+  "formDescriptionClr": "#333",
+  "formDescriptionAlign": "center",
+  "formInputs": [
+      {
+        "inputId": "email",
+        "type" :  "email",
+        "labelTxt" : {
+          "en": "Email",
+          "de": "Weiter",
+          "fr": "Continuer",
+          "it": "Avanti",
+          "zh" : "chineese"
+        },
+        "placeholderTxt": {
+          "en": "Email",
+          "de": "Vertragsnummer",
+          "fr": "Numéro de contrat",
+          "it": "Numero di contratto",
+          "zh" : "chineese"
+        }
+      },
+      {
+        "inputId": "firstName",
+        "type" : "text",
+        "labelTxt" : {
+          "en": "First Name",
+          "de": "Weiter",
+          "fr": "Continuer",
+          "it": "Avanti",
+          "zh" : "chineese"
+        },
+        "placeholderTxt": {
+          "en": "first name",
+          "de": "Vertragsnummer",
+          "fr": "Numéro de contrat",
+          "it": "Numero di contratto",
+          "zh" : "chineese"
+        }
+      },
+      {
+        "inputId": "lastName",
+        "type" : "text",
+        "labelTxt" : {
+          "en": "Last name",
+          "de": "Weiter",
+          "fr": "Continuer",
+          "it": "Avanti",
+          "zh" : "chineese"
+        },
+        "placeholderTxt": {
+          "en": "last name",
+          "de": "Vertragsnummer",
+          "fr": "Numéro de contrat",
+          "it": "Numero di contratto",
+          "zh" : "chineese"
+        }
+      },
+      {
+        "inputId": "password",
+        "type" : "password",
+        "labelTxt" : {
+          "en": "Password",
+          "de": "Weiter",
+          "fr": "Continuer",
+          "it": "Avanti",
+          "zh" : "chineese"
+        },
+        "placeholderTxt": {
+          "en": "Password",
+          "de": "Vertragsnummer",
+          "fr": "Numéro de contrat",
+          "it": "Numero di contratto",
+          "zh" : "chineese"
+        }
+      },
+      {
+        "inputId": "confirmPassword",
+        "type" : "password",
+        "labelTxt" : {
+          "en": "Confirm Password",
+          "de": "Weiter",
+          "fr": "Continuer",
+          "it": "Avanti",
+          "zh" : "chineese"
+        },
+        "placeholderTxt": {
+          "en": "Confirm Password",
+          "de": "Vertragsnummer",
+          "fr": "Numéro de contrat",
+          "it": "Numero di contratto",
+          "zh" : "chineese"
+        }
+      }
+  ],
+  "formDisplayButtons": [
+      {
+          "btnId": "submitBtn",
+          "btnText": {
+          "en": "Continue",
+          "de": "Weiter",
+          "fr": "Continuer",
+          "it": "Avanti",
+          "zh" : "chineese"
+          },
+          "btnTextClr": "#FFFFFF", 
+          "btnBgClr": "#4F1F68"
+      },
+      {
+        "btnId": "usernameContinueBtn1",
+        "btnText": {
+        "en": "Cancel",
+        "de": "Weiter",
+        "fr": "Continuer",
+        "it": "Avanti",
+        "zh" : "chineese"
+        },
+        "btnTextClr": "#FFFFFF", 
+        "btnBgClr": "#4F1F68"
+    }
+  ]
+}

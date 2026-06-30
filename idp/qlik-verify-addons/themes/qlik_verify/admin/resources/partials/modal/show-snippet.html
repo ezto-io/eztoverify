@@ -1,0 +1,29 @@
+<div class="modal-header pb-0 align-items-start">
+    <h6 class="modal-title" data-ng-if="!showSteps">{{:: 'getting-access' | translate}}</h6>
+    <div data-ng-if="showSteps">
+        <h6 class="modal-title">{{:: 'oidc-modal-title' | translate}}</h6>
+        <ol>
+            <li><p class="mb-0 helper-text">{{:: 'oidc-info-one' | translate}}</p></li>
+            <li><p class="mb-0 helper-text">{{:: 'oidc-info-two' | translate}}</p></li>
+        </ol>
+    </div>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body curl-script">
+    <pre class="d-flex pt-0 flex-column mb-0 curl-snippet">
+        <code class="p-4 language-curl pb-5">{{ curlSnippet }}</code>
+        <i id="copyIcon" class="btn btn-primary px-3 py-1 os-icon os-icon-copy copy-paste-icon snippet-copy-icon position-absolute text-white cursor-pointer" data-ng-click="copyToClipboard(curlSnippet)" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+        <div class="p-3 helper-text note-container mt-4 pt-0">
+            <span class="os-icon os-icon-alert-triangle note-icon-container"></span>
+            <p class="help-text" ng-bind-html="helpText"></p>
+        </div>
+    </pre>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        hljs.highlightAll();
+    });
+</script>
+

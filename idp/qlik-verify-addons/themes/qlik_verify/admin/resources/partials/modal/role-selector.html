@@ -1,0 +1,40 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{:: 'role-selector' | translate}}</h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <form>
+        <div data-ng-show="realmRoles.length > 0" class="margin-bottom-30px">
+            <label class="control-label" for="available">{{:: 'realm-roles' | translate}}</label>
+            <kc-tooltip>{{:: 'realm-roles.tooltip' | translate}}</kc-tooltip>
+            <select id="available" class="form-control overflow-select" size="5"
+                    ng-dblclick="selectRealmRole()"
+                    ng-model="selectedRealmRole.role"
+                    ng-options="r.name for r in realmRoles | orderBy:'toString()'">
+                <option class="display-none" value="">{{:: 'select-a-role' | translate}}</option>
+            </select>
+            <button class="btn btn-secondary mt-2" type="submit" data-ng-disabled="!selectedRealmRole.role" ng-click="selectRealmRole()" tooltip-trigger="mouseover mouseout" tooltip="Select realm role" tooltip-placement="top">
+                {{:: 'select-realm-role' | translate}}</i>
+            </button>
+        </div>
+        <div>
+           <label class="control-label" for="clients">{{:: 'client-roles' | translate}}
+                <kc-tooltip>{{:: 'client-roles.tooltip' | translate}}</kc-tooltip>        
+            </label>
+            <input type="hidden" class="margin-bottom-10" ui-select2="clientsUiSelect" id="clients" data-ng-model="selectedClient" data-ng-change="changeClient(selectedClient);" data-placeholder="{{:: 'authz-select-client' | translate}}...">
+            </input>
+            <select id="available-client" class="form-control overflow-select" size="5"
+                    ng-dblclick="selectClientRole()"
+                    ng-model="selectedClientRole.role"
+                    ng-options="r.name for r in clientRoles | orderBy:'toString()'">
+                <option class="display-none" value="">{{:: 'select-a-role' | translate}}</option>
+            </select>
+            <button class="btn btn-secondary mt-2" type="submit" data-ng-disabled="!selectedClientRole.role" ng-click="selectClientRole()" tooltip-trigger="mouseover mouseout" tooltip="Select client role" tooltip-placement="top">
+                {{:: 'select-client-role' | translate}}
+            </button>
+        </div>
+    </form>
+</div>
+<div class="modal-footer"></div>

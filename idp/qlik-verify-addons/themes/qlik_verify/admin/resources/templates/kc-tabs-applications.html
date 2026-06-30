@@ -1,0 +1,28 @@
+<div class="os-tabs-w mx-1">
+    <div class="sub-top-bar">
+        <ul class="nav nav-tabs upper">
+            <li class="nav-item" data-ng-show="realm.mode === 'wiam'" >
+                <a aria-expanded="false" id="sso-tab" class="nav-link" data-ng-class="{active: path[2] == 'sso'}" href="#/realms/{{realm.realm}}/sso"> {{:: 'sso' |
+                    translate}}
+                </a>
+            </li>
+            <li class="nav-item" data-ng-show="realm.mode === 'wiam' && serverInfo.iwsenabled">
+                <a aria-expanded="false" id="iws-tab" class="nav-link" data-ng-class="{active: path[4] == 'iws'}" href="#/realms/{{realm.realm}}/clients/type/iws">
+                    {{:: 'intelligent_web_secure' |
+                    translate}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a aria-expanded="false" id="custom-tab" class="nav-link" data-ng-click="showCustomTabs = true" data-ng-class="{active: path[4] === 'high-secure' || path[4] === 'saml' || path[4] === 'rest-api' || path[4] === 'machine-to-machine' || path[4] === 'browser-based'}" href="#/realms/{{realm.realm}}/clients/type/high-secure"> {{:: 'custom' |
+                    translate}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a aria-expanded="false" id="inBuilt-tab" class="nav-link" data-ng-class="{active: path[4] == 'in-built'}" href="#/realms/{{realm.realm}}/clients/type/in-built"> {{:: 'inbuilt' |
+                    translate}}
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<kc-subtabs-custom-applications ng-if="path[4] === 'high-secure' || path[4] === 'saml' || path[4] === 'rest-api' || path[4] === 'machine-to-machine' || path[4] === 'browser-based'"></kc-subtabs-custom-applications>

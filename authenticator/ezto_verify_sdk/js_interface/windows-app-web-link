@@ -1,0 +1,8 @@
+[
+  {
+    "packageFamilyName": "Your app's package family name, e.g MyApp_9jmtgj1pbbz6e",
+    "paths": [
+      "/deeplink"
+    ]
+  }
+]

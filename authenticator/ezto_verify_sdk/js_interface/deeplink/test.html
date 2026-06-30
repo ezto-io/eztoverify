@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deeplink</title>
+    <script src="./../ezto.js"></script>
+</head>
+
+
+
+<body>
+    <div id="info"></div>
+
+</body>
+
+<script>
+    window.onload = async () => {
+        let os = getBrowserOs();
+        switch (os) {
+            case "android":
+                //Means app is not istalled
+                window.location.href = "https://play.google.com"
+                break;
+            case "ios":
+                window.location.href = "https://apple.com"
+                break;
+            case "macosx":
+                var appInstalled = await isCustomSchemeRegistered("eztovrfy://deeplink");
+                console.log("appInstalled", appInstalled);
+                if (appInstalled) {
+                    document.getElementById("info").innerText = "Transaction loaded in app. this page can be safely closed. If you don't have the app installed. Please install from apple store"
+                } else {
+                    window.location.href = "https://apple.com"
+                }
+                break;
+            case "windows":
+                var appInstalled = await isCustomSchemeRegistered("eztovrfy://deeplink");
+                if (appInstalled) {
+                    document.getElementById("info").innerText = "Transaction loaded in app. this page can be safely closed. If you don't have the app installed. Please install from windows store"
+                } else {
+                    window.location.href = "https://microsoft.com"
+                }
+                break;
+            case "linux":
+                //Not supported
+                break;
+            default:
+                break;
+        }
+        console.log(os)
+    }
+</script>
+
+</html>

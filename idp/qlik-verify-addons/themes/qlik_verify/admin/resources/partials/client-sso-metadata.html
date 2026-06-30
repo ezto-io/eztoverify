@@ -1,0 +1,140 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/clients/type/{{client.appType.replaceAll('_', '-') }}" id="backToApplicationsList" data-ng-if="path[2]==='clients'">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-applications'
+                            | translate}}
+                        </a>
+                        <a href="#/realms/{{realm.realm}}/sso" id="backToSso" data-ng-if="path[2]==='sso'">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-sso'
+                            | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-sso-app></kc-tabs-sso-app>
+                        <kc-tabs-client data-ng-if="path[2]==='clients'"></kc-tabs-client>
+                        <kc-tabs-sso-client data-ng-if="path[2]==='sso'"></kc-tabs-sso-client>
+                        <div class="element-box" ng-if="scriptDownloadUrl">
+                            <form>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label" for="name"> {{:: 'federate-domain' | translate}} </label>
+                                    <div class="col-md-12 p-3 helper-text note-container mt-4 pt-0">
+                                        <span class="os-icon os-icon-alert-triangle note-icon-container"></span>
+                                        <p class="help-text ng-binding">{{:: 'cant-federate-default-domain' | translate}}</p>
+                                    </div>
+                                    <div class="col-md-12 px-0">
+                                        <div class="powershell-container d-flex justify-content-between">
+                                            <div>{{:: 'powerShell' | translate }}</div>
+                                            <i class="os-icon os-icon-copy copy-icon powershell-copy-icon c-white" id="powershell-copy-icon" data-ng-click="copyValue(code)" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                        </div>
+                                        <div class="powershell-code">
+                                            <p class="comment"># {{:: 'download-script' | translate}}</p>
+                                            <p class="code-line-prop c-white">{{code}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mt-3">
+                                        <a href="{{scriptDownloadUrl}}" id="download-script-btn" class="btn btn-primary" style="float: right" target="_blank"> {{ :: 'download-script-btn' | translate }} </a>
+                                    </div>
+                                    <!-- <div class="col-md-9">
+                                        <div class="input-group read-only scrollbar-none">
+                                            <input value={{clientMetadata.entityId}} id="entityId" hidden>
+                                            <div class="form-control input-with-copy" name="entityId">{{clientMetadata.entityId}}</div>
+                                            <i class="os-icon os-icon-copy copy-icon sso-copy-icon" data-ng-click="copyToClipboard('#entityId')" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                        </div>
+                                        <p class="helper-text">{{ :: 'entity-id.tooltip' | translate }}</p>
+                                    </div>  -->
+                                </div>
+                            </form>
+                        </div>
+                        <div class="element-box">
+                            <form>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label" for="name"> {{ :: 'entity-id' | translate }} </label>
+                                    <div class="col-md-9">
+                                        <div class="input-group read-only scrollbar-none">
+                                            <input value={{clientMetadata.entityId}} id="entityId" hidden>
+                                            <div class="form-control input-with-copy" name="entityId">{{clientMetadata.entityId}}</div>
+                                            <i class="os-icon os-icon-copy copy-icon sso-copy-icon" id="entityId-copyIcon" data-ng-click="copyToClipboard('#entityId')" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                        </div>
+                                        <p class="helper-text">{{ :: 'entity-id.tooltip' | translate }}</p>
+                                    </div> 
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label" for="name"> {{ :: 'login-endpoint' | translate }} </label>
+                                    <div class="col-md-9">
+                                        <div class="input-group read-only scrollbar-none">
+                                            <input value={{clientMetadata.loginEndpoint}} id="loginEndpoint" hidden>
+                                            <div class="form-control input-with-copy" name="logoutEndpoint">{{clientMetadata.loginEndpoint}}</div>
+                                            <i class="os-icon os-icon-copy copy-icon sso-copy-icon" id="loginEndpoint-copyIcon" data-ng-click="copyToClipboard('#loginEndpoint')" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                        </div>
+                                        <p class="helper-text"> {{ :: 'login-endpoint.tooltip' | translate }} </p>
+                                    </div> 
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label" for="name"> {{ :: 'logout-endpoint-redirect' | translate }} </label>
+                                    <div class="col-md-9">
+                                        <div class="input-group read-only scrollbar-none">
+                                            <input value={{clientMetadata.logoutEndpoint}} id="logoutEndpoint" hidden>
+                                            <div class="form-control input-with-copy" name="logoutEndpoint">{{clientMetadata.logoutEndpoint}}</div>
+                                            <i class="os-icon os-icon-copy copy-icon sso-copy-icon" id="logoutEndpoint-copyIcon" data-ng-click="copyToClipboard('#logoutEndpoint')" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                        </div>
+                                        <p class="helper-text">{{ :: 'logout-endpoint-redirect.tooltip' | translate }}</p>
+                                    </div> 
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label" for="name"> {{ :: 'logout-endpoint-post' | translate }} </label>
+                                    <div class="col-md-9">
+                                        <div class="input-group read-only scrollbar-none">
+                                            <input value={{clientMetadata.logoutEndpointPost}} id="logoutEndpointPost" hidden>
+                                            <div class="form-control input-with-copy" name="logoutEndpointPost">{{clientMetadata.logoutEndpointPost}}</div>
+                                            <i class="os-icon os-icon-copy copy-icon sso-copy-icon" id="logoutEndpointPost-copyIcon" data-ng-click="copyToClipboard('#logoutEndpointPost')" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                        </div>
+                                        <p class="helper-text">{{ :: 'logout-endpoint-post.tooltip' | translate }}</p>
+                                    </div> 
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label" for="name"> {{ :: 'metadata-cerficate' | translate }} </label>
+                                    <div class="col-md-9">
+                                        <textarea readonly class="form-control" rows="10" cols="50" id="x509" name="x509" data-ng-model="clientMetadata.x509"></textarea>
+                                        
+                                    </div> 
+                                    <div class="col-md-12 d-flex flex-row-reverse mt-3" data-ng-show="client.access.configure">
+                                        <button class="ml-3" kc-save data-ng-click="copyToClipboard('#x509')" id="metadata-Certificate-copyBtn"> {{ :: 'copy-to-clipboard' | translate }} </button>
+                                        <a href="{{x509DownloadUrl}}" class="btn btn-secondary" target="_blank" id="metadata-Certificate-downloadBtn"> {{ :: 'download-cerficate' | translate }} </a>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label" for="name"> {{ :: 'algorithm' | translate }} </label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" id="signatureAlgorithm"
+                                                            ng-change="changeAlgorithm()"
+                                                            ng-model="signatureAlgorithm"
+                                                            ng-options="alg for alg in signatureAlgorithms">
+                                                    </select>
+                                        <p class="helper-text"> {{ :: 'metadata-algorithm.tooltip' | translate }} </p>
+                                    </div> 
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label" for="name"> {{ :: 'metadata-thumbprint' | translate }} </label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            <input readonly class="form-control input-with-copy" type="text" id="thumbPrint" name="thumbPrint" data-ng-model="thumbPrint">
+                                            <i class="os-icon os-icon-copy copy-icon" id="thumbPrint-copyIcon" data-ng-click="copyToClipboard('#thumbPrint')" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                        </div>
+                                        <p class="helper-text" translate="metadata-thumbprint.tooltip" translate-values="{signatureAlgorithm: signatureAlgorithm}"></p>
+                                    </div> 
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

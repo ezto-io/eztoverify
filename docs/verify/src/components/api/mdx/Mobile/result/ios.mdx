@@ -1,0 +1,8 @@
+``` javascript
+    class MyListener : UIViewController, EztoVerifyService {
+        func onResult(reqId: String, authReqId: String) {
+            // This will be called if the Result Hook notification way in ezto verify dashboard is set to Mobile_Sdk
+            // Only called if the authentication flow is completed successfully
+        }
+    }
+```

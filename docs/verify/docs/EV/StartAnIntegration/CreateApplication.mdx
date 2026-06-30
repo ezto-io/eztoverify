@@ -1,0 +1,233 @@
+---
+id: CreateApplication
+title: Create Application
+sidebar_label: Create Application
+--- 
+
+import TabItem from "@theme/TabItem";
+import Tabs from '@theme/Tabs';
+
+import DropBox from "../../../src/components/docs/DropBox"
+
+# Create Application 
+
+Design and customize your application according to your preferences, including the customization of its interface.
+
+With **ezto Verify**, you can establish a verification procedure specific to meet your needs, ensuring secure interactions with users, information, and transactions. Utilize the capabilities of ezto verify to seamlessly integrate and execute verification processes, enhancing both security and user experience.
+
+*1* Navigate to **Workspace**, and click on **Applications.**
+
+*2* Click on the `+ CREATE APPLICATION` button.
+
+*3* You will be taken to the first step, (i.e, **Details)** for creating an application.
+
+### *1* Details
+
+Provide a descriptive name and select the theme that suits best or click on default. Note that, if no themes are created, you can set the **default** theme. To know how to create a **Theme,** see [here](/verify/docs/EV/GetStarted/Branding/Branding/).
+
+![Details](https://images.tango.us/workflows/e4539b39-4152-485c-8361-50a3884e1370/steps/8d5447a3-6878-4e7b-baa1-d4da1cbaeec9/9d4b6be6-263d-4a2a-8d18-537937565776.png)
+
+#### Manage Details
+
+<table><thead><tr><th width="185">Name</th><th>Description</th></tr></thead><tbody><tr><td>Application Name</td><td>A name for the application.</td></tr><tr><td>Show Consent</td><td>Allow the presentation of permissions to users prior to proceeding with onboarding or verification.</td></tr><tr><td>Theme</td><td>Select a theme for the authentication page.</td></tr></tbody></table>
+
+Upon providing the above, click on the `NEXT` button to proceed to the further steps.
+
+### *2* Gatepass
+
+This section allows to set application-level rules that must be met for a transaction to be initiated. Failure to comply with these rules will result in denied user access to initiate the verification flow. To know how these rules work, refer [here](/verify/docs/EV/ControlIntegration/ApplicationLevel/).
+
+![Gatepass](https://images.tango.us/workflows/e4539b39-4152-485c-8361-50a3884e1370/steps/592ec585-1c28-4d81-bd04-d45169fd4300/c0fc9d63-b932-4e06-83fa-dcb98ef778b4.png)
+
+Either configure or skip the step, and click on the `NEXT` button to proceed to the further steps. You can always configure the **Gatepass** rule, even after creating the application.
+
+### *3* Configurations
+
+As the third step, you will be taken to the **Configuration** tab. Here, it contains [Verification Way](/verify/docs/EV/StartAnIntegration/SetupVerification/Web/) and [Result Notification Way](/verify/docs/EV/StartAnIntegration/SetupResultNotification/Hook/), which must be provided, as it is a mandatory step.
+
+![Configuration](https://images.tango.us/workflows/e4539b39-4152-485c-8361-50a3884e1370/steps/857afe74-924f-47eb-9dd8-b12ae393a239/e1c3f8b9-40e4-4d35-a6ff-3709a98b8b69.png)
+
+<Tabs>
+<TabItem value="VerificationWay" label="Verification Way" default>
+
+This determines how the verification should be executed. It currently consists of five types:
+
+<table>
+   <thead>
+      <tr>
+         <th width="174">Verification Way</th>
+         <th>Description</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><a href="/docs/EV/StartAnIntegration/SetupVerification/Mobile">API</a></td>
+         <td>This verification process involves utilizing API endpoints to confirm a user's identity and grant them access to your application</td>
+      </tr>
+      <tr>
+         <td><a href="/docs/EV/StartAnIntegration/SetupVerification/Mobile">Mobile</a></td>
+         <td>This verification process involves utilizing mobile devices to confirm a user's identity and grant them access to the application.</td>
+      </tr>
+      <tr>
+         <td><a href="/docs/EV/StartAnIntegration/SetupVerification/Desktop">Desktop</a></td>
+         <td>Verification done on the ezto verify desktop application with the configured workflows.</td>
+      </tr>
+      <tr>
+         <td><a href="/docs/EV/StartAnIntegration/SetupVerification/IVR">IVR Verification</a></td>
+         <td>Verification method used to confirm a user's identity by interacting with them through a phone call. It typically involves automated systems that prompt users to respond or enter information using their phone's keypad.</td>
+      </tr>
+      <tr>
+         <td><a href="/docs/EV/StartAnIntegration/SetupVerification/Web">Web</a></td>
+         <td>Verification using the web, involves verifying the identity of users who access online platforms, websites, or applications.</td>
+      </tr>
+   </tbody>
+</table>
+
+</TabItem>
+
+<TabItem value="ResultNotificationWay" label="Result Notification Way">
+
+This determines how the result notification should be sent. There are two types:
+
+<table>
+   <thead>
+      <tr>
+         <th width="102">Result Notification Way</th>
+         <th>Description</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><a href="/docs/EV/StartAnIntegration/SetupResultNotification/Queue">Queue</a></td>
+         <td>Configure the <strong>Queue</strong> notification to specify how the result should be shared, currently <strong>Kafka</strong> is supported.</td>
+      </tr>
+      <tr>
+         <td><a href="/docs/EV/StartAnIntegration/SetupResultNotification/Hook">Hook</a></td>
+         <td>Configures <strong>Hook</strong> notifications to specify how the result should be shared. This consists of five types: <strong>Poll, Ping, Push, Mobile SDK, and Web SDK.</strong></td>
+      </tr>
+   </tbody>
+</table>
+
+</TabItem>
+
+<TabItem value="Dead Letter" label="Dead Letter">
+
+This option is used for handling incomplete flows. It ensures that, even if a flow is not completed, the result will be sent to the configured webhook, allowing further actions. Currently, one type is supported:
+
+<table>
+   <thead>
+      <tr>
+         <th width="102">Dead Letter</th>
+         <th>Description</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><a href="/docs/EV/StartAnIntegration/SetupDeadLetter/Hook">Hook</a></td>
+         <td>Configure the <strong>Hook</strong> option so that when a verification flow expires or remains incomplete, the partial result is sent to the specified webhook. This allows the admin to retrieve it and decide how to proceed with the flow.</td>
+      </tr>
+   </tbody>
+</table>
+
+</TabItem>
+
+</Tabs>
+
+Configure the above required **Verification Way** and **Result Notification Way,** click on the `NEXT` button to proceed to the further steps. Note that configuring the **Dead Letter** is not mandatory.
+
+### *4* Onboarding Workflow
+
+As the fourth step, you will be taken to the **Onboarding Workflow**. During this step, you will need to select which onboarding workflow you want to execute for a newly onboarding user.
+
+Please note that selecting the "None" option for the onboarding workflow will automatically redirect the user to the verification workflow, irrespective of the users availability. To know how to create a workflow, refer [here](/verify/docs/EV/StartAnIntegration/SetupWorkflow/).
+
+![Onboarding Workflow](https://images.tango.us/workflows/e4539b39-4152-485c-8361-50a3884e1370/steps/7211ab13-18ec-4d73-bade-5dfc1d66f205/f137ca96-0e2d-43c1-b786-7a70bad15f61.png)
+
+After selecting the required onboarding workflow or skip,  click on the `NEXT` button to proceed to the further steps.
+
+### *5* Verification Workflow
+
+As the fifth step, you will be taken to **Verification Workflow,** which is required in order to start the verification process. Note that if a user has already been registered/onboarded, they will be taken directly to this verification process. To know how to create a workflow, refer [here](/verify/docs/EV/StartAnIntegration/SetupWorkflow/).
+
+![Verification Workflow](https://images.tango.us/workflows/e4539b39-4152-485c-8361-50a3884e1370/steps/56393d5f-95a4-4a52-9ed8-15d54c5e36fd/2838e54e-49a1-4ba0-a244-b028fc92ab33.png)
+
+After selecting the required verification workflow,  click on the `NEXT` button to proceed to the further steps.
+
+<DropBox title="Know About Custom End Message">
+
+The **Custom Message** feature determines the end message of a workflow through several checks:
+ 
+- First, it checks if a custom message is configured at the **workflow level**. If one is set, that message will be displayed.
+ 
+- If no message is found at the **workflow level,** it moves to the **application level** to see if the custom message option is enabled.
+ 
+- If neither level has a custom message, it checks whether the user is completing the process via **desktop or mobile**, and closes the message check accordingly.
+ 
+- If no custom messages are configured at any level, the **default message** will be displayed.
+
+By default, the end message will be pre-configured. However, if you wish to customize it further, you can do so using below the steps.
+
+After creating your application, you can personalize the final messages displayed to users once they complete either the **Onboarding** or **Verification** workflows. 
+
+- Navigate to **Applications** and select the application you wish to configure.
+- Click on the **Workflows** tab.
+- For both **Onboarding** and **Verification** workflows, toggle the **Enable End Message** option to add the custom messages.
+
+![Enable](https://images.tango.us/workflows/e4539b39-4152-485c-8361-50a3884e1370/steps/4c1cf1cb-460b-4ac2-a435-72cf965537e1/bf1b8ea6-e0af-4c26-8934-96207a54d7b8.png)
+
+- Once enabled, you can customize the following for both workflows:
+   - **Success Message**: Enter a **Title** and a **Description** to display when the workflow completes successfully. For example, a confirmation like "Onboarding/Verification Completed" with a message such as "You can now close the window safely."
+   - **Failure Message**: Similarly, provide a **Title** and a **Description** to notify users when the workflow fails. For instance, "Onboarding/Verification Failed" with a description like "No action is required from your side. You can now close the window safely."
+
+![Custom End Message](https://images.tango.us/workflows/e4539b39-4152-485c-8361-50a3884e1370/steps/07303552-3f6f-4847-8d68-c41dadcacdd9/0dbddf8a-909a-45a5-8863-cd8b35bcf704.png?mark-x=172&mark-y=210&m64=aHR0cHM6Ly9pbWFnZXMudGFuZ28udXMvc3RhdGljL2JsYW5rLnBuZz9tYXNrPWNvcm5lcnMmYm9yZGVyPTQlMkNEQjMwMzAmdz02MjgmaD0yODYmZml0PWNyb3AmY29ybmVyLXJhZGl1cz0xMA%3D%3D)
+
+- Once you add your required contents, ensure to save your changes.
+
+To customize the end message at the workflow level, please refer to this [guide.](/docs/EV/WorkflowModules/CustomMessage)
+
+These customizable messages allow you to guide users through the final stages of the onboarding and verification processes, ensuring they understand the outcome and what to do next.
+</DropBox>
+
+### *6* How to use?
+
+<p id="curl-commands">As the final step, you will be taken to  "How to use?", this page consists of **Test mode** and **cURL commands** to execute a flow and get its result.</p>
+
+<Tabs>
+<TabItem value="Test" label="Test">
+
+##### API
+
+This option allows a smoother testing of your API`s within the **Workspace,** by simply choose the API (i.e, Aadhaar Verification) and click on the TEST button to initiate the test execution.
+
+![Test](https://images.tango.us/workflows/4ea047e0-9be0-44ca-9c62-0985aa96199e/steps/43cb020f-ba81-43c4-a5b6-38e2de2c7c53/83b8e21b-c60f-4875-a030-ba1465dbede5.png)
+
+
+![Test UI](https://images.tango.us/workflows/4ea047e0-9be0-44ca-9c62-0985aa96199e/steps/e063170e-6f1a-4ecf-9c0f-9c278001a9c2/c2d38ab9-e5c7-4d87-9327-a4a142b4c5e4.png)
+
+##### Workflow
+This option allows a smoother testing of your onboarding and verification flow within the **Workspace,** by simply choose the flow **(i.e, Onboarding or Verification)** and click on the `TEST` button to initiate the test execution.
+
+![Test](https://images.tango.us/workflows/e4539b39-4152-485c-8361-50a3884e1370/steps/b29f3815-05d5-4cc0-8276-32f2907169c6/999adbe4-8f5f-470f-8b60-461cfa157fe2.png)
+
+</TabItem>
+
+<TabItem value="Integration" label="Integration" default>
+
+##### API
+
+This option consists of the **cURL commands** and other code samples to integrate the **API's** with your applications.
+
+![Integration](https://images.tango.us/workflows/4ea047e0-9be0-44ca-9c62-0985aa96199e/steps/22fee969-e3e3-4005-8cec-6caba5495e11/8fdfd57f-3243-496c-b229-a7c192839ba5.png)
+
+##### Workflow
+
+This option consists of the **cURL commands** to execute a test flow and get its result.
+
+![Integration](https://images.tango.us/workflows/e4539b39-4152-485c-8361-50a3884e1370/steps/e983cdd2-d71c-42c8-8f45-04063318d668/7c6e0851-4019-49b3-a795-4434aba1ec11.png)
+
+</TabItem>
+</Tabs>
+
+Once all the above mentioned are configured, click on the `FINISH` button.
+
+> Note that by default, if you are in **Sandbox** mode, the application will be created in **Sandbox**. When you transition to **Live** mode, you can move the **Sandbox** application to **Live** by disabling the **Sandbox Mode** toggle. To learn how to do this, refer [here.](/verify/docs/EV/GetStarted/SandboxLive/#adaptFromSandLive)

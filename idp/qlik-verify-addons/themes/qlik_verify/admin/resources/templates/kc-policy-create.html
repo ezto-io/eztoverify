@@ -1,0 +1,35 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{title}}</h5>
+    <button type="button" id="closeModalBtn" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <form>
+        <div>
+            <label class="control-label" for="name">{{:: 'name' | translate}} <span class="required" >*</span></label>
+            <input class="form-control" type="text" id="{{title.toLowerCase().replaceAll(' ','-')}}-name" data-ng-model="policyName.value">
+        </div>
+        <div class="mt-3" data-ng-if="!isCibaEnabled">
+            <label class="control-label" for="name">{{:: 'policy-type' | translate}}</label> 
+            <select class="form-control"  id="{{title.toLowerCase().replaceAll(' ','-')}}-policyTypeSelector" data-ng-model="policyType.value">
+                <option value="password">
+                  {{:: 'password' | translate}}
+                </option>
+                <option value="username">
+                  {{:: 'username' | translate}}
+                </option>
+                <option value="action">
+                    {{:: 'action' | translate}}
+                </option>
+                <option value="webauthn">
+                    {{:: 'webauthn' | translate}}
+                </option>
+              </select>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" id="cancelBtn" ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+    <button type="button" class="btn btn-primary" id="successBtn" ng-click="ok()" data-ng-disabled="!changed">{{:: 'create' | translate}}</button>
+</div>

@@ -1,0 +1,77 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/client-scopes/{{clientScope.id}}/mappers" id="backToScopeMappers">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                            {{ :: 'back-to-client-scope-mappers' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                       <h3 class="element-header">{{:: 'add-builtin-client-mapper' | translate}}</h3>
+                        <div>
+                            <div class="table-responsive-md clients-list" data-ng-show="mappersUpdated" >
+                                <div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <form class="form-inline form-group element-search ng-pristine ng-valid">
+                                                <input type="text" id="mapperSearchInput" placeholder="{{:: 'search.placeholder' | translate}}" data-ng-model="searchValue" class="form-control search" onkeyup="if(event.keyCode === 13) document.getElementById('mapperSearch').click()">
+                                            <i class="os-icon os-icon-search2 search-icon" id="mapperSearch" data-ng-click="changeSearch()" ></i>
+                                            </form>
+                                        </div>
+                                    <div class="ml-auto" data-ng-show="access.manageRealm">
+                                        <button id="addSelectedMappersBtn" class="btn btn-primary" data-ng-click="add()" data-ng-disabled="!enableBtn" >{{:: 'add-selected' | translate}}</button>
+                                    </div>
+                                    </div>
+                                </div>
+                                <table class="table table-light-bordered table-padded table-layout-fixed w-100" ng-hide="filtered.length === 0">
+                                    <thead>
+                                        <tr data-ng-hide="mappers.length == 0">
+                                            <th>{{:: 'name' | translate}}</th>
+                                            <th>{{:: 'category' | translate}}</th>
+                                            <th>{{:: 'type' | translate}}</th>
+                                            <th>{{:: 'add' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="position-relative fadeUp" ng-repeat="mapper in mappers | filter: { name : search } as filtered">
+                                            <td>{{mapper.name}}</td>
+                                            <td>{{mapperTypes[mapper.protocolMapper].category}}</td>
+                                            <td>{{mapperTypes[mapper.protocolMapper].name}}</td>
+                                            <td><input type="checkbox" ng-model="mapper.isChecked" id="{{mapper.protocolMapper}}"></td>
+                                        </tr>
+                                        <tr data-ng-show="mappers.length == 0">
+                                            <td>{{:: 'no-mappers-available' | translate}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="element-box element-box-medium top-align shadow-none" ng-if="filtered.length === 0">
+                                    <div class="no-entry-svg">
+                                        <img data-ng-src="{{resourceUrl}}/themes/img/empty-box.svg" alt="no-results-svg"
+                                            class="opacity-40 no-entry-display" />
+                                        <p class="no-results-msg no-entry-display mt-2">{{:: 'no-mappers-found' | translate}}</p>
+                                        <button class="create-btn no-entry-display cursor-pointer" id="clearSearchBtn" data-ng-click="clearSearch()" ng-if="filtered.length === 0 && search && search.trim().length !== 0">
+                                            <i class="os-icon os-icon-close mr-2"></i>
+                                            {{ ::  'clear-search' | translate}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-ng-show="!mappersUpdated">
+                                <kc-loader loadertype="loaderTypeName"></kc-loader>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div data-ng-show="access.manageRealm">
+                        <button class="btn btn-primary" data-ng-click="add()">{{:: 'add-selected' | translate}}</button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

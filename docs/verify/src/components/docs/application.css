@@ -1,0 +1,44 @@
+.application-tabs .tabs {
+  display: flex;
+  width: 100%;
+  gap: 3rem;
+  background-color: transparent;
+  box-shadow: var(--custom-image-box-shadow);
+  padding: 1rem;
+  box-shadow: 0.5rem;
+  margin: 1rem 0;
+  border-radius: 0.5rem 0.5rem 0rem 0rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.application-tabs .tabs button {
+  background-color: transparent;
+  border: none;
+  font: inherit;
+  font-size: large;
+  font-weight: normal;
+  color: gray;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-bottom: 2px solid transparent;
+}
+
+.application-tabs .tabs .active {
+  border-bottom: 2px solid var(--ifm--custom-primary);
+  color: var(--ifm--custom-primary);
+}
+
+.application-tabs {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.application-tabs img {
+  box-shadow: var(--custom-image-box-shadow);
+  border-radius: 0rem 0rem 0.5rem 0.5rem;
+  width: 100%;
+}

@@ -1,0 +1,388 @@
+<div data-ng-class="{'w-100 h-100': loadertype === 'setupGuideLoader' || loadertype === 'userGroupLoader' || loadertype === 'activityLoader' }">
+    <!-- kc-user-list-loader.html -->
+    <div ng-if=" loadertype == 'userListLoader' ">
+        <div class="loader-child-container element-box my-3" ng-repeat="x in [].constructor(5) track by $index">
+            <div class="row d-flex align-items-center justify-content-between">
+                <div class="row align-items-center">
+                    <div class="img-empty"><div ng-if="false"></div></div>
+                    <div class="img-name-empty" ><div ng-if="false"></div></div>
+                </div>
+                <div class="table-content-empty" ng-repeat="x in [].constructor(2) track by $index"><div ng-if="false"></div></div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Add users loader -->
+    <div ng-if=" loadertype == 'addUsersListLoader' ">
+        <div class="loader-child-container element-box my-2 py-2" ng-repeat="x in [].constructor(5) track by $index">
+            <div class="row d-flex align-items-center justify-content-between">
+                <div class="row align-items-center">
+                    <div class="img-empty h-39px w-39px"><div ng-if="false"></div></div>
+                    <div class="img-name-empty h-25px" ><div ng-if="false"></div></div>
+                </div>
+                <div class="table-content-empty h-25px" ng-repeat="x in [].constructor(2) track by $index"><div ng-if="false"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- kc-subscription-loader.html -->
+    <div ng-if=" loadertype === 'subscriptionLoader' " class="subscription-loader">
+        <div class="subscription element-box auth-loader py-5">
+            <div class="mb-4" >
+                <div class="table-content-empty"><div ng-if="false"></div></div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center" >
+                <div class="desc table-content-empty"><div ng-if="false"></div></div>
+                <div class="btn-loader table-content-empty"><div ng-if="false"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- kc-subscription-loader.html -->
+    <div ng-if=" loadertype === 'subscriptionLoader' " class="subscription-loader">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="subscription element-box auth-loader py-5">
+                    <div class="mb-4" >
+                        <div class="table-content-empty"><div ng-if="false"></div></div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center" >
+                        <div class="desc table-content-empty"><div ng-if="false"></div></div>
+                        <div class="btn-loader table-content-empty"><div ng-if="false"></div></div>
+                    </div>
+                </div>
+
+                <div class="subscription element-box auth-loader py-5">
+                    <div class="mb-5" >
+                        <div class="table-content-empty"><div ng-if="false"></div></div>
+                    </div>
+                    <div>
+                        <div class="desc table-content-empty mb-2"><div ng-if="false"></div></div>
+                        <div class="col-md-8 progress-bar table-content-empty mt-3"><div ng-if="false"></div></div>
+                    </div>
+                    <div class="mt-3" >
+                        <div class="desc table-content-empty mb-2"><div ng-if="false"></div></div>
+                        <div class="col-md-8 progress-bar table-content-empty mt-3"><div ng-if="false"></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="subscription element-box auth-loader py-5">
+                    <div class="mb-4" >
+                        <div class="table-content-empty"><div ng-if="false"></div></div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center" >
+                        <div class="desc table-content-empty"><div ng-if="false"></div></div>
+                        <div class="btn-loader table-content-empty"><div ng-if="false"></div></div>
+                    </div>
+                </div>
+
+                <div class="subscription element-box auth-loader py-5">
+                    <div class="mb-5" >
+                        <div class="table-content-empty"><div ng-if="false"></div></div>
+                    </div>
+                    <div>
+                        <div class="desc table-content-empty mb-2"><div ng-if="false"></div></div>
+                        <div class="col-md-8 progress-bar table-content-empty mt-3"><div ng-if="false"></div></div>
+                    </div>
+                    <div class="mt-3" >
+                        <div class="desc table-content-empty mb-2"><div ng-if="false"></div></div>
+                        <div class="col-md-8 progress-bar table-content-empty mt-3"><div ng-if="false"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- kc-user-tab-loader.html -->
+    <div ng-if=" loadertype === 'userTabLoader' ">
+        <div class="element-box loader-main-container ng-scope">
+            <div class="row user-table-header">
+                <div class="user-table-header-empty" ng-repeat="x in [].constructor(4) track by $index">
+                    <div ng-if="false"></div>
+                </div>
+            </div>
+
+            <div class="loader-child-container element-box">
+                <div class="row">
+                    <div class="table-content-empty mr-5">
+                    </div>
+                    <div class="table-content-empty w-50">
+                    </div>
+                </div>
+                <div class="row mt-4" ng-repeat="x in [].constructor(5) track by $index">
+                    <div class="table-content-empty mr-5">
+                    </div>
+                    <div class="table-content-empty w-50">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- kc-role-list-loader.html -->
+    <div ng-if=" loadertype === 'roleListLoader' || loadertype === 'tableListLoader'">
+        <div class="row element-box d-flex align-items-center justify-content-between table-child-container my-1 py-3" ng-repeat="x in [].constructor(5) track by $index">
+            <div class="table-content-empty h-27px" ng-repeat="x in [].constructor(loadertype === 'roleListLoader' ? 3 : 4) track by $index">
+                <div ng-if="false"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- kc-card-list-loader.html -->
+    <div ng-if="loadertype == 'cardListLoader' || loadertype === 'authCardLoader'">
+        <div class="card-list" >
+            <div class="loader-child-container element-box" ng-repeat="x in [].constructor(5) track by $index">
+                <div class="row flex-ali-cen-jc-sb">
+                    <div class="row flex-ali-cen-jc-sb">
+                        <div class="img-empty"><div ng-if="false"></div></div>
+                        <div class="img-name-empty" ><div ng-if="false"></div></div>
+                    </div>
+                    <div class="table-content-empty" ng-repeat="x in [].constructor(loadertype == 'cardListLoader' ? 3 : 2) track by $index"><div ng-if="false"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- kc-form-preview-loader.html -->
+    <div ng-if=" loadertype === 'formPreviewLoader' " >
+        <div class="form-preview-loader element-box h-100" >
+            <div class="row d-flex align-items-center justify-content-between table-child-container my-3" ng-repeat="x in [].constructor(8) track by $index">
+                <div class="table-content-empty form-lable-preview mb-2"></div>
+                <div class="table-content-empty"></div>
+            </div>
+        </div>
+    </div>
+
+     <!-- kc-form-preview-loader.html -->
+    <div ng-if="loadertype === 'detailsLoader' " >
+        <div class="element-box">
+             <div class="form-group row clearfix block" ng-repeat="x in [].constructor(3) track by $index">
+                <label class="col-md-3 control-label table-content-empty"></label>
+                <div class="col-md-9 table-content-empty"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- kc-theme-preview-loader.html -->
+    <div ng-if=" loadertype === 'themePreviewLoader' ">
+        <div class="preview-canvas element-box">
+            <div class="header-preview-loader-component w-100 d-flex justify-content-between align-items-center">
+                <div class="table-content-empty form-lable-preview mb-2"></div>
+                <div class="d-flex column">
+                    <div class="table-content-empty form-lable-preview" ng-repeat="x in [].constructor(3) track by $index"></div>
+                </div>
+            </div>
+            <div class="w-100 body-preview-lodaer-component d-flex justify-content-center align-items-center">
+                <div class="table-content-empty body-form-preview-loader"></div>
+            </div>
+            <div class="w-100 footer-preview-lodaer-component d-flex justify-content-center" >
+                <div class="table-content-empty footer-preview-loader"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- kc-getting-started-loader.html -->
+    <div ng-if=" loadertype === 'gettingStartedLoader' ">
+        <div class="getting-started-box shadow-none p-0 mt-4" ng-repeat="x in [].constructor(4) track by $index">
+            <div class="loader-child-container element-box">
+                <div class="row justify-content-between">
+                    <div class="row" >
+                        <div class="img-empty"><div ng-if="false"></div></div>
+                        <div class="column" >
+                            <div class="table-content-empty" ><div ng-if="false"></div></div>
+                            <div class="desc table-content-empty mt-2" ng-repeat="x in [].constructor(2) track by $index"><div ng-if="false"></div></div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center" >
+                        <div class="desc table-content-empty mt-2"><div ng-if="false"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- realm-special-attributes.html -->
+    <div ng-if=" loadertype === 'realmAttributesLoader' " >
+        <div class="element-box realm-attribute-loader" >
+            <div class="row d-flex align-items-center justify-content-between table-child-container my-3" ng-repeat="x in [].constructor(4) track by $index">
+                <div class="table-content-empty form-lable-preview col-md-3"></div>
+                <div class="table-content-empty col-md-8"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- kc-market-template-loader.html -->
+    <div ng-if="loadertype === 'recomTemplateLoader' || loadertype === 'marketTemplateLoader'" >
+        <div class="d-flex p-3 overflow-hidden" ng-class="{ 'recommended-slider': loadertype === 'recomTemplateLoader', 'row categories-loader' : loadertype === 'marketTemplateLoader'}">
+            <div class="nw-market-card recom-container-loader d-flex align-items-center justify-content-between" ng-repeat="x in [].constructor(loadertype == 'recomTemplateLoader' ? 4 : 6) track by $index">
+                <div>
+                    <div class="img-empty mx-auto"></div>
+                </div>
+                <div>
+                    <div class="table-content-empty mb-2 recom-name-loader"></div>
+                    <div class="table-content-empty recom-type-loader"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- kc-realm-list-loader.html -->
+    <div ng-if=" loadertype === 'realmListLoader' " >
+        <div class="card-list card-striped row mr-0 ml-0 justify-content-center" >
+            <div class="d-flex row" ng-repeat="x in [].constructor(10) track by $index">
+              <div class="element-box realm-list-loader">
+                <div class="img-empty mx-auto mb-4"></div>
+                <div class="table-content-empty"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- kc-setup-guide-loader.html -->
+    <div class="setup-guide-loader-container" data-ng-if="loadertype === 'setupGuideLoader'">
+        <div class="mb-3">
+            <div class="setup-guide-loader"></div>
+        </div>
+        <div class="mb-3">
+            <div class="setup-guide-loader"></div>
+        </div>
+        <div class="mb-3">
+            <div class="setup-guide-loader"></div>
+        </div>
+    </div>
+
+    <!-- group-list.html -->
+    <div class="user-group-loader-container" data-ng-if="loadertype === 'userGroupLoader'">
+        <div class="mb-3">
+            <div class="user-group-loader"></div>
+        </div>
+        <div class="mb-3">
+            <div class="user-group-loader"></div>
+        </div>
+        <div class="mb-3">
+            <div class="user-group-loader"></div>
+        </div>
+    </div>
+
+    <!-- realm-activity.html -->
+    <div class="tablo-with-chart row" data-ng-if="loadertype === 'activityLoader'">
+        <div class="col-sm-7">
+            <div class="tablos mb-4">
+                <div class="row mb-xl-2 mb-xxl-3">
+                    <div class="col-sm-6" ng-repeat="x in [].constructor(4) track by $index">
+                        <a
+                            class="element-box el-tablo centered trend-in-corner padded bold-label d-flex flex-column justify-content-center align-items-center">
+                            <div class="user-group-loader h-20px width-10">
+                            </div>
+                            <div class="user-group-loader mt-3 h-20px w-25">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5 mb-4 pb-1">
+            <div class="element-box">
+                <h5 class="form-header user-group-loader w-25 h-20px">
+                </h5>
+                <div class="d-flex flex-column">
+                    <div class="user-group-loader h-20px w-100 mb-2" ng-repeat="x in [].constructor(5) track by $index"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="element-box pl-xxl-5 pr-xxl-5">
+                <div class="el-tablo bigger highlight bold-label d-flex justify-content-between row mb-4">
+                    <div class="col-sm-auto w-25">
+                        <div class="user-group-loader h-45px width-10">
+                        </div>
+                        <div class="user-group-loader mt-3 h-20px w-50">
+                        </div>
+                    </div>
+                    <div class="col-sm-2 d-flex justify-content-end">
+                        <div class="user-group-loader w-50 h-20px"></div>
+                    </div>
+                </div>
+                <div class="user-group-loader mr-2 w-100 h-275px"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Marketplace Card loader -->
+    <div class="row mb-4" data-ng-if="loadertype === 'boMasterMarketplaceCardLoader'">
+        <div class="col-lg-4 col-md-6 pr-3 py-3" ng-repeat="x in [].constructor(9) track by $index">
+            <div class="d-flex align-items-center bg-white shadow rounded p-3">
+                <div class="img-empty w-45px h-39px rounded"></div>
+                <div class="table-content-empty w-100"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4" data-ng-if="loadertype === 'boSubtenantMarketplaceCardLoader'">
+        <div class="col-lg-6 pr-3 py-3" ng-repeat="x in [].constructor(9) track by $index">
+            <div class="d-flex align-items-center bg-white shadow rounded p-3">
+                <div class="img-empty w-45px h-39px rounded"></div>
+                <div class="table-content-empty w-100"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Card loader -->
+    <ul class="d-flex list-unstyled flex-wrap gap-1 justify-content-start" data-ng-if="loadertype === 'apiCardLoader'">
+        <li class="api-card p-3 d-flex flex-column" ng-repeat="x in [].constructor(3) track by $index">
+            <div class="table-content-empty w-100"></div>
+            <div class="d-flex w-100 mt-auto">
+                <div class="table-content-empty w-50"></div>
+                 <div class="table-content-empty w-50"></div>
+            </div>
+        </li>
+    </ul>
+
+    <!-- realm-bo-activity.html -->
+    <div class="tablo-with-chart row" data-ng-if="loadertype === 'boActivityLoader'">
+        <div class="col-sm-12">
+            <div class="tablos mb-4">
+                <div class="row mb-xl-2 mb-xxl-3">
+                    <div class="col-sm-3" ng-repeat="x in [].constructor(4) track by $index">
+                        <a
+                            class="element-box el-tablo centered trend-in-corner padded bold-label d-flex flex-column justify-content-center align-items-center">
+                            <div class="user-group-loader rounded-circle h-45px w-45px">
+                            </div>
+                            <div class="user-group-loader mt-3 h-20px w-25 my-3">
+                            </div>
+                            <div class="user-group-loader h-20px width-10">
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-6" ng-repeat="x in [].constructor(2) track by $index">
+                        <a
+                            class="element-box el-tablo centered trend-in-corner padded bold-label d-flex flex-column justify-content-center align-items-center">
+                            <div class="user-group-loader rounded-circle h-45px w-45px my-3">
+                            </div>
+                            <div class="user-group-loader mt-3 h-20px w-25 my-3">
+                            </div>
+                            <div class="user-group-loader h-20px width-10">
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="element-box pl-xxl-5 pr-xxl-5">
+                <div class="el-tablo bigger highlight bold-label d-flex justify-content-between row mb-4">
+                    <div class="col-sm-auto w-25">
+                        <div class="user-group-loader h-45px width-10">
+                        </div>
+                        <div class="user-group-loader mt-3 h-20px w-50">
+                        </div>
+                    </div>
+                    <div class="col-sm-2 d-flex justify-content-end">
+                        <div class="user-group-loader w-50 h-20px"></div>
+                    </div>
+                </div>
+                <div class="user-group-loader mr-2 w-100 h-275px"></div>
+            </div>
+        </div>
+    </div>
+</div>

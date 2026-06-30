@@ -1,0 +1,154 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates
+ * and other contributors as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.keycloak.events;
+
+import org.keycloak.representations.idm.ClientRepresentation;
+import org.keycloak.representations.idm.RealmRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
+ */
+public class Events {
+
+    private String id;
+
+    private long time;
+
+    private EventType type;
+
+    private RealmRepresentation realm;
+
+    private ClientRepresentation client;
+
+    private UserRepresentation user;
+
+    private String sessionId;
+
+    private String ipAddress;
+
+    private String error;
+
+    private Map<String, String> details;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public EventType getType() {
+        return type;
+    }
+
+    public void setType(EventType type) {
+        this.type = type;
+    }
+
+    public RealmRepresentation getRealm() {
+        return realm;
+    }
+
+    public void setRealm(RealmRepresentation realm) {
+        this.realm = realm;
+    }
+
+    public ClientRepresentation getClient() {
+        return client;
+    }
+
+    public void setClient(ClientRepresentation client) {
+        this.client = client;
+    }
+
+    public UserRepresentation getUser() {
+        return user;
+    }
+
+    public void setUser(UserRepresentation user) {
+        this.user = user;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public Map<String, String> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, String> details) {
+        this.details = details;
+    }
+
+    public Events clone() {
+        Events clone = new Events();
+        clone.id = id;
+        clone.time = time;
+        clone.type = type;
+        clone.realm = realm;
+        clone.client = client;
+        clone.user = user;
+        clone.sessionId = sessionId;
+        clone.ipAddress = ipAddress;
+        clone.error = error;
+        clone.details = details != null ? new HashMap<>(details) : null;
+        return clone;
+    }
+
+    static String maxLength(String string, int length){
+        if (string != null && string.length() > length) {
+            return string.substring(0, length - 1);
+        }
+        return string;
+    }
+
+}

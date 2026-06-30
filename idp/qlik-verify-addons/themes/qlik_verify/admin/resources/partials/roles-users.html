@@ -1,0 +1,47 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/groups" id="backToGroups">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                            {{ :: 'back-to-groups' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <kc-tabs-group></kc-tabs-group>
+                    <div>
+                        <div class="element-wrapper">
+                            <div class="d-flex roles-groups" ng-if="view==='treeView'">
+                                <div class="tabs">
+                                    <button class="tabs-btn" ng-class="{'tabs-btn-active' : view === 'treeView'}"
+                                        ng-click="changeView('treeView')">{{ :: 'tree-view' | translate}}
+                                    </button>
+                                    <button class="tabs-btn" ng-class="{'tabs-btn-active' : view === 'listView'}"
+                                        ng-click="changeView('listView')">{{ :: 'list-view' | translate}}
+                                        <svg width="5" class="ml-2" ng-class="{'rotate-180' : isRTL()}"  height="10"  viewBox="0 0 5 10" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 10L5 5L0 0L0 10Z"
+                                                fill="currentColor" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="sub-tabs" ng-if="view === 'listView'">
+                                    <button ng-click="changeSubTab('roles')" ng-class="{'active' : subTab === 'roles'}">{{
+                                        :: 'roles' | translate}}</button>
+                                    <button ng-click="changeSubTab('users')" ng-class="{'active' : subTab === 'users'}">{{
+                                        :: 'users' | translate}}</button>
+                                </div>
+                            </div>
+                            <kc-roles-users-tree ng-if="view==='treeView'"></kc-roles-users-tree>
+                            <kc-group-role ng-if="view==='listView' && subTab === 'roles'"></kc-group-role>
+                            <kc-group-members ng-if="view==='listView' && subTab === 'users'"></kc-group-members>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,50 @@
+<div data-ng-controller="RoleTabCtrl">
+    <h1 class="element-header" data-ng-show="create">{{:: 'add-role' | translate}}</h1>
+    <div class="user-details-top action-details element-header pb-0" data-ng-hide="create">
+        <div class="text-overflow-control">
+            <div class="flex-start" >
+                <h1  class="role-detail-rolename word-break-all"> {{role.name|capitalize}} <strong ng-if="role.inBuilt" class="badge badge-danger">{{:: 'inbuilt' | translate}}</strong>
+                    <span class="badge badge-success bg-dark border text-uppercase font-small" ng-if="isWorkflow">
+                        {{:: 'workflow' | translate}}
+                    </span>
+                </h1>
+            </div>
+        </div>
+    </div>
+    <div class="os-tabs-w mt-2">
+        <div class="os-tabs-controls">
+            <ul class="nav nav-tabs upper bg-white" data-ng-show="!create">
+                <li class="nav-item">
+                    <a aria-expanded="false" id="role-settings" class="nav-link p-3" data-ng-class="{active: !path[4]}" href="#/realms/{{realm.realm}}/roles/{{role.id}}" data-step='1' data-title="{{:: 'intro-roles-details-title' | translate}}" data-intro="{{:: 'intro-roles-details' | translate}}"> 
+                        {{:: 'settings' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a aria-expanded="false" id="role-metaData"  class="nav-link p-3" data-ng-class="{active: path[4] == 'role-attributes'}" href="#/realms/{{realm.realm}}/roles/{{role.id}}/role-attributes" data-step='2' data-title="{{:: 'intro-roles-metadata-title' | translate}}" data-intro="{{:: 'intro-roles-metadata' | translate}}"> 
+                        {{:: 'meta-data' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a aria-expanded="false" id="role-authPermissions" class="nav-link p-3" ng-class="{active: path[4] == 'permissions'}" href="#/realms/{{realm.realm}}/roles/{{role.id}}/permissions" data-step='{{serverInfo.featureEnabled("ADMIN_FINE_GRAINED_AUTHZ") && access.manageRealm && access.manageAuthorization?3:0}}' data-ng-show="serverInfo.featureEnabled('ADMIN_FINE_GRAINED_AUTHZ') && access.manageRealm && access.manageAuthorization" data-title="{{:: 'intro-roles-permission-title' | translate}}" data-intro="{{:: 'intro-roles-permission' | translate}}">
+                        {{:: 'authz-permissions' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a aria-expanded="false" id="role-usersInRole"  class="nav-link p-3" data-ng-class="{active: path[4] == 'users'}" href="#/realms/{{realm.realm}}/roles/{{role.id}}/users" data-step='{{serverInfo.featureEnabled("ADMIN_FINE_GRAINED_AUTHZ") && access.manageRealm && access.manageAuthorization?4:3}}' data-ng-show="access.manageRealm && access.manageAuthorization" data-title="{{:: 'intro-roles-userinrole-title' | translate}}" data-intro="{{:: 'intro-roles-userinrole' | translate}}">
+                        {{:: 'authz-users' | translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- <ul class="nav nav-tabs" data-ng-show="!create">
+        <li ng-class="{active: !path[4]}"><a href="#/realms/{{realm.realm}}/roles/{{role.id}}">{{:: 'details' | translate}}</a></li>
+        <li ng-class="{active: path[4] == 'role-attributes'}"><a href="#/realms/{{realm.realm}}/roles/{{role.id}}/role-attributes">{{:: 'attributes' | translate}}</a></li>
+        <li ng-class="{active: path[4] == 'permissions'}" data-ng-show="serverInfo.featureEnabled('ADMIN_FINE_GRAINED_AUTHZ') && access.manageRealm && access.manageAuthorization">
+            <a href="#/realms/{{realm.realm}}/roles/{{role.id}}/permissions">{{:: 'authz-permissions' | translate}}</a>
+            <kc-tooltip>{{:: 'manage-permissions-role.tooltip' | translate}}</kc-tooltip>
+        </li>
+        <li ng-class="{active: path[4] == 'users'}" data-ng-show="access.manageRealm && access.manageAuthorization">
+        <a href="#/realms/{{realm.realm}}/roles/{{role.id}}/users">{{:: 'authz-users' | translate}}</a></li>
+    </ul> -->
+</div>

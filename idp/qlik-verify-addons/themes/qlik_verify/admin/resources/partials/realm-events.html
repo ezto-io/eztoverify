@@ -1,0 +1,43 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="role-list-container mb-4">
+                            <h1 class="user-list-heading">
+                                <span>{{:: 'events' | translate}}</span>
+                                <kc-tooltip>{{:: 'events.tooltip' | translate}}</kc-tooltip>
+                            </h1> 
+                        </div>
+                        <kc-tabs-events></kc-tabs-events>
+                        <ul data-ng-if="eventListeners.length > 0" class="cards-list audit-streamers">
+                            <li class="info-card" ng-repeat="listener in serverInfo.eventListeners">
+                                <a role="button" data-ng-click="showDetails(listener.id,listener.hasConfig,listener.howToDo,listener.displayName,listener.logo)" id="{{listener.displayName.toLowerCase().replaceAll(' ','-')}}-block">
+                                    <div class="info-card-state border border-danger text-danger small" data-ng-if="!isEnabled(listener.id)"><div class="info-state-circle-danger"></div>{{:: 'not-live' | translate}}</div>
+                                    <div class="info-card-state border border-success text-success small" data-ng-if="isEnabled(listener.id)"><div class="info-state-circle-success"></div>{{:: 'live' | translate}}</div>
+                                    <div class="info-card-wrapper">
+                                        <div class="info-card-header">
+                                            <div class="info-card-avatar">
+                                                <img height="41px" ng-if="listener.logo != null" data-ng-src="{{resourceUrl}}/themes/img/{{listener.logo}}" alt="">
+                                                <img height="41px" ng-if="listener.logo == null" data-ng-src="{{resourceUrl}}/themes/img/webhook-img.png" alt="">
+                                            </div>
+                                            <div class="align-self-center">
+                                                <h2 class="mb-0 ml-2 mt-1 font-weight-normal">{{:: listener.displayName | translate}}</h2>
+                                            </div>
+                                        </div>
+                                        <p class="info-card-description">{{:: listener.description | translate | replaceWithVariant:serverInfo.variant}}</p>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+

@@ -1,0 +1,405 @@
+<kc-menu></kc-menu>
+<div class="position-relative"> 
+    <div class="position-absolute">
+      <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+      <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon" data-ng-click="toggleSideBarShow()" >
+        <div id="setting-icon h1">
+          <i class="ti-angle-right cursor-pointer"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="content-w bo-setting-menu-main-content">
+  <div class="content-i">
+    <div class="content-box">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="element-wrapper">
+            <!-- <kc-tabs-realm></kc-tabs-realm> -->
+            <div class="element-box py-5">
+                <form class="form-horizontal" name="realmForm" novalidate>
+                    <fieldset class="margin-top-16">
+                        <!-- ONBOARDING -->
+                        <h6 class="client-auth-section-header">{{ ::'onboarding-section-title' | translate}}</h6>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">{{:: 'registrationAllowed' |
+                                translate}}</label>
+                            <div class="col-md-9">
+                                <label>
+                                    <div class="os-toggler-w"
+                                        ng-class="{on: realm.registrationAllowed}">
+                                        <div class="os-toggler-i" id="registrationAllowed-toggle">
+                                            <div class="os-toggler-pill"
+                                                ng-model="realm.registrationAllowed"
+                                                name="registrationAllowed" id="registrationAllowed"
+                                                onoffswitch>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <kc-tooltip>{{:: 'registrationAllowed.tooltip' | translate}}</kc-tooltip>
+                        </div>
+                        <div class="form-group row" >
+                            <label class="col-md-3 control-label">{{:: 'inviteOnly' |
+                                translate}}</label>
+                            <div class="col-md-9">
+                                <label>
+                                    <div class="os-toggler-w"
+                                        ng-class="{on: realm.attributes.inviteOnly == 'true'}">
+                                        <div class="os-toggler-i" id="inviteOnly-toggle">
+                                            <div class="os-toggler-pill"
+                                                ng-model="realm.attributes.inviteOnly"
+                                                name="inviteOnly" id="inviteOnly"
+                                                onoffswitchstring>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <kc-tooltip>{{:: 'realmInviteOnly.tooltip' | translate}}</kc-tooltip>
+                        </div>
+                        <div class="form-group row" data-ng-show="realm.registrationAllowed || realm.attributes.inviteOnly === 'true'">
+                            <label for="onboarding" class="col-md-3 control-label d-flex align-items-start">
+                                {{:: 'onboarding-flow' | translate}}
+                            </label>
+                            <div class="col-md-9">
+                                <div data-ng-if="onboardingFlows.length > 0" class="row ml-0">
+                                    <select id="onboarding"
+                                        data-ng-model="realm.authenticationFlowBindingOverrides['onboarding']"
+                                        class="form-control col-10"
+                                        ng-options="flow.id as flow.alias for flow in onboardingFlows">
+                                        <option value="">  {{:: 'default-flow' | translate}}  </option>
+                                    </select>
+                                    <button data-ng-disabled="!realm.authenticationFlowBindingOverrides['onboarding']" class="text-primary btn p-0 ml-3 bg-light p-1 rounded" tooltip="{{:: 'view-flow' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-click="toTemplate('onboarding')">
+                                        <i class="os-icon os-icon-external-link plus-icon m-0" ng-class="{'rotate-270' : isRTL()}"></i>
+                                    </button>
+                                    <kc-tooltip>{{:: 'onboarding-flow.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                                <div data-ng-if="onboardingFlows.length === 0">
+                                    <p class="mb-1">{{:: 'onboarding-flow-not-available' | translate}}</p>
+                                    <p><a
+                                            href="#/realms/{{realm.realm}}/authentication/installed/onboarding" id="onboarding-flow-click-here">{{:: 'click-here' | translate}}</a> {{:: 'app-default-flow-performed' | translate}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- LOGIN -->
+                        <h6 class="client-auth-section-header">{{ ::'login-section-title' | translate }}</h6>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">{{:: 'rememberMe' |
+                                translate}}</label>
+                            <div class="col-md-9">
+                                <label>
+                                    <div class="os-toggler-w" ng-class="{on: realm.attributes.rememberMe}">
+                                        <div class="os-toggler-i" id="rememberMe-toggle">
+                                            <div class="os-toggler-pill" ng-model="realm.attributes.rememberMe"
+                                                name="rememberMe" id="rememberMe" onoffswitch>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <kc-tooltip>{{:: 'rememberMe.tooltip' | translate}}</kc-tooltip>
+                        </div>
+                        <div class="form-group row">
+                            <label for="login" class="col-md-3 control-label">
+                                {{:: 'login-flow' | translate}}
+                            </label>
+                            <div class="col-md-9">
+                                <div data-ng-if="loginFlows.length > 0" class="row ml-0">
+                                    <select id="login"
+                                        ng-model="realm.authenticationFlowBindingOverrides['login']"
+                                        class="form-control col-10"
+                                        ng-options="flow.id as flow.alias for flow in loginFlows">
+                                        <option value=""> {{:: 'default-flow' | translate}} </option>
+                                    </select>
+                                    <button data-ng-disabled="!realm.authenticationFlowBindingOverrides['login']" class="text-primary btn p-0 ml-3 bg-light p-1 rounded" tooltip="{{:: 'view-flow' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-click="toTemplate('login')">
+                                        <i class="os-icon os-icon-external-link plus-icon m-0" ng-class="{'rotate-270' : isRTL()}"></i>
+                                    </button>
+                                    <kc-tooltip>{{:: 'login-flow.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                                <div data-ng-if="loginFlows.length === 0">
+                                    <p class="mb-1">{{:: 'login-flow-not-availbale' | translate}}</p>
+                                    <p><a href="#/realms/{{realm.realm}}/authentication/installed/login" id="login-flow-click-here">{{:: 'click-here' | translate}}</a> {{:: 'app-default-flow-performed' | translate}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- RECOVERY -->
+                        <h6 class="client-auth-section-header">{{ ::'recovery-section-title' | translate }}</h6>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">{{::
+                                'resetPasswordAllowed' | translate}}</label>
+                            <div class="col-md-9">
+                                <label>
+                                    <div class="os-toggler-w"
+                                            ng-class="{on: realm.resetPasswordAllowed}">
+                                        <div class="os-toggler-i" id="resetPasswordAllowed-toggle">
+                                            <div class="os-toggler-pill"
+                                                ng-model="realm.resetPasswordAllowed"
+                                                name="resetPasswordAllowed" id="resetPasswordAllowed" value="'true'"
+                                                onoffswitchboolean>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <kc-tooltip>{{:: 'resetPasswordAllowed.tooltip' |translate}}</kc-tooltip>
+                        </div>
+                        <div class="form-group row" data-ng-show="realm.resetPasswordAllowed">
+                            <label for="recovery" class="col-md-3 control-label">
+                                {{:: 'recovery-flow' | translate}}
+                            </label>
+                            <div class="col-md-9">
+                                <div data-ng-if="recoveryFlows.length > 0" class="row ml-0">
+                                    <select id="recovery"
+                                        ng-model="realm.authenticationFlowBindingOverrides['recovery']"
+                                        class="form-control col-10"
+                                        ng-options="flow.id as flow.alias for flow in recoveryFlows">
+                                        <option value=""> {{:: 'none' | translate}} </option>
+                                    </select>
+                                    <button data-ng-disabled="!realm.authenticationFlowBindingOverrides['recovery']" class="text-primary btn p-0 ml-3 bg-light p-1 rounded" tooltip="{{:: 'view-flow' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-click="toTemplate('recovery')">
+                                        <i class="os-icon os-icon-external-link plus-icon m-0" ng-class="{'rotate-270' : isRTL()}"></i>
+                                    </button>
+                                    <kc-tooltip>{{:: 'recovery-flow.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                                <div data-ng-if="recoveryFlows.length === 0">
+                                    <p class="mb-1">{{:: 'recovery-flow-not-available' | translate}}</p>
+                                    <p><a href="#/realms/{{realm.realm}}/authentication/installed/recovery" id="recovery-flow-click-here">{{:: 'click-here-txt' | translate}}</a> {{:: 'create-one' | translate}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ACTIONS -->
+                        <h6 class="client-auth-section-header">{{ ::'action-section-title' | translate }}</h6>
+                        <div class="form-group row">
+                            <label for="actions" class="col-md-3 control-label">
+                                {{:: 'required-actions' | translate}}
+                            </label>
+                            <div class="col-md-9">
+                                <div data-ng-if="actions.length > 0" class="row ml-0">
+                                    <select id="actions"
+                                        ng-model="realm.authenticationFlowBindingOverrides['action']"
+                                        class="form-control col-10"
+                                        ng-options="action.actionId as action.alias for action in actions">
+                                        <option value=""> {{:: 'none' | translate}} </option>
+                                    </select>
+                                    <button data-ng-disabled="!realm.authenticationFlowBindingOverrides['action']" class="text-primary btn p-0 ml-3 bg-light p-1 rounded" tooltip="{{:: 'view-flow' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-click="toTemplate('action')">
+                                        <i class="os-icon os-icon-external-link plus-icon m-0" ng-class="{'rotate-270' : isRTL()}"></i>
+                                    </button>
+                                    <kc-tooltip>{{:: 'action.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                                <div data-ng-if="actions.length === 0">
+                                    <p class="mb-1">{{:: 'action-not-available' | translate}}</p>
+                                    <p><a href="#/realms/{{realm.realm}}/authentication/actions" id="action-flow-click-here">{{:: 'click-here-txt' | translate}}</a> {{:: 'create-one' | translate}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- DIRECT GRANT -->
+                        <h6 class="client-auth-section-header">{{ ::'directgrant-section-title' | translate
+                            }}</h6>
+                        <div class="form-group row">
+                            <label for="dgFlows" class="col-md-3 control-label">{{::
+                                'directgrant-flow-label' | translate}}
+                            </label>
+                            <div class="col-md-9">
+                                <div data-ng-if="directGrantFlows.length > 0" class="row ml-0">
+                                    <select id="dgFlows"
+                                        ng-model="realm.authenticationFlowBindingOverrides['direct_grant']"
+                                        class="form-control col-10"
+                                        ng-options="flow.id as flow.alias for flow in directGrantFlows">
+                                        <option value=""> {{:: 'none' | translate}} </option>
+                                    </select>
+                                    <button data-ng-disabled="!realm.authenticationFlowBindingOverrides['direct_grant']" class="text-primary btn p-0 ml-3 bg-light p-1 rounded" tooltip="{{:: 'view-flow' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-click="toTemplate('direct_grant')">
+                                        <i class="os-icon os-icon-external-link plus-icon m-0" ng-class="{'rotate-270' : isRTL()}"></i>
+                                    </button>
+                                </div>
+                                <div data-ng-if="directGrantFlows.length === 0">
+                                    <p class="mb-1">{{:: 'direct-grant-not-available' | translate}}</p>
+                                    <p><a href="#/realms/{{realm.realm}}/authentication/installed/login" id="directgrant-flow-click-here">{{:: 'click-here' | translate}}</a> {{:: 'app-default-flow-performed' | translate}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- MFA -->
+                        <h6 class="client-auth-section-header">{{ ::'mfa-title' | translate}}</h6>
+                        <div class="form-group row" data-ng-show="mfaProviders.length > 0">
+                            <label class="col-md-3 control-label mfa-header-container">{{ ::
+                                'mfa-manditory'
+                                | translate}}</label>
+                            <div class="col-md-9 d-flex justify-content-start pr-4">
+                                <label>
+                                    <div class="os-toggler-w"
+                                        ng-class="{on: realm.attributes.is_mandatory == 'true'}">
+                                        <div class="os-toggler-i" id="is_mandatory_toggle">
+                                            <div class="os-toggler-pill"
+                                                ng-model="realm.attributes.is_mandatory"
+                                                name="is_mandatory" id="is_mandatory"
+                                                onoffswitchstring>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row" data-ng-show="mfaProviders.length > 0">
+                            <label for="enabled" class="col-md-3 control-label mfa-header-container">{{
+                                ::
+                                'mfa-policy' | translate}}</label>
+                            <div class="col-md-9">
+                                <div data-ng-if="allPolicies.length > 0" class="row ml-0">
+                                    <select id="policyselector" class="form-control col-10"
+                                        ng-model="realm.attributes.mfaPolicy">
+                                        <option value=""> {{:: 'connection-default-option' | translate
+                                            }}
+                                        </option>
+                                        <option ng-selected="realm.attributes.mfaPolicy.id == p.id"
+                                            ng-repeat="p in allPolicies" ng-value="p.id">
+                                            {{:: p.policyName | translate}}
+                                        </option>
+                                    </select>
+                                    <button data-ng-disabled="!realm.attributes.mfaPolicy" class="text-primary btn p-0 ml-3 bg-light p-1 rounded" tooltip="{{:: 'view-policy' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-click="toTemplate('policy', realm.attributes.mfaPolicy)">
+                                        <i class="os-icon os-icon-external-link plus-icon m-0" ng-class="{'rotate-270' : isRTL()}"></i>
+                                    </button>
+                                </div>
+                                <div data-ng-if="allPolicies.length === 0">
+                                    <p class="mb-1">{{ :: 'client-connection-action' | translate}}</p>
+                                    <p><a href="#/realms/{{realm.realm}}/policies" id="mfa-policy-click-here">{{:: 'click-here-txt' | translate}}</a> {{:: 'create-one' | translate}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5" data-ng-if="!mfaProviders.length">
+                            <i class="os-icon os-icon-fingerprint opacity-75 no-entry-display mb-3 authentication-tab-icon"></i>
+                            <p class="text-center no-entry-display">{{:: 'no-mfa-prim-desc' | translate}}</p>
+                            <p class="text-center" ng-bind-html="createMFADesc"></p>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div>
+                            <table class="table table-layout-fixed w-100 ml-2" id="user-table">
+                                <thead data-ng-show="mfaProviders.length > 0">
+                                    <tr>
+                                        <th
+                                            class="table-lighter-border-color pt-0 pl-0 pb-1 client-connection-header-container">
+                                            <div>
+                                                <p class="text-initial mb-0 font-size-normal">{{ ::
+                                                    'mfa-providers-title' | translate}} </p>
+                                            </div>
+                                        </th>
+                                        <th class="table-lighter-border-color"></th>
+                                    </tr>
+                                </thead>
+                                <tbody data-ng-show="mfaProviders.length > 0">
+                                    <tr ng-repeat="mfaprovider in mfaProviders track by $index">
+                                        <td data-ng-class="$index === 0 && 'pt-3'">
+                                            <div class="conn-with-logo">
+                                                <div class="social-conn-logo-container">
+                                                    <img alt=" {{mfaprovider.logo}} "
+                                                        data-ng-src="{{resourceUrl}}/themes/img/{{mfaprovider.logo}}">
+                                                </div>
+                                                <div>
+                                                    <span
+                                                        data-ng-show="mfaprovider.displayName">{{:: mfaprovider.displayName
+                                                        | translate}}
+                                                    </span>
+                                                    <button class="text-primary btn p-0 ml-3 bg-light p-1 rounded" tooltip="{{:: 'view-mfa' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-click="toTemplate('mfa', mfaprovider.id)">
+                                                        <i class="os-icon os-icon-external-link plus-icon m-0" ng-class="{'rotate-270' : isRTL()}"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-align-left ">
+                                            <div>
+                                                <label>
+                                                    <div class="os-toggler-w"  id="{{mfaprovider.id}}-toggle"
+                                                        ng-class="{on: realm.mfaConnections[mfaprovider.id]}">
+                                                        <div class="os-toggler-i">
+                                                            <div class="os-toggler-pill"
+                                                                ng-model="realm.mfaConnections[mfaprovider.id]"
+                                                                name="mfaprovider.id" value="'true'"
+                                                                onoffswitchboolean>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </fieldset>
+                    <!-- SOCIAL CONNECTION -->
+                    <fieldset>
+                        <h6 class="client-auth-section-header mb-1">{{ ::'social-connections' | translate
+                        }}</h6>
+                        <div class="table-responsive-md" data-ng-show="configuredProviders.length > 0">
+                            <table class="table table-layout-fixed w-100" id="user-table">
+                                <thead>
+                                    <tr>
+                                        <th class="p-0 client-connection-header-container border-bottom-0">
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="connection in configuredProviders">
+                                        <td>
+                                            <div class="conn-with-logo">
+                                                <div class="social-conn-logo-container">
+                                                    <img alt=""
+                                                        data-ng-src="{{resourceUrl}}/themes/img/social-icons/{{connection.providerId}}-logo.png">
+                                                </div>
+                                                <div>
+                                                    <span
+                                                        data-ng-show="connection.displayName">{{connection.displayName
+                                                        | capitalize}}</span>
+                                                    <span
+                                                        data-ng-show="!connection.displayName && connection.provider.groupName == 'Social'">{{connection.provider.name|capitalize}}</span>
+                                                    <span
+                                                        data-ng-show="!connection.displayName && connection.provider.groupName != 'Social'">{{connection.alias|capitalize}}</span>
+                                                    <button class="text-primary btn p-0 ml-3 bg-light p-1 rounded" tooltip="{{:: 'view-social' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-click="toTemplate('social', connection.providerId, connection.alias)">
+                                                        <i class="os-icon os-icon-external-link plus-icon m-0" ng-class="{'rotate-270' : isRTL()}"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-align-left">
+                                            <div>
+                                                <label>
+                                                    <div class="os-toggler-w" id="{{connection.providerId}}-toggle"
+                                                        ng-class="{on: realm.appConnections[connection.providerId]}">
+                                                        <div class="os-toggler-i">
+                                                            <div class="os-toggler-pill"
+                                                                ng-model="realm.appConnections[connection.providerId]"
+                                                                name="connection.providerId" value="'true'"
+                                                                onoffswitchboolean>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-5" data-ng-if="configuredProviders.length==0">
+                            <i class="os-icon os-icon-cv-2 opacity-75 no-entry-display mb-3 authentication-tab-icon"></i>
+                            <p class="text-center no-entry-display">
+                                {{::'no-social-connection-prim-desc'| translate}}</p>
+                            <p class="text-center" ng-bind-html="createSocialConnDesc"></p>
+                        </div>
+                    </fieldset>
+                    <div class="form-buttons-w border-top-0" data-ng-show="access.manageRealm">
+                        <div class="col-md-12 d-flex flex-row-reverse pr-0">
+                            <button kc-save data-ng-disabled="!changed" id="login-saveBtn" class="ml-3">{{:: 'save' |
+                                translate}}</button>
+                            <button kc-reset data-ng-disabled="!changed" id="login-cancelBtn">{{:: 'cancel' |
+                                translate}}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

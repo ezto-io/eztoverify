@@ -1,0 +1,166 @@
+<kc-menu></kc-menu>
+<div class="position-relative"> 
+  <div class="position-absolute">
+    <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+    <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon" data-ng-click="toggleSideBarShow()" >
+      <div id="setting-icon h1">
+        <i class="ti-angle-right cursor-pointer"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content-w bo-setting-menu-main-content">
+    <div class="content-i">
+        <div class="content-box">
+            <a href="#/realms/{{realm.realm}}/management/{{subRealm.realm}}/products" class="text-decoration-none text-dark" id="back-to-product-list">
+                <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6'}} breadcrumb-back-icon"></i>{{ :: 'back-to-products' | translate}}
+            </a>
+            
+            <div class="element-box py-5 mt-4">
+                <!-- Product Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h6>{{:: 'product-details' | translate}}</h6>
+                    <button class="btn btn-primary btn-sm px-3" id="editProductBtn"  data-ng-show="!isProductEditable && isRootAccount" data-ng-click="makeEditable(true)">{{:: "edit" | translate }}</button>
+                </div>
+                <hr />
+                <!-- Product Details -->
+                <div class="mb-3">
+                    <label class="control-label text-muted" for="name">{{:: 'product-name' | translate}} <span class="text-danger" data-ng-show="isProductEditable">*</span></label>
+                    <input class="form-control p-1" type="text" id="name" data-ng-model="product.name" maxlength="40"  data-ng-show="isProductEditable">
+                    <p class="font-weight-bold" data-ng-show="!isProductEditable">{{product.name}}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="control-label text-muted" for="name">{{:: 'description' | translate}} <span class="text-danger" data-ng-show="isProductEditable">*</span></label>
+                    <div class="row align-items-center flex-wrap" data-ng-show="isProductEditable">
+                        <div class="col-3">
+                            <input class="form-control p-1" type="text" placeholder="{{:: 'locale-code' | translate }}" id="newkey" data-ng-model="newDescription.languageCode">
+                        </div>
+                        <div class="col-7 col-md-6">
+                            <input class="form-control p-1" type="text" placeholder="{{:: 'description' | translate }}" id="newdescription" data-ng-model="newDescription.description">
+                        </div>
+                        <div class="col-2 text-center">
+                            <button class="btn btn-light" data-ng-click="addDescription()">{{:: 'add' | translate}}</button>
+                        </div>
+                    </div>
+                    <hr data-ng-show="isProductEditable" />
+                    <div class="row" ng-repeat="(key, value) in product.description">
+                        <div class="col-3 d-flex justify-content-between">
+                            <span class="text-truncate">{{key}}</span>
+                            <span>-</span>
+                        </div>
+                        <div class="{{isProductEditable ? 'col-7' : 'col-9'}}">
+                            <input class="form-control p-1 mb-2" type="text" id="description-{{key}}" data-ng-model="product.description[key]"  data-ng-show="isProductEditable">
+                            <p class="font-weight-bold" data-ng-show="!isProductEditable">{{product.description[key]}}</p>
+                        </div>
+                        <div class="col-2 text-center" data-ng-show="isProductEditable">
+                            <i class="os-icon os-icon-ui-15 plus-icon text-danger cursor-pointer bg-danger-lite px-2 py-1" id="remove-{{key}}" data-ng-click="removeDescription(key)"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-sm-6 pr-2">
+                        <div class="p-3 rounded border">
+                            <label class="control-label text-muted" for="external-id">{{:: 'external-id' | translate}}</label>
+                            <p class="font-weight-bold mb-0">{{product.externalId}}</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 pl-2">
+                        <div class="p-3 rounded border">
+                            <label class="control-label text-muted" for="id">{{:: 'id' | translate}}</label>
+                            <p class="font-weight-bold mb-0">{{product.productId}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="control-label text-muted" for="productType">{{:: 'pricing-type' | translate}} <span class="text-danger" data-ng-show="isProductEditable">*</span></label> 
+                    <p class="font-weight-bold">{{product.productType}}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="control-label text-muted" for="consider">{{:: 'consider' | translate}}</label>
+                    <input class="form-control p-1" type="text" id="consider" data-ng-model="product.consider" data-ng-show="isProductEditable">
+                    <p class="font-weight-bold"  data-ng-show="!isProductEditable">{{product.consider.length > 0 ? product.consider : '-'}}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="control-label text-muted" for="alternative">{{:: 'alternative' | translate}}</label>
+                    <input class="form-control p-1" type="text" id="alternative" data-ng-model="product.alternative" data-ng-show="isProductEditable">
+                    <p class="font-weight-bold"  data-ng-show="!isProductEditable">{{product.alternative.length > 0 ? product.alternative : '-'}}</p>
+                </div>
+                <!-- Product Buttons -->
+                <div class="col-md-12 d-flex flex-row-reverse pr-0 mt-5" data-ng-show="isProductEditable" >
+                    <button kc-admin-save data-ng-disabled="!changed" id="details-saveBtn" class="ml-3 btn btn-primary" data-ng-click="updateProductData()">
+                        <span ng-show="!saveInProgress">{{:: 'save' | translate}}</span>
+                        <div ng-show="saveInProgress">
+                            <kc-action-button-loading></kc-action-button-loading>
+                        </div>
+                    </button>
+                    <button id="details-cancelBtn" kc-reset data-ng-click="makeEditable(false)">{{:: 'cancel' | translate}}</button>
+                </div>
+            </div>
+            <div class="element-wrapper"> 
+                <div class="element-box py-5 mt-4">
+                    <!-- Pricing Header -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                        <div class="d-flex align-items-center mb-4 mr-5">
+                            <h6>{{:: 'pricing' | translate}}</h6>
+                            <select class="form-control col-9 ml-3" id="newCurrency" data-ng-model="currencyFilterValue">
+                                <option value="inr">INR</option>
+                                <option value="usd">USD</option>
+                            </select>
+                        </div>
+                        <div class="d-flex justify-content-between mb-4">
+                            <div class="element-search">
+                                <input class="form-control bg-color-transparent searchTerm" id="priceSearchInput" type="text" placeholder="{{:: 'search' | translate}}" data-ng-model="searchValue" class="form-control form-control-sm rounded bright search" onkeydown="if (event.keyCode == 13) document.getElementById('priceSearch').click()">
+                                <i class="os-icon os-icon-search2 search-icon" id="priceSearch" data-ng-click="pageCountChanged()"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div>
+                        <!-- Pricing List -->
+                        <div class="table-responsive-md clients-list" data-ng-if="product.pricing.length > 0">
+                            <table class="table w-100" id="user-table">
+                                <tbody>
+                                    <tr class="user-row position-relative" data-ng-repeat="price in product.pricing | filter: filterByCurrency">
+                                        <td class="cursor-pointer w-50" kc-open="/realms/{{realm.realm}}/products/{{subRealm.realm}}/{{product.productId}}/price/{{price.priceId}}" id="price-{{price.priceId.toLowerCase().replaceAll(' ','-')}}">
+                                            <div class="name-container align-items-center" >
+                                                <p class="overflow-ellipsis mb-0 text-primary" >{{:: getPriceName(price) ? getPriceName(price) : 'default' | translate }} <span class="badge badge-secondary p-1" data-ng-show="price.consider && price.consider == 'always' && product.externalId != 'bo_tran' ">{{:: 'default' | translate | uppercase  }}</span></p>
+                                            </div>
+                                        </td>
+                                        <td class="nowrap w-40">
+                                            <span>{{price.currencyOptions[0].amount}}</span>
+                                            <span>{{product.externalId === 'tax' ? '%' : price.currencyOptions[0].currency.toUpperCase()}}</span>
+                                        </td>
+                                        <td class="clip row-actions w-10">
+                                            <div class="dropdown clearfix">
+                                                <div class="dropdown">
+                                                    <button id="dLabel-{{price.priceId.toLowerCase().replaceAll(' ','-')}}" class="dropdown-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-ng-click="toggleShow($index)">
+                                                        <i class="os-icon os-icon-more-horizontal"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+                                                        <li><a class="dropdown-item" kc-open="/realms/{{realm.realm}}/products/{{subRealm.realm}}/{{product.productId}}/price/{{price.priceId}}" id="edit-{{price.priceId.toLowerCase().replaceAll(' ','-')}}">{{ ::'edit' | translate}}</a></li>
+                                                        <li data-ng-hide="(price.consider && price.consider == 'always') || product.externalId == 'bo_tran'"><a class="dropdown-item" id="make-as-default-{{price.priceId.toLowerCase().replaceAll(' ','-')}}" data-ng-click="makeAsDefault(price)">{{ ::'mark-as-default' | translate}}</a></li>
+                                                        <li data-ng-hide="price.consider && price.consider == 'always' && product.externalId != 'bo_tran'">   
+                                                            <a class="dropdown-item delete-dropdown-item" id="delete-{{price.priceId.toLowerCase().replaceAll(' ','-')}}" data-ng-click="deletePricing(price)">
+                                                                <p class="text-danger m-0">{{ ::'delete' | translate }}</p>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Add Pricing Button -->
+                        <div class="d-flex align-items-center mt-2" id="addPriceIcon" data-ng-click="addPricing(path[4], subRealm, setProductDetail, isRootAccount, product.externalId)">
+                            <i class="os-icon os-icon-plus text-primary border p-1 h5 mr-2 mb-0 cursor-pointer" ></i>
+                            <span class="cursor-pointer"  id="addPriceText">{{:: 'add-pricing' | translate }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

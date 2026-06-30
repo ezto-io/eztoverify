@@ -1,0 +1,97 @@
+<div class="modal-header pb-2">
+  <h5 class="modal-title border-bottom w-100 text-capitalize" >
+    {{:: title | translateOrReplaceWithSpace}}
+    <kc-tooltip>{{:: 'extract-details-instantly' | translate}}</kc-tooltip>
+  </h5>
+  <i class="os-icon os-icon-close mr-2 cursor-pointer" id="close-btn" data-ng-click="close()"></i>
+</div>
+<div class="modal-body mb-4">
+  <div class="d-flex align-items-center justify-content-end mb-2">
+    <span class="mr-auto" ng-hide="showTest">{{ :: 'curl-selected-api' | translate }}</span>
+    <span class="mr-auto" ng-show="showTest && isTestPossible && !modalData.testMetadata.file.isFile">{{ :: 'enter-the-input' | translate }}</span>
+    <span class="mr-auto" ng-show="showTest && isTestPossible && modalData.testMetadata.file.isFile">{{ :: 'upload-the-file' | translate }}</span>
+    <div class="d-flex align-items-center justify-content-between w-40" ng-hide="showTest">
+      <label class="">{{:: 'language' | translate}}</label>
+      <select class="form-control w-40 py-1" data-ng-model="modalData.selectedLanguage" id="curl-language-select" ng-change="changeLanguage(lang)">
+        <option ng-repeat="lang in supportedLanguages" value="{{lang}}">{{:: lang | translate }}</option>
+      </select>
+      <button class="btn btn-primary px-4 py-2 lh-normal" id="test-btn" data-ng-click="showTest=true">{{:: 'test' | translate }}</button>
+    </div>
+    <button class="btn btn-primary px-4 py-2 lh-normal" id="curl-btn" data-ng-click="showTest=false" ng-show="showTest">{{:: 'curl' | translate }}</button>
+  </div>
+  <div class="col-12 d-flex justify-content-between rounded bg-black" ng-hide="showTest">
+      <div class="workspace-input-group  px-1 py-2 overflow-scroll bg-black"
+          style="border: none; box-shadow: none;">
+          <textarea readonly is="highlighted-code" cols="50" rows="15"
+              language="{{modalData.selectedLanguage === 'curl' ? 'bash' : modalData.selectedLanguage}}" tab-size="2"
+              class="workspace-input hide-scroll-bar" id="curl" data-ng-model="snippet"
+              style="font-size: medium;"></textarea>
+      </div>
+      <button class="icon-holder-btn bg-primary copy-code-icon rounded px-2 py-1 cursor-pointer m-2 copy-paste-icon"
+          id="result-request-copyIcon" data-ng-click="copyToClipboard(snippet)"
+          tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout">
+          <i class="os-icon os-icon-copy text-light"></i>
+      </button>
+  </div>
+  <div class="col-12 d-flex justify-content-between rounded h-20 p-0" ng-show="showTest">
+    <div class="col-6 h-100 d-flex flex-column justify-content-start overflow-scroll" ng-show="showTest && isTestPossible">
+      <div class="row mt-1 mr-2" ng-repeat="(key, value) in modalData.testMetadata">
+          <div class="col-12 p-0">
+              <label class="control-label" for="{{key.replaceAll(' ','-')}}-test-field">{{ key.replaceAll('_', " ") | uppercase}} : </label>
+          </div>
+          <div class="col-12 p-0">
+              <input ng-if="modalData.testMetadata[key].isFile"
+                     type="file"
+                     id="{{key.replaceAll(' ','-')}}-test-field-file"
+                     class="d-none"
+                     ng-if="modalData.testMetadata[key].isFile"
+                     accept=".png,.jpg,.jpeg,.pdf" />
+              <button type="button"
+                      ng-if="modalData.testMetadata[key].isFile"
+                      class="btn btn-primary d-flex align-items-center"
+                      ng-if="modalData.testMetadata[key].isFile"
+                      ng-click="uploadFile(key)">
+                  <i class="os-icon os-icon-upload-cloud mr-3"></i>
+                  {{:: 'upload-file' | translate}}
+              </button>
+              <span ng-if="modalData.testMetadata[key].isFile && modalData.selectedFile" class="d-flex ml-3 mt-2 text-danger">
+                    {{ modalData.selectedFile}}
+              </span>
+              <input ng-if="!modalData.testMetadata[key].isFile" type="text" id="{{key.replaceAll(' ','-')}}-test-field"
+                  ng-model="modalData.testMetadata[key].input" class="form-control"
+                  placeholder="Enter {{ key.replaceAll('_', ' ') }}" />
+          </div>
+      </div>
+      <div class="d-flex align-items-center gap-1 mt-auto p-0 mr-2 justify-content-end py-3">
+          <button class="btn btn-secondary px-4 py-2 lh-normal" id="reset-btn" ng-click="resetMetadata()">{{:: 'reset' |  translate}}</button>
+          <button class="btn btn-primary px-4 py-2 lh-normal" id="submit-btn" ng-disabled="modalData.apiRequestLoading" data-ng-click="sendTestRequest()">{{:: 'submit' | translate}}</button>
+      </div>
+    </div> 
+    <div class="col-6 h-100 p-0" ng-class="{'col-12' : !isTestPossible}">
+      <div class="col-12 d-flex justify-content-between rounded bg-black"  ng-show="modalData.testResponse && !modalData.apiRequestLoading">
+        <div class="workspace-input-group px-1 overflow-scroll bg-black"
+            style="border: none; box-shadow: none;">
+            <textarea readonly is="highlighted-code" cols="40" rows="15"
+                language="javascript" tab-size="2"
+                class="workspace-input hide-scroll-bar" id="response-curl" data-ng-model="modalData.testResponse"
+                style="font-size: medium;">
+            </textarea>
+        </div>
+        <button class="icon-holder-btn bg-primary copy-code-icon rounded px-2 py-1 cursor-pointer m-2 copy-paste-icon"
+              id="result-response-copyIcon" ng-click="copyToClipboard(modalData.testResponse)"
+              tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout">
+              <i class="os-icon os-icon-copy text-light"></i>
+          </button>
+      </div>
+      <div class="px-1 py-2 overflow-scroll bg-black  h-100 d-flex align-items-center justify-content-center border-radius-4px"
+          style="border: none; box-shadow: none;" ng-show="!modalData.testResponse || !isTestPossible || modalData.apiRequestLoading">
+        <div class="spinner-border spinner-border text-primary" role="status" ng-show="modalData.apiRequestLoading"></div>
+          <span class="text-white" ng-hide="modalData.apiRequestLoading">{{:: "your-response-for-api" | translate}}</span>
+          <!--        <span class="text-white" ng-hide="modalData.apiRequestLoading">{{:: isTestPossible ? "your-response-for-api" : "test-is-not-possible" | translate}}</span>-->
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module" defer>
+    (async ({ chrome, netscape }) => { if (!chrome && !netscape) await import('https://unpkg.com/@ungap/custom-elements'); const { default: HighlightedCode } = await import('https://unpkg.com/highlighted-code'); HighlightedCode.useTheme('zenburn'); })(self);
+</script>

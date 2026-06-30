@@ -1,0 +1,24 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{title}}</h5>
+    <button type="button" id="closeBtn" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <form class="form-group">  
+        <div class="col-md-12"> 
+            <label for="clientList">{{:: 'application-to-trigger' | translate}} </label>
+            <select id="clientList" class="form-control pr-5" data-ng-init="initClientStreams()" ng-change ="updateClient(selectedClient)" ng-model="selectedClient" data-ng-if="clients">
+                <option ng-repeat="cli in clients" value="{{cli.clientId}}" title="{{cli.clientId}}">{{cli.name}} ({{cli.clientId}})</option>
+            </select>
+        </div> 
+        <div class="p-3 helper-text note-container mt-4 pt-0">
+            <span class="os-icon os-icon-alert-triangle note-icon-container"></span>
+            <p class="help-text">{{ :: 'reset-password-link-hlptxt' | translate }}</p>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" id="cancelBtn" ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+    <button type="button" id="submitBtn" class="btn btn-primary" ng-click="ok()">{{:: 'send-reset-pwd' | translate}}</button>
+</div>

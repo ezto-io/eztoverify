@@ -1,0 +1,22 @@
+{
+    "applinks": {
+        "details": [
+            {
+                "appIDs": [
+                    "T27G47732A.io.ezto.verify.demo"
+                ],
+                "components": [
+                    {
+                        "/": "/auth/deeplink.html",
+                        "comment": "Matches any URL with a path that starts with /auth/deeplink/."
+                    }
+                ]
+            }
+        ]
+    },
+    "webcredentials": {
+        "apps": [
+            "T27G47732A.io.ezto.verify.demo"
+        ]
+    }
+}

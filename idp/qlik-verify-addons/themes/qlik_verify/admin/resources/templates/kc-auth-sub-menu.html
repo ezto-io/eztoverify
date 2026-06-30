@@ -1,0 +1,26 @@
+<div class="ae-side-menu" ng-controller="AuthTabCtrl">
+    <ul class="ae-main-menu">
+      <li data-ng-class="((path[2] === 'authentication' && path[4] === 'onboarding') || path[5] === 'onboarding') && 'active'">
+        <a href="#/realms/{{realm.realm}}/authentication/installed/onboarding" id="onboarding-sub-menu"><i class="os-icon os-icon-user-male-circle2"></i><span>{{:: 'onboarding-flow-title' | translate}}</span><strong class="badge {{counter.onBoardingCount == 0 ? 'badge-danger':'badge-success'}} ng-scope float-right">{{counter.onBoardingCount}}</strong></a>
+      </li>
+      <li  data-ng-class="((path[2] === 'authentication' && path[4] === 'login') || path[5] === 'login') && 'active'">
+        <a href="#/realms/{{realm.realm}}/authentication/installed/login" id="login-sub-menu"><i class="os-icon os-icon-log-in" data-ng-class="{'rotate-180' : isRTL()}"></i><span>{{:: 'login-section-title' | translate}} </span><strong class="badge {{counter.loginCount == 0 ? 'badge-danger':'badge-success'}} ng-scope float-right">{{counter.loginCount}}</strong></a>
+      </li>
+      <li  data-ng-class="((path[2] === 'authentication' && path[4] === 'recovery') || path[5] === 'recovery') && 'active'">
+        <a href="#/realms/{{realm.realm}}/authentication/installed/recovery" id="recovery-sub-menu"><i class="os-icon os-icon-rotate-ccw"></i><span>{{:: 'recovery-section-title' | translate}}</span><strong class="badge {{counter.recoveryCount == 0 ? 'badge-danger':'badge-success'}} ng-scope float-right">{{counter.recoveryCount}}</strong></a>
+      </li>
+      <li data-ng-class="(path[2] === 'authentication' && path[3] === 'actions') && 'active'">
+        <a href="#/realms/{{realm.realm}}/authentication/actions" id="actions-sub-menu" ><i class="os-icon os-icon-git-merge"></i><span>{{:: 'required-actions' | translate}} </span><strong class="badge {{counter.actionCount == 0 ? 'badge-danger':'badge-success'}} ng-scope float-right">{{counter.actionCount}}</strong></a>
+      </li>
+      <li data-ng-class="(path[3] === 'mfa') && 'active'">
+        <a href="#/realms/{{realm.realm}}/connections/mfa" id="mfa-sub-menu"><i class="os-icon os-icon-fingerprint"></i><span>{{:: 'authentication-mfa' | translate}} </span><strong class="badge {{counter.mfaCount == 0 ? 'badge-danger':'badge-success'}} ng-scope float-right">{{counter.mfaCount}}</strong></a>
+        
+      </li>
+      <li data-ng-class="(path[3] === 'social') && 'active'">
+        <a href="#/realms/{{realm.realm}}/connections/social" id="social-sub-menu" ><i class="os-icon os-icon-cv-2"></i><span>{{:: 'social' | translate}} </span><strong class="badge {{counter.socialCount == 0 ? 'badge-danger':'badge-success'}} ng-scope float-right">{{counter.socialCount}}</strong></a>
+      </li>
+      <li data-ng-if="realm.mode === 'wiam'" data-ng-class="(path[1] === 'user-storage' || path[2] === 'user-storage' || path[3] === 'enterprise') && 'active'">
+        <a href="#/realms/{{realm.realm}}/connections/enterprise" id="enterprise-sub-menu" ><i class="os-icon os-icon-hierarchy-structure-2"></i><span>{{:: 'enterprise' | translate}} </span><strong class="badge {{counter.enterpriseCount  == 0 ? 'badge-danger':'badge-success'}} ng-scope float-right">{{counter.enterpriseCount}}</strong></a>
+      </li>
+    </ul>
+  </div>

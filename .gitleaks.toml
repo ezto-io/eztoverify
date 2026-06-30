@@ -1,0 +1,66 @@
+# gitleaks config for the ezto Verify platform.
+#
+# Extends gitleaks' default ruleset and allowlists KNOWN false positives so a clean
+# scan surfaces only real leaks. Real secrets were remediated before the first public
+# commit; this keeps CI green going forward.
+#
+# Scope note: ezto-authored code (idp/qlik-verify-addons, services/, authenticator/lib,
+# authenticator/ezto_*) is intentionally NOT broadly allowlisted — only specific,
+# justified false positives are. Vendored upstream Keycloak (idp/keycloak) test/example
+# fixtures and crypto-source constants are allowlisted by path.
+#
+# Run:  gitleaks git . --config .gitleaks.toml
+
+title = "ezto Verify"
+
+[extend]
+useDefault = true
+
+# --- Vendored Keycloak fork: upstream test fixtures, examples, generated dist ---
+[[allowlists]]
+description = "Upstream Keycloak test/example/dist fixtures (not ezto secrets)"
+paths = [
+  '''idp/keycloak/testsuite/''',
+  '''idp/keycloak/.*/src/test/''',
+  '''idp/keycloak/examples/''',
+  '''idp/keycloak/operator/src/main/resources/example-.*\.ya?ml''',
+  '''idp/keycloak/operator/src/test/''',
+  '''idp/keycloak/distribution/''',
+  '''idp/keycloak/docs/''',
+]
+
+# --- Upstream Keycloak crypto SOURCE: base64 OIDs / cert templates flagged by entropy ---
+[[allowlists]]
+description = "Upstream Keycloak crypto-source constants (algorithm OIDs, cert templates)"
+paths = [
+  '''idp/keycloak/core/src/main/java/org/keycloak/jose/jwk/JWKBuilder\.java''',
+  '''idp/keycloak/common/src/main/java/org/keycloak/common/util/CertificateUtils\.java''',
+  '''idp/keycloak/services/src/main/java/org/keycloak/authentication/authenticators/x509/OCSPUtils\.java''',
+  '''idp/keycloak/services/src/main/java/org/keycloak/protocol/docker/installation/compose/DockerCertFileUtils\.java''',
+]
+
+# --- API docs: example request/response bodies (sample tokens, not live secrets) ---
+[[allowlists]]
+description = "Docusaurus API doc samples and code-block component"
+paths = [
+  '''docs/verify/src/components/api/mdx/''',
+  '''docs/verify/src/components/docs/ColapsableCodeBlocks\.js''',
+]
+
+# --- CocoaPods lockfile checksums (public) ---
+[[allowlists]]
+description = "CocoaPods Podfile.lock SPEC CHECKSUMs (public, deterministic)"
+paths = ['''.*/Podfile\.lock''']
+
+# --- Public / sample / placeholder values (matched on the secret itself) ---
+[[allowlists]]
+description = "Public, sample, or placeholder values — not secrets"
+regexTarget = "match"
+regexes = [
+  # WebAuthn Android origin = base64url SHA-256 of the app signing cert (public; doc samples)
+  '''apk-key-hash:[A-Za-z0-9_-]+''',
+  # Hardcoded JobRunr job-id UUID constant, not a credential
+  '''SCHEDULED_MANAGEMENT_KEY_JOB_ID''',
+  # README curl placeholder
+  '''your-api-key''',
+]

@@ -1,0 +1,32 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li>
+                    <a href="#/realms/{{realm.realm}}/connections/enterprise" class="ng-binding" id="back-to-enterprise-connections">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-enterprise-conn' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-ldap></kc-tabs-ldap><br>
+                        <div class="element-box">
+                            <div data-ng-include data-src="resourceUrl + '/partials/ldap-conn-attrs.html'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+

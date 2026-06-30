@@ -1,0 +1,144 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/clients/type/{{client.appType.replaceAll('_', '-') }}">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon" id="backToApplicationsList"></i>{{ :: 'backToApplication' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="element-box pt-5">
+                            <form class="form-horizontal" name="clientForm" novalidate kc-read-only="!access.manageClients">
+                                <div class="d-flex w-100">
+                                    <div class="text-center w-100">
+                                      <div class="wizard-form mt-2 w-100 pt-0">
+                                        <h6 class="text-left mb-4">{{ :: 'create-' + client.appType.replaceAll('_', '-') | translate}}</h6>
+                                      </div>
+                                    </div>
+                                  </div>
+                                <fieldset class="mb-3 mt-2">
+                                    <div class="application-step-1">
+                                        <div class="form-group row " data-intro="{{:: 'intro-application-name' | translate}}" data-step="1" data-title="{{:: 'intro-application-name-title' | translate}}">
+                                            <label class="col-md-3 control-label" for="name">{{:: 'client-name' | translate}} <span class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <input class="form-control" type="text" id="name" name="name" data-ng-model="client.name" autofocus required>
+                                                <p class="helper-text">{{ ::'application-name-hlp-txt' | translate }}</p>
+                                                <p class="helper-text" data-ng-hide="client.appType === 'ciba'">{{:: 'client-id.tooltip' | translate}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row "  data-ng-show="client.appType === 'saml'" data-step='{{client.appType === "saml" ? 3 : 0}}' data-intro="{{:: 'identity-provider.saml.entity-id' | translate}}" data-title="{{:: 'identity-provider.saml.entity-id' | translate}}">
+                                            <label class="col-md-3 control-label" for="masterSamlUrl">{{:: 'identity-provider.saml.entity-id' | translate}} <span  class="required"> *</span></label>
+                                            <div class="col-md-9">
+                                                <input class="form-control" type="text" name="entityId" id="entityId"
+                                                    data-ng-model="entityId">
+                                            </div>
+                                            <kc-tooltip>{{:: 'identity-provider.saml.entity-id.tooltip' | translate}}</kc-tooltip>
+                                        </div>
+                                        <div class="form-group row " data-ng-show=" (client.appType === 'high-secure' || client.appType === 'browser-based') && protocol === 'openid-connect'" data-step='{{protocol !== "saml" ? 3 : 0}}' data-intro="{{:: 'intro-application-redirect' | translate}}" data-title="{{:: 'intro-application-redirect-title' | translate}}">
+                                            <label class="col-md-3 control-label" for="newRedirectUri">{{::'valid-redirect-uri' | translate}}<span  class="required"> *</span></label>
+                                            <div class="col-md-9">
+                                                <input class="form-control" type="text" name="newRedirectUri" id="newRedirectUri" ng-model="client.redirectUris[0]">
+                                                <p class="helper-text">{{:: 'create-app-debugurl-hlptxt-p1' | translate }}<a href="" data-ng-click="addDefaultDebuggerUrl()" id="applicationRedirectionUrl">{{:: 'add-debugurl' | translate}}</a> {{ :: 'create-app-debugurl-hlptxt-p2' | translate}}</p>
+                                            </div>
+                                            <kc-tooltip>{{:: 'redirect-url.tooltip' | translate}}</kc-tooltip>
+                                        </div>
+                                        <div class="form-group row " data-ng-show="client.appType === 'saml'" data-step='{{client.appType === "saml" ? 3 : 0}}' data-intro="{{:: 'intro-application-adminurl' | translate}}" data-title="{{:: 'intro-application-adminurl-title' | translate}}">
+                                            <label class="col-md-3 control-label" for="masterSamlUrl">{{:: 'master-saml-processing-url' | translate}}</label>
+                                            <div class="col-md-9">
+                                                <input class="form-control" type="text" name="masterSamlUrl" id="masterSamlUrl"
+                                                    data-ng-model="client.adminUrl">
+                                            </div>
+                                            <kc-tooltip>{{:: 'master-saml-processing-url.tooltip' | translate}}</kc-tooltip>
+                                        </div>
+                                        <div class="form-group row" data-ng-if="client.appType === 'iws'">
+                                            <label class="col-md-3 control-label" for="newRedirectUri">{{:: 'login-url' | translate}} <span  class="required" data-ng-show="protocol != 'saml'">*</span></label>
+                                            <div class="col-md-9">
+                                                <div class="input-group mb-2">
+                                                    <input class="form-control" ng-model="client.redirectUris[0]" id="applicationLoginUrl">
+                                                </div>
+                                            </div>
+                                            <kc-tooltip>{{:: 'iws-login-url.tooltip' | translate}}</kc-tooltip>
+                                        </div>
+                                        <div class="form-group row clearfix block" data-ng-if="client.appType === 'iws'">
+                                            <label class="col-md-3 control-label" for="iwsCredType">{{:: 'credentials-set' | translate}}</label>
+                                            <div class="col-md-9">
+                                                <div>
+                                                    <select class="form-control" id="iwsCredType"
+                                                        ng-model="client.attributes['iws.credtype']">
+                                                        <option
+                                                            value="iws_user_set_pass">{{:: 'set-username-password' | translate}}</option>
+                                                        <option
+                                                            value="iws_admin_set_pass">{{:: 'share-username-password' | translate}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <kc-tooltip>{{:: 'iws-cred-type.tooltip' | translate}} </kc-tooltip>
+                                        </div>
+                                        <div class="form-group row" data-ng-if="client.appType === 'iws' && client.attributes['iws.credtype'] === 'iws_admin_set_pass'">
+                                            <label class="col-md-3 control-label" for="newRedirectUri">{{:: 'admin-username' | translate}} <span  class="required" data-ng-show="protocol != 'saml'">*</span></label>
+                                            <div class="col-md-9">
+                                                <div class="input-group mb-2">
+                                                    <input class="form-control" ng-model="client.attributes['iws.admin.user']" id="applicationAdminName" >
+                                                </div>
+                                            </div>
+                                            <kc-tooltip>{{:: 'iws-admin-user.tooltip' | translate}} </kc-tooltip>
+                                        </div>
+                                        <div class="form-group row" data-ng-show="client.appType === 'iws' && client.attributes['iws.credtype'] === 'iws_admin_set_pass'">
+                                            <label class="col-md-3 control-label" for="newRedirectUri">{{:: 'admin-password' | translate}} <span  class="required" data-ng-show="protocol != 'saml'">*</span></label>
+                                            <div class="col-md-9">
+                                                <div class="input-group mb-2">
+                                                    <input class="form-control" ng-model="client.attributes['iws.admin.pass']" id="applicationAdminPassword" type="password">
+                                                </div>
+                                            </div>
+                                            <kc-tooltip>{{:: 'iws-admin-pass.tooltip' | translate}} </kc-tooltip>
+                                        </div>
+                                        <div class="form-group row" data-ng-if="client.appType === 'iws'">
+                                            <label class="col-md-3 control-label" for="ssoLogoUrl">{{:: 'sso-logo-url' | translate}} <span class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <input class="form-control" type="text" id="ssoLogoUrl" name="ssoLogoUrl" data-ng-model="client.attributes['sso.logourl']" required>
+                                            </div>
+                                            <kc-tooltip>{{:: 'sso-logo-url.tooltip' | translate}}</kc-tooltip>
+                                        </div>
+                                        <div class="form-group row" data-ng-if="client.appType === 'iws'">
+                                            <label class="col-md-3 control-label">
+                                                {{:: 'iws-script' | translate}} <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-9">
+                                                <textarea class="form-control" rows="15" cols="30" id="iwsScript" ng-model="client.attributes['iws.script']" required></textarea>
+                                            </div>
+                                            <kc-tooltip>{{:: 'iws-script.tooltip' | translate}}</kc-tooltip>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </fieldset>
+                                <div class="form-group row">
+                                    <div class="col-md-12 d-flex justify-content-end" data-ng-show="access.manageClients">
+                                        <div class="d-flex flex-row-reverse">
+                                            <button class="ml-3 application-step-3" id="application-createBtn" kc-save data-ng-disabled="!changed">
+                                                <span ng-show=" stage === 1 " >{{:: 'create' | translate}}</span>
+                                                <div ng-show=" stage === 2 ">
+                                                    <kc-action-button-loading></kc-action-button-loading>
+                                                </div>
+                                            </button>
+                                            <button kc-cancel data-ng-click="cancel()" id="application-cancelBtn">{{:: 'cancel' | translate}}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    
+</div>
+

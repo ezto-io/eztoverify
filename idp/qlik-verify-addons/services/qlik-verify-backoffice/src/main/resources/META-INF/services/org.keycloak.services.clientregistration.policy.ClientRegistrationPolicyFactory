@@ -1,0 +1,3 @@
+com.qlikverify.backoffice.payment.TransactionPolicyFactory
+com.qlikverify.backoffice.payment.IVRTransactionPolicyFactory
+com.qlikverify.backoffice.payment.ResultVerificationPolicyFactory

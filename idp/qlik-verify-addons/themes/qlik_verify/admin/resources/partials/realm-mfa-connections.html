@@ -1,0 +1,173 @@
+<!-- Side Menu -->
+<kc-menu></kc-menu>
+<kc-auth-sub-menu></kc-auth-sub-menu>
+<!-- Main Content of the page-->
+<div class="content-w min-h-100">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="element-actions d-flex align-items-center">
+                            <div data-ng-if="configuredMfaProviders.length > 0">
+                                <a class="text-decoration-none" href="#/realms/{{realm.realm}}/connections/mfa/create">
+                                    <button class="create-btn no-entry-display" id="add-factor-btn"
+                                        data-step='{{configuredMfaProviders.length > 0 ? 1 : 0}}'
+                                        data-title="{{:: 'intro-no-mfa-connections-found-title' | translate}}"
+                                        data-intro="{{:: 'intro-no-mfa-connections-found' | translate}}">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-mfa-conn-btn' | translate}}
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <h1 class="element-header">{{:: 'mfa-title' | translate}}</h1>
+                        <div class="controls-above-table mb-0">
+                            <div class="form-group mb-auto mr-2" data-ng-show="configuredMfaProviders.length > 0">
+                                <form class="form-inline">
+                                    <div class="element-search">
+                                        <input id="factor-search-input"
+                                            class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched action-search-container"
+                                            type="text" placeholder="{{:: 'search-for-factors' | translate}}" ng-model="search"
+                                            onkeydown="if (event.keyCode === 13) document.getElementById('socialConnectionsSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="socialConnectionsSearch"
+                                            data-ng-click="changeSearchKey(search)"></i>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="mt-4" data-ng-if="configuredMfaProviders.length > 0 && !searchKey">
+                            <div class="element-box-tp">
+                                <div class="table-responsive-md">
+                                    <table class="table table-padded">
+                                        <thead> </thead>
+                                        <tbody class="p-3">
+                                            <tr ng-repeat="connection in configuredMfaProviders" class="fadeUp">
+                                                <td class="cursor-pointer" id="{{connection.displayName.toLowerCase().replaceAll(' ','-')}}"
+                                                    kc-open="/realms/{{realm.realm}}/connections/mfa/settings/{{connection.id}}">
+                                                    <div class="conn-with-logo">
+                                                        <div class="social-conn-logo-container">
+                                                            <img alt="{{connection.displayName}}"
+                                                                data-ng-src="{{resourceUrl}}/themes/img/{{connection.logo}}">
+                                                        </div>
+                                                        <div>
+                                                            <a class="text-decoration-none header-text-primary"
+                                                                href="#/realms/{{realm.realm}}/connections/mfa/settings/{{connection.id}}">
+                                                                {{:: connection.displayName | translate}}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="nowrap text-center">
+                                                    <div class="info-card-state bg-success small">
+                                                        <div class="info-state-circle"></div>{{:: 'enabled-txt' | translate}}
+                                                    </div>
+                                                </td>
+                                                <td class="row-actions">
+                                                    <a id="{{connection.displayName}}-edit"
+                                                        kc-open="/realms/{{realm.realm}}/connections/mfa/settings/{{connection.id}}">
+                                                        <i class="os-icon os-icon-ui-49"
+                                                            tooltip="{{:: 'edit' | translate}}" tooltip-placement="top"
+                                                            tooltip-trigger="mouseover mouseout"></i>
+                                                    </a>
+                                                    <a class="danger" data-ng-show="access.manageIdentityProviders" id="{{connection.displayName}}-delete"
+                                                        data-ng-click="remove(connection.id)">
+                                                        <i class="os-icon os-icon-ui-15"
+                                                            tooltip="{{:: 'tooltip-delete-label' | translate}}"
+                                                            tooltip-placement="top"
+                                                            tooltip-trigger="mouseover mouseout"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!--For search results-->
+                        <div class="mt-4"
+                            data-ng-if="configuredMfaProviders.length > 0 && searchKey && findConfigured(searchKey)">
+                            <div class="element-box-tp">
+                                <div class="table-responsive-md">
+                                    <table class="table table-padded">
+                                        <thead> </thead>
+                                        <tbody class="p-3">
+                                            <tr ng-repeat="connection in configuredMfaProviders | filter:{'displayName':searchKey}"
+                                                class="fadeUp">
+                                                <td class="cursor-pointer" id="{{connection.displayName.toLowerCase().replaceAll(' ','-')}}"
+                                                    kc-open="/realms/{{realm.realm}}/connections/mfa/settings/{{connection.id}}">
+                                                    <div class="conn-with-logo">
+                                                        <div class="social-conn-logo-container">
+                                                            <img alt="{{connection.displayName}}"
+                                                                data-ng-src="{{resourceUrl}}/themes/img/{{connection.logo}}">
+                                                        </div>
+                                                        <div>
+                                                            <a class="text-decoration-none"
+                                                                href="#/realms/{{realm.realm}}/connections/mfa/settings/{{connection.id}}">
+                                                                {{connection.displayName}}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="nowrap text-center">
+                                                    <div class="info-card-state bg-success small">
+                                                        <div class="info-state-circle"></div>{{:: 'enabled-txt' | translate}}
+                                                    </div>
+                                                </td>
+                                                <td class="row-actions">
+                                                    <a id="{{connection.displayName}}-edit"
+                                                        kc-open="/realms/{{realm.realm}}/connections/mfa/settings/{{connection.id}}">
+                                                        <i class="os-icon os-icon-ui-49"
+                                                            tooltip="{{:: 'edit' | translate}}" tooltip-placement="top"
+                                                            tooltip-trigger="mouseover mouseout"></i>
+                                                    </a>
+                                                    <a class="danger" data-ng-show="access.manageIdentityProviders" id="{{connection.displayName}}-delete"
+                                                        data-ng-click="remove(connection.id)">
+                                                        <i class="os-icon os-icon-ui-15"
+                                                            tooltip="{{:: 'tooltip-delete-label' | translate}}"
+                                                            tooltip-placement="top"
+                                                            tooltip-trigger="mouseover mouseout"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="element-box element-box-medium top-align"
+                            ng-show="searchKey && !findConfigured(searchKey)">
+                            <div class="no-entry-svg">
+                                <i class="os-icon os-icon-fingerprint opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                <p class="text-center no-entry-display mt-2 col-md-5">{{:: 'no-mfa-conn-found' |
+                                    translate}}</p>
+                                <button class="create-btn no-entry-display cursor-pointer" id="clear-search-btn" data-ng-click="clearSearch()">
+                                    <i class="os-icon os-icon-close mr-2"></i>
+                                    {{ ::  'clear-search' | translate}}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="element-box mt-4" data-ng-if="!configuredMfaProviders.length">
+                            <div class="no-policy-img" data-step='{{configuredMfaProviders.length === 0 ? 1 : 0}}'
+                                data-title="{{:: 'intro-no-mfa-connections-found-title' | translate}}"
+                                data-intro="{{:: 'intro-no-mfa-connections-found' | translate}}">
+                                <i class="os-icon os-icon-fingerprint opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                <p class="text-center no-entry-display">{{:: 'no-mfa-conn-configured' | translate}}
+                                </p>
+                                <a class="text-decoration-none create-btn no-entry-display" id="add-factor-btn" href="#/realms/{{realm.realm}}/connections/mfa/create">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-mfa-conn-btn' | translate}}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

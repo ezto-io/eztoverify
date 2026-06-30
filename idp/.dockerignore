@@ -1,0 +1,35 @@
+# The image now BUILDS FROM SOURCE (see Dockerfile), so the context MUST include the
+# source trees (keycloak/, qlik-verify-addons/, build-tools/, build.sh, eztoverify.sh,
+# poms). Only exclude build outputs, the prebuilt dist, and dev cruft — keep the context
+# lean so the COPY into the build stage isn't bloated by stale artifacts.
+
+# VCS / IDE / agent / OS
+.git
+.gitignore
+.idea
+.vscode
+.claude
+.DS_Store
+
+# Build outputs (regenerated inside the build stage by build.sh)
+build_*
+qlik_verify_*
+docker-keycloak.tar.gz
+*.tar.gz
+**/target
+**/node_modules
+**/.dart_tool
+
+# Not needed to build the IdP image
+docs
+web-sdk-test
+
+# Secrets / local env (never into an image layer)
+.env
+.env.*
+!.env.example
+env-eztoauth.sh
+env-eztovrfy.sh
+*.jks
+*.p12
+*.keystore

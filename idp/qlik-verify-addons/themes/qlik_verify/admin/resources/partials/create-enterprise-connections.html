@@ -1,0 +1,94 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li>
+                    <a href="#/realms/{{realm.realm}}/connections/enterprise" class="ng-binding" id="back-to-enterprise-connection">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-enterprise-conn' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="role-list-container">
+                            <h1 class="user-list-heading">{{:: 'new-enterprise-conn-title' | translate}}</h1>
+                        </div>
+                        <br>
+                        <!-- Search Containers 
+                        <div data-ng-show="access.manageIdentityProviders">
+                            <div data-ng-show="socialProviders.length > 0">
+                                <form class="form-horizontal">
+                                    <div class="form-group element-search w-100">
+                                        <input class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched full-width-search-container" type="text" placeholder="Search for Social Connections"  ng-model="search" onkeydown="if (event.keyCode === 13) document.getElementById('connectionsSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="connectionsSearch" data-ng-click="changeSearchKey(search)"></i>
+                                    </div>
+                                </form>
+                            </div>
+                        </div> -->
+                        <!-- Social Conn List -->
+                        <div class="card-striped row cards-list market-card-list mr-0 ml-0" data-ng-if="providers.length > 0">
+                            <div class="project-box ng-scope social-card-container cursor-pointer info-card mt-0" id="enterprise-conn-{{ connection.id }}" ng-repeat="connection in providers" data-step=' {{ $index === 0 ? 1 : 0 }} ' data-title="{{:: 'intro-enterprise-connection-title' | translate}}" data-intro="{{:: 'intro-enterprise-connection-desc' | translate}}">
+                                <div class="social-card-info" id="enterprise-connection-{{ connection.id }}" kc-open="/create/user-storage/{{realm.realm}}/providers/{{connection.id}}">
+                                    <div>
+                                        <div class="social-card-header">
+                                            <div class="social-card-logo">
+                                                <img class="social-card-img" data-ng-src="{{resourceUrl}}/themes/img/{{connection.id}}-logo.svg" alt="{{connection.id}}">
+                                            </div>
+                                            <div class="market-title-container"> 
+                                                <div class="market-title">
+                                                    <h6 class="mb-1 text-capitalize">{{connection.id}}  </h6> 
+                                                    <p class="helper-text mt-0">{{ :: 'enterprise-conn-category-title' | translate }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="market-desc-container">
+                                            <p class="market-desc"> {{ :: 'enterprise-conn-desc' | translate | replaceWithVariant:serverInfo.variant}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--For search results-->
+                        <div data-ng-if="socialProviders.length > 0 && searchKey" class="card-striped row cards-list market-card-list mr-0 ml-0">
+                            <div class="project-box ng-scope social-card-container info-card mt-0" id="social-conn-{{connection.id}}" ng-repeat="connection in socialProviders | filter:{'name':searchKey}">
+                                <div class="social-card-info" id="social-connection-{{connection.name}}" kc-open="/realms/{{realm.realm}}/connections/social/create-conn/{{connection.id}}">
+                                    <div>
+                                        <div class="social-card-header">
+                                            <div class="social-card-logo">
+                                                <img class="social-card-img" data-ng-src="{{resourceUrl}}/themes/img/social-icons/{{connection.id}}-logo.png" alt="{{connection.id}}-logo">
+                                            </div>
+                                            <div class="market-title-container">
+                                                <div class="market-title">
+                                                <h6 class="mb-1">{{connection.name}} </h6>
+                                                <p class="helper-text mt-0">Social connection</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="market-desc-container">
+                                            <p class="market-desc"> {{ :: connection.id +'-social-conn-desc' | translate }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="element-box element-box-medium top-align" ng-show="socialProviders.length > 0 && !findConnections(searchKey)">
+                            <div class="no-entry-svg">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/social-icons/no-social-conn.svg" alt="no-social-conn-img" class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display mt-2">{{:: 'no-social-conn-found' | translate}}</p>
+                                <button data-ng-click="clearSearch()" class="create-btn no-entry-display">
+                                    <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                    {{:: 'back-to-social-conn' | translate}}
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

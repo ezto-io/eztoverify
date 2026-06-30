@@ -1,0 +1,68 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+      <div class="content-box">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="element-wrapper">
+              <div class="element-box">
+                <div class="col-sm-9 col-md-10 col-sm-push-3 col-md-push-2">
+
+                    <h1 class="general-heading">{{:: 'add-realm' | translate}}</h1>
+                
+                    <form class="form-horizontal" name="realmForm" novalidate>
+                        <fieldset>
+                            <div class="form-group row">
+                                <!-- <label for="name" class="col-sm-2 control-label">{{:: 'import' | translate}}</label> -->
+                                <label for="name" class="col-sm-2 control-label">{{:: 'realm-logo' | translate}}</label>
+                
+                                <div class="col-md-6" data-ng-hide="importing">
+                                    <label for="logoUpload" class="btn btn-outline-primary">{{:: 'select-file' | translate}}</label>
+                                    <input id="logoUpload" type="file" name="profile_photo" accept="image/*" placeholder="Photo"  required="" capture class="hidden"/>
+                                </div>
+                
+                                <div class="col-md-6" data-ng-show="importing">
+                                    <input type="button" class="btn btn-outline-primary" data-ng-click="viewImportDetails()" value="{{:: 'view-details' | translate}}"/>
+                                    <input type="button" class="btn btn-outline-danger" data-ng-click="reset()" value="{{:: 'clear-import' | translate}}"/>
+                                </div>
+                            </div>
+                
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-2 control-label">{{:: 'name' | translate}} <span class="required">*</span></label>
+                            
+                                <div class="col-md-6">
+                                    <input class="form-control" type="text" id="name" name="name" data-ng-model="realm.realm" autofocusrequired>
+                                </div>
+                            </div>
+                            <p class="padding-left-0" id="error_msg"></p>
+
+                            <br>
+                        
+                            <!-- <div class="form-group row">
+                                <label for="enabled" class="col-md-2 control-label">{{:: 'enabled' | translate}}</label>
+                                <div class="col-md-6">
+                                    <label for="enabled">
+                                        <div  class="os-toggler-w" ng-class="{on:realm.enabled}">
+                                          <div class="os-toggler-i">
+                                            <div class="os-toggler-pill" ng-model="realm.enabled" name="enabled" id="enabled" onoffswitch >
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div> -->
+                        </fieldset>
+                
+                        <div class="form-group row">
+                            <div class="col-md-10 col-md-offset-2">
+                                <button kc-save data-ng-disabled="!changed">{{:: 'create' | translate}}</button>
+                                <button kc-cancel data-ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+<div id="panel-close" data-ng-click="dismissPanel()" class="mt-3 pr-3">
+    <i class="os-icon os-icon-close"></i>
+</div>
+<div class="auth-config-container pb-3">
+    <div class="exec-logo-container">
+        <i class="os-icon os-icon-code font-weight-600 auth-panel-icon"> </i>
+    </div>
+    <div class="exec-title"> 
+        <p>{{:: selectedExecution.displayName | translate }}</p>
+    </div>
+</div>
+<!-- <div id="divisionthing"></div>
+<p id="header1" class="mt-4">{{:: 'requirement' | translate}}</p>
+<ul class="auth-req-choice px-3" ng-class="{'justify-content-between':selectedExecution.requirementChoices.length!==2}">
+    <li class="form-group row clearfix" ng-repeat="choice in selectedExecution.requirementChoices">
+        <label>
+            <input type="radio" ng-model="selectedExecution.requirement" ng-value="choice" ng-change="updateExecution(selectedExecution)">
+            {{choice}}
+        </label>
+    </li>
+</ul> -->
+<div id="divisionthing"></div>
+<p id="header1" class="mt-4 mb-0">{{:: 'auth-settings' | translate}}</p>
+<form class="form-horizontal mb-4 pl-2 mt-3" name="realmForm" novalidate >
+    <div class="proplist">
+        <!-- Config Settings -->
+        <div>
+            <div class="form-group panel-responsive">
+                <div class="form-group row clearfix">
+                    <label class="col-md-3 control-label" for="name">{{:: 'enable' | translate}}<span class="required"> *</span></label>
+                    <div class="col-md-9 ">
+                        <label>
+                            <div class="os-toggler-w"
+                                ng-class="{on: execCheck.isEnabled}">
+                                <div class="os-toggler-i" id="execEnabled-toggle">
+                                    <div class="os-toggler-pill"
+                                        ng-model="execCheck.isEnabled" id="execEnabled"
+                                        onoffswitch>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div data-ng-if="selectedExecution.configurable">
+                    <kc-provider-config realm="realm" config="config.config" properties="configType"></kc-provider-config>
+                </div>
+            </div>
+    
+            <div class="form-buttons-w border-top-0">
+                <div class="col-md-12 d-flex flex-row-reverse pr-0">
+                    <button class="ml-3" id="saveBtn" kc-save data-ng-disabled="!changed">
+                        <span ng-show=" stage === 1 " >{{:: 'save' | translate}}</span>
+                        <div ng-show=" stage === 2 ">
+                            <kc-action-button-loading></kc-action-button-loading>
+                        </div>
+                    </button>
+                    <button id="cancelBtn" kc-reset data-ng-disabled="!changed">{{:: 'cancel' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div id="divisionthing" data-ng-if="selectedExecution.configurable"></div>
+<!-- Danger Zone -->
+<div>
+    <div class="pt-1">
+        <p id="header1" class="margin-top:5px">{{:: 'danger-zone' | translate}}</p>
+    </div>
+    <ul class="danger-zone-list">
+        <li>
+            <div class="danger-zone-container">
+                <div>
+                    <h4 class="danger-zone-title">{{:: 'delete-execution' | translate}}</h4>
+                    <p>{{:: 'delete-execution-content' | translate}}</p>
+                </div>
+                <div class="dz-pull-right">
+                    <button class="delete-btn" type="submit" data-ng-click="removeExecution(selectedExecution)">{{:: 'delete' |
+                        translate}}</button>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

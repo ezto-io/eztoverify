@@ -1,0 +1,8 @@
+io.ezto.license.job.SlackJobProvider
+io.ezto.license.job.RestJobProvider
+io.ezto.license.job.LicenseUsageJobProvider
+io.ezto.license.job.RemoveTenantJobProvider
+io.ezto.license.job.FreshDeskJobProvider
+io.ezto.license.job.CreateInvoiceJobProvider
+io.ezto.license.job.IamHardSyncJobProvider
+#io.ezto.license.job.LicenseApiJobProvider

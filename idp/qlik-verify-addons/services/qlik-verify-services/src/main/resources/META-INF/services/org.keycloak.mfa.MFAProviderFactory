@@ -1,0 +1,8 @@
+com.qlikverify.services.mfa.AuthyMFAProvider
+com.qlikverify.services.mfa.GoogleAuthenticationMFAProvider
+com.qlikverify.services.mfa.DuoMFAProvider
+com.qlikverify.services.mfa.PhoneOTPMFAProvider
+com.qlikverify.services.mfa.EmailOTPMFAProvider
+com.qlikverify.services.mfa.WhatsappMFAProvider
+com.qlikverify.services.mfa.FreeOTPMFAProvider
+com.qlikverify.services.mfa.CyLockMFAProvider

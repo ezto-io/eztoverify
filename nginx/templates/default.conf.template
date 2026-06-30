@@ -1,0 +1,52 @@
+# Verify — nginx reverse proxy for custom domain + HTTPS (optional).
+# ${DOMAIN} is substituted at container start by the nginx image's envsubst
+# (only env-defined vars are replaced, so nginx's own $host/$remote_addr/etc. survive).
+# TLS terminates here; nginx talks plain HTTP to the idp container (KC_PROXY=edge).
+
+# WebSocket upgrade helper (conf.d is http context).
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+# HTTP -> HTTPS redirect
+server {
+    listen 80;
+    server_name ${DOMAIN};
+    return 301 https://$host$request_uri;
+}
+
+# HTTPS -> idp
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name ${DOMAIN};
+
+    ssl_certificate     /etc/nginx/certs/fullchain.pem;
+    ssl_certificate_key /etc/nginx/certs/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    # Match idp QUARKUS_HTTP_LIMITS_MAX_BODY_SIZE=100M (selfie/doc uploads).
+    client_max_body_size 100m;
+
+    location / {
+        proxy_pass http://idp:8080;
+        proxy_http_version 1.1;
+
+        # Forwarded headers — Keycloak (KC_PROXY=edge) derives the public
+        # scheme/host/client-IP from these.
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host  $host;
+        proxy_set_header X-Forwarded-Port  $server_port;
+
+        # WebSocket upgrade (harmless for plain HTTP, needed if WS endpoints are used).
+        proxy_set_header Upgrade    $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+
+        proxy_read_timeout 300s;
+    }
+}

@@ -1,0 +1,58 @@
+<div class="modal-header">
+    <h5 class="modal-title overflow-ellipsis" ng-attr-title="{{title}}"> {{title}} </h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close" id="modal-close-btn"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="note-container" data-ng-class="isForceDelete && 'danger-note'">
+        <span class="os-icon os-icon-cancel-circle panel-config-info-icon" data-ng-if="isForceDelete"></span>
+        <span class="os-icon os-icon-alert-triangle note-icon-container" data-ng-if="!isForceDelete"></span>
+        <p class="mb-0" data-ng-if="!isForceDelete">{{ :: 'delete-tenant-warning-title' | translate }}</p>
+        <p class="mb-0" data-ng-if="isForceDelete">{{ :: 'action-cannot-revert' | translate }}</p>
+    </div><br>
+    <p class="mb-0" ng-bind-html="message"></p><br>
+    <form>
+        <div>
+            <div data-ng-hide="OTPSession">
+                <p class="mb-1" ng-bind-html="label"></p>
+                <div class="pl-0 mb-0 form-group">
+                    <input class="form-control hide-input-arrow w-100 mb-1" type="text" id="deleteValue" autocomplete="off" required/>
+                    <span id="error_msg"></span>
+                </div>
+                <div class="mt-2 d-flex align-items-center" data-ng-show="access.createRealm">
+                    <input class="mr-2" type="checkbox" id="forceDelete" ng-model="isForceDelete" ng-change="changeForceDeleteState(isForceDelete)">
+                    <label class="mb-0" for="forceDelete"> {{:: 'force-delete' | translate}} </label>
+                </div>
+            </div>
+            <div data-ng-show="OTPSession" >
+                <p class="mb-1" ng-bind-html="getOTPLabel"></p>
+                <div class="pl-0 mb-0 form-group">
+                    <input id="otpValue" class="form-control hide-input-arrow w-100 mb-1" type="text" required/>
+                    <p id="error_msg" class="error-msg" ng-bind-html="otpErrorMsg"></p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" data-ng-class="btns.cancel.cssClass" id="cancel-btn" ng-click="cancel()">{{btns.cancel.label}}</button>
+    <button type="button" id="remove-tenant-button" data-ng-class="btns.ok.cssClass" ng-click="ok($event, 'button')">
+        <div class="button-spinner d-none">
+            <div class="spinner-border spinner-border-sm" role="status">
+            </div>
+            <span>{{ btns.ok.label | translate}}</span>
+            
+        </div>
+        <span class="button-content-spinner">
+            {{ btns.ok.label | translate}}
+        </span>
+    </button>
+</div>
+<script type="text/javascript">
+    $("#deleteValue").on("input",function() {
+        if($("#error_msg")){
+            $("#error_msg").text("");
+        }
+    });
+</script>

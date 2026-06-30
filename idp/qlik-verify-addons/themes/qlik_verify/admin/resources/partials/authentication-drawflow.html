@@ -1,0 +1,67 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a id="back-to-authentication-link" href="#/realms/{{realm.realm}}/authentication/installed/{{(currentFlow.templateType | lowercase) === 'direct_grant' ? 'login' : (currentFlow.templateType | lowercase)}}">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-authentication' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="user-details-top action-details align-items-start mb-0">
+                            <div class="text-overflow-control"><h3 class="font-weight-normal pb-0" >{{displayFlow.alias}}</h3></div>
+                            <button class="delete-btn" id="delete-btn" data-ng-hide="flow.builtIn" data-ng-click="deleteFlow()"><i class="os-icon os-icon-ui-15 plus-icon"></i>{{:: 'delete' | translate}}</button>
+                        </div>
+                        <p class="helper-text mt-1">{{:: displayFlow.description | translate}}</p>
+                        
+                        <br><br>
+                        <div class="element-box">
+                            <div class="auth-flow-container">
+                                <div>
+                                    <div class="auth-flow-playground">
+                                        
+                                        <div id="drawflow" ondrop="angular.element(this).scope().dropComp(event)" ondragover="angular.element(this).scope().allowDropComp(event)" data-title="{{ :: 'intro-auth-drawflow-playground-title' | translate}}" data-intro="{{ :: 'intro-auth-drawflow-playground' | translate}}" class="authentication-step-1">
+                                        </div>
+
+                                        <div class="auth-exec-playground bg-light-2">
+                                            <div class="auth-execs-container pos-top-0"> 
+                                                <div class="auth-exec-list-container">
+                                                    <header class="auth-exec-list-header">
+                                                        <div data-title="{{ :: 'intro-auth-create-drawflow-title' | translate}}" data-intro="{{ :: 'intro-auth-create-drawflow' | translate}}" class="authentication-step-2">
+                                                        <h6>{{ :: 'add-execution' | translate}}</h6><!-- Search -->
+                                                        <p class="helper-text">{{ :: 'create-hint-drawflow' | translate}}</p>
+                                                        </div>
+                                                        <form class="form-inline pt-2">
+                                                            <div class="element-search w-100">
+                                                                <input id="authentication-flow-input" class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched" type="text" placeholder="{{:: 'search.placeholder' | translate}}" data-ng-model="search" onkeydown="if (event.keyCode == 13) document.getElementById('authenticatorsSearch').click()">
+                                                                <i class="os-icon os-icon-search2 search-icon" id="authenticatorsSearch"></i>
+                                                            </div>
+                                                    </form>
+                                                    </header>
+                                                    <div class="auth-exec-list">
+                                                        <div class="auth-exec" ng-repeat="authenticatorProvider in providers | filter: {'displayName':search}"
+                                                            class="drag-drawflow" draggable="true" ondragstart="angular.element(this).scope().dragComp(event)"
+                                                            ondragend="angular.element(this).scope().dragEnd(event)" data-id="{{authenticatorProvider.id}}"
+                                                            data-node="{{authenticatorProvider.displayName}}"
+                                                            ng-click="openSupportWidget(authenticatorProvider.id, 'authenticators')">
+                                                            <i class="os-icon os-icon-code margin-right-5px" ></i><span> {{:: authenticatorProvider.displayName | translate}}</span>
+                                                        </div>
+                                                        <div data-ng-if="(providers | filter:{'displayName':search}).length === 0" class="text-center">{{::'no-execution-flow' | translate}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

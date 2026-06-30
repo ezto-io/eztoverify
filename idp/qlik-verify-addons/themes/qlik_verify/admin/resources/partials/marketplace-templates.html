@@ -1,0 +1,66 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+  <div class="marketplace-content content-i">
+    <div class="content-box">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="element-wrapper">
+            <div class="role-list-container mb-4">
+              <h1 class="user-list-heading"> {{ :: 'marketplace' | translate}} </h1> 
+              <a  class="create-btn" href="https://support.ezto.io" id="requestForIntegrationBtn" target="_blank" data-ng-if="serverInfo.thirdPartyReqEnabled">
+                {{:: 'request-for-integration' | translate}}
+              </a>  
+            </div>
+            <div class="form-group">
+              <div class="element-search w-100 mb-4">
+                  <input id="search-template" class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched action-search-container " type="text" placeholder="{{:: 'search-for-marketplace' | translate}}" ng-model="search" onkeydown="if (event.keyCode === 13) document.getElementById('templatesSearch').click()">
+                  <i class="os-icon os-icon-search2 search-icon" id="templatesSearch" data-ng-click="changeSearchKey(search)"></i>
+              </div>
+            </div>
+            <div class="mt-4 row justify-content-between justify-content-md-start">
+              <div class="col-12 col-sm-4 col-md-3 col-lg-2"> <kc-marketplace-sub-menu></kc-marketplace-sub-menu></div>
+                <div class="w-100 col-12 col-sm-8 col-md-9 col-lg-10 justify-content-xl-end">
+                  
+                  <div class="mb-4" data-ng-hide="pattern">
+                    <h6 class="category-header mb-2 text-capitalize" > {{:: category | translate }}</h6>
+                    <p class="category-desc" > {{ :: categoryDescName+'-desc' | translate | replaceWithVariant:serverInfo.variant}} </p>
+                  </div>
+                  
+                  <div class="element-box element-box-medium top-align" ng-show="slicedTemplate.length === 0 && searchLoaded">
+                    <div class="no-entry-svg">
+                      <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'no-templates.svg' : realm.mode === 'ciam' ? 'no-templates-ciam.svg' : 'no-templates-bo.svg' }}" alt="no-results-svg" class="opacity-40 no-entry-display" />
+                      <p class="no-results-msg no-entry-display mt-2">{{:: 'no-template-found' | translate}}</p>
+                      <button class="create-btn no-entry-display cursor-pointer" id="clearSearchBtn" data-ng-click="clearSearch()" data-ng-if="search.length > 0 && templates.length !== 0">
+                        <i class="os-icon os-icon-close mr-2"></i>
+                        {{ ::  'clear-search' | translate}}
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Search and Filter Count Container ends -->
+                  <div class="nw-market-container fadeUp" data-ng-show="searchLoaded">
+                    <div class="nw-market-card cursor-pointer d-flex align-items-center" id="{{template.title.toLowerCase().replaceAll(' ','-')}}-block" ng-repeat="template in slicedTemplate" kc-open="/realms/{{realm.realm}}/marketplace/templates/{{template.category}}/{{template.id}}" title="{{:: template.title | translate}}">
+                      <div class="nw-market-header d-flex align-items-center">
+                          <div class="nw-market-logo d-flex mr-3">
+                            <img class="img-fluid" data-ng-src="{{template.logo}}" alt="logo" data-ng-if="template.logo && template.category !== 'Authentication' && template.category !== 'Passwordless' ">
+                            <img class="img-fluid" data-ng-src="{{realm.mode === 'wiam' ? template.logo.replaceAll('logo.svg','logo-wiam.svg') : template.logo.replaceAll('logo.svg','logo-ciam.svg') }}" alt="logo" data-ng-if="template.logo && (template.category === 'Authentication' || template.category === 'Passwordless' ) " >
+                            <img class="img-fluid" data-ng-src="{{resourceUrl}}/themes/img/logo.svg?version={{serverVersion}}" alt="logo" data-ng-if="!template.logo">
+                          </div>
+                          <div>
+                            <h4 class="nw-market-title">{{:: template.title | translate}}</h4>
+                            <h6 class="nw-market-category"> {{:: template.category | translate}}</h6>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div data-ng-if="!searchLoaded">
+                      <kc-loader loadertype="loaderTypeName" ></kc-loader>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

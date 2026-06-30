@@ -1,0 +1,268 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/dashboard-admins" id="back-to-admins-list">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6'}} breadcrumb-back-icon"></i>{{ :: 'back-to-dashboard-admins' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-admin-user></kc-tabs-admin-user>
+                        <div data-ng-if="create">
+                            <ul class="blue-zone-list">
+                                <li>
+                                    <div class="blue-zone-container">
+                                        <div>
+                                            <h4 class="blue-zone-title ng-binding">{{:: 'note' | translate}}</h4>
+                                            <p class="mb-0 ng-binding">{{: 'email-invitation-sent' | translate}}</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div data-ng-if="!create && user.userInviteStatus.toLowerCase() === 'invited'">
+                            <ul class="blue-zone-list">
+                                <li>
+                                    <div class="blue-zone-container">
+                                        <div>
+                                            <h4 class="blue-zone-title ng-binding">{{::'resend-invite-zone-title' | translate}}</h4>
+                                            <p class="mb-0 ng-binding">{{ :: 'resend-invite-zone-content' | translate }} </p>
+                                        </div>
+                                        <div class="pull-right">
+                                            <button class="create-btn" id="resendInvite" data-ng-show="!create && access.manageUsers" data-ng-click="resendInvite()">
+                                                <span ng-show=" stage === 1 " > {{:: 'resend-invite-btn-txt' | translate}}</span>
+                                                <div ng-show=" stage === 2 ">
+                                                    <kc-action-button-loading></kc-action-button-loading>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div data-ng-if="!oldMfaEnabledValue && !create">
+                            <ul class="blue-zone-list">
+                                <li>
+                                    <div class=" user-section blue-zone-container">
+                                        <div>
+                                            <h4 class="blue-zone-title ng-binding"> {{ :: 'attention' | translate}} </h4>
+                                            <div class="d-flex justify-content-between" >
+                                                <div>
+                                                    <p class="mb-0 ng-binding"> {{ :: 'approval-desc' | translate}} </p>
+                                                </div>
+                                                <div class="col-md-9" ng-disabled="!create && !user.access.manage">
+                                                    <label>
+                                                        <div class="os-toggler-w" ng-class="{on: user.mfaEnabled}">
+                                                            <div class="os-toggler-i" id="mfaEnabled-toggle">
+                                                                <div class="os-toggler-pill" ng-model="user.mfaEnabled" name="mfaEnabled" id="mfaEnabled" onoffswitch >
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="element-box py-5">
+                            <form class="form-horizontal" name="userForm" novalidate kc-read-only="!create && !user.access.manage">
+                                <fieldset class="mt-0">    
+                                    <div class="form-group row" data-ng-show="!create">
+                                        <label class="col-md-3 control-label" for="id">{{:: 'created-at' | translate}}</label>
+                                        <div class="col-md-9">{{user.createdTimestamp|timeago}}</div>
+                                    </div>
+                                    <div class="form-group row" data-ng-show="!create">
+                                        <label class="col-md-3 control-label"for="username">{{:: 'user-username' | translate}} <span class="required">*</span> </label>
+                                        <div class="col-md-9">
+                                            <!-- Characters >,<,/,\ are forbidden in username -->
+                                            <input class="form-control" type="text" id="username" name="username" data-ng-model="user.username" data-ng-readonly="!editUsername">
+                                        </div>
+                                        <kc-tooltip>{{:: 'username-disabled-text' | translate}}</kc-tooltip>
+                                    </div>
+                        
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="email">{{:: 'email' | translate}} <span class="required">*</span></label>
+                        
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="email" name="email" id="email"
+                                            autofocus required data-ng-model="user.email" data-ng-readonly="emailEnable && !create">
+                                            <p class="helper-text" ng-if="emailEnable && !create"> {{ :: 'email-disabled-text' | translate }} </p>
+                                            <p class="helper-text w-100 " ng-if="!emailEnable">{{:: 'email.tooltip' | translate}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" data-ng-show="!create">
+                                        <label class="col-md-3 control-label" for="firstName">{{:: 'first-name' | translate}}</label>
+                        
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" name="firstName" id="firstName" data-ng-model="user.firstName" maxlength="40">
+                                        </div>
+                                        <kc-tooltip>{{:: 'firstname.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row" data-ng-show="!create">
+                                        <label class="col-md-3 control-label" for="lastName">{{:: 'last-name' | translate}}</label>
+                        
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" name="lastName" id="lastName" data-ng-model="user.lastName" maxlength="40">
+                                        </div>
+                                        <kc-tooltip>{{:: 'lastname.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <!-- <div class="form-group row clearfix block" data-ng-show="!create">
+                                        <label class="col-md-3 control-label">{{:: 'mfa-user-enabled' | translate}}</label>
+                                        <div class="col-md-9" ng-disabled="!create && !user.access.manage">
+                                            <label>
+                                                <div class="os-toggler-w" ng-class="{on: user.mfaEnabled}">
+                                                    <div class="os-toggler-i">
+                                                        <div class="os-toggler-pill" ng-model="user.mfaEnabled" name="mfaEnabled" id="mfaEnabled" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'user-enabled.tooltip' | translate}}</kc-tooltip>
+                                    </div> -->
+                                    <div class="form-group row clearfix block">
+                                        <label class="col-md-3 control-label" for="userEnabled">{{:: 'user-enabled' | translate}}</label>
+                                        <div class="col-md-9" ng-disabled="!create && !user.access.manage">
+                                            <label>
+                                                <div  class="os-toggler-w" ng-class="{on: user.enabled}" >
+                                                    <div class="os-toggler-i" id="details-userEnabled">
+                                                        <div class="os-toggler-pill" ng-model="user.enabled" name="userEnabled" id="userEnabled" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'user-enabled.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix block" data-ng-show="realm.bruteForceProtected && !create">
+                                        <label class="col-md-3 control-label" for="temporarilyDisabled">{{:: 'user-temporarily-locked' | translate}}</label>
+                                        <div class="col-md-1">
+                                            <label>
+                                                <div class="os-toggler-w" ng-class="{on: temporarilyDisabled}" >
+                                                    <div class="os-toggler-i" id="details-temporarilyDisabled">
+                                                        <div class="os-toggler-pill" ng-model="temporarilyDisabled" name="temporarilyDisabled" id="temporarilyDisabled" data-ng-readonly="true" data-ng-disabled="true" onoffswitch></div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button type="submit" id="details-unlock-btn" data-ng-click="unlockUser()" data-ng-show="temporarilyDisabled" class="btn btn-primary"><i class="os-icon os-icon-rotate-cw plus-icon"></i>{{:: 'unlock' | translate}}</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row clearfix block" data-ng-show="!create && user.federationLink">
+                                        <label class="col-md-3 control-label">{{:: 'federation-link' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <a href="{{federationLink}}" id="details-federation-link">{{federationLinkName}}</a>
+                                        </div>
+                                        <kc-tooltip>{{:: 'user-link.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix block" data-ng-show="!create && user.origin">
+                                        <label class="col-md-3 control-label">{{:: 'user-origin-link' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <a href="{{originLink}}"  id="details-user-origin-link" >{{originName}}</a>
+                                        </div>
+                                        <kc-tooltip>{{:: 'user-origin.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix block" data-ng-show="!create">
+                                        <label class="col-md-3 control-label" for="emailVerified">{{:: 'email-verified' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label>
+                                                <div  class="os-toggler-w" ng-class="{on: user.emailVerified}" >
+                                                    <div class="os-toggler-i" id="details-emailVerified">
+                                                        <div class="os-toggler-pill" ng-model="user.emailVerified" name="emailVerified" id="emailVerified" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>                                        
+                                        </div>
+                                        <kc-tooltip>{{:: 'email-verified.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix block" data-ng-show="!create">
+                                        <label class="col-md-3 control-label">{{:: 'mob-num' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input class="form-control hide-input-arrow" type="tel" name="mobileNum" id="mobileNum"
+                                            data-ng-model="user.mobileNumber" data-ng-readonly="user.mobileNumber === user.username" pattern="^[0-9]*$" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" />
+				                            <input type="hidden" name="region"  id="region" />
+                                            <div class="position-absolute">
+                                                <kc-tooltip>{{:: 'mob-num.tooltip' | translate}}</kc-tooltip>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="form-buttons-w border-top-0">
+                                    <div class="col-md-12 d-flex flex-row-reverse pr-0" data-ng-show="create && access.manageUsers">
+                                        <button kc-admin-save data-ng-disabled="!createBtnchanged" id="add-admin-saveBtn" class=" ml-3 btn btn-primary">
+                                            <span ng-show=" stage === 1 " >{{:: 'save' | translate}}</span>
+                                            <div ng-show=" stage === 2 ">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </div>
+                                        </button>
+                                        <button kc-cancel data-ng-click="cancel()" id="details-cancelBtn">{{:: 'cancel' | translate}}</button>
+                                    </div>
+                        
+                                    <div class="col-md-12 d-flex flex-row-reverse pr-0" data-ng-show="!create && user.access.manage">
+                                        <button kc-admin-save data-ng-disabled="!changed" id="details-saveBtn" class="ml-3 btn btn-primary">
+                                            <span ng-show=" stage === 1 " >{{:: 'save' | translate}}</span>
+                                            <div ng-show=" stage === 2 ">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </div>
+                                        </button>
+                                        <button kc-reset data-ng-disabled="!enableCancelBtn" id="details-cancelBtn">{{:: 'cancel' | translate}}</button>
+                                    </div>
+                                </div> 
+                            </form>
+                              <!-- Danger Zone -->
+                              <div data-ng-controller="AdminTabCtrl" data-ng-show="!create && ((!user.attributes.qv_is_account_creator || isRootTenant) || (realm.mode !== 'bo'))">
+                                  <br><br>
+                                  <h3 class="danger-zone-main-title" >{{:: 'danger-zone' | translate}}</h3>
+                                  <br>
+                                <ul class="danger-zone-list">
+                                    <li data-ng-if="!emailEnable">
+                                        <div class="danger-zone-container">
+                                            <div>
+                                                <h4 class="danger-zone-title">{{:: 'delete-user-title' | translate}}</h4>
+                                                <p class="mb-0">{{:: 'delete-user-content' | translate}}</p>
+                                            </div>
+                                            <div class="pull-right">
+                                                <button class="delete-btn" id="removeUser" data-ng-show="!create && access.manageUsers" data-ng-click="removeUser()">{{:: 'delete-user' | translate}}</button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mt-3" data-ng-if="(realm.mode !== 'bo') || (realm.mode == 'bo' && isRootTenant)">
+                                        <div class="danger-zone-container">
+                                            <div>
+                                                <h4 class="danger-zone-title">{{:: 'reset-password-title' | translate}}</h4>
+                                                <p class="mb-0">{{:: 'reset-password-content' | translate}}</p>
+                                            </div>
+                                            <div class="pull-right">
+                                                <button class="delete-btn" id="resetPasswordBtn" data-ng-show="!create && access.manageUsers" data-ng-click="resetPassword()">{{:: 'reset-password-btn' | translate}}</button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- Danger Zone Ends -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var input = document.querySelector("#mobileNum");
+    var iti = window.intlTelInput(input, {
+        initialCountry: "in",
+        utilsScript: "${resourceUrl}/themes/bower_components/tele-input/utils.js",
+        separateDialCode: false
+    });
+</script>
+
+

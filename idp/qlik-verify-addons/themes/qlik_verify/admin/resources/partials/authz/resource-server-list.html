@@ -1,0 +1,49 @@
+<div class="col-sm-9 col-md-10 col-sm-push-3 col-md-push-2">
+    <h1>
+        <span>{{::'resource-server' | translate}}</span>
+        <kc-tooltip>{{::'resource-server-tooltip' | translate}}</kc-tooltip>
+    </h1>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th class="kc-table-actions" colspan="5">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" placeholder="{{::'search.placeholder' | translate}}" data-ng-model="search.clientId" class="form-control search" onkeyup="if(event.keyCode == 13){$(this).next('I').click();}">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-search" type="submit"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pull-right">
+                            <a id="createServer" class="btn btn-secondary" href="#/realms/{{realm.realm}}/authz/resource-server/create">{{::'create' | translate}}</a>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            <tr data-ng-hide="servers.length == 0">
+                <th>{{::'name' | translate}}</th>
+                <th>{{::'authz-policy-enforcement-mode' | translate}}</th>
+                <th>{{::'allows-remote-resource-management'  | translate}} ?</th>
+                <th>{{::'allows-entitlement' | translate}} ?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="server in servers | filter:search | orderBy:'clientId'">
+                <td><a href="#/realms/{{realm.realm}}/authz/resource-server/{{server.id}}">{{server.name}}</a></td>
+                <td>{{server.policyEnforcementMode | toCamelCase}}</td>
+                <td>{{server.allowRemoteResourceManagement}}</td>
+                <td>{{server.allowEntitlements}}</td>
+            </tr>
+            <tr data-ng-show="(servers | filter:search).length == 0">
+                <td class="text-muted" colspan="3" data-ng-show="search.clientId">{{::'no-results' | translate}}</td>
+                <td class="text-muted" colspan="3" data-ng-hide="search.clientId">{{::'no-servers' | translate}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<kc-menu></kc-menu>

@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{:: title | translate}}</h5>
+    <button type="button" class="close" id="closeModalBtn" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <form>
+        <div>
+            <label class="control-label col-md-4" for="email">{{:: message | translate}}<span class="required"> *</span></label>
+            <input class="form-control" type="email" id="email" name="email" data-ng-model="email.id" ng-change="enableSubmit()" />
+            <p id="error_msg"></p>
+        </div>
+    </form>
+    <div class="input-modal-msg-container d-flex align-items-center justify-content-sm-start flex-md-wrap alert-success" data-ng-if="stage === 3 || stage === 0" data-ng-class="stage === 0 && 'alert-danger'">
+        <div class="input-modal-msg d-flex">
+            <i class="os-icon os-icon-check-circle mr-3 font-size-normal" ng-show="stage === 3"></i>
+            <span ng-show="status" class="m-0">{{::'configuration-succeeded' | translate}}</span>
+            <span ng-show="statusMsg" class="m-0">{{:: statusMsg | translate}}</span>
+            <i class="os-icon os-icon-cancel-circle mr-3 font-size-normal" ng-show="stage === 0"></i>
+            <span ng-show="!status" class="m-0">{{:: errMsg | translate}} </span>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button id="testEmailCancelBtn" type="button" data-ng-class="btns.cancel.cssClass" ng-click="cancel()">{{btns.cancel.label}}</button>
+    <button type="button" id="submitBtn" data-ng-class="btns.ok.cssClass" ng-click="ok()"  disabled="disabled">
+        <span data-ng-if=" stage === 1 " >{{btns.ok.label}}</span>
+        <span data-ng-if=" stage === 3 " >{{:: 'try-again' | translate}}</span>
+        <span data-ng-if=" stage === 0 " >{{:: 'test-again' | translate}}</span>
+        <div data-ng-if=" stage === 2 ">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span >{{:: 'sending' | translate}}</span>
+        </div>
+    </button>
+</div>
+<script type="text/javascript">
+    $("#email").on("click",function() {
+        $("#error_msg").text("");
+    });
+</script>

@@ -1,0 +1,176 @@
+<kc-menu></kc-menu>
+<kc-auth-sub-menu></kc-auth-sub-menu>
+<div class="content-w min-h-100" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row section-flow" ng-if="searchLoaded">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div data-ng-if="loginFlows.length > 0" class="element-actions onboarding-step-1"
+                            data-title="{{:: 'intro-auth-create-authentication-title' | translate}}"
+                            data-intro="{{:: 'intro-auth-create-authentication' | translate}}">
+
+                            <button class="create-btn" id="create-onboarding-flow-btn" data-ng-click="onChooseFlow()">
+                                <i class="os-icon os-icon-plus plus-icon"></i>
+                                {{:: 'create-onboarding-flow' | translate}}
+                            </button>
+                        </div>
+
+                        <h1 class="element-header">{{:: 'onboarding-flow-title' | translate}}</h1>
+
+                        <div class="controls-above-table mb-0">
+                            <div class="form-group mb-auto mr-2" data-ng-show="loginFlows.length > 0">
+                                <form class="form-inline">
+                                    <div class="element-search">
+                                        <input id="onboarding-flow-search-input"
+                                            class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched action-search-container"
+                                            type="text" placeholder="{{:: 'search-onboarding-flows' | translate}}" ng-model="search"
+                                            onkeydown="if (event.keyCode === 13) document.getElementById('socialConnectionsSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="socialConnectionsSearch"
+                                            data-ng-click="changeSearchKey(search)"></i>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="mt-4" data-ng-if="loginFlows.length > 0 && !searchKey">
+                            <div class="element-box-tp">
+                                <div class="table-responsive-md">
+                                    <table class="table table-padded">
+                                        <thead> </thead>
+                                        <tbody class="p-3">
+                                            <tr ng-repeat="flow in loginFlows | orderBy: reverse:true" class="fadeUp user-row position-relative">
+                                                <td class="cursor-pointer w-40" id="{{flow.alias.toLowerCase().replaceAll(' ','-')}}"
+                                                    data-ng-click="openFlow(flow.id, flow.templateType | removeUnderScore)">
+                                                    <a class="aTagKcOpen text-decoration-none cursor-pointer header-text-primary" data-ng-click="openFlow(flow.id, flow.templateType | removeUnderScore)" ng-attr-title="{{flow.alias}}">
+                                                        <div class="d-flex conn-with-logo">
+                                                            <div class="social-conn-logo-container">
+                                                                <!-- <img alt="clientlogo" data-ng-src="{{resourceUrl}}/themes/img/action-list.png"> -->
+                                                                <i class="os-icon os-icon-user-male-circle2 font-25"></i>
+                                                            </div>
+                                                            <div class="name-container align-items-center">
+                                                                <p class="overflow-ellipsis mb-0">{{flow.alias}}</p>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </td>
+                                                <td class="nowrap text-center">
+                                                        <div data-ng-if="!flow.live"
+                                                             class="info-card-state bg-danger small">
+                                                            <div class="info-state-circle"></div>{{:: 'not-live' | translate}}
+                                                        </div>
+                                                        <div data-ng-if="flow.live"
+                                                             class="info-card-state bg-success small">
+                                                            <div class="info-state-circle"></div>{{:: 'live' | translate}}
+                                                        </div>
+                                                </td>
+                                                <td class="row-actions">
+                                                    <a id="{{flow.alias}}-edit"
+                                                        data-ng-click="openFlow(flow.id, flow.templateType | removeUnderScore)">
+                                                        <i class="os-icon os-icon-ui-49"
+                                                            tooltip="{{:: 'edit' | translate}}" tooltip-placement="top"
+                                                            tooltip-trigger="mouseover mouseout"></i>
+                                                    </a>
+                                                    <a class="danger" id="{{flow.alias}}-delete" data-ng-click="deleteFlow($event,flow)">
+                                                        <i class="os-icon os-icon-ui-15"
+                                                            tooltip="{{:: 'tooltip-delete-label' | translate}}"
+                                                            tooltip-placement="top"
+                                                            tooltip-trigger="mouseover mouseout"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4" data-ng-if="loginFlows.length > 0 && searchKey && findConfigured(searchKey)">
+                            <div class="element-box-tp">
+                                <div class="table-responsive-md">
+                                    <table class="table table-padded">
+                                        <thead> </thead>
+                                        <tbody class="p-3">
+                                            <tr ng-repeat="flow in loginFlows | orderBy: reverse:true | filter:{'alias':searchKey}"
+                                                class="fadeUp user-row position-relative">
+                                                <td class="cursor-pointer w-40" id="{{flow.alias.toLowerCase().replaceAll(' ','-')}}"
+                                                    data-ng-click="openFlow(flow.id, flow.templateType | removeUnderScore)">
+                                                    <a class="aTagKcOpen text-decoration-none cursor-pointer" data-ng-click="openFlow(flow.id, flow.templateType | removeUnderScore)" ng-attr-title="{{flow.alias}}">
+                                                        <div class="d-flex conn-with-logo">
+                                                            <div class="social-conn-logo-container">
+                                                                <!-- <img alt="clientlogo" data-ng-src="{{resourceUrl}}/themes/img/action-list.png"> -->
+                                                                <i class="os-icon os-icon-user-male-circle2 font-25"></i>
+                                                            </div>
+                                                            <div class="name-container align-items-center">
+                                                                <p class="overflow-ellipsis mb-0">{{flow.alias}}</p>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </td>
+                                                <td class="nowrap text-center">
+                                                    <div data-ng-if="!flow.live"
+                                                        class="info-card-state bg-danger small">
+                                                        <div class="info-state-circle"></div>{{:: 'not-live' | translate}}
+                                                    </div>
+                                                    <div data-ng-if="flow.live"
+                                                        class="info-card-state bg-success small">
+                                                        <div class="info-state-circle"></div>{{:: 'live' | translate}}
+                                                    </div>
+                                                </td>
+                                                <td class="row-actions">
+                                                    <a id="{{flow.alias}}-edit"
+                                                        data-ng-click="openFlow(flow.id, flow.templateType | removeUnderScore)">
+                                                        <i class="os-icon os-icon-ui-49"
+                                                            tooltip="{{:: 'edit' | translate}}" tooltip-placement="top"
+                                                            tooltip-trigger="mouseover mouseout"></i>
+                                                    </a>
+                                                    <a class="danger" data-ng-click="deleteFlow($event,flow)" id="{{flow.alias}}-delete">
+                                                        <i class="os-icon os-icon-ui-15"
+                                                            tooltip="{{:: 'tooltip-delete-label' | translate}}"
+                                                            tooltip-placement="top"
+                                                            tooltip-trigger="mouseover mouseout"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="element-box element-box-medium top-align"
+                            ng-show="searchKey && !findConfigured(searchKey)">
+                            <div class="no-entry-svg">
+                                <i class="os-icon os-icon-user-male-circle2 opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                <p class="text-center no-entry-display mt-2 col-md-5">{{:: 'no-onboarding-found' |
+                                    translate}}</p>
+                                <button class="create-btn no-entry-display cursor-pointer" id="clear-search-btn" data-ng-click="clearSearch()">
+                                    <i class="os-icon os-icon-close mr-2"></i>
+                                    {{ ::  'clear-search' | translate}}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="element-box mt-4" data-ng-if="!loginFlows.length">
+                            <div class="no-policy-img">
+                                <i class="os-icon os-icon-user-male-circle2 opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                <p class="text-center no-entry-display">{{:: 'no-onboarding-flows-msg' | translate}}
+                                </p>
+                                <p data-ng-if="realm.mode !='bo'" class="text-center no-entry-display" ng-bind-html="marketPlaceLinkMsg"></p>
+                                <button data-title="{{:: 'intro-auth-create-authentication-title' | translate}}" id="create-onboarding-flow-btn"
+                                    data-intro="{{:: 'intro-auth-create-authentication' | translate}}"
+                                    class="create-btn no-entry-display onboarding-step-1" data-ng-click="onChooseFlow()">
+                                    <i class="os-icon os-icon-plus plus-icon"></i>
+                                    {{:: 'create-onboarding-flow' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!(searchLoaded)">
+                <kc-loader loadertype="loaderTypeName" ></kc-loader>
+            </div>
+        </div>
+    </div>
+</div>

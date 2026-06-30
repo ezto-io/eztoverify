@@ -1,0 +1,61 @@
+<div data-ng-controller="RealmTabCtrl">
+  <h1 class="element-header">
+    <span>{{:: 'tenant-settings' | translate}}</span>
+  </h1>
+  <div class="sub-top-bar medium-padded mb-4">
+    <ul>
+      <li data-ng-if="serverInfo.systemInfo.offering == 'CLOUD' && realm.realm !== rootAccountName"
+        ng-class="{active: path[2] === 'realm-subscription'}" data-step="1"
+        data-title="{{:: 'intro-settings-subscription-title' | translate}}"
+        data-intro="{{:: 'intro-settings-subscription' | translate}}">
+        <a href="#/realms/{{realm.realm}}/realm-subscription" id="workspaceSettings-subscription">{{::
+          'realm-tab-subscription' | translate}}</a>
+      </li>
+      <li ng-class="{active: path[2] === 'realm-settings'}" data-step="2"
+        data-title="{{:: 'intro-settings-general-title' | translate}}"
+        data-intro="{{:: 'intro-settings-general' | translate}}">
+        <a href="#/realms/{{realm.realm}}/realm-settings" id="workspaceSettings-general">{{:: 'realm-tab-general' |
+          translate}}</a>
+      </li>
+      <li data-ng-if="realm.mode != 'bo'" ng-class="{active: path[2] === 'login-settings'}" data-step="3"
+        data-title="{{:: 'intro-settings-login-title' | translate}}"
+        data-intro="{{:: 'intro-settings-login' | translate}}">
+        <a href="#/realms/{{realm.realm}}/login-settings" id="workspaceSettings-login">{{:: 'realm-tab-login' |
+          translate}}</a>
+      </li>
+      <li data-ng-if="realm.mode != 'bo'" ng-class="{active: path[2] === 'onboarding-settings'}" data-step="4"
+        data-title="{{:: 'intro-settings-onboarding-title' | translate}}"
+        data-intro="{{:: 'intro-settings-onboarding' | translate}}">
+        <a href="#/realms/{{realm.realm}}/onboarding-settings" id="workspaceSettings-onboarding">{{::
+          'realm-tab-onboarding' | translate}}</a>
+      </li>
+      <li data-ng-if="realm.mode != 'bo'" ng-class="{active: path[2] === 'token-settings'}" data-step="5"
+        data-title="{{:: 'intro-settings-tokens-title' | translate}}"
+        data-intro="{{:: 'intro-settings-tokens' | translate}}">
+        <a href="#/realms/{{realm.realm}}/token-settings" id="workspaceSettings-tokens">{{:: 'realm-tab-tokens' |
+          translate}}</a>
+      </li>
+      <li ng-class="{active: path[2] === 'access-keys'}" data-step="6">
+        <a href="#/realms/{{realm.realm}}/access-keys" id="workspaceSettings-access-keys">{{:: 'access-keys' |
+          translate}}</a>
+      </li>
+      <li ng-class="{active: path[2] === 'dashboard-admins'}" data-step="7"
+        data-title="{{:: 'intro-settings-dashboard-admin-title' | translate}}"
+        data-intro="{{:: 'intro-settings-dashboard-admin' | translate}}">
+        <a href="#/realms/{{realm.realm}}/dashboard-admins" id="workspaceSettings-admin">{{:: 'tenant-admin' |
+          translate}}</a>
+      </li>
+      <li ng-class="{active: path[2] === 'realm-attributes'}" data-step="8"
+        data-title="{{:: 'special-attributes-title' | translate}}"
+        data-intro="{{:: 'intro-settings-additional' | translate}}">
+        <a href="#/realms/{{realm.realm}}/realm-attributes" id="workspaceSettings-attributes">{{:: 'tenant-attributes' |
+          translate}}</a>
+      </li>
+      <li data-ng-if="realm.mode != 'bo'" ng-class="{active: path[2] === 'authentication-settings'}" data-step="9"
+        data-title="{{:: 'special-attributes-title' | translate}}"
+        data-intro="{{:: 'intro-settings-dashboard-admin' | translate}}">
+        <a href="#/realms/{{realm.realm}}/authentication-settings" id="authentication-settings">{{::
+          'authentication-settings' | translate}}</a>
+      </li>
+    </ul>
+  </div>

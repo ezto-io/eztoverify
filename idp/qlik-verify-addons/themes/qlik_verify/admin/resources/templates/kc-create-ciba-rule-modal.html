@@ -1,0 +1,19 @@
+<div class="modal-header">
+    <h6 class="modal-title" data-ng-if="!isRuleCreated">{{:: 'create-rule' | translate}}</h6>
+    <h6 class="modal-title" data-ng-if="isRuleCreated">{{:: 'new-rule' | translate}}</h6>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="d-flex align-items-center my-2">
+        <label class="control-label" for="create-rule-input" style="white-space: nowrap;" >{{:: 'new-rule' | translate}}</label>
+        <input type="text" maxlength="48" data-ng-disabled="isRuleCreated" class="form-control ml-3" id="create-rule-input" />
+    </div>
+    <div data-ng-if="isRuleCreated">
+        <kc-ciba-policy></kc-ciba-policy>
+    </div>
+</div>
+<div class="modal-footer" data-ng-if="!isRuleCreated" >
+    <button type="button" class="btn btn-primary" ng-click="create()">{{:: 'create' | translate}}</button>
+</div>

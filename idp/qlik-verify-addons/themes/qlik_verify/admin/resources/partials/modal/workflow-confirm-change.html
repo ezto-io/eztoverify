@@ -1,0 +1,24 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{title}}</h5>
+    <button type="button" class="close" id="closeBtn" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <p class="mb-5">{{message}}</p>
+    <div class="sample-workflow-tree-wrapper {{draggingNode.validator ? 'height-15rem' : 'height-11rem'}}">
+        <div class="d-flex flex-column align-items-center justify-content-between sample-workflow-tree-verifier-wrapper" style="z-index: 5;">
+            <div class="d-flex justify-content-center align-items-center rounded sample-tree-node-verifier px-2" data-ng-if="!selectedNode.validator">{{selectedNode.name | translate}}</div>
+            <div class="d-flex justify-content-center align-items-center rounded sample-tree-node-validator" data-ng-if="selectedNode.validator"><p class="mb-0" style="transform: rotate(-45deg);">{{selectedNode.name | translate}}</p></div>
+            <div class="d-flex justify-content-center align-items-center rounded sample-tree-node-verifier px-2" data-ng-if="!draggingNode.validator">{{draggingNode.name | translate}}</div>
+            <div class="d-flex justify-content-center align-items-center rounded sample-tree-node-validator" data-ng-if="draggingNode.validator"><p class="mb-0" style="transform: rotate(-45deg);">{{draggingNode.name | translate}}</p></div>
+        </div>
+        <div class="d-flex flex-column align-items-center justify-content-center sample-workflow-tree-verifier-wrapper" style="z-index: 1;">
+            <div class="sample-tree-edge-link"></div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer mt-5">
+    <button type="button" data-ng-class="btns.cancel.cssClass" ng-click="cancel()" id="{{title.toLowerCase().replaceAll(' ','-')}}-cancelBtn">{{btns.cancel.label}}</button>
+    <button type="button" data-ng-class="btns.ok.cssClass" ng-click="ok()"  id="{{title.toLowerCase().replaceAll(' ','-')}}-confirmBtn">{{btns.ok.label}}</button>
+</div>

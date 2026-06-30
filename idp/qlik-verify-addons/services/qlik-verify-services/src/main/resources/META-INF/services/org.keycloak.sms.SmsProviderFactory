@@ -1,0 +1,2 @@
+com.qlikverify.services.sms.twilio.TwilioProviderFactory
+com.qlikverify.services.sms.whatsapp.WhatsappProviderFactory

@@ -1,0 +1,27 @@
+<div>
+  <div class="sub-top-bar mb-4">
+    <ul>
+      <li ng-class="{active: !path[5]}">
+        <a
+          href="#/realms/{{realm.realm}}/marketplace/templates/{{template.id}}"
+          class="text-capitalize"
+          >{{:: 'realm-tab-general' | translate}}</a
+        >
+      </li>
+      <li ng-class="{active: path[5] == 'howitworks'}">
+        <a
+          href="#/realms/{{realm.realm}}/marketplace/templates/{{template.id}}/howitworks"
+          class="text-capitalize"
+          >{{:: 'how-it-works' | translate}}</a
+        >
+      </li>
+      <li ng-class="{active: path[5] == 'flow'}">
+        <a
+          href="#/realms/{{realm.realm}}/marketplace/templates/{{template.id}}/flow"
+          class="text-capitalize"
+          >{{:: 'flow' | translate}}</a
+        >
+      </li>
+    </ul>
+  </div>
+</div>

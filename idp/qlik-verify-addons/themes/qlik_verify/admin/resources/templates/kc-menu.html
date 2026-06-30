@@ -1,0 +1,564 @@
+<div class="kc-menu" data-ng-controller="RealmDropdownCtrl">
+    <!-- Mobile  View -->
+    <div class="menu-mobile menu-activated-on-click">
+        <!-- Brand Name -->
+        <div class="mm-logo-buttons-w">
+            <a class="mm-logo" id="qv-sideBar-realmName" href=""><span>{{current.realm.realm|capitalize}}</span></a>
+            <div class=" d-flex flex-direction-column ">
+                <div class="mm-buttons">
+                    <div id="mb" class="mobile-menu-trigger">
+                        <div class="os-icon os-icon-hamburger-menu-1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-and-user">
+            <!-- Tenant Selector-->
+            <!-- <div class="fancy-selector-w mobile padding-32px" kc-open="/realms">
+                <div class="fancy-selector-current">
+                    <div class="fs-main-info padding-15px" id="qv-workspce-selector">
+                        <div class="fs-name" data-ng-show="current.realm">
+                            {{current.realm.realm|capitalize}}
+                        </div>
+
+                        <div class="fs-name" data-ng-hide="current.realm">{{:: 'select-realm' | translate}}
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+            <!-- SideBar Dropdown -->
+            <ul class="main-menu"
+                data-ng-show="current.realm && (access.viewRealm || access.queryClients || access.viewIdentityProviders )">
+                <!-- <li class="sub-header">
+          <span>Configure</span>
+        </li> -->
+                <li data-ng-class="(!path[2]) && 'active'">
+                    <a href="#/realms/{{realm.realm}}" id="qv-sidebar-gettingStarted-dropdown">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/Gettingstarted.svg" />
+                        </div>
+                        <span> {{:: 'getting-started' | translate}} </span>
+                    </a>
+                </li>
+                <li data-ng-class="(path[2] == 'insights' || path[3] == 'insights') && 'active' && isWorkflowEnabled">
+                    <a href="#/realms/{{realm.realm}}" id="qv-sidebar-activity-dropdown">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/Activity.svg" />
+                        </div>
+                        <span> {{:: 'activity' | translate}} </span>
+                    </a>
+                </li>
+                <li
+                    data-ng-class="(path[1] === 'sso' || path[2] === 'sso' || path[3] === 'sso' || path[1] === 'client' || path[2] === 'clients' || path[1] === 'ciba-client') && 'active'">
+                    <a data-ng-if="current.realm.mode != 'bo'" href="#/realms/{{realm.realm}}/sso"
+                        id="qv-sidebar-application-dropdown">
+                        <div class="icon-w">
+                            <div class="os-icon os-icon-package"></div>
+                        </div>
+                        <span>{{:: 'clients' | translate}}</span>
+                    </a>
+                    <a data-ng-if="current.realm.mode == 'bo'" href="#/realms/{{realm.realm}}/clients/type/ciba/{{current.realm.sandboxMode ? 'sandbox' : 'live' }}" id="qv-sidebar-application-bo-dropdown">
+                       <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/Application.svg" />
+                        </div>
+                        <span>{{:: 'clients' | translate}}</span>
+                    </a>
+                </li>
+                <li data-ng-if="current.realm.mode != 'bo'"
+                    data-ng-class="(path[1] === 'user' || path[2] === 'users' || path[2] === 'groups' || path[2] === 'users-permissions') && 'active'"
+                    class="has-sub-menu">
+                    <a href="#/realms/{{realm.realm}}/users" id="qv-sidebar-userManagement-dropdown">
+                        <div class="icon-w">
+                            <div class="os-icon os-icon-users"></div>
+                        </div>
+                        <span>{{:: 'user-management' | translate}}</span>
+                        <ul class="sub-menu">
+                            <li data-ng-class="( path[2] === 'users' && path[2] === 'users-permissions') && 'active'">
+                                <a href="#/realms/{{realm.realm}}/users" id="qv-sidebar-users-dropdown">
+                                    <span class="d-block">{{:: 'users' | translate}}</span>
+                                </a>
+                            </li>
+                            <div class="sub-menu-icon">
+                                <i class="os-icon os-icon-mail"></i>
+                            </div>
+                            <li
+                                data-ng-class="(path[2] === 'groups' || path[2] === 'default-groups' || path[1] === 'group') && 'active'">
+                                <a href="#/realms/{{realm.realm}}/groups" id="qv-sidebar-userGroups-dropdown">
+                                    <span class="d-block">{{:: 'user-groups' | translate}}</span>
+                                </a>
+                            </li>
+                            <li data-ng-class="( path[3] === 'directory-sync') && 'active'">
+                                <a href="#/realms/{{realm.realm}}/users/directory-sync/connections"
+                                    id="qv-sidebar-UserSync-dropdown">
+                                    <span class="d-block">{{:: 'directorySyncConnections' | translate}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </a>
+                </li>
+                <li data-ng-if="current.realm.mode == 'bo' && isWorkflowEnabled"
+                    data-ng-class="(path[1] === 'user' || path[2] === 'users' || path[2] === 'users-permissions' || path[2] === 'default-groups' || path[2] === 'groups' || path[1] === 'group' || path[3] === 'directory-sync') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/users" id="qv-sidebar-users-bo-mobile">
+                       <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/Users.svg" />
+                        </div>
+                        <span>{{:: 'users' | translate}}</span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{:: 'users' | translate}}</p>
+                    </div>
+                </li>
+                <li data-ng-if="current.realm.mode != 'bo'"
+                    data-ng-class="(path[1] === 'role' || path[2] === 'roles' || path[2] === 'default-roles' || path[2] === 'client-scopes' ) && 'active'"
+                    class="has-sub-menu">
+                    <a id="qv-sidebar-authorization">
+                        <div class="icon-w">
+                            <div class="os-icon os-icon-sliders"></div>
+                        </div>
+                        <span>{{:: 'authorization' | translate}}</span>
+                        <ul class="sub-menu">
+                            <li data-ng-class="(path[2] === 'client-scopes') && 'active'">
+                                <a href="#/realms/{{realm.realm}}/client-scopes" id="qv-sidebar-scopes-dropdown">
+                                    <span>{{:: 'scopes' | translate}}</span>
+                                </a>
+                            </li>
+                            <div class="sub-menu-icon">
+                                <i class="os-icon os-icon-sliders"></i>
+                            </div>
+                            <li
+                                data-ng-class="(path[1] === 'role' || path[2] === 'roles' || path[2] === 'default-roles') && 'active'">
+                                <a href="#/realms/{{realm.realm}}/roles" id="qv-sidebar-roles-dropdown">
+                                    <span>{{:: 'roles' | translate}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </a>
+                </li>
+                <li data-ng-if="current.realm.mode != 'bo'"
+                    data-ng-class="(path[1] === 'authentication' || path[2] === 'authentication' || path[2] === 'actions') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/authentication/installed/onboarding"
+                        id="qv-sidebar-authentication-dropdown">
+                        <div class="icon-w">
+                            <div class="os-icon os-icon-unlock"></div>
+                        </div>
+                        <span>{{:: 'authentication' | translate}}</span>
+                    </a>
+                </li>
+                <li data-ng-if="current.realm.mode == 'bo' && isWorkflowEnabled"
+                    data-ng-class="(path[1] === 'authentication' || path[2] === 'authentication' || path[2] === 'actions') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/authentication/templates" id="qv-sidebar-templates-dropdown">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/Workflows.svg" />
+                        </div>
+                        <span>{{:: 'workflows' | translate}}</span>
+                    </a>
+                </li>
+                <li data-ng-class="(path[2] === 'policies') && 'active'" data-ng-if="isWorkflowEnabled">
+                    <a href="#/realms/{{realm.realm}}/policies" id="qv-sidebar-policies-dropdown">
+                       <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/Rules.svg" />
+                        </div>
+                        <span data-ng-show="current.realm.mode == 'bo'">{{:: 'rules' | translate}}</span>
+                        <span data-ng-hide="current.realm.mode == 'bo'">{{:: 'policies' | translate}}</span>
+                    </a>
+                </li>
+                <li data-ng-class="(path[2] === 'brandings') && 'active'" data-ng-if="showBranding && isWorkflowEnabled">
+                    <a href="#/realms/{{realm.realm}}/brandings" id="qv-sidebar-brandings-dropdown">
+                         <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/Brandings.svg" />
+                        </div>
+                        <span>{{:: 'brandings' | translate}}</span>
+                    </a>
+                </li>
+                <li data-ng-class="( path[2] === 'email' || path[2] === 'sms' ) && 'active'" class="has-sub-menu" data-ng-if="isWorkflowEnabled">
+                    <a id="qv-sidebar-notifications-dropdown">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/Notification.svg" />
+                        </div>
+                        <span>{{:: 'notifications' | translate}}</span>
+                        <ul class="sub-menu">
+                            <li
+                                data-ng-class="( path[2] === 'email' && ( path[3] === 'providers' || path[3] === 'templates' )) && 'active'">
+                                <a href="#/realms/{{realm.realm}}/email/providers" id="qv-sidebar-email--dropdown">
+                                    <span class="d-block">{{:: 'email' | translate}}</span>
+                                </a>
+                            </li>
+                            <div class="sub-menu-icon">
+                                <i class="os-icon os-icon-bell"></i>
+                            </div>
+                            <li data-ng-class="( path[2] === 'sms' ) && 'active'">
+                                <a href="#/realms/{{realm.realm}}/sms/providers" id="qv-sidebar-sms-dropdown">
+                                    <span class="d-block">{{:: 'sms' | translate}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </a>
+                </li>
+                <li data-ng-class="(path[2] === 'logs' || path[2] === 'admin-logs'
+                || path[2] === 'audit-listeners') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/logs" id="qv-sidebar-audit-dropdown">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/Audit.svg" />
+                        </div>
+                        <span>{{:: 'events' | translate}}</span>
+                    </a>
+                </li>
+                <li data-ng-if="current.realm.mode != 'bo'" data-ng-class="(path[2] === 'defense') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/defense/headers" id="qv-sidebar-securityDefenses-dropdown">
+                        <div class="icon-w">
+                            <div class="os-icon os-icon-shield"></div>
+                        </div>
+                        <span> {{ :: 'realm-tab-security-defenses' | translate }} </span>
+                    </a>
+                </li>
+                <li data-ng-if="current.realm.mode == 'bo' && isWorkflowEnabled" data-ng-class="(path[2] === 'defense') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/defense/brute-force"
+                        id="qv-sidebar-securityDefenses-bruteForce-dropdown">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/SecurityDefence.svg" />
+                        </div>
+                        <span> {{ :: 'realm-tab-security-defenses' | translate }} </span>
+                    </a>
+                </li>
+                <li data-ng-if="current.realm.realm"
+                    data-ng-class="(path[2] === 'realm-subscription' || path[2] === 'realm-settings' || path[2] === 'login-settings' || path[2] === 'onboarding-settings' || path[2] === 'token-settings'|| path[2] === 'dashboard-admins' || path[2] === 'authentication-settings' || path[2] === 'realm-attributes') && 'active'">
+                    <a ng-href="{{serverInfo.systemInfo.offering == 'CLOUD' && current.realm.realm !== rootAccountName ? '#/realms/' + current.realm.realm + '/realm-subscription': '#/realms/' + current.realm.realm + '/realm-settings'}}"
+                        id="qv-sidebar-setting-dropdown">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/Settings.svg" />
+                        </div>
+                        <span> {{::'realm-settings' | translate}} </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="" ng-click="auth.authz.logout()" id="qv-sidebar-signOut-dropdown">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/normal/sign-out.svg" />
+                        </div>
+                        <span>{{:: 'sign-out' | translate}}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- Desktop View -->
+    <div class="menu-w-wrapper scrollbar-none">
+        <div class="menu-w color-scheme-light color-style-transparent menu-position-side menu-side-left menu-layout-full sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link bg-white" id="side-menu">
+            <ul class="main-menu pt-0 user-select-none" ng-mouseover="showSideMenu()" ng-mouseleave="hideSideMenu()">
+                <li data-ng-class="(!path[2]) && 'active'">
+                    <a href="#/realms/{{realm.realm}}" id="qv-sidebar-gettingStarted-desktop">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/{{!path[2] ? 'active' : 'normal' }}/Gettingstarted.svg" />
+                        </div>
+                        <span> {{:: 'getting-started' | translate}}</span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{:: 'getting-started' | translate}}</p>
+                    </div>
+                </li>
+                <li data-ng-if="current.realm.mode == 'bo'" data-ng-class="(path[3] == 'insights') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/bo/insights" id="qv-sidebar-activity-desktop">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/{{ path[3] == 'insights' ? 'active' : 'normal'}}/Activity.svg" />
+                        </div>
+                        <span> {{:: 'activity' | translate}}</span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p> {{:: 'activity' | translate}}</p>
+                    </div>
+                </li>
+
+                <li data-ng-if="current.realm.mode != 'bo'" data-ng-class="(path[2] == 'insights') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/insights" id="qv-sidebar-activity-desktop">
+                        <div class="icon-w px-4 py-2">
+                            <div class="os-icon os-icon-activity"></div>
+                        </div>
+                        <span> {{:: 'activity' | translate}}</span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p> {{:: 'activity' | translate}}</p>
+                    </div>
+                </li>
+                <li data-ng-class="(path[1] === 'client' || path[2] === 'clients' || path[3] === 'clients' || path[1] === 'sso' || path[2] === 'sso' || path[3] === 'sso' || path[1] === 'ciba-client') && 'active'" data-ng-show="isWorkflowEnabled">
+                    <a data-ng-if="current.realm.mode != 'bo'" href="#/realms/{{realm.realm}}/sso" id="qv-sidebar-application-desktop">
+                        <div class="icon-w px-4 py-2">
+                            <div class="os-icon os-icon-package"></div>
+                        </div>
+                        <span>{{:: 'clients' | translate}}</span>
+                    </a>
+                    <a data-ng-if="current.realm.mode == 'bo'" href="#/realms/{{realm.realm}}/clients/type/ciba/{{current.realm.sandboxMode ? 'sandbox' : 'live' }}" id="qv-sidebar-application-bo-desktop">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/{{ (path[1] === 'client' || path[2] === 'clients' || path[3] === 'clients'|| path[1] === 'ciba-client') ? 'active' : 'normal' }}/Application.svg" />
+                        </div>
+                        <span>{{:: 'clients' | translate}}</span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{:: 'clients' | translate}}</p>
+                    </div>
+                </li>
+                <li data-ng-if="current.realm.mode != 'bo'" class="submenu-container cursor-pointer"
+                    data-ng-class="(path[1] === 'user' || path[2] === 'users' || path[2] === 'users-permissions' || path[2] === 'default-groups' || path[2] === 'groups' || path[1] === 'group' || path[3] === 'directory-sync') && 'active'"
+                    ng-mouseover="submenuControllerEnter($event)" ng-mouseleave="submenuControllerOnLeave($event)">
+                    <div class="submenu-main-info" id="qv-sidebar-userManagement-desktop">
+                        <div class="icon-w px-4 py-2">
+                            <div class="os-icon os-icon-users"></div>
+                        </div>
+                        <span>{{:: 'user-management' | translate}}</span>
+                    </div>
+                    <ul class="submenu-box">
+                        <div class="sub-menu-header">
+                            {{:: 'user-management' | translate}}
+                        </div>
+                        <li data-ng-class="( path[2] === 'users' && path[3] !== 'directory-sync') && 'active'">
+                            <a href="#/realms/{{realm.realm}}/users" id="qv-sidebar-users-desktop">
+                                <span class="d-block">{{:: 'users' | translate}}</span>
+                            </a>
+                        </li>
+                        <div class="sub-menu-icon">
+                            <i class="os-icon os-icon-users"></i>
+                        </div>
+                        <li
+                            data-ng-class="( path[2] === 'groups' || path[2] === 'default-groups' || path[1] === 'group') && 'active'">
+                            <a href="#/realms/{{realm.realm}}/groups" id="qv-sidebar-userGroups-desktop">
+                                <span class="d-block">{{:: 'user-groups' | translate}}</span>
+                            </a>
+                        </li>
+                        <li data-ng-class="( path[3] === 'directory-sync') && 'active'">
+                            <a href="#/realms/{{realm.realm}}/users/directory-sync/connections"
+                                id="qv-sidebar-UserSync-desktop">
+                                <span class="d-block">{{:: 'directorySyncConnections' | translate}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li data-ng-if="current.realm.mode == 'bo' && isWorkflowEnabled"
+                    data-ng-class="(path[1] === 'user' || path[2] === 'users' || path[2] === 'users-permissions' || path[2] === 'default-groups' || path[2] === 'groups' || path[1] === 'group' || path[3] === 'directory-sync') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/users" id="qv-sidebar-users-bo-desktop">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/{{ path[2] === 'users' ? 'active' : 'normal'}}/Users.svg" />
+                        </div>
+                        <span>{{:: 'users' | translate}}</span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{:: 'users' | translate}}</p>
+                    </div>
+                </li>
+                <li data-ng-if="current.realm.mode != 'bo'" class="submenu-container cursor-pointer"
+                    data-ng-class="(path[1] === 'role' || path[2] === 'roles' || path[2] === 'default-roles' || path[2] === 'client-scopes' ) && 'active'"
+                    ng-mouseover="submenuControllerEnter($event)" ng-mouseleave="submenuControllerOnLeave($event)">
+                    <div class="submenu-main-info" id="qv-sidebar-authorization-desktop">
+                        <div class="icon-w px-4 py-2">
+                            <div class="os-icon os-icon-sliders"></div>
+                        </div>
+                        <span>{{:: 'authorization' | translate}}</span>
+                    </div>
+                    <ul class="submenu-box">
+                        <div class="sub-menu-header">
+                            {{:: 'authorization' | translate}}
+                        </div>
+                        <li data-ng-class="(path[2] === 'client-scopes') && 'active'">
+                            <a href="#/realms/{{realm.realm}}/client-scopes" id="qv-sidebar-scopes-desktop">
+                                <span>{{:: 'scopes' | translate}}</span>
+                            </a>
+                        </li>
+                        <div class="sub-menu-icon">
+                            <i class="os-icon os-icon-sliders"></i>
+                        </div>
+                        <li
+                            data-ng-class="(path[1] === 'role' || path[2] === 'roles' || path[2] === 'default-roles') && 'active'">
+                            <a href="#/realms/{{realm.realm}}/roles" id="qv-sidebar-roles-desktop">
+                                <span>{{:: 'roles' | translate}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- <li data-ng-class="(path[2] === 'client-scopes') && 'active'">
+          <a href="#/realms/{{realm.realm}}/client-scopes">
+            <div class="icon-w">
+              <div class="os-icon os-icon-crosshair"></div>
+            </div>
+            <span>{{:: 'scopes' | translate}}</span>
+          </a>
+          <div class="side-menu-title">
+            <p>{{:: 'scopes' | translate}}</p>
+          </div>
+        </li>
+        <li data-ng-class="(path[1] === 'role' || path[2] === 'roles' || path[2] === 'default-roles') && 'active'">
+          <a href="#/realms/{{realm.realm}}/roles">
+            <div class="icon-w">
+              <div class="os-icon os-icon-sliders"></div>
+            </div>
+            <span>{{:: 'roles' | translate}}</span>
+          </a>
+          <div class="side-menu-title">
+            <p>{{:: 'roles' | translate}}</p>
+          </div>
+        </li> -->
+                <li data-ng-if="current.realm.mode != 'bo'" data-ng-class="(path[1] === 'authentication' || path[2] === 'authentication' || path[2] === 'actions' || path[2] === 'connections' || path[1] === 'user-storage' || path[2] === 'user-storage') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/authentication/installed/onboarding" id="qv-sidebar-authentication-desktop">
+                        <div class="icon-w px-4 py-2">
+                            <div class="os-icon os-icon-unlock"></div>
+                        </div>
+                        <span>{{:: 'authentication' | translate}}</span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{:: 'authentication' | translate}}</p>
+                    </div>
+                </li>
+                <li data-ng-if="current.realm.mode == 'bo' && isWorkflowEnabled"
+                    data-ng-class="(path[1] === 'authentication' || path[2] === 'authentication' || path[2] === 'actions' || path[2] === 'connections' || path[1] === 'user-storage' || path[2] === 'user-storage') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/authentication/templates" id="qv-sidebar-templates-desktop">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/{{ path[2] === 'authentication' ? 'active' : 'normal'}}/Workflows.svg" />
+                        </div>
+                        <span>{{:: 'workflows' | translate}}</span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{:: 'workflows' | translate}}</p>
+                    </div>
+                </li>
+                <li data-ng-if="current.realm.mode != 'bo' && isOwner" data-ng-class="(path[2] === 'workflows') && 'active'" >
+                    <a href="#/realms/{{realm.realm}}/workflows" id="qv-sidebar-templates-desktop" class="d-flex align-items-center">
+                        <div class="icon-w px-4 py-2 d-flex justify-content-center align-items-center flex-row" style="margin-top: 0.2rem;">
+                           <img ng-if="path[2] !== 'workflows'" class="h-1-6" ng-src="{{resourceUrl}}/themes/img/workflows.svg" alt="workflows"/>
+                           <img ng-if="path[2] === 'workflows'" class="h-1-6" ng-src="{{resourceUrl}}/themes/img/workflowswhite.svg" alt="workflows"/>
+                        </div>
+                        <span>
+                            {{:: 'workflows' | translate}}
+                        </span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{:: 'workflows' | translate}}</p>
+                    </div>
+                </li>
+                <li data-ng-class="(path[2] === 'policies') && 'active'" data-ng-if="isWorkflowEnabled">
+                    <a href="#/realms/{{realm.realm}}/policies" id="qv-sidebar-policies-desktop">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/{{ path[2] === 'policies' ? 'active' : 'normal'}}/Rules.svg" />
+                        </div>
+                        <span data-ng-if="current.realm.mode != 'bo'">{{:: 'policies' | translate}}</span>
+                        <span data-ng-if="current.realm.mode == 'bo'">{{:: 'rules' | translate}}</span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p data-ng-if="current.realm.mode != 'bo'" >{{:: 'policies' | translate}}</p>
+                        <p data-ng-if="current.realm.mode == 'bo'" >{{:: 'rules' | translate}}</p>
+                    </div>
+                </li>
+                <li data-ng-class="(path[2] === 'brandings') && 'active'" data-ng-if="showBranding && isWorkflowEnabled">
+                    <a href="#/realms/{{realm.realm}}/brandings" id="qv-sidebar-brandings-desktop">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/{{ path[2] === 'brandings' ? 'active' : 'normal'}}/Brandings.svg" />
+                        </div>
+                        <span>{{:: 'brandings' | translate}}</span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{:: 'brandings' | translate}}</p>
+                    </div>
+                </li>
+                <li class="submenu-container cursor-pointer" data-ng-if="isWorkflowEnabled"
+                    data-ng-class="( path[2] === 'email' || path[2] === 'sms' ) && 'active'"
+                    ng-mouseover="submenuControllerEnter($event)" ng-mouseleave="submenuControllerOnLeave($event)">
+                    <div class="submenu-main-info" id="qv-sidebar-notifications-desktop">
+                        <div class="icon-w pl-4 pr-1 py-2 sidebar-icon d-flex">
+                            <svg width="16" height="24" viewBox="0 0 16 17" id="api-icon" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6.84533 14.5C6.96236 14.7027 7.13068 14.871 7.33336 14.988C7.53605 15.105 7.76596 15.1666 8 15.1666C8.23404 15.1666 8.46395 15.105 8.66664 14.988C8.86932 14.871 9.03764 14.7027 9.15467 14.5M2.17467 10.7173C2.08758 10.8128 2.0301 10.9315 2.00924 11.059C1.98837 11.1865 2.00501 11.3173 2.05714 11.4356C2.10926 11.5538 2.19462 11.6544 2.30284 11.725C2.41105 11.7956 2.53745 11.8332 2.66667 11.8333H13.3333C13.4625 11.8334 13.589 11.7959 13.6972 11.7254C13.8055 11.6549 13.891 11.5545 13.9433 11.4363C13.9955 11.3182 14.0123 11.1874 13.9916 11.0598C13.9709 10.9323 13.9136 10.8135 13.8267 10.718C12.94 9.80398 12 8.83265 12 5.83331C12 4.77245 11.5786 3.75503 10.8284 3.00489C10.0783 2.25474 9.06087 1.83331 8 1.83331C6.93913 1.83331 5.92172 2.25474 5.17157 3.00489C4.42143 3.75503 4 4.77245 4 5.83331C4 8.83265 3.05933 9.80398 2.17467 10.7173Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <span>{{:: 'notifications' | translate}}</span>
+                    </div>
+                    <ul class="submenu-box">
+                        <div class="sub-menu-header">
+                            {{:: 'notifications' | translate}}
+                        </div>
+                        <li
+                            data-ng-class="( path[2] === 'email' && ( path[3] === 'providers' || path[3] === 'templates' )) && 'active'">
+                            <a href="#/realms/{{realm.realm}}/email/providers" id="qv-sidebar-email-desktop">
+                                <span class="d-block">{{:: 'email' | translate}}</span>
+                            </a>
+                        </li>
+                        <div class="sub-menu-icon">
+                            <i class="os-icon os-icon-bell"></i>
+                        </div>
+                        <li data-ng-class="( path[2] === 'sms' && path[3] === 'providers' ) && 'active'">
+                            <a href="#/realms/{{realm.realm}}/sms/providers" id="qv-sidebar-sms-desktop">
+                                <span class="d-block">{{:: 'sms' | translate}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li data-ng-class="(path[2] === 'logs' || path[2] === 'admin-logs'
+                    || path[2] === 'audit-listeners') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/logs" id="qv-sidebar-audit-desktop">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/{{ (path[2] === 'logs' || path[2] === 'admin-logs' ) ? 'active' : 'normal'}}/Audit.svg" />
+                        </div>
+                        <span>{{:: 'events' | translate}}</span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{:: 'events' | translate}}</p>
+                    </div>
+                </li>
+                <li data-ng-if="current.realm.mode != 'bo'" data-ng-class="(path[2] === 'defense') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/defense/headers" id="qv-sidebar-securityDefenses-desktop">
+                        <div class="icon-w px-4 py-2">
+                            <div class="os-icon os-icon-shield"></div>
+                        </div>
+                        <span> {{ :: 'realm-tab-security-defenses' | translate }} </span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{ :: 'realm-tab-security-defenses' | translate }}</p>
+                    </div>
+                </li>
+                <li data-ng-if="current.realm.mode == 'bo' && isWorkflowEnabled" data-ng-class="(path[2] === 'defense') && 'active'">
+                    <a href="#/realms/{{realm.realm}}/defense/brute-force" id="qv-sidebar-securityDefenses-bo-desktop">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/{{ path[2] === 'defense' ? 'active' : 'normal'}}/SecurityDefence.svg" />
+                        </div>
+                        <span> {{ :: 'realm-tab-security-defenses' | translate }} </span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{ :: 'realm-tab-security-defenses' | translate }}</p>
+                    </div>
+                </li>
+                <li data-ng-if="current.realm.realm" data-ng-class="(path[2] === 'realm-subscription' || path[2] === 'realm-settings' || path[2] === 'login-settings' || path[2] === 'onboarding-settings' || path[2] === 'token-settings'|| path[2] === 'dashboard-admins' || path[2] === 'authentication-settings' || path[2] === 'realm-attributes' || path[2] === 'products' || path[2] === 'product') && 'active'">
+                    <a ng-href="{{serverInfo.systemInfo.offering == 'CLOUD' && current.realm.realm !== rootAccountName ? '#/realms/' + current.realm.realm + '/realm-subscription': '#/realms/' + current.realm.realm + '/realm-settings'}}" id="qv-sidebar-setting-bo-dropdown-desktop">
+                        <div class="icon-w pl-4 pr-1 py-1 sidebar-icon">
+                            <img ng-src="{{resourceUrl}}/img/side-bar/{{ (path[2] === 'realm-subscription' || path[2] === 'realm-settings'|| path[2] === 'dashboard-admins' || path[2] === 'authentication-settings' || path[2] === 'realm-attributes' || path[2] === 'products' || path[2] === 'product') ? 'active' : 'normal'}}/Settings.svg" />
+                        </div>
+                        <span> {{::'realm-settings' | translate}} </span>
+                    </a>
+                    <div class="side-menu-title">
+                        <p>{{:: 'realm-settings' | translate}}</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="side-menu-toggler cursor-pointer" ng-click="toggleSideMenu()" ng-class="{'d-none':((path[2] === 'brandings' && path[3]) || (path[3] === 'templates' && path[4]))}" id="qv-sidebar-sinkBtn">
+        <div class="side-menu-shrink h-100 {{isRTL && 'rotate-180'}}" title="slide-menu">
+            <div class="icon-w icon-toggle-control w-100 d-flex align-items-center justify-content-center">
+                <i class="ti-angle-left"></i>
+            </div>
+        </div>
+        <div class="side-menu-expand h-100 {{isRTL && 'rotate-180'}}" title="expand menu">
+            <div class="icon-w icon-toggle-control w-100 d-flex align-items-center justify-content-center">
+                <i class="ti-angle-right"></i>
+            </div>
+        </div>
+    </div>
+    <div class="version-container position-fixed" data-ng-show="current.realm">
+        <div class="version-box w-100 position-absolute d-flex align-items-center">
+            <div class="version-box-text">
+                <h6 class="m-0 d-inline">{{:: 'qlikVersionTitle' | translate}}</h6>
+                <span class="d-inline">{{ serverInfo.systemInfo.qvVersion }}</span>
+                <div class="flex-column version-tab-view">
+                    <img data-ng-src="{{resourceUrl}}/themes/img/version.svg" height="24" />
+                    <p class="font-size-12px mb-0">{{:: 'qlikVersionTitle' | translate}}</p>
+                    <div class="side-menu-title position-top-30percent">
+                        <p>{{ serverInfo.systemInfo.qvVersion }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

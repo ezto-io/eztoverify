@@ -1,0 +1,6 @@
+io.ezto.license.templates.LicenseTemplate
+io.ezto.license.templates.LicenseActivatedTemplate
+io.ezto.license.templates.SubscribeTemplate
+io.ezto.license.templates.AccountRestoreTemplate
+io.ezto.license.templates.AccountRemovalTemplate
+io.ezto.license.templates.WalletBalanceLowTemplate

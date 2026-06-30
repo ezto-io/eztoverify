@@ -1,0 +1,61 @@
+---
+id: "5.0.0"
+title: "5.0.0"
+sidebar_label: "5.0.0"
+---
+
+import LottiePlayer from "@site/src/components/changelogs/LottiePlayer";
+
+### New Features
+
+- We enhanced our consent details to include more secure information like IP address, browser, device, date, and time, ensuring your data is better protected.
+
+<LottiePlayer lottie="5.0.0/consent"/>
+
+- You'll also find a new **Downloads** page where you can easily access our **ezto verify Mobile Apps, ezto verify SDKs, and ezto verify Desktop Apps,** making it simpler to get what you need.
+
+<LottiePlayer lottie="5.0.0/downloads"/>
+
+- In the **Result Notification Way,** we've introduced a new feature called [Queue,](/docs/EV/StartAnIntegration/SetupResultNotification/Queue) which enables you to use **Apache Kafka** to obtain results.
+
+<LottiePlayer lottie="5.0.0/kafka"/>
+
+- Also introducing some handy new **Templates:**
+  - [Secure Messaging:](/docs/EV/WorkflowModules/Device/SecureMessage) This allows you to send secure message to your users registered mobile device. 
+  - Validate Email and [Validate Phone:](/docs/EV/WorkflowModules/MobileNumber/Validate) Ensuring accuracy and legitimacy.
+  - [JSON Based Form:](/docs/EV/WorkflowModules/JSONBasedForm) Customize forms or templates using a JSON structure.
+  - [Device Verify:](/docs/EV/WorkflowModules/Device/DeviceVerify) This ensures the verification process is only done on the registered device.
+
+<LottiePlayer lottie="5.0.0/notify"/>
+
+- Managing devices just got easier with our new device management APIs. 
+
+<LottiePlayer lottie="5.0.0/devices"/>
+
+- We've expanded our **Authentication Way,**  to accomadate [Azure B2C](/docs/EV/StartAnIntegration/SetupVerification/AzureB2C) and [Desktop.](/docs/EV/StartAnIntegration/SetupVerification/Desktop) This will allow our customers to use their **Azure B2C** and **Desktop** with **ezto verify.**
+
+<LottiePlayer lottie="5.0.0/Azure-final"/>
+
+<LottiePlayer lottie="5.0.0/Desktop"/>
+
+- You'll now find [Gatepass](/docs/EV/ControlIntegration/ApplicationLevel) within the application for setting application-level rules, ensuring access is granted only if these rules are met.
+
+<LottiePlayer lottie="5.0.0/gatepass"/>
+
+- We've also revamped the **Templates** within the application to categorize it into **Onboarding** and **Verification,** letting our customers customize and control their users' verifications.
+
+<LottiePlayer lottie="5.0.0/onboarding"/>
+
+### Improvements
+
+- Admin users will now be notified if any **Hooks** fail to work, and after several attempts, clients will be disabled.
+
+<LottiePlayer lottie="5.0.0/hooks"/>
+
+- Transaction attributes are now stored separately for better organization.
+
+- We've streamlined push notifications, automatically switching to QR code option if no active tokens are found.
+
+- Changed the terminology from "Authentication completed" to "Verification completed" for clarity.
+
+- You can now easily redirect to the **Templates** page from the **Templates** under application.

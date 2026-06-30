@@ -1,0 +1,76 @@
+<form class="form-horizontal" name="realmForm" novalidate kc-read-only="!access.manageClients">
+
+    <fieldset class="mb-4">
+        <div class="form-group row clearfix">
+            <label class="col-md-3 control-label" for="protocol">{{:: 'protocol' | translate}}</label>
+            <div class="col-md-9">
+                <input class="form-control" id="protocol" type="text" ng-model="model.protocol" readonly>
+            </div>
+            <kc-tooltip>{{:: 'protocol.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row clearfix" data-ng-show="!model.create">
+            <label class="col-md-3 control-label" for="mapperId">{{:: 'id' | translate}} </label>
+            <div class="col-md-9">
+                <input class="form-control" id="mapperId" type="text" ng-model="model.mapper.id" readonly>
+            </div>
+        </div>
+        <div class="form-group row clearfix">
+            <label class="col-md-3 control-label" for="name">{{:: 'name' | translate}}
+                <span class="required">*</span>
+            </label>
+            
+            <div class="col-md-9">
+                <input class="form-control" id="nameMapper" type="text" ng-model="model.mapper.name" data-ng-readonly="!model.create" required>
+            </div>
+            <kc-tooltip>{{:: 'mapper.name.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row" data-ng-show="model.create">
+            <label class="col-md-3 control-label" for="mapperTypeCreate">{{:: 'mapper-type' | translate}}</label>
+            <div class="col-md-9">
+                <div>
+                    <select class="form-control" id="mapperTypeCreate"
+                            ng-model="model.mapperType"
+                            ng-options="mapperType.name for mapperType in model.mapperTypes"
+                            required>
+                    </select>
+                </div>
+            </div>
+            <kc-tooltip>{{:: model.mapperType.helpText | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row clearfix" data-ng-hide="model.create">
+            <label class="col-md-3 control-label" for="mapperType">{{:: 'mapper-type' | translate}}</label>
+            <div class="col-md-9">
+                <input class="form-control" id="mapperType" type="text" ng-model="model.mapperType.name" data-ng-readonly="true">
+            </div>
+            <kc-tooltip>{{:: model.mapperType.helpText | translate}}</kc-tooltip>
+        </div>
+        <div id="map-config-box">
+            <kc-provider-config config="model.mapper.config" properties="model.mapperType.properties" realm="model.realm" clients="clients" configType="configType"></kc-provider-config>
+        </div>
+    </fieldset>
+
+    <div class="form-group row">
+        <div class="col-md-12 d-flex flex-row-reverse" data-ng-show="model.create && access.manageClients">
+            <button class="ml-3" kc-save data-ng-disabled="!enableBtn" id="mapperSaveBtn">
+                <span ng-show=" saveStage === 1 " >{{:: 'save' | translate}}</span>
+                <div ng-show=" saveStage === 2 ">
+                    <kc-action-button-loading></kc-action-button-loading>
+                </div>
+            </button>
+            <button id="saveCancelBtn" kc-cancel data-ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-12 d-flex flex-row-reverse" data-ng-show="!model.create && access.manageClients">
+            <button kc-save class="ml-3" data-ng-disabled="!model.changed" id="mapperUpdateBtn">
+                <span ng-show=" updateStage === 1 " >{{:: 'save' | translate}}</span>
+                <div ng-show=" updateStage === 2 ">
+                    <kc-action-button-loading></kc-action-button-loading>
+                </div>
+            </button>
+            <button id="updateCancelBtn" kc-reset data-ng-disabled="!model.changed">{{:: 'cancel' | translate}}</button>
+        </div>
+    </div>
+</form>
+

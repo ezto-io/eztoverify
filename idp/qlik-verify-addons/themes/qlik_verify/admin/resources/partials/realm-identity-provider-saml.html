@@ -1,0 +1,450 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li data-ng-show="newIdentityProvider"> 
+                    <a href="#/realms/{{realm.realm}}/connections/social/create" class="ng-binding" id="back-to-choose-social-connections">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-choose-social-conn' | translate}}
+                    </a>
+                </li>
+                <li data-ng-hide="newIdentityProvider"> 
+                    <a href="#/realms/{{realm.realm}}/connections/social" class="ng-binding" id="back-to-social-connections">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-social-conn' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-identity-provider></kc-tabs-identity-provider><br>
+                        <div class="element-box py-5">
+                            <form class="form-horizontal" name="realmForm" novalidate kc-read-only="!access.manageIdentityProviders">
+                                <fieldset class="mt-0">
+                                    <div class="form-group row clearfix">
+                                        <label class="col-md-3 control-label" for="redirectUri">{{:: 'redirect-uri' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="redirectUri" type="text" value="{{callbackUrl}}{{identityProvider.alias}}/endpoint" readonly kc-select-action="click">
+                                        </div>
+                                        <kc-tooltip>{{:: 'redirect-uri.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="mt-0">
+                                    <div class="form-group row clearfix">
+                                        <label class="col-md-3 control-label" for="identifier">{{:: 'alias' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="identifier" type="text" ng-model="identityProvider.alias" readonly>
+                                        </div>
+                                        <kc-tooltip>{{:: 'identity-provider.alias.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix">
+                                        <label class="col-md-3 control-label" for="displayName"> {{:: 'display-name' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="displayName" type="text" ng-model="identityProvider.displayName">
+                                        </div>
+                                        <kc-tooltip>{{:: 'identity-provider.display-name.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'enabled' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="enabled">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.enabled}">
+                                                    <div class="os-toggler-i" id="enabled-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.enabled" name="enabled" id="enabled" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'identity-provider.enabled.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'store-tokens' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="storeToken">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.storeToken}">
+                                                    <div class="os-toggler-i" id="storeToken-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.storeToken" name="storeToken" id="storeToken" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'identity-provider.store-tokens.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'stored-tokens-readable' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="storedTokensReadable">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.addReadTokenRoleOnCreate}">
+                                                    <div class="os-toggler-i" id="storedTokensReadable-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.addReadTokenRoleOnCreate" name="storedTokensReadable" id="storedTokensReadable" onoffswitch>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'identity-provider.stored-tokens-readable.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'trust-email' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="trustEmail">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.trustEmail}">
+                                                    <div class="os-toggler-i" id="trustEmail-toggle" >
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.trustEmail" name="trustEmail" id="trustEmail" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'trust-email.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'link-only' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="linkOnly">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.linkOnly}">
+                                                    <div class="os-toggler-i" id="linkOnly-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.linkOnly" name="linkOnly" id="linkOnly" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'link-only.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'hide-on-login-page' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="hideOnLoginPage">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.config.hideOnLoginPage.toString() == 'true'}">
+                                                    <div class="os-toggler-i" id="hideOnLoginPage-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.config.hideOnLoginPage" name="hideOnLoginPage" id="hideOnLoginPage" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'hide-on-login-page.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row" data-ng-if="realm.enabledOwnEmailProvider || realm.realm === rootAccountName">
+                                        <label class="col-md-3 control-label" for="emailProvidersSelect">{{:: 'email-senders' | translate}} <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <div data-ng-hide="emailProviders.length > 0">
+                                                <p class="mb-1" ng-bind-html="noEmailSender" > </p>
+                                            </div>
+                                            <div data-ng-show="emailProviders.length > 0" >
+                                                
+                                                <select class="form-control" id="emailProvidersSelect"
+                                                        ng-model="identityProvider.emailSenderId" required>
+                                                        <option value="" disabled>{{ :: 'not-set' | translate}} </option>
+                                                        <option ng-repeat="emailProv  in emailProviders" value="{{emailProv}}" > {{emailProv | capitalize}} </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" data-ng-if="!realm.enabledOwnEmailProvider && realm.realm != rootAccountName">
+                                        <label class="col-md-3 control-label" for="emailProvidersSelect">{{:: 'email-senders' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <div class="p-2 helper-text panel-config-info mt-0 warning-config">
+                                                <span class="os-icon os-icon-alert-triangle panel-config-info-icon"></span>
+                                                <p class="help-text">{{ :: 'default-email-sender-msg' | translate | replaceWithVariant:serverInfo.variant}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="guiOrder">{{:: 'gui-order' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="guiOrder" type="text" ng-model="identityProvider.config.guiOrder">
+                                        </div>
+                                        <kc-tooltip>{{:: 'gui-order.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="firstBrokerLoginFlowAlias">{{:: 'first-broker-login-flow' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <div>
+                                                <select class="form-control" id="firstBrokerLoginFlowAlias"
+                                                        ng-model="identityProvider.firstBrokerLoginFlowAlias">
+                                                        <option value="first broker login"> {{:: 'not-set' | translate}} </option>
+                                                        <option ng-repeat="flow in authFlows" value="{{flow.alias}}" > {{flow.alias}} </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <kc-tooltip>{{:: 'first-broker-login-flow.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="postBrokerLoginFlowAlias">{{:: 'post-broker-login-flow' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <div>
+                                                <select class="form-control" id="postBrokerLoginFlowAlias"
+                                                        ng-model="identityProvider.postBrokerLoginFlowAlias">
+                                                        <option value=""> {{ :: 'not-set' | translate}} </option>
+                                                        <option ng-repeat="flow in postBrokerAuthFlows" value="{{flow.alias}}" > {{flow.alias}} </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <kc-tooltip>{{:: 'post-broker-login-flow.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <legend uncollapsed><span class="text">{{:: 'saml-config' | translate}}</span> <kc-tooltip>{{:: 'identity-provider.saml-config.tooltip' | translate}}</kc-tooltip></legend>
+
+                                    <div class="form-group row clearfix">
+                                        <label class="col-md-3 control-label" for="singleSignOnServiceUrl">{{:: 'single-signon-service-url' | translate}} <span class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="singleSignOnServiceUrl" type="text" ng-model="identityProvider.config.singleSignOnServiceUrl" required>
+                                        </div>
+                                        <kc-tooltip>{{:: 'saml.single-signon-service-url.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix">
+                                        <label class="col-md-3 control-label" for="singleSignOnServiceUrl">{{:: 'single-logout-service-url' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="singleLogoutServiceUrl" type="text" ng-model="identityProvider.config.singleLogoutServiceUrl">
+                                        </div>
+                                        <kc-tooltip>{{:: 'saml.single-logout-service-url.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix">
+                                        <label class="col-md-3 control-label">{{:: 'backchannel-logout' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="backchannelSupported">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.config.backchannelSupported.toString() == 'true'}">
+                                                    <div class="os-toggler-i" id="backchannelSupported-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.config.backchannelSupported" name="backchannelSupported" id="backchannelSupported" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'backchannel-logout.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix">
+                                        <label class="col-md-3 control-label" for="nameIDPolicyFormat">{{:: 'nameid-policy-format' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <select class="form-control" id="nameIDPolicyFormat" ng-model="identityProvider.config.nameIDPolicyFormat"
+                                                    ng-options="nameFormat.format as nameFormat.name for nameFormat in nameIdFormats">
+                                                    <option value=""> {{:: 'not-set' | translate}} </option>
+                                            </select>
+                                        </div>
+                                        <kc-tooltip>{{:: 'nameid-policy-format.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix">
+                                        <label class="col-md-3 control-label" for="principalType">{{:: 'saml.principal-type' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <select class="form-control" id="principalType" ng-model="identityProvider.config.principalType"
+                                                    ng-options="pType.type as pType.name for pType in principalTypes">
+                                                    <option value=""> {{:: 'not-set' | translate}} </option>
+                                            </select>
+                                        </div>
+                                        <kc-tooltip>{{:: 'saml.principal-type.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix" data-ng-show="identityProvider.config.principalType.endsWith('ATTRIBUTE')">
+                                        <label class="col-md-3 control-label" for="principalAttribute">{{:: 'saml.principal-attribute' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="principalAttribute" type="text" ng-model="identityProvider.config.principalAttribute" ng-required="identityProvider.config.principalType.endsWith('ATTRIBUTE')">
+                                        </div>
+                                        <kc-tooltip>{{:: 'saml.principal-attribute.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'http-post-binding-response' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="postBindingResponse">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.config.postBindingResponse.toString() == 'true'}">
+                                                    <div class="os-toggler-i" id="postBindingResponse-toggle" >
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.config.postBindingResponse" name="postBindingResponse" id="postBindingResponse" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'http-post-binding-response.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'http-post-binding-for-authn-request' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="postBindingAuthnRequest">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.config.postBindingAuthnRequest.toString() == 'true'}">
+                                                    <div class="os-toggler-i" id="postBindingAuthnRequest-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.config.postBindingAuthnRequest" name="postBindingAuthnRequest" id="postBindingAuthnRequest" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'http-post-binding-for-authn-request.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'http-post-binding-logout' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="postBindingLogout">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.config.postBindingLogout.toString() == 'true'}">
+                                                    <div class="os-toggler-i" id="postBindingLogout-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.config.postBindingLogout" name="postBindingLogout" id="postBindingLogout" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div> 
+                                        <kc-tooltip>{{:: 'http-post-binding-logout.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="wantAuthnRequestsSigned">{{:: 'want-authn-requests-signed' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="wantAuthnRequestsSigned">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.config.wantAuthnRequestsSigned.toString() == 'true'}">
+                                                    <div class="os-toggler-i" id="wantAuthnRequestsSigned-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.config.wantAuthnRequestsSigned" name="wantAuthnRequestsSigned" id="wantAuthnRequestsSigned" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div> 
+                                        <kc-tooltip>{{:: 'want-authn-requests-signed.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="wantAssertionsSigned">{{:: 'want-assertions-signed' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="wantAuthnRequestsSigned">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.config.wantAuthnRequestsSigned.toString() == 'true'}">
+                                                    <div class="os-toggler-i" id="wantAuthnRequestsSigned-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.config.wantAuthnRequestsSigned" name="wantAuthnRequestsSigned" id="wantAuthnRequestsSigned" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div> 
+                                        <kc-tooltip>{{:: 'want-assertions-signed.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'want-assertions-encrypted' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="wantAssertionsEncrypted">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.config.wantAssertionsEncrypted.toString() == 'true'}">
+                                                    <div class="os-toggler-i">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.config.wantAssertionsEncrypted" name="wantAssertionsEncrypted" id="wantAssertionsEncrypted" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div> 
+                                        <kc-tooltip>{{:: 'want-assertions-encrypted.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row" data-ng-show="identityProvider.config.wantAuthnRequestsSigned == 'true'">
+                                        <label class="col-md-3 control-label" for="signatureAlgorithm">{{:: 'signature-algorithm' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <div>
+                                                <select class="form-control" id="signatureAlgorithm"
+                                                        ng-model="identityProvider.config.signatureAlgorithm"
+                                                        ng-options="alg for alg in signatureAlgorithms">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <kc-tooltip>{{:: 'signature-algorithm.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix block" data-ng-show="identityProvider.config.wantAuthnRequestsSigned == 'true'">
+                                        <label class="col-md-3 control-label" for="samlSigKeyNameTranformer">{{:: 'saml-signature-keyName-transformer' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <div>
+                                                <select class="form-control" id="samlSigKeyNameTranformer"
+                                                        ng-model="identityProvider.config.xmlSigKeyInfoKeyNameTransformer"
+                                                        ng-options="xmlKeyNameTranformer for xmlKeyNameTranformer in xmlKeyNameTranformers">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <kc-tooltip>{{:: 'saml-signature-keyName-transformer.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'force-authentication' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="forceAuthn">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.config.forceAuthn.toString() == 'true'}">
+                                                    <div class="os-toggler-i" id="forceAuthn-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.config.forceAuthn" name="forceAuthn" id="forceAuthn" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div> 
+                                        <kc-tooltip>{{:: 'identity-provider.force-authentication.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">{{:: 'validate-signature' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="validateSignature">
+                                                <div  class="os-toggler-w" ng-class="{on: identityProvider.config.validateSignature.toString() == 'true'}">
+                                                    <div class="os-toggler-i" id="validateSignature-toggle">
+                                                        <div class="os-toggler-pill" ng-model="identityProvider.config.validateSignature" name="validateSignature" id="validateSignature" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'saml.validate-signature.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix" data-ng-show="identityProvider.config.validateSignature === true">
+                                        <label class="col-md-3 control-label" for="signingCertificate">{{:: 'validating-x509-certificate' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <textarea class="form-control" id="signingCertificate" ng-model="identityProvider.config.signingCertificate"> </textarea>
+                                        </div>
+                                        <kc-tooltip>{{:: 'validating-x509-certificate.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="allowedClockSkew">{{:: 'allowed-clock-skew' | translate}}</label>
+                                        <div class="col-md-9 time-selector">
+                                            <input class="form-control w-100" string-to-number type="number" min="0" max="2147483" step="1" ng-model="identityProvider.config.allowedClockSkew" id="allowedClockSkew"/>
+                                        </div>
+                                        <kc-tooltip>{{:: 'identity-provider.allowed-clock-skew.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                </fieldset>
+                                <fieldset data-ng-show="newIdentityProvider">
+                                    <legend uncollapsed><span class="text">{{:: 'import-external-idp-config' | translate}}</span> <kc-tooltip>{{:: 'import-external-idp-config.tooltip' | translate}}</kc-tooltip></legend>
+                                    <div class="form-group row" data-ng-show="newIdentityProvider">
+                                        <label class="col-md-3 control-label" for="fromUrl">{{:: 'import-from-url' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="fromUrl" type="text" ng-model="fromUrl.data">
+                                        </div>
+                                        <kc-tooltip>{{:: 'saml.import-from-url.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="importFrom"></label>
+                                        <div class="col-md-9">
+                                            <button id="importFrom" class="create-btn" type="button" data-ng-click="importFrom()" data-ng-show="importUrl" class="btn btn-primary">{{:: 'import' | translate}}</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" data-ng-show="newIdentityProvider">
+                                        <label class="col-md-3 control-label">{{:: 'import-from-file' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <div class="controls kc-button-input-file" data-ng-show="!files || files.length == 0">
+                                                <label for="import-file" class="btn btn-default">{{:: 'select-file' | translate}} <i class="pficon pficon-import"></i></label>
+                                                <input id="import-file" type="file" class="hidden" ng-file-select="onFileSelect($files)">
+                                            </div>
+                                        <span class="kc-uploaded-file" data-ng-show="files.length > 0">
+                                            {{files[0].name}}
+                                        </span>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-3 control-label" for="importFile"></label>
+                                            <div class="col-sm-6" data-ng-show="importFile">
+                                                <button id="importFile" class="create-btn" type="button" data-ng-click="uploadFile()" data-ng-show="importFile" class="btn btn-primary">{{:: 'import' | translate}}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <div class="form-group row">
+                                    <div class="col-md-12 d-flex flex-row-reverse">
+                                        <button class="ml-3" kc-save data-ng-disabled="!changed" id="save-btn">{{:: 'save' | translate}}</button>
+                                        <button kc-cancel data-ng-click="cancel()" data-ng-disabled="!changed" id="save-cancel">{{:: 'cancel' | translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

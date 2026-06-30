@@ -1,0 +1,11 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{title}}</h5>
+    <button type="button" class="close" id="closeBtn" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body" ng-bind-html="message"></div>
+<div class="modal-footer">
+    <button type="button" data-ng-class="btns.cancel.cssClass" ng-click="cancel()" id="{{title.toLowerCase().replaceAll(' ','-')}}-cancelBtn">{{btns.cancel.label}}</button>
+    <button type="button" data-ng-class="btns.ok.cssClass" ng-click="ok()"  id="{{title.toLowerCase().replaceAll(' ','-')}}-confirmBtn">{{btns.ok.label}}</button>
+</div>

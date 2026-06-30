@@ -1,0 +1,60 @@
+---
+id: "8.0.0"
+title: "8.0.0"
+sidebar_label: "8.0.0"
+---
+
+import GifPlayer from "@site/src/components/changelogs/GifPlayer";
+
+### New Features
+
+- Introducing some handy new Workflows:
+  
+  - UAE Pass Verification: This is a digital identity verification that allows secure verification through **Web to Mobile** and **Mobile to Mobile** applications, offering a seamless and efficient way to verify user identities. This workflow is specific to the UAE region.
+
+
+  - Verify EPFO: This workflow manages the process of verifying the **Universal Account Number (UAN)** linked to **Provident Fund (PF)** accounts, confirming its validity and correctness.
+  
+  <GifPlayer name="8.0.0/Epfo"/>
+
+  - [Validator:](/verify/docs/EV/WorkflowModules/Validator) Validator module allows workflows to validate claims from the previous workflow module, resulting in either true or false. Based on the outcome, different modules can be triggered. It supports `AND` and `OR` rules to combine multiple validations.
+  
+  <GifPlayer name="8.0.0/Workflow-Flowchart-revamp"/>
+
+- Introducing the [Missed Call Check](/verify/docs/EV/WorkflowModules/Mobile%20Number/Validation/MissedCallCheck) verification option in the **Validate Phone** workflow! Now, you can easily validate the accuracy and legitimacy of a phone number by sending a missed call. The call disconnects immediately, verifying that the number is valid and active without the need to answer the call.
+  
+  <GifPlayer name="8.0.0/Missed-call-verification"/>
+
+- We now offer [two modes](/verify/docs/EV/GetStarted/SandboxLive) on our platform: **Sandbox** mode, the default for new workspaces, offering a secure space for exploring features with a preset wallet balance, and **Live** mode for full use, providing complete access to all features, including subscription and wallet management.
+
+- Our Subscription payments are now handled through **Razorpay**, ensuring a more user-friendly experience.
+
+### Improvements
+
+- We’ve revamped the **Workflow** module page for a even better experience! To add a new workflow module, simply hover over the "+" symbol, select the workflows or validator you want to add, and you’re ready to go.
+
+  <GifPlayer name="8.0.0/Workflow-Flowchart-revamp"/>
+
+- We’ve added an `Estimated Cost` viewer for workflows. This shows the current subscription plan, the workflow module in use, and its pricing. The estimated cost provides an approximate pricing detail, which may vary based on the **workflow**, **SMS**, **Email**, and **WhatsApp** providers used.
+
+- The **JSON Based Form** has been renamed to [Dynamic Form](/verify/docs/EV/WorkflowModules/DynamicForm) with added enhancements:
+  - **New Input Field Types**: We've introduced two new field types; **File** and **Radio** to provide more flexibility in form creation.
+  - **New Key Attributes**: The attributes `multiple` and `onlyAccept` have been added to enhance the form’s functionality, allowing for proper customization of input fields.
+
+  <GifPlayer name="8.0.0/JSON-english"/>
+
+- We’ve renamed **IP Blacklisting** to **Whitelisting** to better match the current functionality.
+
+### Bug Fixes
+
+- Fixed the issue where disabling the `Enable` toggle in the **General** tab of the **Terms and Conditions** and **Dynamic Flow** workflows caused errors. Now, when toggled off, the respective workflow becomes inactive without causing an error.
+
+- Resolved the issue where the **workspace admins** were being incorrectly removed after onboarding due to invalid requests. Workspace admins will now remain active if the request is invalid.
+
+- We’ve fixed an issue where the **Liveness Verification** process was redirected to an 'onboarding failed' screen, which prevented completion of the request. **Liveness Verification** now works as expected.
+
+- Resolved an issue where the **Secure Message** flow redirects to an 'onboarding failed' screen when proceeding from the **Web to Device** workflow. Now, the flow successfully completed while proceeding with a secure message from the **Web to Device** workflow.
+
+- When default claims were removed from any workflow module, an improper error message was displayed. This has been fixed to show the correct error message.
+
+- Previously, the transaction price for certain workflows wasn’t being deducted correctly, including failed transactions. This issue has been fixed, and the transaction price will now be deducted accurately for each workflow module.

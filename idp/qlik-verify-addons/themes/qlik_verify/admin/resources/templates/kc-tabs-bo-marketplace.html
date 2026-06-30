@@ -1,0 +1,14 @@
+<div class="sub-top-bar mt-2">
+    <ul>
+        <li class="nav-item {{currentTab == 'overview' ? 'active' : ''}}">
+            <a id="overview" href="{{detailsUrl}}" class="nav-link cursor-pointer p-3">
+                {{:: 'overview' | translate}}
+            </a>
+        </li>
+        <li class="nav-item {{currentTab === 'flow' ? 'active' : ''}}">
+            <a id="flow" href="{{flowUrl}}" class="nav-link cursor-pointer p-3">
+                {{:: 'workflow' | translate}}
+            </a>
+        </li>
+    </ul>
+</div>

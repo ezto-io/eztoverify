@@ -1,0 +1,206 @@
+<div id="close" data-ng-click="dismissPanel()" data-ng-init="init()">
+    <i class="os-icon os-icon-close"></i>
+</div>
+<p id="header2">{{:: 'settings' | translate}}</p>
+<div id="divisionthing"></div>
+<div class="form-horizontal mt-5 pb-5">
+    <div class="p-2 helper-text panel-config-info mt-0 mb-4 warning-config" >
+        <span class="os-icon os-icon-alert-triangle panel-config-info-icon"></span>
+        <p class="help-text">{{:: 'customDomainInfo' | translate}}</p>
+    </div>
+    <div class="p-2 helper-text panel-config-info mt-0 mb-4 warning-config" data-ng-if="false">
+        <span class="os-icon os-icon-alert-triangle panel-config-info-icon"></span>
+        <p class="help-text">{{:: 'customDomainDeleteInfo' | translate}}</p>
+    </div>
+    <div class="row mb-4" >
+        <div class="col-1">
+            <div class="d-flex align-items-center justify-content-center custom-domain-number" data-ng-if="!domain.stepCompleted">
+                <span>1</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-center custom-domain-number custom-domain-success" data-ng-if="domain.stepCompleted">
+                <img data-ng-src="{{resourceUrl}}/themes/img/success.png" alt="logo">
+            </div>
+        </div>
+        <div class="col-11">
+            <div class="form-group col-12">
+                <h6 class="control-label mb-2">{{:: 'add-custom-domain' | translate}}</h6>
+                <div class="mb-3">
+                    <input class="form-control" type="text" placeholder="yourdomain.com" data-ng-model="domain.name" data-ng-if="!domain.stepCompleted" data-ng-change="validateDomain()">
+                    <input readonly class="form-control br-top-4 br-bottom-4" type="text" placeholder="yourdomain.com" value="{{domain.name}}" data-ng-if="domain.stepCompleted"/>
+                </div>
+                <p id="error_msg" data-ng-if="domain.err" class="my-3">{{domain.err}}</p>
+                <div class="d-flex justify-content-end" data-ng-if="!domain.stepCompleted">
+                    <button class="btn btn-primary" data-ng-click="createDomain()" data-ng-disabled="!domain.name || domain.isLoading || domain.err">
+                        {{:: 'next' | translate}}
+                    </button>
+                </div>
+                <div class="d-flex justify-content-end" data-ng-if="domain.stepCompleted">
+                    <button class="btn btn-secondary" data-ng-click="reset()">
+                        {{::'reset' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" data-ng-if="domain.stepCompleted && domainRecord.recordData">
+        <div class="col-1">
+            <div class="d-flex align-items-center justify-content-center custom-domain-number" data-ng-if="!domainRecord.stepCompleted">
+                <span>2</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-center custom-domain-number custom-domain-success" data-ng-if="domainRecord.stepCompleted">
+                <img data-ng-src="{{resourceUrl}}/themes/img/success.png" alt="logo">
+            </div>
+        </div>
+        <div class="col-11">
+            <div class="form-group col-12">
+                <h6 class="control-label mb-2">{{:: 'domain-verification' | translate}}</h6>
+                <p class="mb-2">{{:: 'add-to-domain-controller-txt' | translate}}</p>
+                <div class="custom-domain-container-wrap mb-3 pb-0">
+                    <ul class="d-flex flex-column custom-domain-list-container pl-0 mb-0 pb-4" data-ng-if="domainRecord.recordData">
+                        <li data-ng-repeat="(key, value) in domainRecord.recordData">{{key}} : {{value}}</li>
+                    </ul>
+                </div>
+                <div class="p-2 helper-text panel-config-info my-3 warning-config">
+                    <span class="os-icon os-icon-alert-triangle panel-config-info-icon"></span>
+                    <p class="help-text">{{::'customDomainVerifyOne' | translate}}</p>
+                </div>
+                <p id="error_msg" data-ng-if="domainRecord.err" class="my-3">{{domainRecord.err}}</p>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary" data-ng-click="verifyDomain()" data-ng-if="!domainRecord.stepCompleted" data-ng-disabled="domainRecord.isLoading">
+                        {{:: 'verify' | translate}}
+                    </button>
+                    <button class="btn btn-primary" data-ng-if="domainRecord.stepCompleted">
+                        {{:: 'verified' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" data-ng-if="domain.stepCompleted && domainRecord.stepCompleted && aRecord.recordData">
+        <div class="col-1">
+            <div class="d-flex align-items-center justify-content-center custom-domain-number" data-ng-if="!aRecord.stepCompleted">
+                <span>3</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-center custom-domain-number custom-domain-success" data-ng-if="aRecord.stepCompleted">
+                <img data-ng-src="{{resourceUrl}}/themes/img/success.png" alt="logo">
+            </div>
+        </div>
+        <div class="col-11">
+            <div class="form-group col-12">
+                <h6 class="control-label mb-2">{{aRecord.recordData["Record Type"]}} {{:: 'record-verification' | translate}}</h6>
+                <p class="mb-2">{{:: 'add-to-domain-controller-txt' | translate}}</p>
+                <div class="custom-domain-container-wrap mb-3 pb-0">
+                    <ul class="d-flex flex-column custom-domain-list-container pl-0 mb-0 pb-4" data-ng-if="aRecord.recordData">
+                        <li data-ng-repeat="(key, value) in aRecord.recordData">{{key}} : {{value}}</li>
+                    </ul>
+                </div>
+                <div class="p-2 helper-text panel-config-info my-3 warning-config">
+                    <span class="os-icon os-icon-alert-triangle panel-config-info-icon"></span>
+                    <p class="help-text">{{::'customDomainVerifyTwo' | translate}}</p>
+                </div>
+                <p id="error_msg" data-ng-if="aRecord.err" class="my-3">{{aRecord.err}}</p>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary" data-ng-click="verifyARecord()" data-ng-if="!aRecord.stepCompleted" data-ng-disabled="aRecord.isLoading">
+                        {{:: 'verify' | translate}}
+                    </button>
+                    <button class="btn btn-primary" data-ng-if="aRecord.stepCompleted">
+                        {{:: 'verified' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4" data-ng-if="domain.stepCompleted && domainRecord.stepCompleted && aRecord.stepCompleted">
+        <div class="col-1">
+            <div class="d-flex align-items-center justify-content-center custom-domain-number user-select-none" data-ng-hide="isCert.enabled && certKey.stepCompleted && cert.stepCompleted">
+                <span>4</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-center custom-domain-number custom-domain-success" data-ng-if="isCert.enabled && certKey.stepCompleted && cert.stepCompleted">
+                <img data-ng-src="{{resourceUrl}}/themes/img/success.png" alt="logo">
+            </div>
+        </div>
+        <div class="col-11">
+            <div class="form-group row">
+                <h6 class="control-label mb-2 col-md-4 pl-3 user-select-none">
+                    <label for="ownCertificate">
+                        {{::'customDomainCertificateLabel' | translate}}
+                    </label>
+                </h6>
+                <div class="col-md-auto">
+                    <label>
+                        <div class="os-toggler-w" ng-class="{on: isCert.enabled}">
+                            <div class="os-toggler-i">
+                                <div class="os-toggler-pill" ng-model="isCert.enabled"
+                                    name="ownCertificate" id="ownCertificate" onoffswitch>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group col-12" data-ng-if="isCert.enabled">
+                <div class="mb-3 form-group row">
+                    <label class="col-md-4 control-label">{{::'customDomainSubCertificateLabel' | translate}}</label>
+                    <div class="col-md-8">
+                        <div class="controls kc-button-input-file">
+                            <label for="customDomainCert" class="btn btn-secondary btn-sm" data-ng-class="{'label-disabled': cert.isLoading}">{{::'customDomainUploadCert' | translate}} <i class="os-icon os-icon-upload text-white font-weight-bold ml-1">
+                            </i></label>
+                            <input accept=".cer,.pem,.der,.key,.crt,.cert,.txt" id="customDomainCert" type="file" class="hidden" data-ng-file-select="uploadFile($files, 'certificate')" data-ng-model="cert.name"/>
+                        </div>
+                        <p class="cert-file-name" data-ng-if="cert.name">{{cert.name}}</p>
+                        <p id="error_msg" data-ng-if="cert.err" class="my-3">{{cert.err}}</p>
+                    </div>
+                </div>
+                <div class="mb-3 form-group row">
+                    <label class="col-md-4 control-label">{{::'customDomainSubKeyLabel' | translate}}</label>
+                    <div class="col-md-8">
+                        <div class="controls kc-button-input-file">
+                            <label for="customDomainCertKey" class="btn btn-secondary btn-sm" data-ng-class="{'label-disabled': certKey.isLoading}">{{::'customDomainUploadKey' | translate}} <i class="os-icon os-icon-upload text-white font-weight-bold ml-1">
+                            </i></label>
+                            <input accept=".cer,.pem,.der,.key,.crt,.cert,.txt" id="customDomainCertKey" type="file" class="hidden" data-ng-file-select="uploadFile($files, 'key')" data-ng-model="certKey.name"/>
+                        </div>
+                        <p class="cert-file-name" data-ng-if="certKey.name">{{certKey.name}}</p>
+                        <p id="error_msg" data-ng-if="certKey.err" class="my-3">{{certKey.err}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-12">
+                <div class="p-2 helper-text panel-config-info my-3 warning-config">
+                    <span class="os-icon os-icon-alert-triangle panel-config-info-icon"></span>
+                    <p class="help-text">{{::'customDomainCertHelp' | translate}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-buttons-w border-top-0" data-ng-hide="!domain.stepCompleted || !domainRecord.stepCompleted || !aRecord.stepCompleted || (isCert.enabled &&  (!cert.stepCompleted || !certKey.stepCompleted))">
+        <div class="col-md-12 d-flex flex-row-reverse pr-0">
+            <button class="ml-3" kc-save data-ng-disabled="!domain.stepCompleted || !domainRecord.stepCompleted || !aRecord.stepCompleted || (isCert.enabled &&  (!cert.stepCompleted || !certKey.stepCompleted)) || stage === 2" data-ng-click="save()">
+                <span ng-show="stage === 1" >{{:: 'save' | translate}}</span>
+                <div ng-show="stage === 2">
+                    <kc-action-button-loading></kc-action-button-loading>
+                </div>
+            </button>
+            <button id="cancelBtn" kc-reset data-ng-click="reset()" data-ng-disabled="!domain.name || stage === 2">{{:: 'cancel' | translate}}</button>
+        </div>
+    </div>
+    <div class="row position-relative" data-ng-if="false">
+        <div class="col-12">
+            <p id="header2">{{:: 'danger-zone' | translate}}</p>
+            <div class="mt-2">
+                <ul class="danger-zone-list">
+                    <li>
+                        <div class="danger-zone-container">
+                            <div class="pr-3">
+                                <h4 class="danger-zone-title">{{:: 'customDomainDeleteTitle' | translate}}</h4>
+                                <p class="font-size-12px">{{:: 'customDomainDeleteDesc' | translate}}</p>
+                            </div>
+                            <div class="dz-pull-right">
+                                <button class="delete-btn" type="submit" data-ng-click="removeCustomDomain()" data-ng-disabled="removeDomain.isLoading">{{:: 'customDomainDeleteBtn' | translate}}</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

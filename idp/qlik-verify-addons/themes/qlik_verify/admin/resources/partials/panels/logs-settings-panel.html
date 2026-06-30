@@ -1,0 +1,83 @@
+<div id="close" data-ng-click="dismissPanel()">
+    <i class="os-icon os-icon-close"></i>
+</div>
+<p id="header2">{{:: 'settings' | translate}}</p>
+<div id="divisionthing"></div>
+<form class="form-horizontal mt-5" name="realmForm" novalidate >
+    <div class="proplist">
+        <div class="form-group row">
+            <label class="col-md-3 control-label" for="enabled">{{:: 'enable-login-events' | translate}}</label>
+            <kc-tooltip>{{:: 'login.save-events.tooltip' | translate}}</kc-tooltip>
+            <div class="col-md-9">
+                <label>
+                    <div class="os-toggler-w" ng-class="{on: eventsConfig.eventsEnabled}">
+                        <div class="os-toggler-i" name="enabled-toggle">
+                            <div class="os-toggler-pill" ng-model="eventsConfig.eventsEnabled" name="enabled"
+                                id="enabled" onoffswitch>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- <div class="form-group row" data-ng-show="eventsConfig.eventsEnabled">
+            <label class="col-md-3 control-label" for="enabledEventTypes" class="control-label">{{::
+                'saved-types' | translate}}</label>
+            <div class="col-md-9">
+                <div class="logs-setting-panel-scroll">
+                    <input ui-select2="eventSelectOptions" id="enabledEventTypes" ng-model="eventsConfig.enabledEventTypes"
+                    data-placeholder="{{:: 'select-event-types.placeholder' | translate}}" />
+                </div>
+                <div><kc-tooltip>{{:: 'saved-types.tooltip' | translate}}</kc-tooltip></div>
+            </div>
+        </div> -->
+
+        <!-- <div class="form-group row" data-ng-show="eventsConfig.eventsEnabled">
+            <label class="col-md-3 control-label" for="expiration">{{:: 'expiration' | translate}}</label>
+            <kc-tooltip>{{:: 'events.expiration.tooltip' | translate}}</kc-tooltip>
+            <div class="col-md-9 time-selector">
+                <div class="row" >
+                    <div class="col-md-6" >
+                        <input class="form-control w-100" type="number" data-ng-model="eventsConfig.eventsExpiration" id="expiration"
+                        name="expiration" min="0" />
+                    </div>
+                    <div class="col-md-6" >
+                        <select class="form-control w-100" name="expirationUnit" data-ng-model="eventsConfig.expirationUnit">
+                            <option value="Minutes">{{:: 'minutes' | translate}}</option>
+                            <option value="Hours">{{:: 'hours' | translate}}</option>
+                            <option value="Days">{{:: 'days' | translate}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <div class="form-buttons-w border-top-0 mt-2 mb-4">
+            <div class="col-md-12 d-flex flex-row-reverse pr-0">
+                <button data-kc-save data-ng-disabled="!changed" id="saveBtn">{{:: 'save' |
+                    translate}}</button>
+            </div>
+        </div>
+
+        <div data-ng-if="eventsLength.logs>0" class="position-relative">
+            <div id="divisionthing"></div>
+            <p id="header2" class="pt-4">{{:: 'danger-zone' | translate}}</p>
+            <div class="mt-2">
+                <ul class="danger-zone-list">
+                    <li>
+                        <div class="danger-zone-container">
+                            <div>
+                                <h4 class="danger-zone-title">{{:: 'clear-events' | translate}}</h4>
+                                <p>{{:: 'delete-tenant-content' | translate}}</p>
+                            </div>
+                            <div class="dz-pull-right">
+                                <button class="delete-btn" id="deleteBtn" type="submit" data-ng-click="clearEvents()">{{:: 'clear' |
+                                    translate}}</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</form>

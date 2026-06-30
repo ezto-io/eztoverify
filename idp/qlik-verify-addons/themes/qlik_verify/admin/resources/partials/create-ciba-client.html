@@ -1,0 +1,257 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/clients/type/{{appType}}">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon" id="backToApplicationsList"></i>{{ :: 'backToApplication' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="element-box pt-3">
+                            <!-- Header -->
+                            <div class="d-flex align-items-center">
+                                <div class="progress-container">
+                                    <svg viewBox="0 0 100 100" id="application-creation-progress">
+                                      <circle class="progress-background" cx="50" cy="50" r="40"></circle>
+                                      <circle class="progress-bar" cx="50" cy="50" r="40"></circle>
+                                      <text class="progress-label" x="50" y="50"></text>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="text-primary h5 mb-0">{{currentPage.name}}</div>
+                                    <small>{{currentPage.description}}</small>
+                                </div>
+                            </div>
+                            <form class="form-horizontal" name="clientForm" novalidate kc-read-only="!access.manageClients">
+                                <fieldset class="mb-3 mt-2">
+
+                                    <!-- Details Tab -->
+                                    <div data-ng-show="currentPage.index === 1">
+                                        <div class="application-step-1">
+                                            <div class="form-group row " data-intro="{{:: 'intro-application-name' | translate}}" data-step="1" data-title="{{:: 'intro-application-name-title' | translate}}">
+                                                <label class="col-md-3 control-label" for="name">{{:: 'client-name' |
+                                                    translate}} <span class="required">*</span></label>
+                                                <div class="col-md-9">
+                                                    <input class="form-control" type="text" id="name" name="name" data-ng-model="client.name" maxlength="64" autofocus>
+                                                    <p class="helper-text">{{ ::'application-name-hlp-txt' | translate }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row clearfix block">
+                                            <label class="col-md-3 control-label">{{ :: 'show-ciba-consent' | translate
+                                                }}</label>
+                                            <div class="col-md-9">
+                                                <label for="cibaConsent">
+                                                    <div class="os-toggler-w"
+                                                        ng-class="{on: client.attributes['ciba.consent']}">
+                                                        <div class="os-toggler-i" id="cibaConsentToggle">
+                                                            <div class="os-toggler-pill"
+                                                                ng-model="client.attributes['ciba.consent']"
+                                                                name="cibaConsent" id="cibaConsent" onoffswitch>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            <kc-tooltip>{{:: 'client.cibaConsent.tooltip' | translate}}</kc-tooltip>
+                                        </div>
+
+                                        <div class="form-group row clearfix block" data-ng-show="client.attributes['ciba.consent']">
+                                            <label class="col-md-3 control-label">{{ :: 'reason-for-consent-rejeciton' | translate }} <span class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <div class="input-group mb-3" ng-repeat="reason in selectedCibaRejectionReasons track by $index">
+                                                    <input type="text" class="form-control" value="{{:: reason | translate}}" readonly placeholder="{{:: 'add-reason' | translate}}" aria-describedby="button-remove-reason-{{reason.replaceAll(' ','-')}}" ng-keypress="handleKeyPress($event, newCibaConsentRejectReason)">
+                                                    <div class="input-group-append">
+                                                      <button class="btn btn-primary btn-sm icon-btn" data-ng-click="removeReasonForConsent($index)" type="button" id="button-remove-reason-{{reason.replaceAll(' ','-')}}"><span class="os-icon os-icon-minus2"></span></button>
+                                                    </div>
+                                                  </div>
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control" data-ng-model="newCibaConsentRejectReason" placeholder="{{:: 'add-reason' | translate}}" aria-describedby="button-add-reason" ng-keypress="handleKeyPress($event, newCibaConsentRejectReason)">
+                                                    <div class="input-group-append">
+                                                      <button class="btn btn-primary btn-sm icon-btn" data-ng-click="addReasonForConsent()" type="button" id="button-add-reason"><span class="os-icon os-icon-plus"></span></button>
+                                                    </div>
+                                                  </div>
+                                                  <div class="p-2 helper-text panel-config-info mt-0 warning-config" data-ng-show="isConsentHelperVisible">
+                                                    <span class="os-icon os-icon-alert-triangle panel-config-info-icon"></span>
+                                                    <p id="qv-input__{{subOpt.label.toLowerCase()}}" class="help-text">{{ :: 'consent-rejection-reason-helper' | translate }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-md-3 control-label" for="loginTheme">
+                                                {{:: 'theme' | translate}}
+                                                <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-9">
+                                                <select class="form-control text-capitalize" id="loginTheme" ng-model="client.attributes['login_theme']">
+                                                    <option value="" selected disabled>
+                                                        {{:: 'select-theme' | translate}}
+                                                    </option>
+                                                    <option ng-repeat="o in brandings" ng-value="o.name">{{:: o.name |
+                                                        replaceUnderScoreWithSpace | translate }}</option>
+                                                </select>
+                                            </div>
+                                            <kc-tooltip>{{:: 'login-theme.tooltip' | translate}}</kc-tooltip>
+                                        </div>
+                                    </div>
+
+                                    <!-- GatePass Tab -->
+                                    <div data-ng-show="currentPage.index === 2">
+                                        <fieldset class="margin-top-16">
+                                            <div class="form-group row">
+                                              <label for="actions" class="col-md-3 control-label">{{:: 'gatepass-rule' | translate}}</label>
+                                              <div class="col-md-9">
+                                                <div data-ng-show="cibaPolicies.length > 0">
+                                                  <select id="actions" ng-model="clientEdit.attributes['gatepass_rule']" class="form-control">
+                                                    <option value="">{{:: 'ciba-connection-default-option' | translate }}</option>
+                                                    <option ng-selected="clientEdit.attributes['gatepass_rule'] == p.id" ng-repeat="p in cibaPolicies" ng-value="p.id">{{p.policyName}}</option>
+                                                  </select>
+                                                  <kc-tooltip>{{:: 'gatepass.tooltip' | translate}}</kc-tooltip>
+                                                </div>
+                                                <div>
+                                                  <p class="mb-1" data-ng-show="cibaPolicies.length === 0">{{:: 'client-connection-action' | translate}}</p>
+                                                  <span class="text-primary cursor-pointer" data-ng-click="createRule()" id="createRule">{{:: 'create-new-rule' | translate}}</span>
+                                                </div>
+                                              </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+
+                                    <!-- Configuration Tab -->
+                                    <div data-ng-show="currentPage.index === 3">
+                                        <div class="mb-5" data-ng-if="cibaAuthProviders && cibaAuthProviders.length > 0">
+                                            <div class="d-flex align-items-center client-auth-section-header">
+                                                <h6 class="mb-0">{{:: 'secured-plus-authorizers' | translate}}</h6>
+                                                <i class="ti-info-alt mx-2" tooltip="{{ 'secured-plus-authorizers-configuration-description' | translate }}" tooltip-placement="bottom" tooltip-trigger="mouseover mouseout"></i>
+                                            </div>
+                                            <div>
+                                                <ul class="realm-list p-0">
+                                                    <li class="nw-market-card cursor-pointer d-flex align-items-center pr-0" data-ng-click="loadAuthorizerConfig(provider)" data-ng-repeat="provider in cibaAuthProviders" id="{{provider.displayName}}" ng-hide="provider.id === 'api-authorizer'">
+                                                        <div class="nw-market-header d-flex align-items-center position-relative w-100" >
+                                                            <p class="text-center word-break-all pr-5 mb-0 w-100">{{:: provider.displayName | translate}}</p>
+                                                            <img data-ng-if="provider.id === authWayId" ng-src="{{resourceUrl}}/themes/img/success.png" alt="ciba provider logo" class="position-absolute ciba-success-img">
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="mb-5" data-ng-show="showNotificationWay">
+                                            <div class="d-flex align-items-center client-auth-section-header">
+                                                <h6 class="mb-0">{{:: 'notification-way' | translate}}</h6>
+                                                <i class="ti-info-alt mx-2" tooltip="{{ 'notification-way-configuration-description' | translate }}" tooltip-placement="bottom" tooltip-trigger="mouseover mouseout"></i>
+                                            </div>
+                                            <div>
+                                                <ul class="realm-list p-0">
+                                                    <li class="nw-market-card cursor-pointer d-flex align-items-center pr-0" data-ng-click="loadNotificationConfig(provider)" data-ng-repeat="provider in cibaNotificationProviders" id="{{provider.displayName}}">
+                                                        <div class="nw-market-header d-flex align-items-center position-relative w-100" >
+                                                            <p class="text-center word-break-all pr-5 mb-0 w-100">{{:: provider.displayName | translate}}</p>
+                                                            <img data-ng-if="provider.id === notifyWayId" ng-src="{{resourceUrl}}/themes/img/success.png" alt="ciba provider logo" class="position-absolute ciba-success-img">
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div data-ng-show="showNotificationWay">
+                                            <div class="d-flex align-items-center client-auth-section-header">
+                                                <h6 class="mb-0">{{:: 'dead-letter' | translate}}</h6>
+                                                <i class="ti-info-alt mx-2" tooltip="{{ 'dead-letter-configuration-description' | translate }}" tooltip-placement="bottom" tooltip-trigger="mouseover mouseout"></i>
+                                            </div>
+                                            <div>
+                                                <ul class="realm-list p-0">
+                                                    <li class="nw-market-card cursor-pointer d-flex align-items-center pr-0" data-ng-click="loadResultHookConfig(provider)" data-ng-repeat="provider in cibaResultProviders" id="dead-letter-{{provider.displayName}}">
+                                                        <div class="nw-market-header d-flex align-items-center position-relative w-100" >
+                                                            <p class="text-center word-break-all pr-5 mb-0 w-100">{{:: provider.displayName | translate}}</p>
+                                                            <img data-ng-if="provider.id === resultHookId" ng-src="{{resourceUrl}}/themes/img/success.png" alt="ciba provider logo" class="position-absolute ciba-success-img">
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Onboarding Template Tab -->
+                                    <div class="form-group row" data-ng-show="currentPage.index === 4">
+                                        <label for="actions" class="col-md-3 control-label">
+                                            {{:: 'ob-templates' | translate}}
+                                        </label>
+                                        <div class="col-md-9">
+                                            <div data-ng-show="actions.length > 0">
+                                                <div class="d-flex align-items-center">
+                                                    <select id="onboarding-action" ng-model="clientEdit.authenticationFlowBindingOverrides['onboarding-action']" class="form-control" ng-options="action.actionId as action.alias for action in actions">
+                                                        <option value="" selected> {{:: 'none' |
+                                                            translate}} </option>
+                                                    </select>
+                                                    <!-- OSS: workflow gif preview removed (assets served from proprietary cloud CDN, absent on-prem). -->
+                                                </div>
+                                                <small>{{:: 'ob-templates.tooltip' | translate}}</small>
+                                            </div>
+                                            <div data-ng-show="actions.length === 0">
+                                                <p class="mb-1">{{:: 'templates-not-available' | translate}}</p>
+                                            </div>
+                                            <span class="text-primary cursor-pointer" data-ng-click="createTemplate()" id="create-template-empty">{{:: 'create-new-template' | translate}}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Verification Template Tab -->
+                                    <div class="form-group row" data-ng-show="currentPage.index === 5">
+                                        <label for="actions" class="col-md-3 control-label">
+                                            {{:: 'ver-templates' | translate}}
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-9">
+                                            <div data-ng-show="actions.length > 0">
+                                                <div class="d-flex align-items-center">
+                                                    <select id="verification-action" ng-model="clientEdit.authenticationFlowBindingOverrides['verification-action']" class="form-control" ng-options="action.actionId as action.alias for action in actions">
+                                                        <option value="" data-ng-disabled="true" selected> {{:: 'none' |
+                                                            translate}} </option>
+                                                    </select>
+                                                    <!-- OSS: workflow gif preview removed (assets served from proprietary cloud CDN, absent on-prem). -->
+                                                </div>
+                                                <small>{{:: 'ver-templates.tooltip' | translate}}</small>
+                                            </div>
+                                            <div data-ng-if="actions.length === 0">
+                                                <p class="mb-1">{{:: 'templates-not-available' | translate}}</p>
+                                            </div>
+                                            <span class="text-primary cursor-pointer" data-ng-click="createTemplate()" id="create-template">{{:: 'create-new-template' | translate}}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- How to use Tab -->
+                                    <kc-ciba-tutorial class="mb-3" data-ng-if="currentPage.index === 6"></kc-ciba-tutorial>
+                                    
+                                    <!-- Create Application Buttons -->
+                                    <div class="d-flex" data-ng-class="currentPage.index == 1 ? 'justify-content-end' : 'justify-content-between'">
+                                        <button id="backBtn" class="btn" data-ng-hide="currentPage.index == 1" data-ng-click="changeCurrentPage(pages[currentPage.step - 2])">{{:: 'back' | translate}}</button>
+                                        <button id="nextBtn" class="btn btn-primary" data-ng-show="displayNextButton()" data-ng-click="setCurrentPage(pages[currentPage.index], false)" data-ng-disabled="!changed">
+                                            <span data-ng-show="!loading">{{:: 'next' | translate}}</span>
+                                            <div data-ng-show="loading">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </div>
+                                        </button>
+                                        <button id="skipBtn" class="btn btn-primary" data-ng-click="setCurrentPage(pages[currentPage.index], false)"  data-ng-show="displaySkipButton()">
+                                            <span data-ng-show="!loading">{{:: 'skip' | translate}}</span>
+                                            <div data-ng-show="loading">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </div>
+                                        </button>
+                                        <a id="finishBtn" href="#/realms/{{realm.realm}}/clients/{{clientId}}" class="btn btn-primary" data-ng-show="currentPage.index == 6">{{:: 'finish' | translate}}</a>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module" defer>
+    (async ({ chrome, netscape }) => { if (!chrome && !netscape) await import('https://unpkg.com/@ungap/custom-elements'); const { default: HighlightedCode } = await import('https://unpkg.com/highlighted-code'); HighlightedCode.useTheme('zenburn'); })(self);
+</script>

@@ -1,0 +1,433 @@
+:root {
+  --roles-count: 6;
+  --groups-count: 4;
+  --group-roles-count: 2;
+  --roles-label-width: 0;
+}
+
+.holder {
+  display: flex;
+  position: relative;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  padding: 4rem 1rem;
+  overflow: scroll;
+  max-width: 72vw;
+  height: 45vh;
+  min-height: 29rem;
+  background-image: url("../img/roles-groups-bg.svg");
+  background-size: 20%;
+  border: 1px solid rgba(0, 0, 0, 0.075);
+  border-radius: 5px;
+}
+
+.holder-wrapper {
+  display: flex;
+  position: relative;
+  align-items: flex-start;
+}
+
+.roles-container {
+  display: flex;
+  width: max-content;
+  height: var(--groups-count);
+  border-right: 2px dashed #00000087;
+  border-radius: 6px;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: relative;
+  box-sizing: content-box;
+  margin: 0 2rem;
+}
+
+.roles-container ul li {
+  position: relative;
+  padding: 0.53rem 0.6rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 14px;
+  min-height: 49.5px;
+  width: 22rem;
+  color: black;
+}
+
+.roles-groups-name {
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: rtl;
+}
+
+.w-max-80 {
+  max-width: 80% !important;
+}
+
+.w-5{
+  max-width: 10rem;
+  display: block;
+  font-size: large;
+  color: white;
+  border: 1px solid #29512d;
+  padding: 1rem;
+  font-size: larger;
+  font-weight: 700;
+  background-color: #4CA355;
+  border-radius: 50%;
+}
+
+.roles-container ul {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  top: -1.6rem;
+  right: 0.1rem;
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+  right: 100%;
+  height: var(--group-roles-count);
+  top: -1rem;
+}
+
+.add-group {
+  color: #387a3f;
+  background-color: #e4f0e5;
+  border: none;
+  font-family: sans-serif;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.add-group:hover{
+    color: #29512d;
+    background-color: #e4f0e5;
+  }
+
+.roles {
+  color: #666666;
+  border: 1px solid #666666;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 4px;
+  background-color: white;
+}
+
+.roles-btn {
+  position: relative;
+  margin-right: 3rem;
+  color: #387a3f;
+  border: 1px solid #387a3f;
+}
+
+.roles-user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+  color: white;
+  -webkit-transition: all 0.4s ease-in-out 0s;
+  -moz-transition: all 0.4s ease-in-out 0s;
+  transition: all 0.4s ease-in-out 0s;
+  height: 50px;
+  width: 50px;
+}
+
+.user-holder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  margin-top: -1rem;
+}
+
+.user-holder-desc {
+  position: absolute;
+  align-items: center;
+  display: flex;
+  width: max-content;
+  flex-direction: column;
+  justify-content: center;
+  top: 110%;
+}
+
+.user-holder-desc p {
+  margin: 0.3rem;
+  font-size: 14px;
+  padding: 0;
+}
+
+.roles-container-left {
+  border: 0;
+  direction: ltr;
+  border-left: 2px dashed #00000087;
+  height: var(--roles-count);
+  padding-right: 0;
+}
+
+.roles-container-left-btn {
+  margin-right: 0;
+  margin-left: 3rem;
+}
+
+.roles-container-left-btn::before {
+  left: -3rem;
+}
+
+.absolute ul {
+  right: 0.2rem;
+}
+
+.roles-container-left ul {
+  top: -1.55rem;
+  right: 0;
+}
+
+.roles-label::before,
+.role-btn-line::before {
+  content: "";
+  display: block;
+  width: 2rem;
+  height: 1px;
+  position: absolute;
+  border-top: 2px dashed #00000087;
+  top: 1.4rem;
+  left: -2rem;
+}
+
+.role-btn-line::before {
+  top: 0.8rem;
+  left: -2.8rem;
+}
+
+.roles-container-left-btn .role-btn-line::before {
+  right: -2.8rem;
+  left: initial;
+}
+
+.roles-label::after,
+.role-btn-line::after {
+  content: "";
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.726);
+  border-radius: 50%;
+  left: 0;
+  top: 1.2rem;
+  position: absolute;
+}
+
+.role-btn-line::after {
+  left: -0.6rem;
+  top: 0.6rem;
+}
+
+.roles-container-left-btn .role-btn-line::after {
+  right: -0.6rem;
+  left: initial;
+  top: 0.6rem;
+}
+
+.roles-container ul li::before,
+.roles-btn::before {
+  content: "";
+  display: block;
+  width: 1rem;
+  height: 1px;
+  position: absolute;
+  border-radius: 5px;
+  border-bottom: 2px dashed #00000087;
+  right: -2.1rem;
+  top: 50%;
+}
+
+.roles-container ul li::after,
+.roles-btn::after {
+  content: "";
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.726);
+  border-radius: 50%;
+  position: absolute;
+  right: -1rem;
+}
+
+.roles-btn::before {
+  width: 2rem;
+  right: -3rem;
+}
+
+.roles-btn::after {
+  right: -20%;
+  bottom: 30%;
+}
+
+.roles-container-left::before {
+  right: initial;
+  left: -2rem;
+}
+
+.roles-container-left::after {
+  right: initial;
+  left: -2.5rem;
+}
+
+.roles-container-left ul li::before {
+  right: initial;
+  left: -2rem;
+}
+
+.roles-container-left-btn::before {
+  right: initial;
+  left: -2.5rem;
+}
+
+.roles-container-left ul li::after {
+  right: initial;
+  left: -1rem;
+}
+
+.roles-container-left-btn::after {
+  right: initial;
+  left: -0.6rem;
+}
+
+.roles-label, .tree-label .roles:hover {
+  color: white;
+  background-color: #4ca355;
+}
+
+.groups .roles-label::before {
+  width: var(--roles-label-width);
+}
+
+.groups .roles-label::after {
+  left: calc(var(--roles-label-width) - 2rem);
+}
+
+.roles-container li {
+  cursor: pointer;
+}
+
+.tree-label{
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 20rem;
+  transition: width 2s, height 4s;
+}
+
+.tree-label:hover .roles-groups-delete-btn {
+  display: block;
+}
+
+
+.roles-groups-delete-btn {
+  color: #ff4747;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 1rem;
+  padding: 5px;
+  min-width: 22px;
+  min-height: 22px;
+  cursor: pointer;
+  display: none;
+}
+
+.roles-groups-delete-btn:disabled {
+  color: #9c9898;
+}
+
+.remove-roles-border::before , .remove-roles-border{
+    border: none !important;
+}
+
+.remove-roles-border::after{
+    display: none !important;
+}
+
+.remove-roles-top-left {
+    top: -0.8rem !important;
+    right: -1rem !important;
+}
+ .top-1 {
+    top: 1rem !important;
+ }
+
+ .left-1 {
+    right: 1rem !important;
+ }
+
+ .roles-user-avatar img {
+    height: 3rem;
+    width: 3rem;
+ }
+
+ .add-group img{
+  width: 1.5rem;
+ }
+
+ .roles-show-more {
+  background-color: transparent;
+ }
+
+ .roles-show-more:hover{
+  background-color: transparent;
+ }
+
+ .zoom-icon-container {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.075);
+  box-shadow: -1px 3px 3px rgba(0, 0, 0, 0.025);
+  border-radius: 5px;
+  padding: 0.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+ }
+
+ .zoom-icon-container button{
+  border-radius: 3px;
+  border: none;
+  width: max-content;
+  height: max-content;
+  background-color: transparent;
+  color: white;
+ }
+ .zoom-icon-container p{
+  margin: 0;
+  font-weight: 600;
+  color: rgb(0 0 0 / 67%);
+ }
+
+ .zoom-icon-container svg{
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+ }
+ 
+ .scrollLeft {
+  padding-left: 40rem;
+ }

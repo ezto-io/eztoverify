@@ -1,0 +1,32 @@
+<div class="admin-user-list-heading-container controls-above-table py-0 mb-4" data-ng-hide="isAdminsEmpty() && !searchQueryLoaded ">
+    <div class="element-search">
+        <input class="form-control bg-color-transparent searchTerm" id="adminsearchInput" type="text" placeholder="{{:: 'search-admin-placeholder' | translate}}" data-ng-model="query.search" class="form-control form-control-sm rounded bright search" onkeydown="if (event.keyCode == 13) document.getElementById('userSearch').click()">
+        <i class="os-icon os-icon-search2 search-icon" id="userSearch" data-ng-click="searchQuery()"></i>
+    </div>
+    <div data-ng-show="access.manageUsers" class="d-flex align-items-center">
+        <select data-ng-model="query.max" ng-change="selectQuery()" id="searchResultCount" data-ng-options="itemCount for itemCount in [5,10,50,100]"  data-ng-show="(users && users.length > 5 && pageCount===entries) || (entries > 5)"
+            class="form-control form-control-sm rounded bright events-admin-search w-auto mr-3 client-list-count-select">
+            <option data-ng-repeat="itemCount in [5,10,50,100]" data-ng-selected="query.max === itemCount"
+                data-ng-value="itemCount">
+                {{ itemCount }}
+            </option>
+        </select>
+        <div class="position-relative mx-4">
+            <div class="form-control filter mr-0 cursor-pointer" ng-click="showFilter=!showFilter">
+                <img ng-src="{{resourceUrl}}/img/filter.svg" class="pr-2">
+                <span>{{orderBy}}</span>
+            </div>
+            <ul ng-show="showFilter" class="position-absolute list-unstyled top-4 p-1 bg-white filter-list rounded d-flex flex-column gap-1" data-ng-class="realm.mode == 'bo' ? 'filter-list-bo' : 'filter-list-wiam'">
+                <li class="p-2 rounded" data-ng-class="query.orderBy=='asc' && 'active'" ng-click="setOrderBy('asc');showFilter=false">{{:: 'asc' | translate}}</li>
+                <li class="p-2 rounded" data-ng-class="query.orderBy=='desc' && 'active'" ng-click="setOrderBy('desc');showFilter=false">{{:: 'desc' | translate}}</li>
+                <li class="p-2 rounded" data-ng-class="query.orderBy=='last-updated' && 'active'" ng-click="setOrderBy('last-logged-in');showFilter=false">{{:: 'last-logged-in' | translate}}</li>
+            </ul>
+        </div>
+        <a class="text-decoration-none" id="createUser" href="#/create/admin/{{realm.realm}}">
+            <button class="create-btn" data-step='{{!searchQueryLoaded && access.manageUsers?5:0}}' id="createAdminUserBtn" data-title="{{:: 'intro-settings-no-admins-title' | translate}}" data-intro="{{:: 'intro-settings-no-admins' | translate}}">
+              <i class="os-icon os-icon-plus plus-icon"></i>
+                {{:: 'add-admin' | translate}}
+            </button>
+        </a>
+    </div>
+</div>

@@ -1,0 +1,88 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/clients/type/{{ (client.attributes.isInBuilt && client.attributes.isInBuilt === 'true') ? 'in-built' : client.appType.replaceAll('_', '-') }}{{realm.mode==='bo' ? client.sandboxMode ? '/sandbox' : '/live' : ''}}" id="backToApplicationsList">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-applications' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-app></kc-tabs-app>
+                        <kc-tabs-client></kc-tabs-client>
+                        <div class="element-box">
+                            <form class="form-horizontal" name="clientForm" novalidate kc-read-only="!client.access.configure">
+                                <fieldset class="application-step-1">
+                                    <div class="form-group row" kc-read-only="!client.access.configure">
+                                        <label class="col-md-3 control-label" for="clientId"> {{ ::'client-id' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <div class="input-group secret-input">
+                                                <input readonly class="form-control br-top-4 br-bottom-4" type="text" id="clientId" name="clientId" data-ng-value="client.sandboxMode ? client.sandboxClientId : client.clientId">
+                                                <i class="os-icon os-icon-copy copy-icon client-secrete-icon" id="app-id-copy" data-ng-click="copyToClipboard('#clientId')"  tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-if="!clientEdit.publicClient" data-ng-include="resourceUrl + '/partials/client-credentials-secret.html'"></div>
+                                    <div class="form-group row clearfix block" data-ng-show="client.appType === 'ciba'">
+                                        <label class="col-md-3 control-label" for="cibaEnableEncryption">{{ :: 'encryption-enable-label' | translate }}</label>
+                                        <div class="col-md-9">
+                                            <label for="cibaEnableEncryption">
+                                                <div  class="os-toggler-w" ng-class="{on: encryptionToggle}">
+                                                    <div class="os-toggler-i" id="cibaEncryptionToggle">
+                                                        <div class="os-toggler-pill" ng-model="encryptionToggle" name="cibaEnableEncryption" id="cibaEnableEncryption" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip>{{:: 'ciba-encryption-enable-hlp-txt' | translate}}</kc-tooltip>
+                                    </div>   
+                                    <div class="form-group row clearfix block" data-ng-show="client.appType === 'ciba' && encryptionToggle">
+                                        <label class="col-md-3 control-label">{{ :: 'secret-keys-label' | translate }}<span class="required"> *</span></label>
+                                        <div class="col-md-9" data-ng-show="keys.length != 0" >
+                                            <select id="key" class="form-control" data-ng-options="key.providerId as key.name for key in keys" data-ng-model="client.attributes.ciba_encryption_id">
+                                                <option value="" disabled> {{:: 'selectOne' | translate}}</option>
+                                            </select>
+                                            <div class="help-block form-text text-muted form-control-feedback" >{{:: 'secret-keys-hlp-txt' | translate}}</div>
+                                        </div>
+                                        <div class="col-md-9" data-ng-show="keys.length == 0" >
+                                            <div class="p-2 helper-text panel-config-info mt-0 warning-config">
+                                                <p id="qv-input__{{option.label.toLowerCase()}}" class="help-text">
+                                                    {{ :: 'create-no-key-hlp-txt' | translate }}
+                                                    <a href="#/create/keys/{{realm.realm}}/providers/aes-generated"> {{ :: 'here' | translate }}</a>
+                                                    {{ :: 'create-no-key-create-one-hlp-txt' | translate }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>        
+                                    <div class="form-group row clearfix block" data-ng-show="client.appType === 'ciba' && encryptionToggle && secret">
+                                        <label class="col-md-3 control-label">{{ :: 'secret-key-label' | translate }}</label>
+                                        <div class="col-md-9">
+                                            <div class="p-2 helper-text panel-config-info mt-0 warning-config">
+                                                <p id="qv-input__{{option.label.toLowerCase()}}" class="help-text" data-ng-show="secret != 'no-access'" >{{:: 'secret-key-hlp-txt' | translate}} <b>{{secret}}</b> </p>
+                                                <p id="qv-input__{{option.label.toLowerCase()}}" class="help-text" data-ng-show="secret == 'no-access'" >{{:: 'secret-key-no-access-hlp-txt' | translate}} </p>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                    <div class="form-group row">
+                                        <div class="col-md-12 d-flex flex-row-reverse" data-ng-show="client.access.configure">
+                                            <button class="ml-3 application-step-2" kc-save data-ng-disabled="!changed" id="saveBtn">
+                                                <span >{{:: 'save' | translate}}</span>
+                                            </button>
+                                            <button id="cancelBtn"  kc-reset data-ng-disabled="!changed">{{:: 'cancel' |
+                                                translate}}</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

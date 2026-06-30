@@ -1,0 +1,70 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="role-list-container mb-4">
+                            <h1 class="user-list-heading">
+                                <span>{{:: 'events' | translate}}</span>
+                                <kc-tooltip>{{:: 'events.tooltip' | translate}}</kc-tooltip>
+                            </h1>
+                        </div>
+                        <kc-tabs-events></kc-tabs-events>
+                        <div data-ng-if="reports && reports.length > 0">
+                            <h1><kc-tooltip>{{:: 'audit-reports-helper' | translate}}</kc-tooltip></h1>
+                            <div class="table-responsive-md clients-list">
+                                <table class="table table-responsive table-light-bordered table-padded table-layout-fixed w-100 scroll-width-auto"
+                                    ng-hide="!reports || !reports.length">
+                                    <thead>
+                                        <tr class="position-relative fadeUp">
+                                            <th class="w-15">{{:: 'time' | translate}}</th>
+                                            <th class="w-10">{{:: 'report-type' | translate}}</th>
+                                            <th class="w-30">{{:: 'requested-by' | translate}}</th>
+                                            <th class="w-15">{{:: 'status' | translate}}</th>
+                                            <th class="w-10 text-center">{{:: 'action' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="user-row position-relative fadeUp" ng-repeat="(index,report) in reports"
+                                            ng-if="reports.length>0">
+                                            <td class="">{{ report.createdTimestamp | timeago}}</td>
+                                            <td>{{report.reportType | translate}}</td>
+                                            <td>{{report.requestedBy.username}}</td>
+                                            <td>
+                                                {{:: report.status | translate }}
+                                            </td>
+                                            <td class="" ng-if="report.status == 'report-success'">
+                                                <a target="_blank" href="{{authUrl}}{{report.downloadUrl}}" id="downloadReportBtn-{{index}}" >
+                                                    <img data-ng-src="{{resourceUrl}}/themes/img/download.svg" class="width-20px heigth-20px no-entry-display" alt="download-img" title="{{'download-report' | translate}}" />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div data-ng-if="!navigationLoaded  && (reports && reports.length ===0)" class="element-box"
+                            id="content">
+                            <fieldset class="flex-txt-align-center">
+                                <div class="no-flow-div">
+                                    <p>{{:: 'reports-not-available' | translate}}</p>
+                                    <button data-ng-click="refresh()" class="create-btn">
+                                        <i class="os-icon os-icon-refresh-cw plus-icon"></i>
+                                        {{:: 'refresh' | translate}}
+                                    </button>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="navigationLoaded">
+                <kc-loader loadertype="loaderTypeName"></kc-loader>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,114 @@
+<div data-ng-controller="UserTabCtrl">
+    <h1 class="element-header mb-0" data-ng-show="create">{{:: 'add-user' | translate}}</h1>
+    <div class="user-detail-tab-container my-4 mr-0 flex-column-reverse flex-lg-row" data-ng-hide="create">
+        <div class="user-detail-tab-content overflow-ellipsis m-0">
+            <div class="user-detail-tab-img-container flex-column">
+                <div class="d-flex align-items-center mb-2" data-ng-if="realm.mode !== 'bo'">
+                    <div class="user-detail-tab-img" id="profileImage">
+                        <label class="m-0" >
+                            <div class="user-img-overlay" data-ng-click="uploadPro()"></div>
+                            <div ng-if="user.profPic" class="box-view-68px">
+                                <img class="user-detail-profilepic" data-ng-src="{{ user.profPic }}"
+                                    alt="profile-pic" />
+                            </div>
+                            <div ng-if="!user.profPic" class="box-view-68px">
+                                <img class="user-detail-profilepic-no-img" data-ng-src="data:image/png;base64,{{generatedProfilePic}}" alt="profile-pic" />
+                            </div>
+                            <div class="show-icon">
+                                <i class="os-icon os-icon-camera text-white"></i>
+                            </div>
+                        </label>
+                        <input id="imageUpload" class="hidden" type="file" name="profile_photo" accept="image/*" placeholder="Photo" required="" capture />
+                    </div>
+                    <div>
+                        <h1  class="user-detail-username overflow-ellipsis user-detail-overflow-control my-1" title="{{user.username}}">{{:: user.username|capitalize}}</h1>
+                        <label>{{:: 'last-logged-in' | translate}} {{user.lastLoginTimestamp | timeago}}</label>
+                    </div>
+                </div>
+                <div data-ng-if="realm.mode !== 'bo'">
+                    <div class="user-id-container">
+                    {{:: 'user-id' | translate}}<code id="userid" name="userid" class="user-id-code"> {{ user.id }}</code>
+                    <i class="os-icon os-icon-copy copy-paste-icon cursor-pointer" id="user-id-copyICon" data-ng-click="copyToClipboard('#userid')" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-init="initCopyICon()"></i>
+                    </div>
+                </div>
+                <div data-ng-if="realm.mode === 'bo'" class="pt-3">
+                    <h1 class="user-detail-username user-detail-overflow-control" title="{{user.username}}">{{user.username}}</h1>
+                    <p>{{:: 'created' | translate}} {{user.createdTimestamp|timeago}}</p>
+                </div>
+            </div>  
+        </div>
+        <div class="user-detail-tab-actions mr-0 justify-content-end pb-2 pb-lg-0">
+            <div class="dropdown clearfix d-flex align-items-center">
+                <div data-ng-if="realm.mode === 'bo'">
+                    <button class="delete-btn" id="removeUser" data-ng-show="!create && access.manageUsers" data-ng-click="removeUser()">{{:: 'delete-user' | translate}}</button>
+                </div>
+                <div data-ng-show="path[4] === 'roles-groups' && realmMappings && realmMappings.length > 0">
+                    <button class="create-btn" id="addRoleBtn" ng-click="addRolesToUser()" addRealmRole>
+                        <i class="os-icon os-icon-plus plus-icon"></i>
+                        {{:: 'add-role' | translate}}
+                    </button>
+                </div>
+                <div data-ng-show="path[4] === 'groups' && groupMemberships && groupMemberships.length > 0">
+                    <button class="create-btn" id="addGroupBtn" ng-click="addGroupsToUser()">
+                        <i class="os-icon os-icon-plus plus-icon"></i>
+                        {{:: 'add-group' | translate}}
+                    </button>
+                </div>
+                <div data-ng-show="path[4] === 'sessions' && sessions.length > 0">
+                    <button id="logoutAllSessions" class="btn btn-secondary" ng-click="logoutAll()">{{:: 'logout-all-sessions' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="os-tabs-w mt-2">
+        <div class="os-tabs-controls">
+            <ul class="nav nav-tabs upper bg-white" data-ng-if="!create">
+                <li class="nav-item" data-ng-if="realm.mode !== 'bo'">
+                    <a aria-expanded="false" id="user-tab-details" class="nav-link p-3 pl-4" data-step="1" data-title="{{:: 'intro-detail-details-title' | translate}}" data-intro="{{:: 'intro-detail-details' | translate}}" data-ng-class="{active: !path[4] && path[0] != 'create'}" href="#/realms/{{realm.realm}}/users/{{user.id}}">
+                        {{:: 'details' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item" data-ng-if="realm.mode !== 'bo'">
+                    <a aria-expanded="false" id="user-tab-metadata" class="nav-link p-3" data-step="2" data-title="{{:: 'intro-detail-metadata-title' | translate}}" data-intro="{{:: 'intro-detail-metadata' | translate}}" data-ng-class="{active: path[4] == 'user-attributes'}" href="#/realms/{{realm.realm}}/users/{{user.id}}/user-attributes">
+                        {{:: 'meta-data' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item" data-ng-if="realm.mode === 'bo'">
+                    <a aria-expanded="false" id="user-tab-transactions" class="nav-link p-3" data-step="2" data-title="{{:: 'transactions' | translate}}" data-intro="{{:: 'transactions' | translate}}" data-ng-class="{active: path[4] == 'user-transactions'}" href="#/realms/{{realm.realm}}/users/{{user.id}}/user-transactions">
+                        {{:: 'transactions' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item" data-ng-show="user.access.manage" data-ng-if="realm.mode === 'bo'">
+                    <a aria-expanded="false" id="user-tab-credentials" class="nav-link p-3" data-step="3" data-ng-class="{active: path[4] == 'user-credentials'}" href="#/realms/{{realm.realm}}/users/{{user.id}}/user-credentials">
+                        {{:: realm.mode == 'bo' ? 'devices' : 'credentials' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item" data-ng-if="realm.mode !== 'bo'">
+                    <a aria-expanded="false" id="user-tab-roles-groups"  class="nav-link p-3" data-step="3" data-title="{{:: 'intro-detail-rolemappings-title' | translate}}" data-intro="{{:: 'intro-detail-rolemappings' | translate}}" data-ng-class="{active: path[4] == 'roles-groups'}" href="#/realms/{{realm.realm}}/users/{{user.id}}/roles-groups">
+                        {{:: 'roles-groups' | translate}}
+                    </a>
+                </li> 
+                <!-- <li class="nav-item" data-ng-if="realm.mode !== 'bo'">
+                    <a aria-expanded="false" id="user-tab-roles"  class="nav-link p-3" data-step="3" data-title="{{:: 'intro-detail-rolemappings-title' | translate}}" data-intro="{{:: 'intro-detail-rolemappings' | translate}}" data-ng-class="{active: path[4] == 'role-mappings'}" href="#/realms/{{realm.realm}}/users/{{user.id}}/role-mappings">
+                        {{:: 'roles' | translate}}
+                    </a>
+                </li>  -->
+                <li class="nav-item" data-ng-show="user.federatedIdentities != null && user.federatedIdentities.length >0" data-ng-if="realm.mode !== 'bo'">
+                    <a aria-expanded="false" id="user-tab-userAuthorizedConnection" class="nav-link p-3" data-ng-class="{active: path[4] == 'authorized-connections' || path[1] == 'authorized-connections'}" href="#/realms/{{realm.realm}}/users/{{user.id}}/authorized-connections">
+                        {{:: 'user-authorized-conn' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item" data-ng-if="realm.mode !== 'bo'">
+                    <a aria-expanded="false" id="user-tab-sessions" class="nav-link p-3" data-step="4" data-title="{{:: 'intro-detail-sessions-title' | translate}}" data-intro="{{:: 'intro-detail-sessions' | translate}}" data-ng-class="{active: path[4] == 'sessions'}" href="#/realms/{{realm.realm}}/users/{{user.id}}/sessions">
+                        {{:: 'sessions' | translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- <ul class="nav nav-tabs" data-ng-show="!create">
+        <li ng-class="{active: !path[4] && path[0] != 'create'}"><a href="#/realms/{{realm.realm}}/users/{{user.id}}">{{:: 'details' | translate}}</a></li>
+        <li ng-class="{active: path[4] == 'user-attributes'}"><a href="#/realms/{{realm.realm}}/users/{{user.id}}/user-attributes">{{:: 'attributes' | translate}}</a></li>
+        <li ng-class="{active: path[4] == 'sessions'}" ><a href="#/realms/{{realm.realm}}/users/{{user.id}}/sessions">{{:: 'sessions' | translate}}</a></li>
+    </ul> -->
+</div>

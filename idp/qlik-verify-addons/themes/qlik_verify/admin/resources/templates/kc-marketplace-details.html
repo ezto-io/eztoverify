@@ -1,0 +1,65 @@
+<div data-ng-controller="KcMarketplaceDetailsCtrl">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+        <div class="d-flex">
+            <img data-ng-show="template.imageURL" data-ng-src="{{template.imageURL}}" class="mr-3 my-1 rounded border" alt="{{template.workflowName.toLowerCase().replaceAll(' ', '-')}}-logo" height="58" width="58" />
+            <div class="market-dtl-header-container mb-4">
+                <div class="market-dtl-content-container">
+                    <div class="market-dtl-title-btn-container d-block">
+                        <h1 class="market-dtl-title text-ellipsis-2-lines-marketplace" style="min-height: 40px;" title="{{template.workflowName}}"> {{ template.workflowName }} </h1>
+                        <p class="helper-text"> {{ 'marketplace-bo-template-description' | translate}} </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-secondary ml-0" data-ng-disabled="isPublished" data-ng-click="publishMarketplaceTemplate()" data-ng-if="isRootAccount && template.hasOwnProperty('published')">
+            <span data-ng-show="!loading && template.published">{{:: 'unpublish-template' | translate }}</span>
+            <span data-ng-show="!loading && !template.published">{{:: 'publish-template' | translate }}</span>
+            <div data-ng-show="loading">
+                <kc-action-button-loading></kc-action-button-loading>
+            </div>
+        </button>
+    </div>
+    <kc-tabs-bo-marketplace></kc-tabs-bo-marketplace>
+    <div class="row mt-3">
+        <div class="col-8">
+            <div class="element-wrapper">
+                <div class="element-box">
+                    <div id="markdown-content" data-ng-show="template.workflowDescription.length > 0"></div>
+                    <div data-ng-show="!template.hasOwnProperty('workflowDescription') || template.workflowDescription.length == 0">{{ 'marketplace-template-description-empty-fallback-value' | translate }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="element-wrapper">
+                <div class="element-box">
+                    <p data-ng-show="!isRootAccount" class="mb-2 marketplace-install-template-title">{{ 'install-the-template' | translate}}</p>
+                    <p data-ng-show="!isRootAccount" class="marketplace-install-template-desc">{{ 'install-bo-marketplace-template-description' | translate }}</p>
+                    <p data-ng-show="isRootAccount" class="mb-2 marketplace-install-template-title">{{ 'marketplace-template-detail-title-master-workspace' | translate}}</p>
+                    <p data-ng-show="isRootAccount" class="marketplace-install-template-desc">{{ 'marketplace-template-detail-description-master-workspace' | translate }}</p>
+                    <div data-ng-show="isRootAccount">
+                        <a href="#/realms/{{realm.realm}}/marketplace/edit/{{templateId}}" class="btn btn-primary text-wrap text-center w-100 ml-0 mb-2 py-2" style="line-height: 20px;">{{ 'edit-template' | translate}}</a>
+                        <button class="btn text-danger bg-white text-wrap w-100 ml-0 text-decoration-underline-hover py-2" data-ng-click="deleteMarketplaceTemplate()" style="line-height: 20px;">{{'delete-template' | translate}}</button>
+                    </div>
+                    <div data-ng-show="!isRootAccount">
+                        <!-- <label class="text-muted">{{ 'name' | translate}} <span class="text-danger">*</span></label> -->
+                        <!-- <input type="text" class="form-control w-100 mb-2" id="install-template-input-name" data-ng-model="installingTemplateName" maxlength="48" /> -->
+                        <button class="btn btn-primary w-100 ml-0 mb-2" data-ng-click="installMarketplace()" data-ng-disabled="isInstalled">
+                            <span data-ng-show="!loading" class="text-wrap py-2" style="line-height: 20px;">{{ 'install-template' | translate }}</span>
+                            <div data-ng-show="loading">
+                                <kc-action-button-loading></kc-action-button-loading>
+                            </div>
+                        </button>
+                    </div>
+                    <p ng-hide="!template.hasOwnProperty('workflowName') || template.templateTag.length == 0 || (template.templateTag.length == 1 && template.templateTag[0].length == 0)" class="my-2 marketplace-install-template-title">{{ 'tags' | translate}}</p>
+                    <div ng-hide="!template.hasOwnProperty('workflowName') || template.templateTag.length == 0 || (template.templateTag.length == 1 && template.templateTag[0].length == 0)" class="marketplace-bo-tag-container">
+                        <div class="marketplace-bo-tag" data-ng-repeat="tag in template.templateTag">{{tag}}</div>
+                    </div>
+                    <p ng-hide="!template.hasOwnProperty('workflowName') || templateCountry.length == 0" class="my-2 mt-4 marketplace-install-template-title">{{ 'country' | translate}}</p>
+                    <div ng-hide="!template.hasOwnProperty('workflowName') || templateCountry.length == 0" class="marketplace-bo-tag-container">
+                        <div class="marketplace-bo-tag" data-ng-repeat="country in templateCountry">{{country.name}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/authentication/installed/flows">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-authentication' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="user-details-top">
+                            <h1 class="role-detail-rolename">{{template.templateName}}</h1>
+                            <button class="delete-btn" data-ng-hide="flow.builtIn" data-ng-click="deleteFlow()">{{:: 'delete' | translate}}</button>
+                        </div>
+                        <kc-tabs-authentication></kc-tabs-authentication>
+                        <div class="element-box">
+                            <div class="property-single">
+                                <div class="property-info-w">
+                                    <div class="property-info-main border-left-0 " >
+                                        <h1>
+                                            {{template.templateName}}
+                                        </h1>
+                                        <div class="property-description">
+                                            <p>
+                                                {{template.templateDescription}}
+                                            </p>
+                                        </div>
+                                        <div class="property-section">
+                                            <div class="property-section-header">
+                                                3rd Party Providers
+                                            </div>
+                                            <div class="property-section-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <ul ng-repeat="provider in template.thirdPartyProviders">
+                                                            <li>
+                                                                {{provider}}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="property-info-side" style="border-right: 0px;">
+                                        <div class="side-section">
+                                            <div class="side-section-header">
+                                                Actions
+                                            </div>
+                                            <div class="side-section-content side-action-form" style="border-bottom: 0px;">
+                                                    <div class="form-buttons">
+
+                                                        <button data-ng-click="install()"
+                                                            class="btn btn-primary">Install <i
+                                                                class="os-icon os-icon-arrow-2-right"></i></button>
+                                                    </div>
+                                                    <div class="form-buttons" style="margin-top:20px">
+                                                        <a class="btn btn-secondary" href="#"><span>Try it</span><i
+                                                                class="os-icon os-icon-arrow-2-right"></i></a>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

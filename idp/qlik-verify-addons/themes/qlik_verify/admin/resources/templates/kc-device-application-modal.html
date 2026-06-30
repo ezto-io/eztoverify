@@ -1,0 +1,73 @@
+<div class="modal-header">
+    <h6 class="modal-title" data-ng-if="flow == 'create' ">{{:: 'create-app' | translate}}</h6>
+    <h6 class="modal-title" data-ng-if="flow == 'edit' ">{{app.appName}}</h6>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row my-2 d-flex align-items-center">
+        <div class="col-3">
+            <label class="control-label" for="app-name" style="white-space: nowrap;">{{:: 'app-name' | translate}}</label>
+        </div>
+        <div class="col-9">
+            <input type="text" ng-model="app.appName" maxlength="48" class="form-control ml-3" id="app-name" />
+        </div>
+    </div>
+    <div class="row my-2 d-flex align-items-center" data-ng-if="flow == 'edit'" >
+        <div class="col-3">
+            <label class="control-label" for="app-id" style="white-space: nowrap;">{{:: 'app-id' | translate}}</label>
+        </div>
+        <div class="col-9">
+            <input type="text" ng-model="app.appId" readonly maxlength="48" class="form-control ml-3" id="app-id" />
+        </div>
+    </div>
+    <div class="row my-2 d-flex align-items-center">
+        <div class="col-3">
+            <label class="control-label" for="app-version" style="white-space: nowrap;">{{:: 'app-version' | translate}}</label>
+        </div>
+        <div class="col-9">
+            <input type="text" class="form-control ml-3" ng-model="app.appVersion" maxlength="64" id="app-version" />
+        </div>
+    </div>
+    <div class="row my-2 d-flex align-items-center">
+        <div class="col-3">
+            <label class="control-label" for="app-url" style="white-space: nowrap;">{{:: 'app-url' | translate}}</label>
+        </div>
+        <div class="col-9">
+            <input type="text" class="form-control ml-3" ng-model="app.appUrl" id="app-url" />
+        </div>
+    </div>
+    <div class="row my-2 d-flex align-items-center" data-ng-if="flow == 'edit'" >
+        <div class="col-3">
+            <label class="control-label" for="update-url" style="white-space: nowrap;">{{:: 'update-url' | translate}}</label>
+        </div>
+        <div class="col-9">
+            <div class="workspace-input-group workspace-input-disabled mb-0 ml-3 mr-0">
+                <input class="workspace-input" type="text" class="form-control" readonly ng-model="appUpdateUrl" id="update-url" />
+                <div class="workspace-actions-container">
+                    <button class="icon-holder-btn" id="updateUrl-copyIcon" data-ng-click="copyToClipboard(appUpdateUrl)">
+                        <i class="os-icon os-icon-copy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row my-2 d-flex align-items-center">
+        <div class="col-3">
+            <label class="control-label" for="app-platform" style="white-space: nowrap;">{{:: 'app-platform' | translate}}</label>
+        </div>
+        <div class="col-9">
+            <select class="form-control ml-3" ng-model="app.appPlatform" id="app-platform" data-ng-if="flow != 'edit'">
+                <option value="" disabled>{{:: 'select-platform' | translate}}</option>
+                <option value="{{platform}}" data-ng-repeat="platform in platformOption">{{platform}}</option>
+            </select>
+            <input type="text" data-ng-if="flow == 'edit'" class="form-control ml-3" ng-model="app.appPlatform" disabled id="app-platform" />
+        </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" data-ng-if="flow == 'edit' " class="btn btn-danger" ng-click="delete()">{{:: 'delete' | translate}}</button>
+    <button type="button" class="btn btn-primary" data-ng-disabled="!enableBtn" ng-click="save()">{{:: 'save' | translate }}</button>
+</div>

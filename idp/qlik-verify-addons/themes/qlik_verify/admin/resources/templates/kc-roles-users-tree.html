@@ -1,0 +1,73 @@
+<div class="content-w" data-ng-controller="KcRolesUsersTree">
+
+    <div class="element-wrapper pb-0">
+        <div class="element-box element-box-medium top-align p-4">
+            <div class="holder scrollbar-none" id="holder">
+                <div class="roles-container roles-container-left"
+                    data-ng-class="{'remove-roles-border' : groupRoles.length === 0}">
+                    <ul data-ng-class="{'remove-roles-top-left left-1' : groupRoles.length === 0}">
+                        <li data-ng-class="{'remove-roles-border' : groupRoles.length === 0}">
+                            <button class="add-group" ng-click="addRolesToGroup()">{{:: 'add-roles' | translate}} +</button>
+                        </li>
+                        <li data-ng-repeat="role in roles">
+                            <div class="tree-label">
+                                <button class="roles-groups-delete-btn" ng-click="deleteRealmRole(role)">
+                                    <i class="os-icon os-icon-ui-15 px-0 "></i>
+                                </button>
+                                <span class="roles-groups-name w-max-80">{{role.name}}</span>
+                            </div>
+                        </li>
+                        <li ng-if="roles.length !== groupRoles.length">
+                            <button class="add-group roles-show-more" ng-click="showMoreRoles()"><img
+                                    data-ng-src="{{resourceUrl}}/themes/img/down-arrow.svg" />
+                                    <span>
+                                        {{:: 'show-more' | translate}}
+                                    </span></button>
+                        </li>
+                    </ul>
+                </div>
+                <button class="roles roles-btn roles-container-left-btn">
+                    <span> {{:: 'roles' | translate}}</span>
+                    <div class="role-btn-line"></div>
+                </button>
+                <div class="user-holder">
+                    <div>
+                        <div class="icon-w">
+                            <div class="os-icon os-icon-users w-5"></div>
+                        </div>
+                    </div>
+                    <div class="user-holder-desc">
+                        <p><span>{{groupRoles.length}}</span><span> {{:: 'roles' | translate}}</span></p>
+                        <p><span>{{groupMemberships.length}}</span><span>{{:: 'users' | translate}}</span></p>
+                    </div>
+                </div>
+                <button class="roles roles-btn">
+                    <span> {{:: 'users' | translate}}</span>
+                    <div class="role-btn-line"></div>
+                </button>
+                <div class="roles-container groups"
+                    data-ng-class="{'remove-roles-border' : groupMemberships.length === 0}">
+                    <ul data-ng-class="{'remove-roles-top-left' : groupMemberships.length === 0}">
+                        <li data-ng-class="{'remove-roles-border' : groupMemberships.length === 0}">
+                            <button class="add-group" ng-click="addUser()">+  {{:: 'add-users' | translate}}</button>
+                        </li>
+                        <li data-ng-repeat="user in users">
+                            <div class="tree-label">
+                            <button class="roles-groups-delete-btn"
+                                ng-click="leaveUserFromGroup(user.id)">
+                                <i class="os-icon os-icon-ui-15 px-0 "></i></button><span
+                                class="roles-groups-name w-max-80">{{user.username}}</span>
+                            </div>
+                        </li>
+                        <li ng-if="users.length !== groupMemberships.length"> <button class="add-group roles-show-more"
+                                ng-click="showMoreUsers()"><img
+                                    data-ng-src="{{resourceUrl}}/themes/img/down-arrow.svg" />
+                                    <span> 
+                                        {{:: 'show-more' | translate}}
+                                    </span></button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

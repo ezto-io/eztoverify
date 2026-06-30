@@ -1,0 +1,108 @@
+<div class="content-w ml-0">
+    <div class="content-i">
+        <div class="server-info-content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <h1 class="element-header">
+                            {{:: 'server-info' | translate}}
+                            <i id="serverInfoReload" class="pficon  pficon-restart clickable" data-ng-click="serverInfoReload()"></i>
+                        </h1>
+
+                        <table class="table table-striped table-bordered">
+                            <tr>
+                                <td width="20%">{{:: 'server-version' | translate}}</td>
+                                <td>{{serverInfo.systemInfo.qvVersion}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{:: 'server-time' | translate}}</td>
+                                <td>{{serverInfo.systemInfo.serverTime}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{:: 'server-uptime' | translate}}</td>
+                                <td>{{serverInfo.systemInfo.uptime}}</td>
+                            </tr>
+                        </table>
+                        <br> 
+                        <fieldset>
+                            <p class="provider-caption">{{:: 'memory' | translate}}</p>
+                            <table class="table table-striped table-bordered margin-top-0">
+                                <tr>
+                                    <td width="20%">{{:: 'total-memory' | translate}}</td>
+                                    <td>{{serverInfo.memoryInfo.totalFormated}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'free-memory' | translate}}</td>
+                                    <td>{{serverInfo.memoryInfo.freeFormated}} ({{serverInfo.memoryInfo.freePercentage}}%)</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'used-memory' | translate}}</td>
+                                    <td>{{serverInfo.memoryInfo.usedFormated}}</td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                    
+                        <fieldset>
+                            <p class="provider-caption">{{:: 'system' | translate}}</p>
+                            <table class="table table-striped table-bordered margin-top-0">
+                                <tr>
+                                    <td width="20%">{{:: 'current-working-directory' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.userDir}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'java-version' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.javaVersion}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'java-vendor' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.javaVendor}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'java-runtime' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.javaRuntime}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'java-vm' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.javaVm}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'java-vm-version' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.javaVmVersion}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'java-home' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.javaHome}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'user-name' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.userName}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'user-timezone' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.userTimezone}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'user-locale' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.userLocale}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'system-encoding' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.fileEncoding}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'operating-system' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.osName}} {{serverInfo.systemInfo.osVersion}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{:: 'os-architecture' | translate}}</td>
+                                    <td>{{serverInfo.systemInfo.osArchitecture}}</td>
+                                </tr>
+                            </table>
+                        </fieldset>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

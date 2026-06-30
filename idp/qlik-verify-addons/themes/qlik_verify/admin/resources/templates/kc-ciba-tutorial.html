@@ -1,0 +1,268 @@
+<div class="tutorial-highlight" data-ng-controller="KcClientCibaTutorialCtrl">
+    <div data-ng-show="!isApiApp">
+        <div class="d-flex justify-content-start align-items-center flex-wrap">
+            <div class="d-flex rounded border border-primary overflow-hidden mr-5 my-3">
+                <div class="py-2 px-5 cursor-pointer {{selectedTab === 'test' && 'bg-primary text-light'}}"
+                    data-ng-click="setSelectedTab('test')">{{:: 'test' | translate}}</div>
+                <div class="py-2 px-4 cursor-pointer {{selectedTab === 'integration' && 'bg-primary text-light'}}"
+                    data-ng-click="setSelectedTab('integration')">{{:: 'integration' | translate}}</div>
+            </div>
+            <div class="d-flex align-items-center mr-5 my-3" data-ng-show="isTestPossible">
+                <label class="text-nowrap mr-3 h6">{{:: 'flow' | translate}}</label>
+                <select class="form-control" data-ng-model="selectedFlow">
+                    <option value="onboarding">{{:: 'onboarding' | translate}}</option>
+                    <option value="verification">{{:: 'verification' | translate}}</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center mr-5 my-3" data-ng-show="selectedTab === 'integration'">
+                <label class="text-nowrap mr-3">{{:: 'language' | translate}}</label>
+                <select class="form-control" data-ng-model="selectedLanguage">
+                    <option value="curl">curl</option>
+                    <option value="{{language}}" data-ng-repeat="language in supportedLanguges">
+                        {{language}}</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center mr-5 my-3"
+                data-ng-show="selectedTab === 'integration' && isVersionSelectorVisible">
+                <label class="text-nowrap mr-3">{{:: 'versions' | translate}}</label>
+                <select class="form-control" data-ng-model="selectedVersion">
+                    <option value="v0">v0</option>
+                    <option value="v1">v1</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Test Tab -->
+        <div data-ng-show="selectedTab === 'test' ">
+            <div class="d-flex justify-content-center align-items-center w-100"
+                style="min-height: 400px; background-color: #f7fafe;">
+                <!-- Test application -->
+                <div data-ng-show="!isTestableCheck">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <div class="text-center" data-ng-show="!canTest && isTestableCheck">
+                    <h6>{{:: 'test-not-possible' | translate}}</h6>
+                    <p>{{:: 'do-refer-helper' | translate}} <a href="{{docsUrl ? docsUrl : resourceUrl + '/docs-not-configured.html'}}" target="_blank">{{:: 'documentation' |
+                            translate}}</a></p>
+                </div>
+                <div
+                    data-ng-show="canTest && isTestableCheck && !(resultResponse.request_id || resultResponse.error || resultResponse.data)">
+                    <!-- Initial Banner -->
+                    <div data-ng-show="!testResponse.success">
+                        <div data-ng-hide="loadingTest" class="text-center">
+                            <h5 class="mb-4">{{:: 'test-ciba-app' | translate}}</h5>
+                            <button data-ng-disabled="loadingTest" class="btn transaction-test-btn"
+                                data-ng-click="testTransaction()">
+                                <div data-ng-show="loadingTest">
+                                    <kc-action-button-loading></kc-action-button-loading>
+                                </div>
+                                <span data-ng-show="!loadingTest">{{:: 'test' | translate}}</span>
+                            </button>
+
+                            <p ng-if="testResponse.error" class="mt-4">{{:: 'unable-to-test-ciba-app' | translate}} <a
+                                    href="#/realms/{{realm.realm}}/logs">{{:: 'audit' | translate}}</a> </p>
+                        </div>
+                        <div data-ng-show="loadingTest">
+                            <h6>{{:: 'transaction-triggered' | translate}}</h6>
+                        </div>
+                    </div>
+                    <!-- Test Response and Durint Test -->
+                    <div data-ng-show="testResponse.success" class="py-5">
+                        <!-- Authentication way helper -->
+                        <div class="text-center">
+                            <p>{{:: testResponse.test_config.auth_way_message | translate}}</p>
+                            <div class="d-flex align-items-center mx-2" data-ng-show="testResponse.transaction_link">
+                                <a class="wrap-text word-break-all d-block text-wrap mx-3" target="_blank"
+                                    href="{{testResponse.transaction_link}}">{{testResponse.transaction_link}}</a>
+                                <button class="icon-holder-btn rounded bg-primary" id="result-request-copyIcon"
+                                    data-ng-click="copyToClipboard(testResponse.transaction_link)"
+                                    data-ng-mouseleave="resetCopy()" tooltip="{{tooltipTxt}}" tooltip-placement="top"
+                                    tooltip-trigger="hover mouseover mouseout">
+                                    <i class="os-icon os-icon-copy text-light"></i>
+                                </button>
+                            </div>
+                            <img ng-src="{{testResponse.qr}}" data-ng-show="testResponse.qr" height="250px"
+                                class="mb-4" />
+                            <p class="my-3">{{:: testResponse.test_config.result_delivery_mode_message | translate}}</p>
+                            <div data-ng-show="testResponse.result_delivery_mode == 'hook@ping'" class="my-2">
+                                <label class="control-label">{{:: 'enter-auth-request-id' | translate}}</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" data-ng-model="pingAuthRequestId"
+                                        placeholder="Auth Request Id" aria-describedby="button-send-request-id"
+                                        ng-keypress="handleKeyPress($event, newCibaConsentRejectReason)">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary btn-sm icon-btn"
+                                            data-ng-click="resultTransaction()" type="button"
+                                            id="button-send-request-id">{{:: 'send' | translate}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Retest -->
+                        <div class="d-flex justify-content-center align-items-center">
+                            <button class="btn" data-ng-click="cancelTesting()">{{:: 'cancel' | translate}}</button>
+                            <button class="btn transaction-test-btn ml-5" data-ng-click="testTransaction()">{{:: 'retry'
+                                | translate}}</button>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Test Result -->
+                <div data-ng-show="resultResponse.request_id || resultResponse.error || resultResponse.data"
+                    class="mx-5 w-100">
+                    <div class="d-flex justify-content-between" style="background-color: #000;">
+                        <div class="workspace-input-group px-1 py-2 overflow-scroll"
+                            style="background-color: #000; border: none; box-shadow: none;">
+                            <textarea readonly is="highlighted-code" cols="80" rows="10" language="json" tab-size="2"
+                                class="workspace-input hide-scroll-bar workspace-" data-ng-model="stringifiedResult"
+                                style="font-size: medium;"></textarea>
+                        </div>
+                        <button class="icon-holder-btn bg-primary copy-code-icon rounded px-2 py-1 cursor-pointer m-2"
+                            id="result-request-copyIcon" data-ng-click="copyToClipboard(resultResponse)"
+                            data-ng-mouseleave="resetCopy()" tooltip="{{tooltipTxt}}" tooltip-placement="top"
+                            tooltip-trigger="hover mouseover mouseout">
+                            <i class="os-icon os-icon-copy text-light"></i>
+                        </button>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <button class="btn transaction-test-btn" data-ng-click="testTransaction()">{{:: 'retry' |
+                            translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Integration Tab -->
+        <div data-ng-show="selectedTab === 'integration' ">
+            <!-- Transaction request  -->
+            <div data-ng-show="isValidTransactionCurl">
+                <h6 class="mt-5 mb-2 text-primary">{{:: 'transaction-request-title' | translate}}</h6>
+                <p>{{:: 'transaction-request-desc' | translate}}</p>
+                <div class="d-flex justify-content-between" style="background-color: #000;">
+                    <div class="workspace-input-group  px-1 py-2 overflow-scroll"
+                        style="background-color: #000;border: none; box-shadow: none;">
+                        <textarea readonly is="highlighted-code" cols="80" rows="15"
+                            language="{{selectedLanguage === 'curl' ? 'bash' : selectedLanguage}}" tab-size="2"
+                            class="workspace-input hide-scroll-bar workspace-" id="{{attributes.providerId}}"
+                            name="{{attributes.providerId}}" data-ng-model="transactionBody"
+                            style="font-size: medium;"></textarea>
+                    </div>
+                    <button class="icon-holder-btn bg-primary copy-code-icon rounded px-2 py-1 cursor-pointer m-2"
+                        id="transaction-request-copyIcon" ng-click="copyToClipboard(transactionBody)"
+                        tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout">
+                        <i class="os-icon os-icon-copy text-light"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Result Request -->
+            <div data-ng-show="isValidResultCurl">
+                <h6 class="mt-5 mb-2 text-primary">{{:: 'result-request-title' | translate}}</h6>
+                <p>{{:: 'result-request-desc' | translate}}</p>
+                <div class="d-flex justify-content-between" style="background-color: #000;">
+                    <div class="workspace-input-group  px-1 py-2 overflow-scroll"
+                        style="background-color: #000;border: none; box-shadow: none;">
+                        <textarea readonly is="highlighted-code" cols="80" rows="15"
+                            language="{{selectedLanguage === 'curl' ? 'bash' : selectedLanguage}}" tab-size="2"
+                            class="workspace-input hide-scroll-bar workspace-" id="{{attributes.providerId}}"
+                            name="{{attributes.providerId}}" data-ng-model="resultBody"
+                            style="font-size: medium;"></textarea>
+                    </div>
+                    <button class="icon-holder-btn bg-primary copy-code-icon rounded px-2 py-1 cursor-pointer m-2"
+                        id="result-request-copyIcon" data-ng-click="copyToClipboard(resultBody)"
+                        tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout">
+                        <i class="os-icon os-icon-copy text-light"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- No Request Body -->
+            <div class="d-flex justify-content-center align-items-center w-100"
+                data-ng-show="!isValidResultCurl && !isValidTransactionCurl"
+                style="min-height: 400px; background-color: #f7fafe;">
+                <h6>{{:: 'integration-commands-not-available' | translate}}</h6>
+            </div>
+        </div>
+    </div>
+    <div data-ng-show="isApiApp">
+        <div data-ng-show="isLoading">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <div data-ng-show="!isLoading">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center mr-5 my-3">
+                        <label class="text-nowrap mr-3">{{:: 'API' | translate}}</label>
+                        <select class="form-control text-capitalize" data-ng-model="selectedApi">
+                            <option value="" disabled>{{:: 'Select API' | translate}}</option>
+                            <option value="{{apiName.id}}" data-ng-repeat="apiName in apiArray">{{:: apiName.verifierName | translateOrReplaceWithSpace}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="d-flex align-items-center mr-5 my-3" data-ng-show="selectedApi">
+                        <label class="text-nowrap mr-3">{{:: 'language' | translate}}</label>
+                        <select class="form-control" data-ng-model="selectedApiLanguage">
+                            <option value="curl">curl</option>
+                            <option value="{{language}}" data-ng-repeat="language in supportedLanguges">{{language}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center" data-ng-show="selectedApi">
+                    <button class="btn btn-primary" data-ng-show="!nonTestVerifier && !isApiTestBlockVisible"
+                        data-ng-click="showApiTestBlock(true)">Test</button>
+                    <button class="btn btn-secondary" data-ng-show="isApiTestBlockVisible"
+                        data-ng-click="showApiTestBlock(false)">Reset</button>
+                    <button class="btn btn-primary" data-ng-show="isApiTestBlockVisible"
+                        data-ng-click="sendApiRequest()" data-ng-disabled="!checkAllMetaDataFilled()">Send</button>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center align-items-center w-100"
+                style="min-height: 400px; background-color: #f7fafe;" data-ng-show="selectedApi.length == 0">
+                <h6>Select the api to proceed.</h6>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6" data-ng-show="isApiTestBlockVisible">
+                    <div class="row mt-3 mr-2" ng-repeat="(key, value) in apiRequestMetadata">
+                        <div class="col-12">
+                            <label class="form-label" for="{{key.replaceAll(' ','-')}}-test-field">{{ key | uppercase }}
+                                <span class="text-danger">*</span> : </label>
+                        </div>
+                        <div class="col-12">
+                            <input type="text" id="{{key.replaceAll(' ','-')}}-test-field"
+                                ng-model="apiRequestBodyForCurl[key]" class="form-control"
+                                placeholder="Enter {{ key }}" />
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="apiRequestLoading"
+                    class="{{isApiTestBlockVisible ? 'col-6' : 'col-12' }} d-flex justify-content-center align-items-center flex-column rounded bg-black api-loading-container">
+                    <p class="">Getting response...</p>
+                    <span class="spinner-border spinner-border-lg text-primary"></span>
+                </div>
+
+                <div class="{{isApiTestBlockVisible ? 'col-6' : 'col-12' }} d-flex justify-content-between rounded bg-black"
+                    data-ng-show="selectedApi && selectedApi.length > 0 && !apiRequestLoading">
+                    <div class="workspace-input-group  px-1 py-2 overflow-scroll bg-black"
+                        style="border: none; box-shadow: none;">
+                        <textarea readonly is="highlighted-code" cols="80" rows="15"
+                            language="{{selectedLanguage === 'curl' ? 'bash' : selectedLanguage}}" tab-size="2"
+                            class="workspace-input hide-scroll-bar workspace-" id="{{attributes.providerId}}"
+                            name="{{attributes.providerId}}" data-ng-model="apiRequest"
+                            style="font-size: medium;"></textarea>
+                    </div>
+                    <button class="icon-holder-btn bg-primary copy-code-icon rounded px-2 py-1 cursor-pointer m-2"
+                        id="result-request-copyIcon" data-ng-click="copyToClipboard(apiRequest)"
+                        tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout">
+                        <i class="os-icon os-icon-copy text-light"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

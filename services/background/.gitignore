@@ -1,0 +1,18 @@
+
+**/.idea/*
+**/target/*
+build_*/*
+.idea/*
+
+Chart.lock
+charts
+**/*.iml
+**/ezto-*/*.iml
+**/ezto-*/**/*.iml
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+env.sh
+**/env.sh

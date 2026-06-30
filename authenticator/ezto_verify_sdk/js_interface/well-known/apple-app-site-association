@@ -1,0 +1,15 @@
+{
+  "applinks": {
+      "details": [
+           {
+             "appIDs": [ "T27G47732A.io.ezto.verify.flutter.internal"],
+             "components": [
+               {
+                  "/": "/deeplink/*",
+                  "comment": "Matches any URL with a path that starts with /deeplink/."
+               }
+             ]
+           }
+       ]
+   }
+}

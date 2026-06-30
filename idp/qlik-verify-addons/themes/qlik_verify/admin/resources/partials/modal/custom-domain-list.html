@@ -1,0 +1,86 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{:: 'your-workspace' | translate}}</h5>
+    <button type="button" class="close" ng-click="close()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body pb-5">
+    <div data-ng-show="showLoader" class="d-flex justify-content-center align-items-center height-200px">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <form data-ng-show="!showLoader">
+        <div class="custom-domain-primary-holder pb-3" ng-if="domains.length > 0">
+            <h5 class="font-size-17 text-primary">{{:: 'primary' | translate}}</h5>
+            <div ng-repeat="domain in domains" ng-if="domain.primary" class="row px-2 align-items-center">
+                <div class="relative form-control {{domains.length == 1 ? 'col-11' : 'col-12'}}">
+                    <p class="m-0 scroll-horizantal">
+                        {{domain.customDomain}}
+                    </p>
+                    <button class="copy-btn-holder">
+                        <i class="os-icon os-icon-copy" data-ng-click="copyURL(domain.customDomain)" id="workspace-name-copy-icon" tooltip="{{copytooltip}}" tooltip-placement="bottom" tooltip-trigger="mouseover mouseout"></i>
+                    </button>
+                </div>
+                <div class="dropdown clearfix col-1" data-ng-if="domains.length == 1">
+                    <div class="dropdown">
+                        <button id="settings-primary" class="dropdown-dns-btn"
+                            data-toggle="dropdown" ng-click="toggleShow($index)">
+                            <i class="os-icon os-icon-more-horizontal"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a class="dropdown-item delete-dropdown-item" id="delete-primary"
+                                    data-ng-click="removeCustomDomain(domain.customDomain)">
+                                    <p class="text-danger m-0">{{ ::'delete' | translate }}
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="custom-domain-primary-holder pb-3" ng-if="!domains || domains.length == 0">
+            <p class="text-center">{{:: 'no-domain-found' | translate}}</p>
+        </div>
+        <div>
+            <div ng-repeat="domain in domains track by $index" class="row align-items-center mx-0 mt-2" ng-if="!domain.primary">
+                <div class="relative col-11 form-control">
+                    <p class="m-0 scroll-horizantal">
+                        {{domain.customDomain}}
+                    </p>
+                    <button  class="copy-btn-holder">
+                        <i class="os-icon os-icon-copy" data-ng-click="copyURL(domain.customDomain)" id="workspace-name-copy-icon" tooltip="{{copytooltip}}" tooltip-placement="bottom" tooltip-trigger="mouseover mouseout"></i>
+                    </button>
+                </div>
+                <div class="dropdown clearfix col-1">
+                    <div class="dropdown">
+                        <button id="settings-{{$index}}" class="dropdown-dns-btn"
+                            data-toggle="dropdown" ng-click="toggleShow($index)">
+                            <i class="os-icon os-icon-more-horizontal"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <div ng-if="showDropdownIndex===$index">
+                                <li>
+                                    <a class="dropdown-item delete-dropdown-item cursor-pointer" id=""
+                                       data-ng-click="makeAsPrimary(domain)">
+                                        {{ ::'make-primary' | translate }}
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item delete-dropdown-item cursor-pointer" id="delete-{{$index}}"
+                                        data-ng-click="removeCustomDomain(domain.customDomain)">
+                                        <p class="text-danger m-0">{{ ::'delete' | translate }}
+                                        </p>
+                                    </a>
+                                </li>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

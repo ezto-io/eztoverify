@@ -1,0 +1,29 @@
+<div class="p-4">
+    <div class="modal-header p-0">
+        <div class="form-inline justify-content-between w-100">
+            <h5 class="modal-title"></h5>
+            <div class="form-inline">
+                <button type="button" id="modalCloseBtn" class="close ml-auto" ng-click="cancel()">
+                    <span class="os-icon os-icon-close"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="mt-2 item_group ev-body row mx-0 border p-3 rounded">
+        <div class="mb-2 ev-logo">
+            <div class="d-flex justify-content-between">
+                <img ng-if="realm.realmLogo" class="form-logo form-logo-parent" data-ng-src="{{realm.realmLogo}} " />
+                <img ng-if="!realm.realmLogo" class="form-logo form-logo-parent" data-ng-src="{{resourceUrl}}/themes/img/eztovrfy-logo.svg"> 
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <img class="mb-2 error-img" ng-show="state === 'success'" alt="success img" src="{{resourceUrl}}/themes/img/success-img.png">
+            <img class="mb-2 error-img" ng-show="state === 'failure'"  alt="success img" src="{{resourceUrl}}/themes/img/error.png">
+            <div class="title_sign mb-2">
+                <h2>{{title}}</h2>
+            </div>
+        </div>
+        <p class="text-center col-12">{{desc}}</p>
+    </div>
+
+</div>

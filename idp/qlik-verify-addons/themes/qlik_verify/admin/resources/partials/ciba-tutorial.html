@@ -1,0 +1,30 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row"> <!-- Back to applications -->
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/clients/type/{{ client.appType.replaceAll('_', '-') }}{{realm.mode==='bo' ? client.sandboxMode ? '/sandbox' : '/live' : ''}}"
+                            id="back-to-applications">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-applications'
+                            | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-app></kc-tabs-app>
+                        <kc-tabs-client></kc-tabs-client>
+                        <div class="element-box pt-4">
+                            <kc-ciba-tutorial></kc-ciba-tutorial>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module" defer>
+    (async ({ chrome, netscape }) => { if (!chrome && !netscape) await import('https://unpkg.com/@ungap/custom-elements'); const { default: HighlightedCode } = await import('https://unpkg.com/highlighted-code'); HighlightedCode.useTheme('zenburn'); })(self);
+</script>

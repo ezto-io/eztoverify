@@ -1,0 +1,201 @@
+---
+id: v0
+title: Trigger Request
+sidebar_label: v0
+hide_title: true
+hide_table_of_contents: true
+api:
+  {
+    "tags": ["Request > Overview"],
+    "requestBody":
+      {
+        "content":
+          {
+            "application/x-www-form-urlencoded":
+              {
+                "schema":
+                  {
+                    "type":"object",
+                    "properties":
+                      {
+                        "app_id": { "type": "string" },
+                        "app_secret": { "type": "string" },
+                        "request": { "type": "string" },
+                      },
+                    "example":
+                      {
+                        "app_id": "{{app_id}}",
+                        "app_secret": "{{app_secret}}",
+                        "request": "{{request}}",
+                      },
+                  },
+              },
+          },
+      },
+    "parameters":
+      [
+        {
+          "name": "workspaceName",
+          "in": "path",
+          "schema": { "type": "string" },
+          "required": true,
+        },
+      ],
+    "jsonRequestBodyExample":
+      {
+        "app_id": "{{app_id}}",
+        "app_secret": "{{app_secret}}",
+        "request": "{{request}}",
+      },
+
+    "method": "post",
+    "path": "/auth/realms/{workspaceName}/protocol/openid-connect/transaction",
+    "servers": [{ "url": "https://{{base_url}}" }],
+    "postman":
+      {
+        "name": "Authentication Url",
+        "description": { "type": "text/plain" },
+        "url":
+          {
+            "path":
+              [
+                "auth",
+                "realms",
+                "{{workspaceName}}",
+                "protocol",
+                "openid-connect",
+                "transaction",
+              ],
+            "query": [],
+            "variable":
+              [
+                {
+                  "disabled": false,
+                  "description":
+                    { "content": "(Required) ", "type": "text/plain" },
+                  "type": "any",
+                  "value": "",
+                  "key": "workspaceName",
+                },
+              ],
+          },
+        "method": "POST",
+        "body":
+           {
+            "mode": "urlencoded",
+            "urlencoded":[],
+          },
+      },
+  }
+sidebar_class_name: "get api-method"
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import TabItem from "@theme/TabItem";
+import Tabs from '@theme/Tabs';
+import ApiProps from "@site/src/components/docs/ApiProps";
+import request from "@site/src/components/api/RequestOverview/request";
+import ApiParams from "@site/src/components/docs/ApiParams";
+import baseUrl from "@site/src/components/api/RequestOverview/baseUrl";
+import pathParams from "@site/src/components/api/RequestOverview/pathParams";
+import headerParams from "@site/src/components/api/RequestOverview/headerParams";
+import CodeHighlighter from "@site/src/components/api/CodeHighlighter";
+import APIVersion from "@site/src/components/api/APIVersion";
+import APIBodyChanger from "@site/src/components/api/APIBodyChanger";
+
+<APIBodyChanger version={0} type="request"/>
+<APIVersion version={0} link1="/verify/docs/DeveloperTools/API/Transaction/TriggerRequest/v0/" link2="/verify/docs/DeveloperTools/API/Transaction/TriggerRequest/v1/" title="Trigger Request" />
+
+The **Transaction API** provided by **ezto verify** is designed for initiating API calls that primarily purposes to trigger predefined transaction flows configured within the system.
+
+<div className="api-builder-body-wrapper">
+  <ApiParams className="holder" title="Base URL" json={baseUrl} />
+
+  <ApiParams className="holder" title="Path Params" json={pathParams} />
+
+  <ApiParams className="holder" title="Header Params" json={headerParams.v0}/>
+</div>
+
+
+:::note
+
+The request body for an application with consent enabled is displayed below.
+
+:::
+
+
+<h3 className="api-builder-page-header">Request Body</h3>
+
+Below is the request body structure for the Trigger request Endpoint
+
+<div className="api-builder-body-wrapper padding-bottom-1rem">
+<ApiProps className="holder" title="" json={request}/>
+
+<p>You can get the app_id and app_secret from the <strong>Devlopers tab</strong> in configured application.</p>
+
+<CodeHighlighter path="./mdx/API/Transaction/Trigger Transaction.mdx" />
+</div>
+
+
+
+:::note
+
+The request and response are different based on the application's configuration, which can be build using [API Builder](/verify/docs/DeveloperTools/API/BuildyourIntegration/TriggerRequest/v1/).
+
+:::
+
+
+<div id="http-status-code-summary">
+
+
+<table>
+   <thead>
+      <tr>
+         <th align="left" colSpan="3">HTTP STATUS CODE SUMMARY</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td align="left">200</td>
+         <td align="left">OK</td>
+         <td align="left">Everything worked as expected.</td>
+      </tr>
+      <tr>
+         <td align="left">400</td>
+         <td align="left">Bad Request</td>
+         <td align="left">The request was unacceptable, often due to missing a required parameter.</td>
+      </tr>
+      <tr>
+         <td align="left">401</td>
+         <td align="left">Unauthorized</td>
+         <td align="left">No valid App secret or App ID provided.</td>
+      </tr>
+      <tr>
+         <td align="left">402</td>
+         <td align="left">Request Failed</td>
+         <td align="left">The parameters were valid but the request failed.</td>
+      </tr>
+      <tr>
+         <td align="left">403</td>
+         <td align="left">Forbidden</td>
+         <td align="left">The Application doesn't have permissions to perform the request.</td>
+      </tr>
+      <tr>
+         <td align="left">404</td>
+         <td align="left">Not Found</td>
+         <td align="left">The requested resource doesn't exist.</td>
+      </tr>
+      <tr>
+         <td align="left">500</td>
+         <td align="left">Server Errors</td>
+         <td align="left">Something went wrong on ezto verify's end. (These are rare.)</td>
+      </tr>
+   </tbody>
+</table>
+</div>

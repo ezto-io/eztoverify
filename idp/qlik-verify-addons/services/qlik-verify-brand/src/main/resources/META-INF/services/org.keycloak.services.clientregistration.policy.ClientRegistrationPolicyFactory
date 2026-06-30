@@ -1,0 +1,8 @@
+com.qlikverify.services.theme.subscriptionpolicies.CheckLicenseClientRegistrationPolicyFactory
+com.qlikverify.services.theme.subscriptionpolicies.MaxClientsClientRegistrationPolicyFactory
+com.qlikverify.services.theme.subscriptionpolicies.MaxUsersRegistrationPolicyFactory
+com.qlikverify.services.theme.subscriptionpolicies.EmailPolicyFactory
+com.qlikverify.services.theme.subscriptionpolicies.SmsPolicyFactory
+com.qlikverify.services.theme.subscriptionpolicies.WhatsappPolicyFactory
+com.qlikverify.services.theme.subscriptionpolicies.CanMultiTenantRegistrationPolicyFactory
+com.qlikverify.services.theme.subscriptionpolicies.AuthenticationPolicyFactory

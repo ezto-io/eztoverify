@@ -1,0 +1,137 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper pb-2">
+                        <h3 class="element-header">
+                            {{:: 'activity' | translate}}
+                        </h3>
+                        <form class="form-inline col-sm-12  mb-5 justify-content-sm-end" data-ng-if="isRootTenant">
+                          <select class="form-control rounded" ng-change="updateFilter()" data-ng-model="filter.selectedFilter">
+                            <option ng-repeat="x in filtersForRootTenant" value="{{x}}">{{:: x | translate}}</option>
+                          </select> 
+                        </form>
+                        <kc-loader loadertype="loaderTypeName" data-ng-if="dataLoading"></kc-loader>
+                        <div class="tablo-with-chart" data-ng-show="!dataLoading">
+                            <div class="row">
+                              <div class="col-sm-7" data-ng-class="{'col-sm-12': !isRootAccount || !activityData.topPerformingTenants.length}">
+                                <div class="tablos mb-4">
+                                  <div class="row mb-xl-2 mb-xxl-3">
+
+                                    <div class="col-sm-6">
+                                      <a class="element-box el-tablo centered trend-in-corner padded bold-label">
+                                        <div class="value">
+                                          {{activityData.usersCount}}
+                                        </div>
+                                        <div class="label">
+                                         {{:: 'total-users' | translate}}
+                                        </div>
+                                      </a>
+                                    </div>
+
+                                    <div class="col-sm-6" data-ng-if="isRootAccount">
+                                      <a class="element-box el-tablo centered trend-in-corner padded bold-label">
+                                        <div class="value">
+                                          {{activityData.tenantsCount}}
+                                        </div>
+                                        <div class="label">
+                                          {{:: 'total-workspace' | translate}}
+                                        </div>
+                                      </a>
+                                    </div>
+                                    <div class="col-sm-6" data-ng-hide="isRootAccount">
+                                      <a class="element-box el-tablo centered trend-in-corner padded bold-label">
+                                        <div class="value">
+                                          {{activityData.appsCount}}
+                                        </div>
+                                        <div class="label">
+                                          {{:: 'total-applications' | translate}}
+                                        </div>
+                                      </a>
+                                    </div>
+                                    
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                      <a class="element-box el-tablo centered trend-in-corner padded bold-label">
+                                        <div class="value">
+                                          {{activityData.loginSuccessCount}}
+                                        </div>
+                                        <div class="label">
+                                          {{:: 'successful-logins' | translate}}
+                                        </div> 
+                                      </a>
+                                    </div>
+                                    <div class="col-sm-6">
+                                      <a class="element-box el-tablo centered trend-in-corner padded bold-label">
+                                        <div class="value">
+                                          {{activityData.signupsCount}}
+                                        </div>
+                                        <div class="label">
+                                          {{:: 'total-signups' | translate}}
+                                        </div> 
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="col-sm-5" data-ng-if="isRootAccount && activityData.topPerformingTenants.length > 0">
+                                <div class="col-sm-12 mb-4 element-box py-4 px-5 min-h-255px" data-ng-if="isRootAccount">
+                                    <h6 class="element-header font-size-17 mb-3">{{::'topPerformingTenant' | translate }} <i class="os-icon os-icon-trending-up text-primary font-w-600 font-s-24 mr-2"></i> </h6>
+                                      <div class="table-responsive-md">
+                                        <table class="table table-lightborder">
+                                          <thead>
+                                          </thead>
+                                          <tbody>
+                                            <tr data-ng-repeat="tenant in activityData.topPerformingTenants">
+                                              <td class="nowrap text-capitalize py-2 px-0 d-flex align-items-center">
+                                                {{tenant}} <a href="#/realms/{{tenant}}" class="text-decoration-none d-flex align-items-center"><i class="os-icon os-icon-arrow-right-circle plus-icon ml-1"></i></a>
+                                              </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                </div>
+                              </div>
+                             
+                              <div class="col-sm-12">
+                                <!--START - Chart Box-->
+                                <div class="element-box pl-xxl-5 pr-xxl-5">
+                                  <div class="el-tablo bigger highlight bold-label d-flex justify-content-between">
+                                    <div class="col-sm-auto">
+                                      <div class="value">
+                                        {{uniqueVisitors}}
+                                      </div>
+                                      <div class="label">
+                                        {{uniqueVisitorsText}}
+                                      </div>
+                                    </div>
+                                    <form class="form-inline col-sm-2 mb-5 justify-content-sm-end">
+                                      <select class="form-control rounded" ng-change="updateActivity()" data-ng-model="rootTenantFilter.selected" data-ng-if="isRootTenant && filter.selectedFilter.trim() === 'all-workspace-txt'">
+                                        <option ng-repeat="x in rootTenantFilter.options" value="{{x.value}}">{{:: x.name | translate}}</option>
+                                      </select> 
+                                      <select class="form-control rounded" ng-change="updateActivity()" data-ng-model="currentTenantFilter.selected" data-ng-if="!isRootAccount">
+                                        <option ng-repeat="x in currentTenantFilter.options" value="{{x.value}}">{{:: x.name | translate}}</option>
+                                      </select>
+                                    </form>
+                                  </div>
+                                  <div id="chart-container" class="el-chart-w">
+                                    <canvas height="170px" id="lineChart" width="600px"></canvas>
+                                  </div>
+                                </div>
+                                <!--END - Chart Box-->
+                              </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,6 @@
+io.ezto.extensions.mail.SendGridImpl
+io.ezto.extensions.mail.SmtpImpl
+io.ezto.extensions.mail.SparkPostImpl
+io.ezto.extensions.mail.mandrill.MandrillImpl
+io.ezto.extensions.mail.MailGunImpl
+io.ezto.extensions.mail.AmazonSESImpl

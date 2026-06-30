@@ -1,0 +1,33 @@
+<div class="modal-header">
+    <h5 class="modal-title overflow-ellipsis" ng-attr-title="{{title}}"> {{title}} </h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <p class="mb-0" ng-bind-html="message"></p><br>
+    <form>
+        <div>
+            <div>
+                <p class="mb-1" ng-bind-html="getOTPLabel"></p>
+                <div class="pl-0 mb-0 form-group">
+                    <input id="otpValue" class="form-control hide-input-arrow w-100 mb-1" type="text" required />
+                    <p id="error_msg" class="error-msg" ng-bind-html="otpErrorMsg"></p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" data-ng-class="btns.cancel.cssClass" ng-click="cancel()">{{btns.cancel.label}}</button>
+    <button type="button" id="change-account-creator-button" data-ng-class="btns.ok.cssClass" ng-click="ok($event, 'button')">
+        <div class="button-spinner d-none">
+            <div class="spinner-border spinner-border-sm" role="status">
+            </div>
+            <span>{{ btns.ok.label | translate}}</span>
+        </div>
+        <span class="button-content-spinner">
+            {{ btns.ok.label | translate}}
+        </span>
+    </button>
+</div>

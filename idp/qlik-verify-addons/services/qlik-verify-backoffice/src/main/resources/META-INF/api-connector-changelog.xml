@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="GROOTAN System" id="api-connector-config-1.0">
+        <createTable tableName="API_CONNECTOR_CONFIG">
+            <column name="ID" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="PROVIDER_NAME" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERIFIER_NAME" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REQUEST_BODY" type="text"/>
+            <column name="RESPONSE_BODY" type="text"/>
+            <column name="CLAIMS" type="text"/>
+        </createTable>
+        <addUniqueConstraint
+                tableName="API_CONNECTOR_CONFIG"
+                columnNames="PROVIDER_NAME, VERIFIER_NAME"
+                constraintName="uk_provider_verifier"/>
+        <createTable tableName="API_PRIORITY">
+            <column name="ID" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="VERIFIER_NAME" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SELECTED_PROVIDER" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="AVAILABLE_PROVIDERS" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REALM_ID" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_ENABLED" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

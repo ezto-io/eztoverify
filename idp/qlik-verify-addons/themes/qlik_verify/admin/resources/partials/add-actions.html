@@ -1,0 +1,71 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/authentication/actions" id="back-to-actions-link" >
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-actions' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="d-flex action-details align-items-start mb-0">
+                            <div class="mr-4">
+                                <div class="policy-action-img-container">
+                                    <i class="os-icon os-icon-git-merge font-25"></i>
+                                    <!-- <img class="policy-action-img" alt="logo" data-ng-src="{{resourceUrl}}/themes/img/action-list.png"> -->
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="user-details-top action-details align-items-start mb-0">
+                                    <div class="text-overflow-control"><h3 class="font-weight-normal pb-0 pt-0" >{{actionrep.alias}}</h3></div>
+                                    <button class="delete-btn" id="delete-action-btn" data-ng-click="delete()"><i class="os-icon os-icon-ui-15 plus-icon"></i>{{:: 'delete' | translate}}</button>
+                                </div>
+                                <p class="helper-text mt-1"> {{::'create-action-discription' | translate}} </p>
+                            </div>
+                        </div>
+                        <div class="element-box mt-5">
+                            <div class="add-action-flow-parent-container">
+                                <div>
+                                    <div class="add-action-flow-sub-parent-container">
+                                        <div id="drawflow"  ondrop="angular.element(this).scope().dropComp(event)" ondragover="angular.element(this).scope().allowDropComp(event)" data-title="{{ :: 'intro-actions-drawflow-playground-title' | translate}}" data-intro="{{ :: 'intro-actions-drawflow-playground' | translate}}">
+                                        </div>
+                                        <div class="action-list-container bg-light-2">
+                                            <div class="action-list-sub-container"> 
+                                                <div class="action-list">
+                                                            <header class="padding-bottom-25" >
+                                                                <div data-title="{{ :: 'intro-actions-drawflow-title' | translate}}" data-intro="{{ :: 'intro-actions-drawflow' | translate}}">
+                                                                <h6>{{:: 'add-action-txt' | translate}}</h6>
+                                                                <p class="helper-text">{{:: 'drag-and-drop' | translate}}</p>
+                                                                </div>
+                                                                <!-- Search -->
+                                                                <form class="form-inline pt-2">
+                                                                        <div class="element-search w-100">
+                                                                            <input class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched" id="action-search-input" type="text" placeholder="Search..." data-ng-model="search" onkeydown="if (event.keyCode == 13) document.getElementById('actionsSearch').click()">
+                                                                            <i class="os-icon os-icon-search2 search-icon" id="actionsSearch"></i>
+                                                                        </div>
+                                                                </form>
+                                                            </header>
+                                                         
+                                                            <div class="list-container">
+                                                                <div data-ng-if="unregisteredRequiredActions.length > 0" class="single-action-container drag-drawflow" ng-repeat="unregisteredRequiredAction in unregisteredRequiredActions | filter: {'name':search}" draggable="true" ondragstart="angular.element(this).scope().dragComp(event)" ondragend= "angular.element(this).scope().dragEnd(event)" data-id="{{unregisteredRequiredAction.providerId}}" data-node="{{unregisteredRequiredAction.name}}">
+                                                                    <i class="os-icon os-icon-code margin-right-5px"></i><span> {{:: unregisteredRequiredAction.name | translate}}</span>
+                                                                </div> 
+                                                                <div data-ng-if="(unregisteredRequiredActions | filter: {'name':search}).length === 0" class="text-center">{{::'no-actions-flow' | translate}}</div>
+                                                            </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

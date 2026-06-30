@@ -1,0 +1,24 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls",
+            "delegate_permission/common.get_login_creds"
+        ],
+        "target": {
+            "namespace": "web",
+            "site": "dashboard.eztovrfy.com"
+        }
+    },
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "io.ezto.verify.demo",
+            "sha256_cert_fingerprints": [
+                "C3:F6:6B:9B:41:38:C3:2B:82:57:B9:E2:DE:10:41:91:05:D3:08:F6:D3:D7:DD:D1:14:AA:47:1B:B0:67:57:E0"
+            ]
+        }
+    }
+]

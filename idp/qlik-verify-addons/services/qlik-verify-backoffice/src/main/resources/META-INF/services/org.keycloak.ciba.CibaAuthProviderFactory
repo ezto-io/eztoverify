@@ -1,0 +1,6 @@
+com.qlikverify.backoffice.authorizers.WebAuthorizer
+com.qlikverify.backoffice.authorizers.MobileAuthorizer
+com.qlikverify.backoffice.authorizers.DesktopAuthorizer
+com.qlikverify.backoffice.authorizers.TwilioIVRAuthorizer
+#com.qlikverify.backoffice.authorizers.AzureB2CAuthorizer
+com.qlikverify.backoffice.authorizers.ApiAuthorizer

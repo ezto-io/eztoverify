@@ -1,0 +1,25 @@
+<div data-ng-controller="ClientTabCtrl">
+  <div class="sub-top-bar mt-5 mb-4">
+      <ul data-ng-hide="create && !path[4]">
+        <li ng-class="{active: !path[4]}" data-step="1" data-title="{{:: 'intro-application-general-title' | translate}}" data-intro="{{:: 'intro-application-general' | translate}}">
+          <a href="#/realms/{{realm.realm}}/sso/{{client.id}}" id="sso-general">{{:: 'realm-tab-general' | translate}}</a>
+        </li>
+        <!-- <li ng-if="!isInBuilt" ng-class="{active: path[4] == 'client-scopes'}" data-step='{{path[4] ? 2 : 3}}' data-title="{{:: 'intro-application-consents-title' | translate}}" data-intro="{{:: 'intro-application-consents' | translate}}">
+          <a href="#/realms/{{realm.realm}}/sso/{{client.id}}/client-scopes/setup-scopes">{{:: 'scope' | translate}}</a>
+        </li> -->
+        <li ng-if="!isInBuilt" ng-class="{active: path[4] == 'mappers'}" data-ng-show="!client.bearerOnly" data-step='{{path[4] ? 2 : 3}}' data-title="{{:: 'intro-application-mappers-title' | translate}}" data-intro="{{:: 'intro-application-mappers' | translate}}">
+          <a href="#/realms/{{realm.realm}}/sso/{{client.id}}/mappers" id="sso-mappers">{{:: 'mappers' | translate}}</a>
+        </li>
+        <li ng-class="{active: path[4] == flowOverride}" data-ng-hide="client.appType === 'machine_to_machine'" data-step='{{ (client.appType === highSecure || client.appType === browserBased)?(!path[4] || path[4] === mappers ? 5 : (path[4] == connections)?6: 4):(!path[4] || path[4] === mappers ? 4 : 3)}}' data-title="{{:: 'intro-application-flowoverride-title' | translate}}" data-intro="{{:: 'intro-application-flowoverride' | translate}}">
+          <a href="#/realms/{{realm.realm}}/sso/{{client.id}}/flow-override" id="sso-authentication">{{:: 'authentication-flow-overrides' | translate}}</a>
+        </li>
+        <li ng-class="{active: path[4] == 'metadata'}">
+          <a href="#/realms/{{realm.realm}}/sso/{{client.id}}/metadata" id="sso-metadata">{{:: 'metadata' | translate}}</a>
+        </li>
+        <li ng-class="{active: path[4] == 'tutorial'}">
+          <a href="#/realms/{{realm.realm}}/sso/{{client.id}}/tutorial" id="sso-tutorial">{{:: 'tutorial' | translate}}</a>
+        </li>
+      </ul>
+  </div>
+</div>
+

@@ -1,0 +1,252 @@
+<div class="col-sm-9 col-md-10 col-sm-push-3 col-md-push-2">
+    <kc-tabs-realm></kc-tabs-realm>
+    <form class="form-horizontal" name="realmForm" novalidate kc-read-only="!access.manageRealm">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 enableButton">
+                    <label class="riskLabel">{{:: 'risk-bits' | translate}}</label>
+                    <input type='checkbox' ng-model="riskbitstatus.enabled" class='ios8-switch' id='checkbox-1'
+                        ng-change="enableOrDisableRiskMatrix()" />
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="table-responsive-md">
+                        <form id="risks">
+                            <table id="mytable" class="table table-bordered">
+                                <thead>
+                                    <th class="width-5">{{:: 'rating-level' | translate}}</th>
+                                    <th class="width-5">{{:: 'score' | translate}}</th>
+                                    <th class="width-5">{{:: 'risk' | translate}}</th>
+                                    <th class="width-15">{{:: 'risk-details-android' | translate}}</th>
+                                    <th class="width-15">{{:: 'risk-details-iOS' | translate}}</th>
+                                    <th class="width-10">{{:: 'operation' | translate}}</th>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="risk in risks">
+                                        <td>
+                                            <input name="rating{{$index}}" ng-model="risk.ratingLevel" ng-disabled="!edit" />
+                                        </td>
+                                        <td>
+                                            <input name="score{{$index}}" ng-model="risk.score" ng-disabled="!edit" />
+                                        </td>
+                                        <td>
+                                            <input name="risk{{$index}}" ng-model="risk.risk" ng-disabled="!edit" />
+                                        </td>
+                                        <td>
+                                            <input name="riskAndroid{{$index}}" ng-model="risk.riskAndroid" ng-disabled="!edit" />
+                                        </td>
+                                        <td>
+                                            <input name="riskIOS{{$index}}" ng-model="risk.riskIOS" ng-disabled="!edit" />
+                                        </td>
+                                        <td>
+                                            <input name="operation{{$index}}" ng-model="risk.operation" ng-disabled="!edit" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button ng-show="!edit" type="button" class="btn btn-primary"
+                                ng-click="editTable(true)">{{:: 'edit' | translate}}</button>
+                            <input ng-show="edit" type="button" class="btn btn-primary" value="Submit"
+                                ng-click="submitUpdatedRisk()" />
+                            <input type="button" ng-show="edit" class="btn btn-primary" value="Cancel"
+                                ng-click="editTable(false)" />
+                        </form>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                        <div class="riskSubHeading">{{:: 'notes' | translate}}</div>
+                        <p>{{:: 'risk-txt-one' | translate}}</p>
+                        <p>{{:: 'risk-txt-two' | translate}}</p>
+                        <p>{{:: 'risk-txt-three' | translate}}</p>
+                        <br>
+                </div>
+            </div>
+            <div class="riskHeading">{{:: 'reference' | translate}}</div>
+            <div class="riskSubHeading">{{:: 'ssms-risks-information' | translate}}</div>
+            <div class="col-md-12 opTable">
+                <div class="table-responsive-md">
+                    <form  id="operations">
+                        <table id="operationstable" class="table table-bordered">
+                            <thead>
+                            <th class="width-20">S.No</th>
+                            <th class="width-40">{{:: 'ssms-risk-name' | translate}}</th>
+                            <th class="width-40">{{:: 'description' | translate}}</th>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="info in riskInformation">
+                                <td>
+                                    <div>{{$index + 1}}</div>
+                                </td>
+                                <td>
+                                    <div>{{info.riskName}}</div>
+                                </td>
+                                <td>
+                                    <div>{{info.riskDescription}}</div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<kc-menu></kc-menu>
+
+<style>
+
+
+    #mytable input {
+        width: 100%;
+    }
+
+    .slideThree {
+        width: 140px;
+        height: 26px;
+        background: #333;
+        float: left;
+        position: relative;
+        border-radius: 50px;
+        box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+    }
+
+    .slideThree:before {
+        content: 'Enabled';
+        color: #27ae60;
+        position: absolute;
+        left: 10px;
+        z-index: 0;
+        font: 12px/26px Arial, sans-serif;
+        font-weight: bold;
+    }
+
+    .slideThree:after {
+        content: 'Disabled';
+        color: #fff;
+        position: absolute;
+        right: 10px;
+        z-index: 0;
+        font: 12px/26px Arial, sans-serif;
+        font-weight: bold;
+        text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.15);
+    }
+
+    .slideThree input[type=checkbox] {
+        visibility: hidden;
+    }
+
+    .slideThree input[type=checkbox]:checked+label {
+        left: 70px;
+    }
+
+    .slideThree label {
+        display: block;
+        width: 67px;
+        height: 20px;
+        cursor: pointer;
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        z-index: 1;
+        background: #fcfff4;
+        background: linear-gradient(to bottom, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+        border-radius: 50px;
+        transition: all 0.4s ease;
+        box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+    }
+
+    .riskLabel {
+        float: left;
+        margin-right: 20px;
+        font-size: 18px;
+    }
+
+    .enableButton {
+        float: left;
+        margin-bottom: 20px;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #0085cf;
+        border-color: #006e9c;
+    }
+
+    .riskHeading {
+        font-size: 20px;
+        margin: 10px 0px;
+        display: none;
+    }
+
+    .riskSubHeading {
+        font-size: 16px;
+        margin: 10px 0px;
+    }
+
+    .opTable {
+        padding: 0;
+    }
+
+    input[type="checkbox"].ios8-switch {
+        position: absolute;
+        margin: 8px 0 0 16px;
+    }
+
+    input[type="checkbox"].ios8-switch+label {
+        position: relative;
+        padding: 5px 0 0 50px;
+        line-height: 2.0em;
+    }
+
+    input[type="checkbox"].ios8-switch+label:before {
+        content: "";
+        position: absolute;
+        display: block;
+        left: 0;
+        top: 0;
+        width: 40px;
+        /* x*5 */
+        height: 24px;
+        /* x*3 */
+        border-radius: 16px;
+        /* x*2 */
+        background: #fff;
+        border: 1px solid #d9d9d9;
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+
+    input[type="checkbox"].ios8-switch+label:after {
+        content: "";
+        position: absolute;
+        display: block;
+        left: 0px;
+        top: 0px;
+        width: 24px;
+        /* x*3 */
+        height: 24px;
+        /* x*3 */
+        border-radius: 16px;
+        /* x*2 */
+        background: #fff;
+        border: 1px solid #d9d9d9;
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+
+    input[type="checkbox"].ios8-switch+label:hover:after {
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    input[type="checkbox"].ios8-switch:checked+label:after {
+        margin-left: 16px;
+    }
+
+    input[type="checkbox"].ios8-switch:checked+label:before {
+        background: #55D069;
+    }
+</style>

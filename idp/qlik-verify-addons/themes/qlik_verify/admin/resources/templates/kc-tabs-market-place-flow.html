@@ -1,0 +1,34 @@
+<div class="os-tabs-w mt-2">
+    <div class="os-tabs-controls">
+        <ul class="nav nav-tabs upper">
+            <li data-ng-show="template.onboarding" class="nav-item" data-step='{{initialCurrentTab === "tab_flow" && template.onboarding ? 4 : 0}}' data-title="{{:: 'intro-onboarding-blocks-flow-title' | translate}}" data-intro="{{:: 'intro-onboarding-blocks-flow' | translate}}" >
+                <a aria-expanded="false" class="nav-link cursor-pointer pt-0"
+                    ng-class="{active : currentTab === 'tab_onboarding'}" data-toggle="tab"
+                    data-ng-click="switchTab('tab_onboarding')">
+                    {{:: 'onboarding-txt' | translate}}
+                </a>
+            </li>
+            <li data-ng-show="template.login" class="nav-item" data-step='{{initialCurrentTab === "tab_flow" && template.login ? 5 : 0}}' data-title="{{:: 'intro-login-blocks-flow-title' | translate}}" data-intro="{{:: 'intro-login-blocks-flow' | translate}}">
+                <a aria-expanded="false" class="nav-link cursor-pointer pt-0"
+                    ng-class="{active : currentTab === 'tab_login'}" data-toggle="tab"
+                    data-ng-click="switchTab('tab_login')">
+                    {{:: 'login-txt' | translate}}
+                </a>
+            </li>
+            <li data-ng-show="template.recovery" class="nav-item" data-step='{{initialCurrentTab === "tab_flow" && template.recovery  ? 6 : 0}}' data-title="{{:: 'intro-recovery-blocks-flow-title' | translate}}" data-intro="{{:: 'intro-recovery-blocks-flow' | translate}}">
+                <a aria-expanded="false" class="nav-link cursor-pointer pt-0"
+                    ng-class="{active : currentTab === 'tab_recovery'}" data-toggle="tab"
+                    data-ng-click="switchTab('tab_recovery')">
+                    {{:: 'recovery-txt' | translate}}
+                </a>
+            </li>
+            <li data-ng-show="template.redirect" class="nav-item" data-step='{{initialCurrentTab === "tab_flow" && template.redirect  ? 7 : 0}}' data-title="{{:: 'intro-redirect-blocks-flow-title' | translate}}" data-intro="{{:: 'intro-redirect-blocks-flow' | translate}}">
+                <a aria-expanded="false" class="nav-link cursor-pointer pt-0"
+                    ng-class="{active : currentTab === 'tab_redirect'}" data-toggle="tab" 
+                    data-ng-click="switchTab('tab_redirect')">
+                    {{:: 'redirect-txt' | translate}}
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

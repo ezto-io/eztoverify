@@ -1,0 +1,169 @@
+<div class="content-w" data-ng-controller="KcCreateTemplatesCtrl" data-ng-class="!showTopBar && 'rounded'">
+    <div class="content-i theme-editor">
+        <div class="content-box" data-ng-class="!showTopBar && 'p-1'">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20" data-ng-if="showTopBar">
+                    <li data-ng-show="path[3] == 'templates'">
+                        <a href="#/realms/{{realm.realm}}/authentication/{{path[3]}}" id="back-to-templates">
+                            <i class="os-icon {{isRTL ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6'}} breadcrumb-back-icon"></i>
+                            {{ :: 'back-to-workflows' | translate}}
+                        </a>
+                    </li>
+                    <li data-ng-show="path[3] == 'sub-workflows'">
+                        <a href="#/realms/{{realm.realm}}/authentication/{{path[3]}}" id="back-to-sub-templates">
+                            <i class="os-icon {{isRTL ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6'}} breadcrumb-back-icon"></i>
+                            {{ :: 'back-to-sub-workflows' | translate}} 
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper" data-ng-class="!showTopBar && 'pb-0'">
+                        <div class="d-flex action-details align-items-center mb-0" data-ng-if="showTopBar">
+                            <div class="flex-grow-1">
+                                <div class="user-details-top action-details align-items-start mb-0 justify-content-end">
+                                    <div class="text-overflow-control mr-auto">
+                                        <h3 class="font-weight-normal pb-0 pt-0">{{actionrep.alias}}</h3>
+                                    </div>
+                                </div>
+                                <p class="helper-text mt-1 ten-words-per-line"> {{::'create-templates-discription' | translate}} </p>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center bg-white rounded mr-3 p-2" data-ng-show="costEstimation.hasOwnProperty('estimatedCost')">
+                                    <div class="custom-component-tooltip">
+                                        <i class="ti-info-alt px-1 "></i>
+                                        <div class="custom-component-tooltiptext rounded p-3">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <div>
+                                                    <p class="mb-1 text-muted">{{'current-plan' | translate}}</p>
+                                                    <p class="text-primary h6">{{costEstimation.currentPlan | translate}}</p>
+                                                </div>
+                                                <div>
+                                                    <p class="mb-1 text-muted">{{'estimated-cost' | translate}}</p>
+                                                    <p class="text-primary h6">{{currencySymbol}} {{costEstimation.estimatedCost}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="py-3 individual-module-plan-wrapper">
+                                                <div class="row text-left individual-module-plan" ng-repeat="(moduleName, cost) in costEstimation.costForEachVerificationModule" >
+                                                    <span class="col-7 p-0 d-flex justify-content-between"><span>{{moduleName | translate}}</span><span>:</span></span>
+                                                    <span class="col-5 p-0 text-right" ng-if="cost !== '*'">{{currencySymbol}} {{cost}}</span>
+                                                    <span class="col-5 p-0 text-right" ng-if="cost === '*'"> {{cost}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-left text-muted mt-2">
+                                                {{costEstimation.planDescription | translate}}
+                                            </div>
+                                            <div class="text-left text-muted mt-2" ng-if="costEstimation.validatorDescription">
+                                                <strong>*</strong> {{costEstimation.validatorDescription | translate}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="mx-1 text-nowrap text-muted">{{'estimated-cost' | translate}}:</span>
+                                    <span class="mx-2 h6 my-0 text-primary text-nowrap">{{currencySymbol}} {{costEstimation.estimatedCost}}</span>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center bg-white py-2">
+                                    <span class="text-primary px-2 border-right" id="export-workflow-btn" tooltip="{{:: 'export' |translate}}" tooltip-placement="bottom" tooltip-trigger="mouseover mouseout" data-ng-click="exportWorkflowJson()"><img src='{{resourceUrl}}/themes/img/file-export.svg' height="28" class="px-1" ></span>
+                                    <span class="text-primary px-3 border-right" id="action-variables-btn" tooltip="{{:: 'variables' |translate}}" tooltip-placement="bottom" tooltip-trigger="mouseover mouseout" data-ng-click="showActionVariables()"><i class="ti-pencil-alt plus-icon m-0"></i></span>
+                                    <!-- OSS: workflow gif visualize removed (assets served from proprietary cloud CDN, absent on-prem). -->
+                                    <span 
+                                        class="text-danger px-3" 
+                                        data-ng-click="delete()" 
+                                        id="workflow-delete-btn" 
+                                        tooltip="{{:: 'delete' |translate}}" 
+                                        tooltip-placement="bottom" 
+                                        tooltip-trigger="mouseover mouseout" 
+                                        data-ng-click="navigateToLink(clientEdit.authenticationFlowBindingOverrides['verification-action'])" 
+                                        data-ng-if="!(actionrep.marketplace)">
+                                        <i class="os-icon os-icon-ui-15 plus-icon m-0"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="element-box mb-0 position-relative" data-ng-class="showTopBar && 'mb-2 mt-5'">
+                            <div class="workflow-tree-loader d-flex align-items-center justify-content-center" ng-if="isFlowLoading">
+                                <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+                            </div>
+                            <div class="add-action-flow-parent-container">
+                                <div>
+                                    <div class="add-action-flow-sub-parent-container">
+                                        <div id="drawflow" ondrop="angular.element(this).scope().dropComp(event)" ondragover="angular.element(this).scope().allowDropComp(event)" data-title="{{ :: 'intro-actions-drawflow-playground-title' | translate}}" data-intro="{{ :: 'intro-actions-drawflow-playground' | translate}}">
+                                        </div>
+                                        <div class="position-relative flow-zoom-buttons d-flex flex-column align-items-center">
+                                            <span class="btn m-1 p-0 bg-secorndary-lite" id="zoomIn"><i class="os-icon os-icon-plus plus-icon m-1"></i></span>
+                                            <span class="btn m-1 p-0 bg-secorndary-lite" id="zoomOut"><i class="os-icon os-icon-minus2 plus-icon m-1"></i></span>
+                                            <span class="btn m-1 p-0 bg-secorndary-lite" id="centerLocator"><img src='{{resourceUrl}}/themes/img/workflow-align-center-icon.png' class="m-1" height="21" ></span>
+                                        </div>
+                                        <div class="action-list-container bg-light-2" ng-if="false">
+                                            <div class="action-list-sub-container">
+                                                <div class="action-list pb-1" style="min-height: 114px;">
+                                                    <header class="pb-2">
+                                                        <div>
+                                                            <h6>{{:: 'Validation-module-title-txt' | translate}}</h6>
+                                                            <p class="helper-text">{{:: 'validator-module-drag-and-drop' | translate}}</p>
+                                                        </div>
+                                                    </header>
+                                                    <div class="list-container">
+                                                        <div data-ng-if="unregisteredRequiredActions.length > 0 && unregisteredRequiredAction.isValidator && unregisteredRequiredAction.isValidator == 'true'" ng-repeat="unregisteredRequiredAction in unregisteredRequiredActions" id="{{unregisteredRequiredAction.name.toLowerCase().replaceAll(' ','-')}}-template" >
+                                                            <div data-ng-show="unregisteredRequiredAction" class="single-action-container drag-drawflow"  draggable="true" ondragstart="angular.element(this).scope().dragComp(event)" ondragend= "angular.element(this).scope().dragEnd(event)" data-id="{{unregisteredRequiredAction.providerId}}">
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <div>
+                                                                        <i class="os-icon os-icon-code margin-right-5px"></i><span> {{:: unregisteredRequiredAction.name | translate}}</span>
+                                                                    </div>
+                                                                    <div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div data-ng-hide="unregisteredRequiredAction" data-node="{{::unregisteredRequiredAction.name | translate}}" class="text-center">{{::'no-templates-flow' | translate}}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr class="mt-4 mb-0 mx-4" />
+                                            <div class="action-list-sub-container">
+                                                <div class="action-list">
+                                                    <header class="padding-bottom-25">
+                                                        <div data-title="{{ :: 'intro-actions-drawflow-title' | translate}}" data-intro="{{ :: 'intro-actions-drawflow' | translate}}">
+                                                            <h6>{{:: 'add-templates-txt' | translate}}</h6>
+                                                            <p class="helper-text">{{:: 'templates-drag-and-drop' | translate}}</p>
+                                                        </div>
+                                                        <!-- Search -->
+                                                        <form class="form-inline pt-2">
+                                                            <div class="element-search w-100">
+                                                                <input class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched" id="tempate-search-input" type="text" placeholder="{{:: 'search' | translate}}..." data-ng-model="search" onkeydown="if (event.keyCode == 13) document.getElementById('actionsSearch').click()" ng-trim="false">
+                                                                <i class="os-icon os-icon-search2 search-icon" id="actionsSearch"></i>
+                                                            </div>
+                                                        </form>
+                                                    </header>
+
+                                                    <div class="list-container">
+                                                        <div data-ng-if="unregisteredRequiredActions.length > 0 && !(unregisteredRequiredAction.isValidator && unregisteredRequiredAction.isValidator == 'true')" ng-repeat="unregisteredRequiredAction in unregisteredRequiredActions | filter: templateFilter | orderBy: 'name'" id="{{unregisteredRequiredAction.name.toLowerCase().replaceAll(' ','-')}}-template" >
+                                                            <div data-ng-show="unregisteredRequiredAction" class="single-action-container drag-drawflow"  draggable="true" ondragstart="angular.element(this).scope().dragComp(event)" ondragend= "angular.element(this).scope().dragEnd(event)" data-id="{{unregisteredRequiredAction.providerId}}">
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <div>
+                                                                        <i class="os-icon os-icon-code margin-right-5px"></i><span> {{:: unregisteredRequiredAction.name | translate}}</span>
+                                                                    </div>
+                                                                    <div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div data-ng-hide="unregisteredRequiredAction" data-node="{{::unregisteredRequiredAction.name | translate}}" class="text-center">{{::'no-templates-flow' | translate}}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-buttons-w border-top-0 mb-2 pb-2" ng-show="autoSave && realm.realm == rootAccountName">
+                                <div class="col-md-12 d-flex flex-row-reverse pr-0"> 
+                                    <button ng-disabled="!isMarketplaceSaveEnabled" class="ml-3 btn btn-primary ng-binding" id="saveMarketPlace" data-ng-click="saveMarketPlace()">Save</button>
+                                    <button ng-disabled="!isMarketplaceSaveEnabled" id="CancelMarketPlace" data-ng-click="queryFlows()"class="ng-binding btn btn-secondary" type="submit">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,343 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 250,
+        "pattern": "^[a-zA-Z0-9_]+$"
+      },
+      "label": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 250
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "text",
+          "date",
+          "option",
+          "checkbox",
+          "radio",
+          "file",
+          "button",
+          "capture",
+          "textarea",
+          "phonenumber"
+        ]
+      },
+      "options": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 250
+      },
+      "placeHolder": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "helperText": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "dependsOn": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "field"
+          ]
+        },
+        "minItems": 1
+      },
+      "validationTypeForDependsOn": {
+        "type": "string",
+        "enum": [
+          "all_true",
+          "any_true"
+        ]
+      },
+      "isRequired": {
+        "type": "boolean"
+      },
+      "regex": {
+        "type": "string",
+        "minLength": 1
+      },
+      "regexError": {
+        "type": "string",
+        "minLength": 1
+      },
+      "multiple": {
+        "type": "boolean"
+      },
+      "onlyAccept": {
+        "type": "string",
+        "pattern": "^(jpeg|jpg|gif|svg|png|pdf|doc|docx|xls|xlsx|txt|mp4|mov|ppt|pptx|mp3)(,(jpeg|jpg|gif|svg|png|pdf|doc|docx|xls|xlsx|txt|mp4|mov|ppt|pptx|mp3))*$"
+      },
+      "defaultValue": {
+        "type": "string",
+        "minLength": 1
+      },
+      "editable": {
+        "type": "boolean"
+      },
+      "page": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 3
+      },
+      "includeMetadata": {
+        "type": "boolean"
+      },
+      "buttonColor": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "textColor": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "facingMode": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 10
+      }
+    },
+    "required": [
+      "name",
+      "type"
+    ],
+    "additionalProperties": false,
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "enum": [
+                "option",
+                "checkbox",
+                "radio"
+              ]
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "options"
+          ],
+          "properties": {
+            "options": {
+              "minLength": 1
+            }
+          }
+        },
+        "else": {
+          "properties": {
+            "options": {
+              "not": {}
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "enum": [
+                "text",
+                "capture",
+                "textarea"
+              ]
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "placeHolder": {
+              "type": "string"
+            },
+            "regex": {
+              "type": "string"
+            }
+          }
+        },
+        "else": {
+          "properties": {
+            "placeHolder": {
+              "not": {}
+            },
+            "regex": {
+              "not": {}
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "regex": {
+              "type": "string"
+            }
+          },
+          "required": ["regex"]
+        },
+        "then": {
+          "properties": {
+            "regexError": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "else": {
+          "properties": {
+            "regexError": {
+              "not": {}
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "enum": [
+                "file",
+                "option"
+              ]
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "multiple": {
+              "type": "boolean"
+            }
+          }
+        },
+        "else": {
+          "properties": {
+            "multiple": {
+              "not": {}
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "enum": [
+                "file"
+              ]
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "onlyAccept": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "else": {
+          "properties": {
+            "onlyAccept": {
+              "not": {}
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "validationTypeForDependsOn": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "validationTypeForDependsOn"
+          ]
+        },
+        "then": {
+          "required": [
+            "dependsOn"
+          ]
+        }
+      },
+      {
+        "if": {
+          "not": {
+            "required": [
+              "validationTypeForDependsOn"
+            ]
+          }
+        },
+        "then": {
+          "properties": {
+            "dependsOn": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  }
+                },
+                "required": [
+                  "field"
+                ]
+              },
+              "minItems": 1
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "editable": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "editable"
+          ]
+        },
+        "then": {
+          "required": [
+            "defaultValue"
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,121 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+    <div class="content-i bo">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper pb-2">
+                        <h3 class="element-header">
+                            {{ :: 'getting-started' | translate }}
+                        </h3>
+                        <div ng-if="dataLoaded">
+                        <div class="blue-zone-container getting-started-list getting-started-box rounded-0" data-ng-if="serverInfo.systemInfo.offering == 'CLOUD'" ng-class="{ 'caution-zone-container': licenseInfo.body.days <= 10 && licenseInfo.body.days > 5,'red-bg' : ((licenseInfo.body.days <= 5 && licenseInfo.body.days !== -1) || !licenseInfo.body.days)  }">
+                            <div>
+                              <h4 class="blue-zone-title">{{:: 'subscription-status' | translate}}</h4>
+                              <p class="mb-0">{{:: licenseMessage | translate}}</p>
+                            </div>
+                            <div class="gs-action"> 
+                                <a href="#/realms/{{realm.realm}}/realm-subscription" class="gs-action-link" id="qv-gettingStarted-viewAccountStatus" >
+                                    <button class="account-status {{isRTL() ? ' slick-prev' : ' slick-next'}} slick-arrow position-relative  pr-3 blue-zone-title pb-0" aria-label="Next" type="button" aria-disabled="false"> {{ :: 'view-account-status' | translate }}  </button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="getting-started-list mt-3" id="app_list" ng-show="isWorkflowEnabled">
+                            <div class="getting-started-box home-step-1" data-title="{{ :: 'intro-qv-application-title' | translate }}"  data-intro="{{ :: 'intro-qv-application' | translate | replaceWithVariant:serverInfo.variant}}">
+                                <div>
+                                    <div class="icon-w">
+                                        <div class="os-icon os-icon-package"></div>
+                                    </div> 
+                                </div>
+                                <div>
+                                    <h5 class="gs-title">{{ :: 'create-app-title' | translate | replaceWithVariant:serverInfo.variant}}</h5>
+                                    <p class="gs-desc">{{ :: 'create-app-desc' | translate | replaceWithVariant:serverInfo.variant}}</p>
+                                </div>
+                                <div class="gs-action">
+                                    <a href="#/create/ciba-client/type/ciba/{{realm.realm}}" class="gs-action-link" id="qv-sidemenu-createApplication-desktop" >
+                                        <button class="account-status {{isRTL() ? ' slick-prev' : ' slick-next'}} s slick-arrow position-relative " aria-label="Next" type="button" aria-disabled="false" ng-click="openSupportWidget( 'create-app-article-id' | translate)" > {{ :: 'create-app-action' | translate }}</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="getting-started-list mt-3"  data-ng-if="workspaceSetupStatus.enabledOwnEmailProvider && isWorkflowEnabled">
+                            <div class="getting-started-box home-step-1" data-title="{{ :: 'intro-qv-application-title' | translate }}"  data-intro="{{ :: 'intro-qv-application' | translate | replaceWithVariant:serverInfo.variant}}">
+                                <div>
+                                    <div class="icon-w">
+                                        <div data-ng-class="(workspaceSetupStatus.enabledOwnEmailProvider && workspaceSetupStatus.ownEmailProviderConfigured) ? 'os-icon-check setup-completed-icon' : 'os-icon-mail'" class="os-icon"></div>
+                                    </div> 
+                                </div>
+                                <div>
+                                    <h5 class="gs-title">{{ ::'add-emailprov-title' | translate }}</h5>
+                                    <p class="gs-desc">{{ ::'add-emailprov-desc' | translate }}</p>
+                                </div>
+                                <div class="gs-action">
+                                    <a href="#/realms/{{realm.realm}}/email/providers" class="gs-action-link" id="qv-gettingStarted-addEmailProvider">
+                                        <button class=" {{isRTL() ? ' slick-prev' : ' slick-next'}} slick-arrow position-relative " aria-label="Next" type="button" aria-disabled="false" ng-click="openSupportWidget( 'add-email-article-id' | translate )">{{ :: (workspaceSetupStatus.enabledOwnEmailProvider && workspaceSetupStatus.ownEmailProviderConfigured) ? 'view-emailprov-action' :  'add-emailprov-action' | translate }}</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="getting-started-list mt-3"  data-ng-if="workspaceSetupStatus.enabledOwnSmsProvider && isWorkflowEnabled">
+                            <div class="getting-started-box home-step-1" data-title="{{ :: 'intro-qv-application-title' | translate }}"  data-intro="{{ :: 'intro-qv-application' | translate | replaceWithVariant:serverInfo.variant}}">
+                                <div>
+                                    <div class="icon-w">
+                                        <div data-ng-class="(workspaceSetupStatus.enabledOwnSmsProvider && workspaceSetupStatus.ownSmsProviderConfigured) ? 'os-icon-check setup-completed-icon' : 'os-icon-mail-07'" class="os-icon"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5 class="gs-title">{{ ::'add-smsprov-title' | translate }}</h5>
+                                    <p class="gs-desc">{{ ::'add-smsprov-desc' | translate }}</p>
+                                </div>
+                                <div class="gs-action">
+                                    <a href="#/realms/{{realm.realm}}/sms/providers" class="gs-action-link" id="qv-gettingStarted-addSmsProvider" >
+                                        <button class=" {{isRTL() ? ' slick-prev' : ' slick-next'}} slick-arrow position-relative " aria-label="Next" type="button" aria-disabled="false" ng-click="openSupportWidget( 'add-sms-article-id' | translate)">{{ :: (workspaceSetupStatus.enabledOwnSmsProvider && workspaceSetupStatus.ownSmsProviderConfigured) ? 'view-smsprov-action' : 'add-smsprov-action' | translate }}</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="getting-started-list col-12 col-xl-6" data-title="{{ :: 'intro-add-team-members-title' | translate }}" data-intro="{{ :: 'intro-add-team-members' | translate }}">
+                                <div class="getting-started-box h-100">
+                                    <div>
+                                        <div class="icon-w" data-ng-class="workspaceSetupStatus.adminUserCount && workspaceSetupStatus.adminUserCount > 1 && 'setup-completed-icon-wrapper'">
+                                            <div data-ng-class="(workspaceSetupStatus.adminUserCount && workspaceSetupStatus.adminUserCount > 1) ? 'os-icon-check setup-completed-icon' : 'os-icon-users'" class="os-icon"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h5 class="gs-title">{{ ::'add-admin-title' | translate }} </h5>
+                                        <p class="gs-desc">
+                                            {{ ::'add-admin-desc-expand' | translate }}
+                                            <a href="#/realms/{{realm.realm}}/dashboard-admins" id="qv-gettingStarted-addOtherAdmin" ng-click="openSupportWidget( 'add-tenant-admin-article-id' | translate)">{{ ::'add-admin-action' | translate }}</a>
+                                            {{ ::'add-admin-desc-help' | translate }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="getting-started-list col-12 col-xl-6">
+                                <div class="getting-started-box h-100">
+                                    <div>
+                                        <div class="icon-w">
+                                            <i class="os-icon os-icon-mail-14"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h5 class="gs-title">{{ ::'help-and-support-title' | translate }}</a></h5>
+                                        <p class="gs-desc"> {{ :: 'need-help' | translate }} 
+                                            <a class="text-decoration-none-imp" id="qv-gettingStarted-QvSupport" href="https://support.ezto.io/support/home"> {{ :: 'qv-support' | translate | replaceWithVariant:serverInfo.variant}} </a> {{ :: 'help-support-text' | translate }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!(dataLoaded)">
+                <kc-loader loadertype="loaderTypeName" ></kc-loader>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+<div class="social-details-tab-container">
+    <div class="social-details-container">
+        <div class="d-flex align-items-center">
+            <div class="mr-4">
+                <div class="social-details-logo-container">
+                    <img data-ng-src="{{resourceUrl}}/themes/img/social-icons/{{ identityProvider.providerId }}-logo.png" alt="logo-img" /> 
+                </div>
+            </div>
+            <div data-ng-hide="newIdentityProvider">
+                <div>
+                    <h1 class="user-detail-username word-break-all text-capitalize"> {{ identityProvider.providerId }}</h1>
+                    <div class="user-id-container">
+                    {{:: 'identifier' | translate}} <code class="user-id-code">{{ identityProvider.internalId }}</code>
+                    </div>
+                </div>
+            </div>
+            <div data-ng-show="newIdentityProvider">
+                <h3 class="font-weight-normal text-capitalize "> {{:: 'new' | translate}} {{ identityProvider.providerId }} {{:: 'intro-social-connection-title' | translate}} </h3>
+            </div>
+        </div>
+    </div>
+    <div class="social-details-actions">
+        <button class="create-btn" id="setup-guide-btn" data-ng-click="openSetupGuide(identityProvider.providerId, identityProvider.setupGuideLink)">
+            <i class="os-icon os-icon-book-open plus-icon mr-1"></i>{{:: 'setup-guide' | translate}}
+        </button>
+    </div>
+</div>

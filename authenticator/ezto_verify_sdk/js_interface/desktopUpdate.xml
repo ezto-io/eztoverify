@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>ezto verify</title>
+    <!-- A release testing maximumSystemVersion -->
+    <item>
+        <title>Version 3.0.1+24531102</title>
+        <description>Minor updates and improvements.</description>
+        <enclosure url="https://play.google.com/store/apps/details?id=io.ezto.verify.demo" sparkle:version="4.0.0" sparkle:os="android" />
+    </item>
+  </channel>
+</rss>

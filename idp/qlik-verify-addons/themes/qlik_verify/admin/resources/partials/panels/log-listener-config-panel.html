@@ -1,0 +1,82 @@
+<div class="auth-config-container pb-3 ng-scope">
+    <div class="exec-logo-container panel-img">
+        <img height="40px" ng-if="logo != null" data-ng-src="{{resourceUrl}}/themes/img/{{logo}}" alt="logo">
+        <img ng-if="logo == null" data-ng-src="{{resourceUrl}}/themes/img/webhook-img.png" alt="">
+    </div>
+    <div class="exec-title"> 
+        <p class="font-size-normal">{{:: name | translate}}</p>
+    </div>
+    <div id="close" data-ng-click="dismissPanel()" class="mt-0">
+        <i class="os-icon os-icon-close"></i>
+    </div>
+</div>
+<div id="divisionthing" class="ng-scope"></div>
+<div class="sub-top-bar mt-4 config-nav box-shadow-none">
+    <ul class="cursor-pointer">
+        <li ng-class="{active: ishowTo}">
+            <a data-ng-click="tabSelect('howTo')" id="howTo-tab">{{:: 'how-to' | translate}}</a>
+        </li>
+        <li ng-class="{active: isConfig}">
+            <a data-ng-click="tabSelect('Config')" id="configuration-tab">{{:: 'configuration' | translate}}</a>
+        </li>
+    </ul>
+</div>
+
+<form class="form-horizontal mt-4 px-2 pb-5" name="realmForm" novalidate>
+    <div data-ng-if="ishowTo">
+        <div data-ng-show="howToDo" class='mdPreview overflow-hidden mdTrigger' url='{{howToDo}}' data-ng-click="mdTrigger()">  
+        </div>
+        <div class="element-box-medium top-align" data-ng-show="!howToDo">
+            <div class="no-entry-svg">
+                <p class="no-results-msg no-entry-display mt-2">{{:: 'no-data-found' | translate}}</p>
+            </div>
+        </div>
+    </div>
+    <div data-ng-show="isConfig">
+        <fieldset>
+            <div class="form-group row panel-responsive">
+                <label class="col-md-3 control-label">{{:: 'enabled' | translate}} {{:: configType.name | translate}}</label>
+                <div class="col-md-9">
+                    <label>
+                        <div class="os-toggler-w" ng-class="{on: isEnabled}">
+                            <div class="os-toggler-i" id="enabled-toggle">
+                                <div class="os-toggler-pill" ng-model="isEnabled" name="enabled" id="enabled"
+                                    onoffswitch>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group clearfix row mb-0 pb-4 panel-responsive" data-ng-show="config && config.id && hasConfig && isEnabled">
+                <label class="col-md-3 control-label" for="configId">{{:: 'id' | translate}} </label>
+                <div class="col-md-9">
+                    <input class="form-control" id="configId" type="text" ng-model="config.id" readonly>
+                </div>
+            </div>
+            <div class="panel-responsive">
+                <kc-provider-config data-ng-if="configType.properties.length > 0 && isEnabled && hasConfig"
+                    realm="realm" config="config.config" properties="configType.properties">
+                </kc-provider-config>
+            </div>
+        </fieldset>
+        <div class="form-buttons-w border-top-0 mt-2 mb-5">
+            <div class="col-md-12 d-flex justify-content-end px-0" ng-class="{ 'justify-content-between' : configType.properties.length > 0 && isEnabled && hasConfig && configType.hasTestConfig }">
+                <button id="testBtn"
+                    data-ng-if="configType.properties.length > 0 && isEnabled && hasConfig && configType.hasTestConfig"
+                    class="btn btn-secondary audit-btn-responsive mr-2" data-ng-click="test()" data-ng-disabled="!(isTestConfigEnabled(config.config, configType.properties))">
+                    <span data-ng-if=" stage === 1 " >{{:: 'test-configuration' | translate}}</span>
+                    <div data-ng-if=" stage === 2 ">
+                        <kc-action-button-loading></kc-action-button-loading>
+                    </div>
+                </button>
+                <button id="submit" data-ng-disabled="!toggleChanged" class="btn btn-primary audit-btn-responsive ml-0" data-ng-click="save()">
+                    <span ng-show=" subStage === 1 " >{{:: 'save' | translate}}</span>
+                    <div data-ng-if=" subStage === 2 ">
+                        <kc-action-button-loading></kc-action-button-loading>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

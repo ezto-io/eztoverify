@@ -1,0 +1,92 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li data-ng-show="newsmsProvider"> 
+                    <a href="#/realms/{{realm.realm}}/sms/providers/create" class="ng-binding" id="backToCreateSmsProvider">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6'}} breadcrumb-back-icon"></i>{{ :: 'back-to-choose-sms-conn' | translate}}
+                    </a>
+                </li>
+                <li data-ng-hide="newsmsProvider"> 
+                    <a href="#/realms/{{realm.realm}}/sms/providers" class="ng-binding" id="backToSmsProviders" >
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6'}} breadcrumb-back-icon"></i>{{ :: 'back-to-sms-conn' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="social-details-tab-container">
+                            <div class="social-details-container">
+                                <div class="d-flex align-items-center">
+                                    <div class="mr-4">
+                                        <div class="social-details-logo-container">
+                                            <img data-ng-src="{{resourceUrl}}/themes/img/{{logo}}" alt="logo-img" /> 
+                                        </div>
+                                    </div>
+                                    <div data-ng-hide="newsmsProvider">
+                                        <div>
+                                            <h1 class="user-detail-username word-break-all text-capitalize"> {{name}}</h1>
+                                        </div>
+                                    </div>
+                                    <div data-ng-show="newsmsProvider">
+                                        <h3 class="font-weight-normal text-capitalize "> {{ name }} </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="social-details-actions">
+                                <button class="create-btn" data-ng-click="openSetupGuide(name, logo, howToDo)" id="setupGuideBtn">
+                                    <i class="os-icon os-icon-book-open plus-icon mr-1"></i>{{:: 'setup-guide' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="element-box py-5">
+                            <div id="provider-config-box">
+                                <kc-provider-config data-ng-if="configType.properties.length > 0 && hasConfig"
+                                    realm="realm" config="config.config" completeconfig="config" completeprop="configType" properties="configType.properties">
+                                </kc-provider-config>
+                            </div>
+                            <div class="form-buttons-w border-top-0 mt-2 mb-3">
+                                <div class="col-md-12 d-flex flex-row-reverse pr-0">
+                                    <button data-ng-disabled="!toggleChanged" id="saveBtn" class="btn btn-primary ml-3" data-ng-click="save()">
+                                        <span data-ng-show=" stage === 1 " >{{:: 'save' | translate}}</span>
+                                        <div data-ng-show=" stage === 2 ">
+                                            <kc-action-button-loading></kc-action-button-loading>
+                                        </div>
+                                    </button>
+                                    <button kc-cancel data-ng-click="cancel()" id="cancelBtn" data-ng-disabled="!toggleChanged">{{:: 'cancel' | translate}}</button>
+                                    <button id="test-configuration"
+                                    data-ng-if="configType.properties.length > 0 && hasConfig && configType.hasTestConfig"
+                                    class="btn btn-secondary" data-ng-click="test()">{{:: 'test-configuration' | translate}}</button>
+                                </div>
+                            </div>
+                            <br/>
+                            <!-- Danger Zone  -->
+                            <div data-ng-hide="newsmsProvider">
+                                <h3 class="danger-zone-main-title">{{:: 'danger-zone' | translate}}</h3>
+                                <br>
+                                <ul class="danger-zone-list" data-step='{{newsmsProvider?0:1}}' data-title="{{:: 'intro-application-dangerzone-title' | translate}}" data-intro="{{:: 'intro-application-dangerzone' | translate}}">
+                                    <li>
+                                        <div class="danger-zone-container">
+                                            <div>
+                                                <h4 class="danger-zone-title">{{:: 'delete-sms-prov-title' | translate}}</h4>
+                                                <p class="mb-0">{{:: 'delete-connection-content' | translate}}</p>
+                                            </div>
+                                            <div class="pull-right">
+                                                <button class="btn btn-danger" id="removeClient" data-ng-hide=" stage === 2 " data-ng-click="remove()">{{:: 'delete-connection-btn' | translate}}</button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

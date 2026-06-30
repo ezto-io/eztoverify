@@ -1,0 +1,52 @@
+.card-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 3rem;
+}
+.explore {
+  max-width: 1440px;
+  width: 100%;
+  position: relative;
+}
+.explore-wrapper {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.explore-title {
+  font-size: 2.25rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-align: center;
+}
+
+.explore-desc {
+  text-align: center;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  color: rgba(51, 51, 51, 0.7);
+  line-height: 1.75rem;
+  margin: 0;
+}
+
+html[data-theme="dark"] .explore-desc {
+  color: #e6e6e6;
+}
+
+html[data-theme="dark"] .explore {
+  padding-top: 8rem;
+}
+
+@media only screen and (max-width: 980px) {
+  .explore {
+    padding-top: 2rem;
+  }
+}

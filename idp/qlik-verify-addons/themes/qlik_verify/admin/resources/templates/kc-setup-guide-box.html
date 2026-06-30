@@ -1,0 +1,25 @@
+<div class="position-relative user-select-none w-100 h-100"
+    data-ng-class="{'d-flex align-items-center justify-content-center': displayGuide}" data-ng-init="init()">
+    <iframe id="setup-guide-iframe" data-ng-show="displayGuide" data-ng-src="{{findMappersMatch()}}"
+        sandbox="allow-scripts allow-top-navigation-by-user-activation allow-popups allow-same-origin"
+        security="restricted" title="Authenticator Workflow" width="100%" height="100%"
+        referrerpolicy="strict-origin-when-cross-origin" frameborder="0" webkitallowfullscreen="webkitallowfullscreen"
+        mozallowfullscreen="mozallowfullscreen" allowfullscreen="allowfullscreen" class="rounded-md"></iframe>
+    <div id="setup-guide-nodata" class="element-box-medium top-align" data-ng-show="displayGuide">
+        <div class="no-entry-svg">
+            <img data-ng-src="{{resourceUrl}}/themes/img/no-apps.svg" alt="no-results-svg"
+                class="opacity-40 no-entry-display" />
+            <p class="no-results-msg no-entry-display mt-2">{{:: 'no-data-found' | translate}}</p>
+        </div>
+    </div>
+    <div id="setup-guide-nocookies" class="element-box-medium top-align" data-ng-show="displayGuide">
+        <div class="no-entry-svg px-5">
+            <img data-ng-src="{{resourceUrl}}/themes/img/no-apps.svg" alt="no-results-svg"
+                class="opacity-40 no-entry-display" />
+            <p class="no-results-msg no-entry-display mt-2">{{:: 'third-party-cookies-blocked' | translate}}<br/> <a target="_blank" href="{{editedUrl()}}" rel="norefferer noopener">{{:: 'click-here-txt' | translate}}</a> {{:: 'to-continue' | translate}}.</p>
+        </div>
+    </div>
+    <div class="h-100 w-100" data-ng-if="!displayGuide">
+        <kc-loader loadertype="loaderTypeName"></kc-loader>
+    </div>
+</div>

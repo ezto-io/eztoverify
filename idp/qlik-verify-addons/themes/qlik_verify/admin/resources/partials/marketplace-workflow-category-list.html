@@ -1,0 +1,135 @@
+<kc-menu></kc-menu>
+<div class="content-w min-h-100" ng-init="init()" >
+    <div class="content-i">
+        <div class="content-box">
+            <ol class="breadcrumb pl-0">
+                <li>
+                    <a href="#/realms/{{realm.realm}}/marketplace/workflows" id="backToMarketplace">
+                    <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-marketplace' | translate}}
+                    </a>
+                </li>
+            </ol>
+            <div class="row" ng-show="searchLoaded">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <!-- Header -->
+                        <div class="d-flex flex-wrap align-items-center justify-content-between mb-5">
+                            <h1 class="element-header mb-0">{{:: 'category' | translate}}</h1>
+                            <div data-ng-if="categories.length > 0">
+                                <button data-ng-click="createCategory()" class="create-btn my-3" id="create-template-btn" data-ng-click="createCategory()" >
+                                    <i class="os-icon os-icon-plus plus-icon"></i>
+                                    {{:: 'create-category' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Search Filter -->
+                        <div class="controls-above-table mb-0" ng-show="total > 0">
+                            <div class="form-inline justify-content-between">
+                                <div class="form-group">
+                                    <div class="element-search">
+                                        <input ng-model="searchKey" class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched action-search-container" id="templates-search-input" type="text" placeholder="{{ :: 'search-category' | translate}}" onkeydown="if (event.keyCode === 13) document.getElementById('categorySearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="categorySearch" data-ng-click="changeSearchKey()"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <select data-ng-if="!searchKey" ng-model="limit" ng-change="selectQuery(limit)"
+                                        data-ng-options="itemCount for itemCount in [5,10,50,100]" id="templatePageCount"
+                                        data-ng-show="(total && total > 5 )"
+                                        class="form-control form-control-sm rounded bright events-admin-search client-list-count-select">
+                                        <option data-ng-repeat="itemCount in [5,10,50,100]"
+                                            data-ng-selected="limit === itemCount" data-ng-value="itemCount">
+                                            {{ itemCount }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Category List -->
+                        <div data-ng-if="categories.length > 0" class="mt-4">
+                            <div class="table-responsive-md clients-list">
+                                <table class="table table-light-bordered table-padded w-100 table-layout-fixed">
+                                    <thead> </thead>
+                                    <tbody class="p-3">
+                                        <tr class="position-relative fadeUp" id="category-card-{{$index}}" ng-repeat="category in categories"> 
+                                            <td class="w-40" id="{{category.id.toLowerCase().replaceAll(' ','-')}}">
+                                                <div class="conn-with-logo">
+                                                    <div class="social-conn-logo-container">
+                                                        <i class="os-icon os-icon-git-merge font-25"></i>
+                                                    </div>
+                                                    <div class="overflow-ellipsis" >
+                                                        <a class="aTagKcOpen">
+                                                            <span class="ml-1" >{{category.category}}</span>
+                                                        </a>
+                                                    </div>
+                                                </div> 
+                                            </td>
+                                            <td class="nowrap w-50">
+                                                <div class="lighter overflow-ellipsis">{{:: 'id' | translate}}
+                                                    <code class="user-id-code overflow-ellipsis" title="{{category.id}}"> {{ category.id }}</code> 
+                                                </div>
+                                            </td> 
+                                            <td class="row-actions w-10">
+                                                <a class="danger" data-ng-click="deleteCategory(category)" id="{{category.id.toLowerCase().replaceAll(' ','-')}}-delete">
+                                                    <i class="os-icon os-icon-ui-15" tooltip="{{:: 'tooltip-delete-label' | translate}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <div class="d-flex w-100 fadeUp-delayed">
+                                                <td class="pl-0 fadeUp-delayed"  colspan="3">
+                                                    <p class="m-0 d-flex align-items-center" data-ng-show="(searchLoaded && total > 5)">{{:: 'showing' | translate}} {{first + 1}} - {{ last > total ? total : last }} {{:: 'of' | translate}} {{total}} {{:: 'workflows' | translate}}</p>
+                                                </td>
+                                                <td class="pr-0 fadeUp-delayed" colspan="9">
+                                                    <div  align="right" class="table-nav" data-ng-if="total > limit">
+                                                        <div class="pagination justify-content-end" >
+                                                            <button data-ng-click="firstPage()" class="btn btn-sm btn-outline-primary table-pagination" id="go-to-first-page" ng-disabled="first === 0" data-ng-class="first === 0 && 'text-muted'" > <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left' }} pagination-icon"></i> <i>{{:: 'first-page' | translate}}</i> </button>
+                                                            <button class="btn btn-sm btn-outline-primary table-pagination" id="go-to-previous-page"  data-ng-class="first === 0 && 'text-muted'" ng-click="previous()" ng-disabled="first === 0">
+                                                                <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left' }}pagination-icon"></i>
+                                                                <i>{{:: 'previous' | translate}}</i> 
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-primary table-pagination pr-0" id="go-to-next-page"  data-ng-class="last >= total && 'text-muted'" ng-click="next()" ng-disabled="last >= total">
+                                                                <i> {{:: 'next' | translate}} </i>
+                                                                <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right' }} pagination-icon mr-0"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </div>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Search results: Not Found -->
+                        <div class="element-box element-box-medium top-align mt-0" ng-show="total == 0 && searchKey.length > 0">
+                            <div class="no-entry-svg">
+                                <i class="os-icon os-icon-git-merge opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                <p class="text-center no-entry-display mt-2">{{:: 'no-category-found' | translate}}</p>
+                                <button data-ng-click="clearSearch()" class="create-btn no-entry-display" id="back-to-templates-btn">
+                                    <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                    {{:: 'back-to-category' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Category not available -->
+                        <div class="element-box" data-ng-if="total == 0 && !searchKey">
+                            <div class="no-policy-img">
+                                <i class="os-icon os-icon-git-merge opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                <p class="text-center no-entry-display">{{:: 'no-category-available' | translate}}</p>
+                                <button data-ng-click="createCategory()" class="create-btn no-entry-display" id="add-templates-btn" data-ng-click="createCategory()">
+                                    <i class="os-icon os-icon-plus plus-icon"></i>
+                                    {{:: 'create-category' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="!(searchLoaded)">
+                <kc-loader loadertype="loaderTypeName" ></kc-loader>
+            </div>
+        </div>
+    </div>
+</div>

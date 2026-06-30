@@ -1,0 +1,26 @@
+<div class="position-absolute setup-guide-wrapper d-flex align-items-end justify-content-end user-select-none" data-ng-init="init()">
+    <div class="setup-guide-card position-relative" data-ng-class="{'d-flex align-items-center justify-content-center': displayGuide}">
+        <iframe id="setup-guide-support" data-ng-show="displayGuide" data-ng-src="{{setupGuideUrl()}}" sandbox="allow-scripts allow-top-navigation-by-user-activation allow-popups allow-same-origin" security="restricted" title="Authenticator Workflow" width="100%" height="100%" referrerpolicy="strict-origin-when-cross-origin" frameborder="0" webkitallowfullscreen="webkitallowfullscreen" 
+        mozallowfullscreen="mozallowfullscreen" allowfullscreen="allowfullscreen" class="rounded-md"></iframe>
+        <div id="setup-guide-support-nodata" class="element-box-medium top-align" data-ng-show="displayGuide">
+            <div class="no-entry-svg">
+                <img data-ng-src="{{resourceUrl}}/themes/img/no-apps.svg" alt="no-results-svg"
+                    class="opacity-40 no-entry-display" />
+                <p class="no-results-msg no-entry-display mt-2">{{:: 'no-data-found' | translate}}</p>
+            </div>
+        </div>
+        <div id="setup-guide-support-nocookies" class="element-box-medium top-align" data-ng-show="displayGuide">
+            <div class="no-entry-svg px-5">
+                <img data-ng-src="{{resourceUrl}}/themes/img/no-apps.svg" alt="no-results-svg"
+                    class="opacity-40 no-entry-display" />
+                <p class="no-results-msg no-entry-display mt-2">{{:: 'third-party-cookies-blocked' | translate}}<br/> <a target="_blank" href="{{editedUrl(setupguide.guideUrl)}}" rel="norefferer noopener">{{:: 'click-here-txt' | translate}}</a> {{:: 'to-continue' | translate}}.</p>
+            </div>
+        </div>
+        <div class="h-100 w-100" data-ng-hide="displayGuide">
+            <kc-loader loadertype="loaderTypeName"></kc-loader>
+        </div>
+        <div class="bg-primary d-flex align-items-center justify-content-center position-absolute d-block cursor-pointer setup-guide-close position-absolute" data-ng-click="closeGuide()">
+            <i class="os-icon os-icon-close"></i>
+        </div>
+    </div>
+</div>

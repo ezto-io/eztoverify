@@ -1,0 +1,20 @@
+<div class="os-tabs-w mt-2">
+    <div class="os-tabs-controls">
+        <ul class="nav nav-tabs upper">
+            <li class="nav-item" data-step='{{ path[4] == connections?4:0}}' data-title="{{:: 'intro-application-social-title' | translate}}" data-intro="{{:: 'intro-application-social-desc' | translate}}">
+                <a aria-expanded="false" class="nav-link cursor-pointer p-3"
+                    data-ng-class="{active : currentTab == 'social'}" 
+                    data-ng-click="switchTab('social')" href="">
+                    {{:: 'intro-social-connection-title' | translate}}
+                </a>
+            </li>
+            <li class="nav-item" data-step='{{ path[4] == connections?5:0 }}' data-title="{{:: 'intro-application-mfa-title' | translate}}" data-intro="{{:: 'intro-application-mfa-desc' | translate}}">
+                <a aria-expanded="false" class="nav-link cursor-pointer p-3"
+                    data-ng-class="{active : currentTab == 'mfa'}" 
+                    data-ng-click="switchTab('mfa')" href="">
+                    Two-Factor Authentication
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/sso/{{client.id}}/mappers" id="backToMappers">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-mappers' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <h3 class="element-header">{{:: 'add-builtin-protocol-mapper' | translate}}</h3>
+                        <div class="element-box py-5">
+                            <div class="table-responsive-md">
+                                    <div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <form class="form-inline form-group element-search ng-pristine ng-valid"  ng-hide="filtered.length === 0">
+                                                    <input class="form-control" id="mappersAddInput" type="text" placeholder="{{:: 'search.placeholder' | translate}}"  data-ng-model="searchValue"
+                                                     onkeyup="if(event.keyCode === 13) document.getElementById('templatesSearch').click()">
+                                                <i class="os-icon os-icon-search2 search-icon" id="templatesSearch" data-ng-click="changeSearch()"></i>
+                                                </form>
+                                            </div>
+                                        <div class="ml-auto" data-ng-show="client.access.manage">
+                                            <button data-ng-disabled="!enableBtn" class="btn btn-primary" id="addSelectedBtn" data-ng-click="add()">{{:: 'add-selected' |
+                                                translate}}</button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                <table class="table table-light-bordered" ng-hide="filtered.length === 0">
+                                    <thead>
+                                    <tr>
+                                        <th class="kc-table-actions" colspan="4">
+                                            
+                                        </th>
+                                    </tr>
+                                    <tr data-ng-hide="mappers.length === 0 || filtered.length === 0 ">
+                                        <th>{{:: 'name' | translate}}</th>
+                                        <th>{{:: 'category' | translate}}</th>
+                                        <th>{{:: 'type' | translate}}</th>
+                                        <th>{{:: 'add' | translate}}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="mapper in mappers | filter:search as filtered">
+                                        <td>{{mapper.name}}</td>
+                                        <td>{{mapperTypes[mapper.protocolMapper].category}}</td>
+                                        <td>{{mapperTypes[mapper.protocolMapper].name}}</td>
+                                        <td><input type="checkbox" ng-model="mapper.isChecked" id="{{mapper.protocolMapper}}"></td>
+                                    </tr>
+                                    <tr data-ng-show="mappers.length === 0">
+                                        <td>{{:: 'no-mappers-available' | translate}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="element-box element-box-medium top-align shadow-none" ng-if="filtered.length === 0">
+                                    <div class="no-entry-svg">
+                                        <img data-ng-src="{{resourceUrl}}/themes/img/empty-box.svg" alt="no-results-svg"
+                                            class="opacity-40 no-entry-display" />
+                                        <p class="no-results-msg no-entry-display mt-2">{{:: 'no-results-found' | translate}}</p>
+                                        <button data-ng-click="clearSearch()" id="backToMappers" class="create-btn no-entry-display">
+                                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                            {{:: 'back-to-mappers' | translate}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,34 @@
+<!-- <ul class="nav nav-tabs">
+    <li ng-class="{active: path[3] == 'flows'}" data-ng-show="access.viewRealm"><a href="#/realms/{{realm.realm}}/authentication/flows">{{:: 'flows' | translate}}</a></li>
+    <li ng-class="{active: path[3] == 'required-actions'}" data-ng-show="access.viewRealm"><a href="#/realms/{{realm.realm}}/authentication/required-actions">{{:: 'required-actions' | translate}}</a></li>
+    <li ng-class="{active: path[3] == 'password-policy'}" data-ng-show="access.viewRealm"><a href="#/realms/{{realm.realm}}/authentication/password-policy">{{:: 'password-policy' | translate}}</a></li>  
+</ul> -->
+
+<div class="os-tabs-w mt-2">
+    <div class="os-tabs-controls">
+        <ul class="nav nav-tabs upper" data-ng-show="!create">
+            <li class="nav-item">
+                <a aria-expanded="false" class="nav-link" data-ng-class="{active: path[3] == 'onboarding'}" href="#/realms/{{realm.realm}}/marketplace/onboarding/templates"> 
+                    {{:: 'onboarding-txt=' | translate}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a aria-expanded="false"  class="nav-link" data-ng-class="{active: path[3] == 'login'}" href="#/realms/{{realm.realm}}/marketplace/login/templates">
+                    {{:: 'login-txt' | translate}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a aria-expanded="false"  class="nav-link" data-ng-class="{active: path[3] == 'recovery'}" href="#/realms/{{realm.realm}}/marketplace/recovery/templates">
+                    {{:: 'recovery-txt' | translate}}
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- <div class="top-bar mb-4">
+    <ul>
+        <li ng-class="{active: path[3] == 'onboarding'}" data-ng-show="access.viewRealm"><a href="#/realms/{{realm.realm}}/marketplace/onboarding/templates">Onboarding</a></li>
+        <li ng-class="{active: path[3] == 'login'}" data-ng-show="access.viewRealm"><a href="#/realms/{{realm.realm}}/marketplace/login/templates">Login</a></li>
+        <li ng-class="{active: path[3] == 'recovery'}" data-ng-show="access.viewRealm"><a href="#/realms/{{realm.realm}}/marketplace/recovery/templates">Recovery</a></li> 
+    </ul>
+</div> -->

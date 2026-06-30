@@ -1,0 +1,142 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/sso" to="backToSso">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-sso' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-sso-app></kc-tabs-sso-app>
+                        <kc-tabs-sso-client></kc-tabs-sso-client>
+                        <div class="py-2 panel-config-info mt-0 mb-3">
+                            <div class="d-flex align-items-center">
+                                <span class="os-icon os-icon-info panel-config-info-icon plus-icon mb-2"></span>
+                                <p class="text-small mb-0"><strong>Heads up! </strong>{{:: 'intro-application-mappers' | translate}}</p>
+                            </div>
+                        </div>
+                        <div class="element-box py-5">
+                            <div>
+                                <div class="row" ng-show="mappers.length > 0">
+                                    <div class="col-sm-6">
+                                        <form class="form-inline form-group element-search" ng-hide="(mappers.length != 0) && (( mappers | filter:search | orderBy:sortMappersByPriority).length ==0) ">
+                                            <input class="form-control form-control-sm rounded bright" id="ssoMappers-search-input"
+                                                data-ng-model="searchValue"
+                                                placeholder="{{:: 'search.placeholder' | translate}}" type="text"
+                                                onkeyup="if(event.keyCode === 13) document.getElementById('templatesSearch').click()">
+                                                <i class="os-icon os-icon-search2 search-icon" id="templatesSearch" data-ng-click="changeSearch()"></i>
+                                        </form>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <a class="btn btn-secondary" id="createSsoMappers"
+                                            href="#/create/sso/{{realm.realm}}/{{client.id}}/mappers">{{::
+                                            'create' | translate}}</a><a class="btn  btn-primary" id="addInBuiltMappers" data-step="3" data-title="{{ :: 'intro-application-addbuiltin-title' | translate}}" data-intro="{{ :: 'intro-application-addbuiltin' | translate}}"
+                                            href="#/realms/{{realm.realm}}/sso/{{client.id}}/add-mappers">{{::
+                                            'add-builtin' | translate}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--------------------
+                        END - Controls Above Table
+                        -------------------->
+                            <div class="table-responsive-md">
+                                <!--------------------
+                          START - Basic Table
+                          -------------------->
+                                <table class="table table-lightborder table-layout-fixed table-striped">
+                                    <thead data-ng-hide="!mappers.length || !( mappers | filter:search | orderBy:sortMappersByPriority).length ">
+                                        <tr>
+                                            <th class="kc-table-actions" colspan="6" >
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2" >
+                                                {{:: 'name' | translate}}
+                                            </th>
+                                            <th>
+                                                {{:: 'category' | translate}}
+                                            </th>
+                                            <th>
+                                                {{:: 'type' | translate}}
+                                            </th>
+                                            <th>
+                                                {{:: 'priority-order' | translate}}
+                                            </th>
+                                            <th class="text-center" colspan="1">
+                                                {{:: 'actions' | translate}}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="user-row"
+                                            ng-repeat="mapper in mappers | filter:search | orderBy:sortMappersByPriority">
+                                            <td colspan="2" class="overflow-ellipsis mb-0">
+                                                <a href="#/realms/{{realm.realm}}/sso/{{client.id}}/mappers/{{mapper.id}}" id="sso-mapper-{{mapper.name.toLowerCase().replaceAll(' ','-')}}">{{mapper.name}}</a>
+                                            </td>
+                                            <td class="overflow-ellipsis mb-0">
+                                                {{mapperTypes[mapper.protocolMapper].category}}
+                                            </td>
+                                            <td class="overflow-ellipsis mb-0">
+                                                {{mapperTypes[mapper.protocolMapper].name}}
+                                            </td>
+                                            <td class="overflow-ellipsis mb-0">
+                                                {{mapperTypes[mapper.protocolMapper].priority}}
+                                            </td>
+                                            
+                                            <td class=" clip row-actions w-100" >
+                                                <a kc-open="/realms/{{realm.realm}}/sso/{{client.id}}/mappers/{{mapper.id}}">
+                                                    <!-- <button class="mr-2 mb-2 btn btn-secondary btn-sm" type="button">{{::
+                                                                                                        'edit' | translate}}</button> -->
+                                                    <i class="os-icon os-icon-ui-49" id="{{mapper.name.toLowerCase().replaceAll(' ','-')}}-editIcon" tooltip="{{editTxt}}" tooltip-placement="top"
+                                                        tooltip-trigger="mouseover mouseout"></i>
+                                                </a>
+                                                <a data-ng-click="removeMapper(mapper)" class="danger">
+                                                    <!-- <button class="mr-2 mb-2 btn btn-danger btn-sm" type="button">{{::
+                                                                                                        'delete' | translate}}</button> -->
+                                                    <i class="os-icon os-icon-ui-15" id="{{mapper.name.toLowerCase().replaceAll(' ','-')}}-deleteIcon" tooltip="{{:: 'tooltip-delete-label' | translate}}" tooltip-placement="top"
+                                                    tooltip-trigger="mouseover mouseout"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="element-box element-box-medium top-align shadow-none" ng-if="mappers.length === 0">
+                                    <div class="no-entry-svg">
+                                      <img data-ng-src="{{resourceUrl}}/themes/img/empty-box.svg"  alt="no-results-svg" class="opacity-40 no-entry-display"/>
+                                      <p class="no-results-msg no-entry-display mt-2">{{:: 'no-mappers-available' | translate}}</p>
+                                      <p class="no-results-msg no-entry-display mt-2">{{:: 'no-mappers-available-sec-desc' | translate}}</p>
+                                    </div>
+                                    <div class="ml-auto d-flex justify-content-center">
+                                        <a class="btn btn-secondary"
+                                            href="#/create/sso/{{realm.realm}}/{{client.id}}/mappers">{{::
+                                            'create' | translate}}</a><a class="btn  btn-primary" data-step="3" data-title="{{ :: 'intro-application-addbuiltin-title' | translate}}" data-intro="{{ :: 'intro-application-addbuiltin' | translate}}"
+                                            href="#/realms/{{realm.realm}}/sso/{{client.id}}/add-mappers">{{::
+                                            'add-builtin' | translate}}</a>
+                                    </div>
+                                </div>
+                                <div class="element-box element-box-medium top-align shadow-none" ng-if="(mappers.length != 0) && (( mappers | filter:search | orderBy:sortMappersByPriority).length ==0) ">
+                                    <div class="no-entry-svg">
+                                    <img data-ng-src="{{resourceUrl}}/themes/img/empty-box.svg" alt="no-results-svg" class="opacity-40 no-entry-display" />
+                                    <p class="no-results-msg no-entry-display mt-2">{{:: 'no-results-found' | translate}}</p>
+                                    <button data-ng-click="clearSearch()" class="create-btn no-entry-display">
+                                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                        {{:: 'back-to-mappers' | translate}}
+                                    </button>
+                                    </div>
+                                </div>
+                                <!--------------------
+                          END - Basic Table
+                          -------------------->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

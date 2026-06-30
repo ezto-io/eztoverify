@@ -1,0 +1,40 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="pficon pficon-close"></span>
+    </button>
+    <h4 class="modal-title">{{:: 'register-required-action' | translate}}</h4>
+</div>
+<div class="modal-body">
+    <form data-ng-if="actionPolicies.length > 0">
+        <div>
+            <label class="control-label" for="selector">{{:: 'required-action' | translate}}</label>
+            <select id="selector" class="form-control"
+                    ng-model="selected.selected"
+                    ng-options="r.name for r in unregisteredRequiredActions">
+            </select>
+            <label class="control-label" for="selector">{{:: 'required-action-policy' | translate}}</label>
+            <select id="policyselector" class="form-control"
+                    ng-model="selected.selectedPolicy"
+                    ng-options="p.policyName for p in actionPolicies">
+            </select>
+            <p>
+                <small>{{:: 'selected-policy' | translate}} <a href="#/realms/master/policies">{{:: 'click-here' | translate}}</a> {{:: 'create-one' | translate}}</small>
+            </p>
+        </div>
+    </form>
+
+    <div  data-ng-if="actionPolicies.length == 0">
+        <fieldset class="flex-txt-align-center">
+                                <div class="no-flow-div">
+                                    <p>{{:: 'no-action' | translate}}</p>
+                                    <button data-ng-click="createAction()" class="create-btn ng-binding">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>{{:: 'create-new-policy' | translate}}
+                                    </button>
+                                </div>
+                            </fieldset>
+    </div>
+</div>
+<div class="modal-footer" data-ng-if="actionPolicies.length > 0">
+    <button type="button" class="btn btn-secondary" ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+    <button type="button" class="btn btn-primary" ng-click="ok()">{{:: 'ok' | translate}}</button>
+</div>

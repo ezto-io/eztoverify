@@ -1,0 +1,96 @@
+<div class="py-4" ng-controller="KcApiVerifiersCtrl">
+    <div class="controls-above-table mb-0">
+        <div class="form-inline justify-content-between" ng-hide="loading">
+            <div class="form-group">
+                <div class="element-search">
+                    <input
+                        class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched action-search-container"
+                        id="templates-search-input" type="text"
+                        placeholder="{{ :: 'search-verifiers-placeholder' | translate}}" ng-model="query.search"
+                        onkeydown="if (event.keyCode === 13) document.getElementById('verifiers-search').click()">
+                    <i class="os-icon os-icon-search2 search-icon" id="verifiers-search"
+                        data-ng-click="makeSearch(false)"></i>
+                </div>
+                <div class="form-control d-flex py-0 gap-1 ml-2 pl-2 pr-0">
+                    <img ng-src="{{resourceUrl}}/img/filter.svg" class="pr-1">
+                    <select ng-model="query.sort" ng-change="changePageCount()" id="providersSort"
+                        class="form-control form-control-sm rounded border-0 apiProvider-select">
+                        <option value="ASC">
+                            A-Z
+                        </option>
+                        <option value="DESC">
+                            Z-A
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-control d-flex py-0 px-2 gap-1">
+                <label>{{ :: 'list-per-page' | translate}}</label>
+                <select ng-model="query.max" ng-change="changePageCount()"
+                    data-ng-options="itemCount for itemCount in [5,10,50,100]" id="providersPageCount"
+                    class="form-control form-control-sm rounded border-0 apiProvider-select">
+                    <option data-ng-repeat="itemCount in [5,10,50,100]" data-ng-selected="limit === itemCount"
+                        data-ng-value="itemCount">
+                        {{ itemCount }}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <kc-loader loadertype="loaderTypeName" ng-show="loading"></kc-loader>
+    <li class="mt-2 p-2 border rounded d-flex justify-content-center p-2 align-items-center" ng-show="!loading && (verifiers.count == 0 || !verifiers.maxResultSize)">
+        <label>{{ :: 'no-result-found' | translate}}</label>
+    </li>
+    <div class="mt-2 p-2 border rounded" data-ng-repeat="verifier in verifiers.verifiers" ng-hide="loading">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-3 d-flex align-items-center gap-1 text-capitalize">
+                <label>
+                    {{:: verifier.verifierName | translateOrReplaceWithSpace}}
+                </label>
+            </div>
+            <div class="col-2 d-flex align-items-centers">
+                <span class="badge badge-secondary">{{verifier.selectedProvider}}</span>
+            </div>
+            <label class="col-1 d-flex align-items-center justify-center">
+                <div class="os-toggler-w" ng-class="{on: verifier.isEnabled}">
+                    <div class="os-toggler-i" id="enabled-toggle">
+                        <div class="os-toggler-pill"
+                            data-ng-model="verifier.isEnabled"
+                            name="{{verifier.verifierName}}" id="{{verifier.verifierName}}"
+                            ng-change="updateVerifier(verifier)"
+                            onoffswitch>
+                        </div>
+                    </div>
+                </div>
+            </label>
+            <div class="col-1 d-flex align-items-center justify-content-end">
+                <button class="px-2 py-1 rounded border-0 btn bg-gray" data-ng-click="editVerifiers(verifier, verifiers.verifiers)">
+                    <img id="templateLogo" width="20" data-ng-src="{{resourceUrl}}/img/edit-icon-outlined-dark.svg"
+                        alt="logo-img">
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between mt-3" ng-hide="loading || query.max >= verifiers.count || !verifiers.maxResultSize">
+        <p class="mt-1">
+            {{:: 'showing' | translate}}
+            {{query.first + 1}} - {{(query.first + query.max > verifiers.count) ? verifiers.count : query.first + query.max}}
+            {{:: 'of' | translate}} {{verifiers.count}}
+            {{:: 'verifiers' | translate}}
+        </p>
+        <div>
+            <button data-ng-click="initQuery()" id="firstPageBtn" class="btn btn-sm btn-outline-primary border-none table-pagination" data-ng-class="query.first === 0 && 'text-muted'" ng-disabled="query.first === 0">
+                <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon"></i>
+                <span>{{::'first-page' | translate}}</span>
+            </button>
+            <button data-ng-click="previous()" id="previousPageBtn" class="btn btn-sm btn-outline-primary border-none table-pagination" data-ng-class="query.first === 0 && 'text-muted'" ng-disabled="query.first === 0">
+                <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon"></i>
+                <span>{{:: 'previous' | translate}}</span>
+            </button>
+            <button id="nextPageBtn" data-ng-click="next()" class="btn btn-sm btn-outline-primary border-none table-pagination pr-0" data-ng-class="query.last >= verifiers.count && 'text-muted'" ng-disabled="query.last >= verifiers.count">
+                <span>{{:: 'next' | translate}}</span>
+                <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon"></i>
+            </button>
+        </div>
+    </div>
+</div>

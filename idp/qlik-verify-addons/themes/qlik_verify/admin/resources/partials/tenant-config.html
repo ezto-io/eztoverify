@@ -1,0 +1,88 @@
+<div class="col-sm-9 col-md-10 col-sm-push-3 col-md-push-2">
+    <kc-tabs-realm></kc-tabs-realm>
+
+    <form class="form-horizontal" name="realmForm" novalidate>
+        <h3>{{:: 'ssms-credential-settings' | translate}}</h3>
+        <br />
+        <div class="form-group">
+            <label class="col-md-2 control-label">{{:: 'portal-username' | translate}}</label>
+            <div class="col-md-6">
+                <input class="form-control" ng-disabled="showtestconnection" type="text" id="portalName"
+                    name="portalName" data-ng-model="tenantDetails.portalName">
+            </div>
+            <kc-tooltip>{{:: 'portal-user-ssms' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group clearfix">
+            <label class="col-md-2 control-label" for="portalPass">{{:: 'portal-password' | translate}}</label>
+            <div class="col-md-6">
+                <input class="form-control" id="portalPass" kc-password ng-model="tenantDetails.portalPassword" placeholder="{{:: 'portal-password' | translate}}">
+            </div>
+            <kc-tooltip>{{:: 'portal-password-ssms' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">{{:: 'operator-username' | translate}}</label>
+            <div class="col-md-6">
+                <input class="form-control" ng-disabled="showtestconnection" type="text" id="operatorName"
+                    name="operatorName" data-ng-model="tenantDetails.operatorName">
+            </div>
+            <kc-tooltip>{{:: 'operator-name-ssms' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group clearfix">
+            <label class="col-md-2 control-label" for="operatorPass">{{:: 'operator-password' | translate}}</label>
+            <div class="col-md-6">
+                <input class="form-control" id="operatorPass" kc-password ng-model="tenantDetails.operatorPassword" placeholder="{{:: 'operator-password' | translate}}">
+            </div>
+            <kc-tooltip>{{:: 'operator-password-ssms' | translate}}</kc-tooltip>
+        </div>
+
+
+        <input class="width-auto form-control btn btn-primary" ng-show="showtestconnection" type="button"
+            id="testconnection" value="Test Connection" ng-click="testconnection()">
+        <input class="width-auto form-control btn btn-primary" ng-show="!showtestconnection" type="button" id="save"
+            value="Save" ng-click="saveTenantCred()">
+        <label class="control-label" ng-show="showAlertMessage">{{connectionMsg}}</label>
+    </form>
+    <br />
+    <hr />
+    <form class="form-horizontal" name="realmForm1" novalidate>
+        <h3>{{:: 'ssms-userid-settings' | translate}}</h3>
+        <br />
+        <div class="form-group">
+            <label class="col-md-2 control-label">{{:: 'select-user-property' | translate}}</label>
+            <div class="col-md-6">
+                <div>
+                    <select id="userProp" ng-model="ssmsUserProperty" class="form-control">
+                        <option value="name">{{:: 'name' | translate}}</option>
+                        <option value="id">{{:: 'id' | translate}}</option>
+                        <option value="digitaniumUserId">{{:: 'digitaniumuserid' | translate}}</option>
+                    </select>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'user-property-ssms' | translate}}</kc-tooltip>
+        </div>
+        <div>
+            <input class="width-auto form-control btn btn-primary" type="button" id="update" value="Update" ng-click="update()">
+        </div>
+    </form>
+    <br />
+    <hr />
+    <form class="form-horizontal" name="realmForm1" novalidate>
+        <h3>{{:: 'mpower-chat-settings' | translate}}</h3>
+        <br />
+        <div class="form-group">
+            <label class="col-md-2 control-label">{{:: 'enable-p2p-chat' | translate}}</label>
+            <div class="col-md-6">
+                <input ng-model="enablePersonChat" name="enablePersonChat" id="enablePersonChat" onoffswitch on-text="{{:: 'onText' | translate}}" off-text="{{:: 'offText' | translate}}"/>
+            </div>
+            <kc-tooltip>{{:: 'person-chat-mpower-app-txt' | translate}}</kc-tooltip>
+        </div>
+        <div>
+            <input class="width-auto form-control btn btn-primary" type="button" id="updatePersonChat" value="Update" ng-click="updatePersonChat()">
+        </div>
+    </form>
+</div>
+
+<kc-menu></kc-menu>

@@ -1,0 +1,54 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{title}}</h5> <button type="button" class="close" id="closeModalBtn" ng-click="cancel()"><span class="os-icon os-icon-close"></span></button>
+</div>
+<div class="modal-body">
+    <form>
+        <div>
+            <label class="control-label" for="name">{{:: 'name' | translate}} <span class="required">*</span></label>
+            <input class="form-control" type="text" id="name" data-ng-model="connectionDetails.name"> </div>
+
+            <div class="mt-3" data-ng-if="providerId === 'google_ws'">
+                <label class="control-label" for="GWS_CLIENT_ID">{{:: 'client-id' | translate}} <span class="required" >*</span></label>
+                <input class="form-control" type="text" id="GWS_CLIENT_ID" data-ng-model="connectionDetails.config.GWS_CLIENT_ID">
+            </div>
+            <div class="mt-3" data-ng-if="providerId === 'google_ws'">
+                <label class="control-label" for="GWS_CLIENT_SECRET">{{:: 'client-secret' | translate}} <span class="required" >*</span></label>
+                <input class="form-control" type="text" id="GWS_CLIENT_SECRET" data-ng-model="connectionDetails.config.GWS_CLIENT_SECRET">
+            </div>
+            <div class="mt-3" data-ng-if="providerId === 'duo_ws'"> <label class="control-label" for="apiHostName">{{:: 'api-hostname' | translate}} <span class="required">*</span></label> <input class="form-control" type="text"
+                    id="apiHostName" data-ng-model="connectionDetails.config.apiHostName"> </div>
+            <div class="mt-3" data-ng-if="providerId === 'duo_ws'"> <label class="control-label" for="integrationKey">{{::
+                    'integration-key' | translate}} <span class="required">*</span></label> <input class="form-control"
+                    type="text" id="integrationKey" data-ng-model="connectionDetails.config.integrationKey"> </div>
+            <div class="mt-3" data-ng-if="providerId === 'duo_ws'"> <label class="control-label" for="secretKey">{{::
+                    'secret-key' | translate}} <span class="required">*</span></label> <input class="form-control"
+                    type="text" id="secretKey" data-ng-model="connectionDetails.config.secretKey"> </div>
+            <div class="mt-3" data-ng-if="providerId === 'okta_ws'"> <label class=" control-label" for="name">{{::
+                    'domain-name' | translate}} <span class="required">*</span></label> <input class="form-control" type="text" id="domainName"
+                    data-ng-model="connectionDetails.config.domainName"> </div>
+            <!-- <div class="mt-3" data-ng-if="providerId === 'okta_ws'"> <label class=" control-label" for="name">{{::
+                    'client-id-user-sync' | translate}} <span class="required">*</span></label> <input class="form-control" type="text" id="name"
+                    data-ng-model="connectionDetails.config.clientId"> </div>
+            <div class="mt-3" data-ng-if="providerId === 'okta_ws'"> <label class=" control-label" for="name">{{::
+                    'client-secret-user-sync' | translate}} <span class="required">*</span></label> <input class="form-control" type="text" id="name"
+                    data-ng-model="connectionDetails.config.clientSecret"> </div> -->
+            <div class="mt-3" data-ng-if="providerId === 'okta_ws'"> <label class=" control-label" for="name">{{::
+                    'api-token' | translate}} <span class="required">*</span></label> <input class="form-control" type="text"
+                    id="apiToken" data-ng-model="connectionDetails.config.apiToken"> </div>
+            <div class="mt-3"> <label class="control-label" for="name">{{:: 'enrollment-type' | translate}}</label> <select
+                    class="form-control" data-ng-model="connectionDetails.enrollmentOption" id="enrollmentTypeSelector">
+                    <option value="sendEnrollmentLink"> {{:: 'directory-sync-enrollment-link' | translate}} </option>
+                    <option value="trustEmail"> {{:: 'trust-email' | translate}} </option>
+                    <option value="onlySync"> {{:: 'only-sync' | translate}} </option>
+                </select> </div>
+            <div class="mt-3"> <label class="control-label" for="name">{{:: 'unique-field' | translate}}</label> <select
+                    class="form-control" data-ng-model="connectionDetails.config.mapperType" id="uniqueFieldSelector">
+                    <option value="email"> {{:: 'email' | translate}} </option>
+                    <option value="username"> {{:: 'username-sync' | translate}} </option>
+                </select> </div>
+    </form>
+</div>
+<div class="modal-footer"> <button type="button" class="btn btn-secondary" id="cancelBtn" ng-click="cancel()">{{:: 'cancel' |
+        translate}}</button> <button type="button" class="btn btn-primary" id="successBtn" ng-click="ok()"
+        data-ng-disabled="!changed"><span data-ng-if="update">{{:: 'update' | translate}}</span><span
+            data-ng-if="!update">{{:: 'create' | translate}}</span></button></div>

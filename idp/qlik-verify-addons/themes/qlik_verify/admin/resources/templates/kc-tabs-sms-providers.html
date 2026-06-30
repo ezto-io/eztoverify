@@ -1,0 +1,21 @@
+<div class="mb-4" >
+    <div class="os-tabs-w mt-2">
+        <div class="os-tabs-controls mb-0">
+            <ul class="nav nav-tabs upper bg-white">
+                <li class="nav-item">
+                    <a aria-expanded="false" id="sms-tab" class="nav-link cursor-pointer p-3" ng-class="{active : initialCurrentTab === 'sms'}"
+                        data-toggle="tab" data-ng-click="initialTab('sms')">
+                        {{::'tab-sms' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a aria-expanded="false" id="whatsapp-tab" class="nav-link cursor-pointer p-3"
+                        ng-class="{active : initialCurrentTab === 'whatsapp'}" data-toggle="tab"
+                        data-ng-click="initialTab('whatsapp')">
+                        {{::'tab-whatsapp' | translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

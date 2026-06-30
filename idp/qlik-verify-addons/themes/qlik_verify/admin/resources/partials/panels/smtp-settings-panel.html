@@ -1,0 +1,57 @@
+<div class="auth-config-container pb-3 ng-scope">
+    <div class="exec-logo-container">
+        <img height="30px" width="30px" ng-if="logo != null" data-ng-src="{{resourceUrl}}/themes/img/{{logo}}" alt="logo">
+    </div>
+    <div class="exec-title"> 
+        <p class="font-size-normal">{{:: name | translate}}</p>
+    </div>
+    <div id="close" data-ng-click="dismissPanel()" class="mt-0">
+        <i class="os-icon os-icon-close"></i>
+    </div>
+</div>
+<div id="divisionthing" class="ng-scope"></div>
+
+<div class="sub-top-bar mt-4 config-nav box-shadow-none">
+    <ul class="cursor-pointer">
+        <li ng-class="{active: ishowTo}">
+            <a data-ng-click="tabSelect('howTo')">{{:: 'how-to' | translate}}</a>
+        </li>
+        <li ng-class="{active: isConfig}">
+            <a data-ng-click="tabSelect('Config')">{{:: 'configuration' | translate}}</a>
+        </li>
+    </ul>
+</div>
+
+<form class="form-horizontal mt-4 px-2" name="realmForm" novalidate>
+    <div data-ng-show="ishowTo">
+        <div data-ng-show="howToDo" class='mdPreview overflow-hidden' url='{{howToDo}}'>
+        </div>
+        <div class="element-box-medium top-align" data-ng-show="!howToDo">
+            <div class="no-entry-svg">
+                <p class="no-results-msg no-entry-display mt-2">{{:: 'no-data-found' | translate}}</p>
+            </div>
+        </div>
+    </div>
+    <div data-ng-show="isConfig">
+        <fieldset>
+            <kc-provider-config data-ng-if="configType.properties.length > 0 && hasConfig"
+                realm="realm" config="config.config" properties="configType.properties">
+            </kc-provider-config>
+        </fieldset>
+        <div class="form-buttons-w border-top-0 mt-2">
+            <div class="col-md-12 col-md-offset-2 pl-0">
+                <button
+                    data-ng-if="configType.properties.length > 0 && hasConfig && configType.hasTestConfig"
+                    class="btn btn-secondary" data-ng-click="test()">{{:: 'test-configuration' | translate}}</button>
+                <button data-ng-disabled="!toggleChanged" class="btn btn-primary" data-ng-click="save()">
+                    <span data-ng-show=" stage === 1 " >{{:: 'save' | translate}}</span>
+                    <div data-ng-show=" stage === 2 ">
+                        <kc-action-button-loading></kc-action-button-loading>
+                    </div>
+                </button>
+                <button class="btn btn-danger" data-ng-if="config.id" data-ng-hide=" stage === 2 " data-ng-click="remove()">{{:: 'delete' |
+                        translate}}</button>
+            </div>
+        </div>
+    </div>
+</form>

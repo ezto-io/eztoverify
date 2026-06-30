@@ -1,0 +1,340 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ul class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/policies" class="ng-binding">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-policies' |
+                            translate}}
+                        </a>
+                    </li>
+                </ul>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div>
+                            <div class="user-details-top action-details align-items-start mb-0">
+                                <kc-policy-header></kc-policy-header>
+                                <div class="user-detail-tab-actions mr-0" >
+                                    <button data-ng-if="policyRep.id" class="delete-btn mr-3" data-ng-click="delete()">
+                                        <i class="os-icon os-icon-ui-15 plus-icon"></i>{{:: 'delete' | translate}}
+                                    </button>
+                                    <button data-ng-disabled="!changed || !webauthnpolicy.webAuthnPolicyRpEntityName" class="btn btn-primary" data-ng-click="save()" data-title="{{:: 'intro-policies-save-title' | translate}}" data-intro="{{:: 'intro-policies-save' | translate}}">
+                                        <i class="os-icon os-icon-save save-icon-prop font-weight-bold mr-2"></i> {{:: 'save' | translate}}
+                                    </button>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+
+                        <div class="element-box py-5">
+                            <form class="form-horizontal" name="realmForm" novalidate
+                                kc-read-only="!access.manageRealm">
+                                <p class="text-initial font-size-normal font-weight-bold" > {{ :: 'manage-policies' | translate }} </p>
+                                <div class="form-group row">
+                                    <label for="name" class="col-md-3 control-label">{{:: 'webauthn-rp-entity-name' | translate}} <span class="required">*</span></label>
+                                    <div class="col-md-9">
+                                        <div>
+                                            <input id="name" type="text"  ng-model="webauthnpolicy.webAuthnPolicyRpEntityName" class="form-control">
+                                        </div>
+                                    </div>
+                                    <kc-tooltip>{{:: 'webauthn-rp-entity-name.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <label for="sigalg" class="col-md-3 control-label">{{:: 'webauthn-signature-algorithms' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <select id="sigalg" ng-model="webauthnpolicy.webAuthnPolicySignatureAlgorithms" class="form-control" ng-options="policyAlgorithm for policyAlgorithm in policySignatureAlgorithms">
+                                            <option value="" selected> {{ :: 'not-set' | translate }} </option>
+                                        </select>
+                                    </div>
+                                    <kc-tooltip>{{:: 'webauthn-signature-algorithms.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <label for="rpid" class="col-md-3 control-label">{{:: 'webauthn-rp-id' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <div>
+                                            <input id="rpid" type="text"  ng-model="webauthnpolicy.webAuthnPolicyRpId" class="form-control">
+                                        </div>
+                                    </div>
+                                    <kc-tooltip>{{:: 'webauthn-rp-id.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <label for="attpref" class="col-md-3 control-label">{{:: 'webauthn-attestation-conveyance-preference' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <div>
+                                            <select id="attpref" ng-model="webauthnpolicy.webAuthnPolicyAttestationConveyancePreference" class="form-control">
+                                                <option value=""> {{ :: 'not-set' | translate }} </option>
+                                                <option value="none">{{:: 'none' | translate}}</option>
+                                                <option value="indirect">{{:: 'indirect' | translate}}</option>
+                                                <option value="direct">{{:: 'direct' | translate}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <kc-tooltip>{{:: 'webauthn-attestation-conveyance-preference.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <label for="authnatt" class="col-md-3 control-label">{{:: 'webauthn-authenticator-attachment' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <div>
+                                            <select id="authnatt" ng-model="webauthnpolicy.webAuthnPolicyAuthenticatorAttachment" class="form-control">
+                                                <option value="">{{ :: 'not-set' | translate }}</option>
+                                                <option value="platform">{{:: 'platform' | translate}}</option>
+                                                <option value="cross-platform">{{:: 'cross-platform' | translate}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <kc-tooltip>{{:: 'webauthn-authenticator-attachment.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <label for="reqresident" class="col-md-3 control-label">{{:: 'webauthn-require-resident-key' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <div>
+                                            <select id="reqresident" ng-model="webauthnpolicy.webAuthnPolicyRequireResidentKey" class="form-control">
+                                                <option value="">{{ :: 'not-set' | translate }}</option>
+                                                <option value="Yes">{{:: 'yes' | translate}}</option>
+                                                <option value="No">{{:: 'no' | translate}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <kc-tooltip>{{:: 'webauthn-require-resident-key.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <label for="usrverify" class="col-md-3 control-label">{{:: 'webauthn-user-verification-requirement' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <div>
+                                            <select id="usrverify" ng-model="webauthnpolicy.webAuthnPolicyUserVerificationRequirement" class="form-control">
+                                                <option value="">{{ :: 'not-set' | translate }}</option>
+                                                <option value="required">{{:: 'required' | translate}}</option>
+                                                <option value="preferred">{{:: 'preferred' | translate}}</option>
+                                                <option value="discouraged">{{:: 'discouraged' | translate}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <kc-tooltip>{{:: 'webauthn-user-verification-requirement.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <label for="timeout" class="col-md-3 control-label">{{:: 'webauthn-create-timeout' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <div>
+                                            <input id="timeout" type="number" min="0" max="31536" ng-model="webauthnpolicy.webAuthnPolicyCreateTimeout" class="form-control"/>
+                                        </div>
+                                    </div>
+                                    <kc-tooltip>{{:: 'webauthn-create-timeout.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                        
+                                <div class="form-group row clearfix block">
+                                    <label for="avoidsame" class="col-md-3 control-label">{{:: 'webauthn-avoid-same-authenticator-register' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <label>
+                                            <div  class="os-toggler-w" ng-class="{on: webauthnpolicy.webAuthnPolicyAvoidSameAuthenticatorRegister}">
+                                                <div class="os-toggler-i">
+                                                    <div class="os-toggler-pill" ng-model="webauthnpolicy.webAuthnPolicyAvoidSameAuthenticatorRegister" name="mfaEnabled" id="mfaEnabled" onoffswitch >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <!-- <div>
+                                            <input id="avoidsame" ng-model="realm.webAuthnPolicyAvoidSameAuthenticatorRegister" onoffswitch on-text="{{:: 'onText' | translate}}" off-text="{{:: 'offText' | translate}}"/>
+                                        </div> -->
+                                    </div>
+                                    <kc-tooltip>{{:: 'webauthn-avoid-same-authenticator-register.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <label for="type" class="col-md-3 control-label">{{:: 'webauthn-acceptable-aaguids' | translate}}</label>
+                                    <div class="col-sm-7">
+                                        <div class="input-group mb-2" ng-repeat="(i, acceptableAaguid) in webauthnpolicy.webAuthnPolicyAcceptableAaguids track by $index">
+                                            <input id="type" class="form-control" ng-model="webauthnpolicy.webAuthnPolicyAcceptableAaguids[i]">
+                                            <button class="btn btn-primary btn-sm icon-btn"  data-ng-click="deleteAcceptableAaguid($index)" type="button">
+                                                <span class="os-icon os-icon-minus2"></span></button>
+                                            </button>
+                                        </div>
+                                        <div class = "input-group">
+                                            <input class="form-control" ng-model="newAcceptableAaguid" id="newAcceptableAaguid">
+                                            <div class="input-group-append"></div>
+                                            <button class="btn btn-primary btn-sm icon-btn" data-ng-click="newAcceptableAaguid.length > 0 && addAcceptableAaguid()" type="button">
+                                                <span class="os-icon os-icon-plus"></span></button>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <kc-tooltip>{{:: 'webauthn-acceptable-aaguids.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                                <!-- <div class="form-group" data-ng-show="access.manageRealm">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-primary" data-ng-click="save()" data-ng-disabled="!changed">{{:: 'save' | translate}}</button>
+                                        <button class="btn btn-secondary" data-ng-click="reset()">{{:: 'cancel' | translate}}</button>
+                                    </div>
+                                </div>
+                                </div>
+                            </form>    
+                                </div> -->
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+<!-- <div class="col-sm-9 col-md-10 col-sm-push-3 col-md-push-2">
+    <h1>{{:: 'authentication' | translate}}</h1>
+
+    <form class="form-horizontal" name="realmForm" novalidate kc-read-only="!access.manageRealm">
+
+        <div class="form-group">
+            <label for="name" class="col-md-2 control-label"><span class="required">*</span> {{:: 'webauthn-rp-entity-name' | translate}}</label>
+            <div class="col-md-2">
+                <div>
+                    <input id="name" type="text"  ng-model="realm.webAuthnPolicyRpEntityName" class="form-control">
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'webauthn-rp-entity-name.tooltip' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group">
+            <label for="sigalg" class="col-md-2 control-label">{{:: 'webauthn-signature-algorithms' | translate}}</label>
+            <div class="col-md-2">
+                <div>
+                    <select id="sigalg" ng-model="realm.webAuthnPolicySignatureAlgorithms" class="form-control" multiple>
+                        <option value="ES256">ES256</option>
+                        <option value="ES384">ES384</option>
+                        <option value="ES512">ES512</option>
+                        <option value="RS256">RS256</option>
+                        <option value="RS384">RS384</option>
+                        <option value="RS512">RS512</option>
+                        <option value="RS1">RS1</option>
+                    </select>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'webauthn-signature-algorithms.tooltip' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group">
+            <label for="rpid" class="col-md-2 control-label">{{:: 'webauthn-rp-id' | translate}}</label>
+            <div class="col-md-2">
+                <div>
+                    <input id="rpid" type="text"  ng-model="realm.webAuthnPolicyRpId" class="form-control">
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'webauthn-rp-id.tooltip' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group">
+            <label for="attpref" class="col-md-2 control-label">{{:: 'webauthn-attestation-conveyance-preference' | translate}}</label>
+            <div class="col-md-2">
+                <div>
+                    <select id="attpref" ng-model="realm.webAuthnPolicyAttestationConveyancePreference" class="form-control">
+                        <option value="not specified"></option>
+                        <option value="none">none</option>
+                        <option value="indirect">indirect</option>
+                        <option value="direct">direct</option>
+                    </select>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'webauthn-attestation-conveyance-preference.tooltip' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group">
+            <label for="authnatt" class="col-md-2 control-label">{{:: 'webauthn-authenticator-attachment' | translate}}</label>
+            <div class="col-md-2">
+                <div>
+                    <select id="authnatt" ng-model="realm.webAuthnPolicyAuthenticatorAttachment" class="form-control">
+                        <option value="not specified"></option>
+                        <option value="platform">platform</option>
+                        <option value="cross-platform">cross-platform</option>
+                    </select>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'webauthn-authenticator-attachment.tooltip' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group">
+            <label for="reqresident" class="col-md-2 control-label">{{:: 'webauthn-require-resident-key' | translate}}</label>
+            <div class="col-md-2">
+                <div>
+                    <select id="reqresident" ng-model="realm.webAuthnPolicyRequireResidentKey" class="form-control">
+                        <option value="not specified"></option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'webauthn-require-resident-key.tooltip' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group">
+            <label for="usrverify" class="col-md-2 control-label">{{:: 'webauthn-user-verification-requirement' | translate}}</label>
+            <div class="col-md-2">
+                <div>
+                    <select id="usrverify" ng-model="realm.webAuthnPolicyUserVerificationRequirement" class="form-control">
+                        <option value="not specified"></option>
+                        <option value="required">required</option>
+                        <option value="preferred">preferred</option>
+                        <option value="discouraged">discouraged</option>
+                    </select>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'webauthn-user-verification-requirement.tooltip' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group">
+            <label for="timeout" class="col-md-2 control-label">{{:: 'webauthn-create-timeout' | translate}}</label>
+            <div class="col-md-2">
+                <div>
+                    <input id="timeout" type="number" min="0" max="31536" ng-model="realm.webAuthnPolicyCreateTimeout" class="form-control"/>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'webauthn-create-timeout.tooltip' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group">
+            <label for="avoidsame" class="col-md-2 control-label">{{:: 'webauthn-avoid-same-authenticator-register' | translate}}</label>
+            <div class="col-md-2">
+                <div>
+                    <input id="avoidsame" ng-model="realm.webAuthnPolicyAvoidSameAuthenticatorRegister" onoffswitch on-text="{{:: 'onText' | translate}}" off-text="{{:: 'offText' | translate}}"/>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'webauthn-avoid-same-authenticator-register.tooltip' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group">
+            <label for="type" class="col-md-2 control-label">{{:: 'webauthn-acceptable-aaguids' | translate}}</label>
+            <div class="col-sm-4">
+                <div class="input-group" ng-repeat="(i, acceptableAaguid) in realm.webAuthnPolicyAcceptableAaguids track by $index">
+                    <input id="type" class="form-control" ng-model="realm.webAuthnPolicyAcceptableAaguids[i]">
+                    <div class="input-group-btn">
+                        <button class="btn btn-secondary" type="button" data-ng-click="deleteAcceptableAaguid($index)">
+                            <span class="fa fa-minus"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class = "input-group">
+                    <input class="form-control" ng-model="newAcceptableAaguid" id="newAcceptableAaguid">
+                    <div class="input-group-btn">
+                        <button class="btn btn-secondary" type="button" data-ng-click="newAcceptableAaguid.length > 0 && addAcceptableAaguid()">
+                            <span class="fa fa-plus"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'webauthn-acceptable-aaguids.tooltip' | translate}}</kc-tooltip>
+        </div>
+
+        <div class="form-group" data-ng-show="access.manageRealm">
+            <div class="col-md-10 col-md-offset-2">
+                <button kc-save data-ng-disabled="!changed">{{:: 'save' | translate}}</button>
+                <button kc-reset data-ng-disabled="!changed">{{:: 'cancel' | translate}}</button>
+            </div>
+        </div>
+    </form>
+
+</div> -->
+</div>
+</div>
+</div>
+</div>

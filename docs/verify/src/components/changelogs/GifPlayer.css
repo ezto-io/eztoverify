@@ -1,0 +1,19 @@
+.changelog-gif {
+    width: 38rem;
+    min-height: 20rem;
+    border: 1px solid rgb(232, 229, 229);
+    overflow: hidden;
+    border-radius: 1rem;
+    margin: 2rem 0;
+    display: block;
+    background-color: white;
+    margin-left: 1rem;
+}
+
+@media only screen and (max-width: 780px) {
+    .changelog-gif {
+        width: 100%;
+        min-height: 10rem;
+        margin-left: 0;
+    }
+}

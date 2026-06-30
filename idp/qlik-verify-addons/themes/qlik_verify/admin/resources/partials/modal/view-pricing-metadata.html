@@ -1,0 +1,32 @@
+<div class="modal-header align-items-start">
+    <div>
+        <h5 class="modal-title text-capitalize">{{ type }}</h5>
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center mt-1">
+                <label class="mb-0">Plan:</label>
+                <p class="font-weight-600 mb-0 pb-0 ml-2 blue-zone-title">{{ planStage }}</p>
+            </div>
+            <div class="d-flex align-items-center mt-1 ml-2">
+                <label class="mb-0">Amount:</label>
+                <p class="font-weight-600 mb-0 pb-0 ml-2 blue-zone-title">{{ pricing.currencyOptions[0].amount }} {{ pricing.currencyOptions[0].currency.toUpperCase() }}</p>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="close pt-1" ng-click="cancel()" id="closeModal" >
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <div data-ng-if="pricing.metadata !== {}">
+        <h6>Pricing Information</h6>
+        <div class="d-flex flex-column align-items-start mt-4 w-100 lighter">
+            <div ng-repeat="price in pricingMetadata" class="d-flex align-items-center justify-content-between w-100">
+                <p>{{ price.key }}</p>
+                <p>{{ price.value + " " + pricing.currencyOptions[0].currency.toUpperCase() }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pb-6" data-ng-if="pricingMetadata === 0">
+    <p class="text-center">No pricing information found</p>
+</div>

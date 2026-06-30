@@ -1,0 +1,22 @@
+<div class="modal-header align-items-start">
+    <div>
+        <h5 class="modal-title">{{:: credit.name | replaceSpaceWithHyphen | translate }}</h5>
+        <div class="d-flex align-items-center mt-1" data-ng-if="credit.pricing.metadata.stage">
+            <label class="mb-0">{{:: 'current-plan' | translate}}</label>
+            <p class="font-weight-600 mb-0 ml-2 blue-zone-title">{{credit.pricing.metadata.stage}}</p>
+        </div>
+    </div>
+    <button type="button" class="close pt-1" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <h6>{{:: 'pricing-information' | translate}}</h6>
+    <div data-ng-if="pricing.length > 0" class="d-flex flex-column align-items-start mt-4 w-100 lighter">
+        <div ng-repeat="transactionPrice in pricing" class="d-flex align-items-center justify-content-between w-100">
+            <p>{{ transactionPrice.key }}</p>
+            <p>{{ transactionPrice.value + " " + currency }}</p>
+        </div>
+    </div>
+    <p data-ng-if="pricing.length === 0">{{description}}</p>
+</div>

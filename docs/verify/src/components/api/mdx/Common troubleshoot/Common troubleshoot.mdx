@@ -1,0 +1,58 @@
+import CodeHighlighter from "@site/src/components/api/CodeHighlighter";
+import Troubleshooting from "./Troubleshooting"
+
+
+<Troubleshooting title="Invalid Request" >
+    <CodeHighlighter path="./mdx/Common troubleshoot/ifProviderIsNull_response.mdx" />
+    <p className='troubleshooting-description'>If this error occurs, contact ezto support team.</p>
+    <CodeHighlighter path="./mdx/Common troubleshoot/ifRequiredUserDetailsNotProvided_response.mdx" />
+    <p className='troubleshooting-description'>This error occurs if any required user details is not found in the request. To overcome this issue please refer the audit logs to know more information.</p>
+    <CodeHighlighter path="./mdx/Common troubleshoot/ifResolverIsNull_response.mdx" />
+    <p className='troubleshooting-description'>If this error occurs, contact ezto support team.</p>
+</Troubleshooting>
+
+
+<Troubleshooting title="Invalid License" >
+    <CodeHighlighter path="./mdx/Common troubleshoot/invalidLicense_response.mdx" />
+    <p classNapme='troubleshooting-description'>If the license is not created or not available for the specific workspace it will throw this error. Make sure license is available for your workspace if not contact ezto support team.</p>
+</Troubleshooting>
+
+<Troubleshooting title="Insufficient Balance" >
+    <CodeHighlighter path="./mdx/Common troubleshoot/invalidLicense_response.mdx" />
+    <p className='troubleshooting-description'>If your workspace wallet balance is low it will give you this error. To overcome this better recharge your workspace wallet.</p>
+</Troubleshooting>
+
+<Troubleshooting title="Invalid App" >
+   <CodeHighlighter path="./mdx/Common troubleshoot/noAppIdAppSecret_response.mdx" />
+   <p className='troubleshooting-description'>If the provided application details are not valid it will throw this error. Make sure the provided details are valid.</p>
+</Troubleshooting>
+
+<Troubleshooting title="Workspace Not Exist" >
+    <CodeHighlighter path="./mdx/Common troubleshoot/workspaceNotExixts_response.mdx" />
+    <p className='troubleshooting-description'>If the request is made for an unavailable workspace it will throw this error. Make sure the requested workspace is available.</p>
+</Troubleshooting>
+
+<Troubleshooting title="No Result Way" >
+    <CodeHighlighter path="./mdx/Common troubleshoot/noResultWay_response.mdx" />
+    <p className='troubleshooting-description'>If no result authentication way is configured in the application you will get this error. Please check the app configurations.</p>
+</Troubleshooting>
+
+<Troubleshooting title="Unauthorized App" >
+    <CodeHighlighter path="./mdx/Common troubleshoot/lowWalletBalance_response.mdx" />
+    <p className='troubleshooting-description'>If the application secret detail provided in the request is not valid or wrong credential it will throw this error. Make sure the provided app credential is correct.</p>
+</Troubleshooting>
+
+<Troubleshooting title="Invalid Device" >
+    <CodeHighlighter path="./mdx/Common troubleshoot/invalid_device.mdx" />
+    <p className='troubleshooting-description'>Device id is invalid. Check whether the user deviceId is correct.</p>
+</Troubleshooting>
+
+<Troubleshooting title="Invalid User" >
+    <CodeHighlighter path="./mdx/Common troubleshoot/invalid_user.mdx" />
+    <p className='troubleshooting-description'>User is not available in the workspace. Check whether the userId is valid.</p>
+</Troubleshooting>
+
+<Troubleshooting title="No Consent" >
+    <CodeHighlighter path="./mdx/Common troubleshoot/no_consent.mdx" />
+    <p className='troubleshooting-description'>In application, show consent is enabled but user does not have consent details. Add consent details in user.</p>
+</Troubleshooting>

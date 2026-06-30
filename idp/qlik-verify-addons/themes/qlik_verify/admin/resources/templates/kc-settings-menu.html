@@ -1,0 +1,117 @@
+<div class="bg-white ae-side-menu mt-2" data-ng-controller="RealmTabCtrl">
+    <div style="height:5rem" class="d-flex align-items-center justify-content-between" data-ng-if="isMobileWView">
+        <span class="mx-3 my-0 h5">Settings</span>
+        <i class="os-icon os-icon-close mr-2 cursor-pointer" data-ng-click="toggleSideBarShow()"></i>
+    </div>
+    <ul class="ae-main-menu overflow-y-scroll realm-sub-tab hide-scroll-bar">
+        <li data-ng-if="serverInfo.systemInfo.offering == 'CLOUD' && realm.realm !== rootAccountName"
+            ng-class="{active: path[2] === 'realm-subscription'}" data-step="1"
+            data-title="{{:: 'intro-settings-subscription-title' | translate}}"
+            data-intro="{{:: 'intro-settings-subscription' | translate}}">
+            <a href="#/realms/{{realm.realm}}/realm-subscription"
+                class="bo-workspace-sidebar-list-padding text-decoration-none" id="workspaceSettings-subscription">
+                <img data-ng-src="{{resourceUrl}}/themes/img/workspace-icons/{{realm.mode === 'bo' ? 'subscription-bo.svg' : realm.mode === 'wiam' ? 'subscription.svg' : 'subscription-ciam.svg'}}"
+                    alt="subscription-img" />
+                <span class="bo-workspace-sidebar-list-title">{{:: 'realm-tab-subscription' | translate}}</span>
+            </a>
+        </li>
+        <li ng-class="{active: path[2] === 'realm-settings'}"
+            data-title="{{:: 'intro-settings-general-title' | translate}}"
+            data-intro="{{:: 'intro-settings-general' | translate}}">
+            <a href="#/realms/{{realm.realm}}/realm-settings"
+                class="bo-workspace-sidebar-list-padding text-decoration-none" id="workspaceSettings-general">
+                <img data-ng-src="{{resourceUrl}}/themes/img/workspace-icons/{{realm.mode === 'bo' ? 'general-workspace-bo.svg' : realm.mode === 'wiam' ? 'general-workspace.svg' : 'general-workspace-ciam.svg'}}"
+                    alt="workspace-img"/>
+                <span class="bo-workspace-sidebar-list-title">{{:: 'realm-tab-general' | translate}}</span>
+            </a>
+        </li>
+        <li data-ng-if="realm.mode == 'bo' && isOwner && isWorkflowEnabled" ng-class="{active: path[2] === 'realm-access-keys'}" data-title="{{:: 'intro-settings-general-title' | translate}}" data-intro="{{:: 'intro-settings-general' | translate}}">
+            <a href="#/realms/{{realm.realm}}/realm-access-keys" class="bo-workspace-sidebar-list-padding text-decoration-none" id="workspaceSettings-access-keys">
+                <img data-ng-src="{{resourceUrl}}/themes/img/workspace-icons/access-key-bo.svg"  alt="workspace-img"/>
+                <span class="bo-workspace-sidebar-list-title">{{:: 'access-keys' | translate}}</span>
+            </a>
+        </li>
+        <li data-ng-if="realm.mode != 'bo'" ng-class="{active: path[2] === 'login-settings'}" data-title="{{:: 'intro-settings-login-title' | translate}}" data-intro="{{:: 'intro-settings-login' | translate}}">
+            <a href="#/realms/{{realm.realm}}/login-settings" class="bo-workspace-sidebar-list-padding text-decoration-none" id="workspaceSettings-login">
+                <img data-ng-src="{{resourceUrl}}/themes/img/workspace-icons/{{realm.mode === 'bo' ? 'login-tab-bo.svg' : realm.mode === 'wiam' ? 'login-tab.svg' : 'login-tab-ciam.svg'}}" alt="workspace-img" />
+                <span class="bo-workspace-sidebar-list-title">{{:: 'realm-tab-login' | translate}}</span>
+            </a>
+        </li>
+        <li data-ng-if="realm.mode != 'bo'" ng-class="{active: path[2] === 'onboarding-settings'}"
+            data-title="{{:: 'intro-settings-onboarding-title' | translate}}"
+            data-intro="{{:: 'intro-settings-onboarding' | translate}}">
+            <a href="#/realms/{{realm.realm}}/onboarding-settings"
+                class="bo-workspace-sidebar-list-padding text-decoration-none" id="workspaceSettings-onboarding">
+                <img data-ng-src="{{resourceUrl}}/themes/img/workspace-icons/{{realm.mode === 'bo' ? 'onboarding-tab-bo.svg' : realm.mode === 'wiam' ? 'onboarding-tab.svg' : 'onboarding-tab-ciam.svg'}}"
+                    alt="workspace-img" height="30px" width="30px" />
+                <span class="bo-workspace-sidebar-list-title">{{:: 'realm-tab-onboarding' | translate}}</span>
+            </a>
+        </li>
+        <li data-ng-if="realm.mode != 'bo'" ng-class="{active: path[2] === 'token-settings'}" data-step="5"
+            data-title="{{:: 'intro-settings-tokens-title' | translate}}"
+            data-intro="{{:: 'intro-settings-tokens' | translate}}">
+            <a href="#/realms/{{realm.realm}}/token-settings"
+                class="bo-workspace-sidebar-list-padding text-decoration-none" id="workspaceSettings-tokens">
+                <img data-ng-src="{{resourceUrl}}/themes/img/workspace-icons/{{realm.mode === 'bo' ? 'settings-token-bo.svg' : realm.mode === 'wiam' ? 'settings-token.svg' : 'settings-token-ciam.svg'}}"
+                    alt="workspace-img"  />
+                <span class="bo-workspace-sidebar-list-title">{{:: 'realm-tab-tokens' | translate}}</span>
+            </a>
+        </li>
+        <li ng-class="{active: path[2] === 'dashboard-admins'}"
+            data-title="{{:: 'intro-settings-dashboard-admin-title' | translate}}"
+            data-intro="{{:: 'intro-settings-dashboard-admin' | translate}}">
+            <a href="#/realms/{{realm.realm}}/dashboard-admins"
+                class="bo-workspace-sidebar-list-padding text-decoration-none" id="workspaceSettings-admin">
+                <img data-ng-src="{{resourceUrl}}/themes/img/workspace-icons/{{realm.mode === 'bo' ? 'admin-user-bo.svg' : realm.mode === 'wiam' ? 'admin-user.svg' : 'admin-user-ciam.svg'}}"
+                    alt="admin-user-img"  />
+                <span class="bo-workspace-sidebar-list-title">{{:: 'tenant-admin' | translate}}</span>
+            </a>
+        </li>
+        <li data-ng-if="realm.mode != 'bo'" ng-class="{active: path[2] === 'authentication-settings'}"
+            data-title="{{:: 'special-attributes-title' | translate}}"
+            data-intro="{{:: 'intro-settings-dashboard-admin' | translate}}">
+            <a href="#/realms/{{realm.realm}}/authentication-settings"
+                class="bo-workspace-sidebar-list-padding text-decoration-none" id="authentication-settings">
+                <img data-ng-src="{{resourceUrl}}/themes/img/workspace-icons/{{realm.mode === 'bo' ? 'authentication-settings-bo.svg' : realm.mode === 'wiam' ? 'authentication-settings.svg' : 'authentication-settings-ciam.svg'}}"
+                    alt="workspace-img"/>
+                <span class="bo-workspace-sidebar-list-title">{{:: 'authentication-settings' | translate}}</span>
+            </a>
+        </li>
+        <li data-ng-if="isWorkflowEnabled && serverInfo.systemInfo.offering == 'CLOUD' && realm.realm === rootAccountName && serverInfo.showSecuritySettings && realm.mode === 'bo'"
+            ng-class="{active: path[2] === 'security-settings'}"
+            data-title="{{:: 'intro-settings-dashboard-admin-title' | translate}}"
+            data-intro="{{:: 'intro-settings-dashboard-admin' | translate}}">
+            <a href="#/realms/{{realm.realm}}/security-settings" class="bo-workspace-sidebar-list-padding text-decoration-none"
+                id="security-settings">
+                <img data-ng-src="{{resourceUrl}}/themes/img/workspace-icons/settings-bo.svg" alt="admin-user-img"
+                     />
+                <span class="bo-workspace-sidebar-list-title">{{:: 'security-settings' | translate}}</span>
+            </a>
+        </li>
+         <li data-ng-if="realm.mode == 'bo' && isRootAccount" ng-class="{active: path[2] === 'management'}">
+            <a href="#/realms/{{realm.realm}}/management" class="bo-workspace-sidebar-list-padding text-decoration-none d-flex align-items-center" id="management-tab">
+                <img data-ng-src="{{resourceUrl}}/themes/img/workspace-icons/workspace-manage-bo.svg" alt="admin-user-img" />
+                <span class="bo-workspace-sidebar-list-title">{{:: 'workspace-management' | translate}}</span>
+            </a>
+        </li>
+        <li ng-show="isWorkflowEnabled" ng-class="isWorkspaceAttributeTabOpen ? 'bo-setting-menu-theme-border-none' : {active: path[2] === 'realm-attributes'}"
+            class="cursor-pointer mb-4" data-title="{{:: 'special-attributes-title' | translate}}"
+            data-intro="{{:: 'intro-settings-additional' | translate}}">
+            <div class="d-flex align-items-center" data-ng-click="toggleWorkspaceAttribute()">
+                <a id="workspaceSettings-attributes" class="bo-workspace-sidebar-list-padding text-decoration-none">
+                    <img data-ng-src="{{resourceUrl}}/themes/img/workspace-icons/{{realm.mode === 'bo' ? 'workspace-attribute-bo.svg' : realm.mode === 'wiam' ? 'workspace-attribute.svg' : 'workspace-attribute-ciam.svg'}}"
+                        alt="workspace-attribute-img"  />
+                    <span class="bo-workspace-sidebar-list-title">{{:: 'tenant-attributes' | translate}}</span>
+                </a>
+                <i ng-if="!isRTL" ng-class="(isWorkspaceAttributeTabOpen) ? 'ti-angle-down': 'ti-angle-right'" class="mt-1"></i>
+                <i ng-if="isRTL" ng-class="(isWorkspaceAttributeTabOpen) ? 'ti-angle-down': 'ti-angle-left'" class="mt-1"></i>
+            </div>
+            <!-- Workspace attributes tabs -->
+            <ul class="list-unstyled ml-5 mb-5 pl-4" data-ng-if="isWorkspaceAttributeTabOpen">
+                <li class="cursor-pointer d-flex align-items-center" style="padding:12px 0" data-ng-click="selectAttribute(special.tabName.replaceAll(' ','-').toLowerCase())" data-ng-class="path[2] === 'realm-attributes' && path[3] === special.tabName.replaceAll(' ','-').toLowerCase() ? 'bo-setting-menu-theme-border-right' : 'bo-setting-menu-theme-border-hidden'"  data-ng-if="specialAttributes.length > 0 && !loading && !special.hideTab" data-ng-hide="['HUAWEI PUSH SERVICE','ABSTRACT API','NUMVERIFY','Video SDK'].indexOf(special.tabName) !== -1" data-ng-repeat="special in specialAttributes"  >
+                    <span class="text-muted" id="workspaceSettings-attributes-{{special.tabName.replaceAll(' ','-').toLowerCase()}}"><span>{{:: special.tabName | translate}}</span></span>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

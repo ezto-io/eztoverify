@@ -1,0 +1,82 @@
+<kc-menu></kc-menu>
+<div class="position-relative"> 
+    <div class="position-absolute">
+      <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+      <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon" data-ng-click="toggleSideBarShow()" >
+        <div id="setting-icon h1">
+          <i class="ti-angle-right cursor-pointer"></i>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="content-w bo-setting-menu-main-content">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-management ng-hide="loading"></kc-tabs-management>
+                        <kc-loader ng-show="loading" loadertype="loadertype" ></kc-loader>
+                        <div class="element-box" ng-hide="loading">
+                            <form class="form-horizontal" name="realmForm" novalidate>
+                                <fieldset class="application-step-1">
+                                    <div class="form-group row clearfix block" ng-if="currentRealm.balance >= 0 && currentRealm.balance != 'null'">
+                                        <label class="col-md-3 control-label">{{:: 'available-balance' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <div class="spinner-border spinner-border-sm" role="status" ng-show="loading"></div>
+                                            <label id="available-balance">{{currentRealm.balance}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row clearfix block">
+                                        <label class="col-md-3 control-label" for="enable-api">{{:: 'enable-api' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="enable-api">
+                                                <div  class="os-toggler-w" ng-class="{on: currentRealm.isApiWorkspace}">
+                                                    <div class="os-toggler-i" id="enabledToggle">
+                                                        <div class="os-toggler-pill" ng-model="currentRealm.isApiWorkspace" name="enable-api" id="enable-api" onoffswitch ng-change="updateValue('isApiWorkspace')">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip ng-show="!loading">{{:: 'isApiWorkspace.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix block">
+                                        <label class="col-md-3 control-label" for="enable-platform">{{:: 'enable-platform' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label for="enable-platform" >
+                                                <div  class="os-toggler-w" ng-class="{on: currentRealm.isPlatformWorkspace}">
+                                                    <div class="os-toggler-i" id="enabledToggle">
+                                                        <div class="os-toggler-pill" ng-model="currentRealm.isPlatformWorkspace" name="enable-platform" id="enable-platform" onoffswitch ng-change="updateValue('isPlatformWorkspace')">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip ng-show="!loading">{{:: 'isPlatformWorkspace.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row clearfix block" ng-show="showPricingToggle">
+                                        <label class="col-md-3 control-label" for="custom-pricing-toggle">{{:: 'custom-pricing' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <div class="spinner-border spinner-border-sm mb-3" role="status" ng-show="priceLoading"></div>
+                                            <label for="custom-pricing-toggle" ng-hide="priceLoading">
+                                                <div  class="os-toggler-w" ng-class="{on: customPricing}">
+                                                    <div class="os-toggler-i" id="enabledToggle">
+                                                        <div class="os-toggler-pill" ng-model="customPricing" ng-change="updatePricing(customPricing ? 'default' : 'custom')" name="custom-pricing-toggle" id="custom-pricing-toggle" onoffswitch >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <kc-tooltip ng-show="!loading">{{:: 'isCustomPricing.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                </fieldset>
+                            </form>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

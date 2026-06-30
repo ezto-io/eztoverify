@@ -1,0 +1,7 @@
+<div class="form-group row clearfix">
+	<label class="col-md-3 control-label" for="clientId">{{:: 'api-host' | translate}} <span class="required">*</span></label>
+	<div class="col-md-7">
+		<input class="form-control" id="clientId" type="text" ng-model="identityProvider.config.api_host" required>
+	</div>
+	<kc-tooltip>{{:: 'duo.apihost.tooltip' | translate}}</kc-tooltip>
+</div>

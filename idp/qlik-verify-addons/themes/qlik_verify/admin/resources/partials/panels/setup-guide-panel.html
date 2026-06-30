@@ -1,0 +1,22 @@
+<div class="auth-config-container pb-3 ng-scope">
+    <div class="exec-logo-container">
+        <img height="30px" width="30px" data-ng-src="{{resourceUrl}}/themes/img/{{logo}}" alt="logo-img" />
+    </div>
+    <div class="exec-title"> 
+        <p class="font-size-normal">{{:: name | translate}}</p>
+    </div>
+    <div id="close" data-ng-click="dismissPanel()" class="mt-0">
+        <i class="os-icon os-icon-close"></i>
+    </div>
+</div>
+<div id="divisionthing" class="ng-scope"></div>
+<div class="pt-4">
+    <div data-ng-show="howToDo" 
+    class='mdPreview overflow-hidden mdTrigger' url='{{howToDo}}' data-ng-click="mdTrigger()">
+    </div>
+    <div class="element-box-medium top-align" data-ng-show="!howToDo">
+        <div class="no-entry-svg">
+            <p class="no-results-msg no-entry-display mt-2">{{:: 'no-data-found' | translate}}</p>
+        </div>
+    </div>
+</div>

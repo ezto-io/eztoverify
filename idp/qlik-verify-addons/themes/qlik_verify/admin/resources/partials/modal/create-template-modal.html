@@ -1,0 +1,37 @@
+<div class="qv-modal-header">
+    <h5 class="qv-modal-title">{{title}}</h5>
+    <button type="button" id="modal-close-btn" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div id="qv-modal" class="qv-modal-body pb-1">
+    <form>
+        <div class="authentication-modal-1">
+            <label class="control-label qv-modal-label" for="name">{{:: 'flow-name' | translate}} <span class="required">*</span></label>
+            <input class="form-control" type="text" id="name" data-ng-model="name.value" required="" />
+        </div>
+
+        <div class="mt-3" data-ng-if="flowChosen == 'login'">
+            <label class="control-label" for="name">{{:: 'flow-type' | translate}}</label>
+            <select class="form-control" data-ng-model="defaultFlowType.value">
+                <option value="browser_flow">
+                    {{:: 'browser-flow' | translate}}
+                </option>
+                <option value="direct_grant">
+                    {{:: 'direct-grant' | translate}}
+                </option> 
+              </select>
+        </div> 
+    </form>
+</div>
+<div class="qv-modal-footer">
+    <button type="button" class="btn btn-secondary" ng-click="cancel()" id="cancel-btn" >{{:: 'cancel' | translate}}</button>
+    <button type="button" class="btn btn-primary authentication-modal-3" ng-click="ok()" id="create-btn"  data-ng-disabled="!changed">{{:: 'create' | translate}}</button>
+</div>
+<script>
+    $(document).ready(function() {
+      setTimeout(function() {
+          $("#name").focus();
+      }, 100);
+    });
+</script>

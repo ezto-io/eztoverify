@@ -1,0 +1,28 @@
+// Use plantUML extesion
+
+@startuml QV url shortner
+
+start
+:Client sends GET request to /;
+if (Retrieve original url from database using id from path parameter) then (Success)
+    :Redirect to original url;
+else if (If the ttl has expired) then ()
+    :Delete id from database;
+    :Redirect to QlikVerify website;
+else (Error)
+    :Redirect to QlikVerify website;
+endif
+stop
+
+start
+:Client sends POST request to /;
+:Parse request data;
+if (Validate data if it contains original url and ttl(time to live) ) then (Valid)
+  :Insert item into database;
+  :Send JSON response with shortened url;
+else (Invalid)
+  :Redirect to QlikVerify website;
+endif
+stop
+
+@enduml

@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{title}}</h5>
+    <button type="button" id="close-modal" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body mb-4 position-relative">
+    <i class="pt-2 os-icon os-icon-copy cursor-pointer pr-2 copy-claims" data-ng-click="copyToClipboard('#command')" id="{{title.toLowerCase().replaceAll(' ','-')}}-claims-copy" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+    <div class="rounded border bg-color-curl " style="overflow: scroll;max-height: 40vh;">                
+        <pre style="white-space: pre-wrap;overflow:auto;">
+           <code class="language-curl" id="command">{{claims}}</code>
+        </pre>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        hljs.highlightAll();
+    });
+</script>

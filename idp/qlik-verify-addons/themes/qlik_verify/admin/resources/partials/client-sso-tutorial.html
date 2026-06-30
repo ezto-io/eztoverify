@@ -1,0 +1,42 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/sso">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-sso'
+                            | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-sso-app></kc-tabs-sso-app>
+                        <kc-tabs-sso-client></kc-tabs-sso-client>
+
+                            <div class="element-box">
+                                <div data-ng-if="installDoc" class='mdPreview mdTrigger' url='{{installDoc}}' data-ng-click="mdTrigger()">
+                                </div>
+                                <div class="element-box-medium top-align"  data-ng-if="!installDoc">
+                                    <div class="no-entry-svg">
+                                        <img data-ng-src="{{resourceUrl}}/themes/img/no-apps.svg" alt="no-results-svg"
+                                            class="opacity-40 no-entry-display" />
+                                        <p class="no-results-msg no-entry-display mt-2">{{:: 'no-data-found' | translate}}</p>
+                                    </div>
+                                </div>
+                                <div data-ng-if="overviewDoc" class="element-box-medium top-align d-none" id="mdFileNotFoundInstallation">
+                                    <div class="no-entry-svg">
+                                        <img data-ng-src="{{resourceUrl}}/themes/img/no-apps.svg" alt="no-results-svg"
+                                            class="opacity-40 no-entry-display" />
+                                        <p class="no-results-msg no-entry-display mt-2">{{:: 'no-data-found' | translate}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,140 @@
+.about {
+  max-width: 1440px;
+  width: 100%;
+  position: relative;
+  padding: 6.25rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-image {
+  width: 30rem;
+  height: 30rem;
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url("/img/about-light.svg");
+  position: relative;
+  z-index: 1;
+}
+
+html[data-theme="dark"] .about-image {
+  background-image: url("/img/about-dark.svg");
+}
+
+.about-content {
+  flex: 0.8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0.75rem;
+  border: 1px solid #d3d3d3;
+  padding: 2.62rem;
+  border-left: none;
+  position: relative;
+  left: -1.5rem;
+  z-index: 0;
+}
+
+html[data-theme="dark"] .about-content{
+  background-color: #202020;
+}
+
+.about-desc {
+  margin: 0;
+  line-height: 1.5rem;
+  text-align: center;
+  max-width: 30rem;
+}
+
+.about-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+
+.about-title .highlight {
+  color: #2952e3;
+}
+
+.about-btn {
+  display: flex;
+  width: 13rem;
+  padding: 1.12rem 0.625rem;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  background-color: #2952e3;
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-style: normal;
+  margin-top: 2.62rem;
+}
+
+.about-btn:hover {
+  background-color: #0e30aa;
+}
+
+.about-btn:hover {
+  text-decoration: none;
+  color: white;
+}
+
+.small-view {
+  display: none;
+}
+
+@media only screen and (max-width: 820px) {
+  .about {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 2.62rem 0;
+    gap: 1rem;
+    min-height: 500px;
+  }
+
+  .about-image {
+    width: 16rem;
+    height: 16rem;
+    background-size: 100% 100%;
+  }
+
+  .lottie {
+    width: 100%;
+  }
+
+  .about-title {
+    display: none;
+  }
+
+  .about-content {
+    border: none;
+  }
+
+  .about-content {
+    align-items: center;
+    padding: 1rem;
+    width: 100vw;
+    left: 0;
+  }
+
+  .about-desc{
+    font-size: 0.75rem;
+    max-width: 30rem;
+  }
+
+  .about-btn {
+    width: 12rem;
+  }
+
+  .small-view {
+    display: block;
+    font-size: 1.25rem;
+  }
+
+  html[data-theme="dark"] .about-content{
+    background-color: initial;
+  }
+}

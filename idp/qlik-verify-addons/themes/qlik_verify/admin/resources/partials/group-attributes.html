@@ -1,0 +1,82 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/groups" id="backToGroups" >
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                            {{ :: 'back-to-groups' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-group></kc-tabs-group>
+                        <div class="element-box element-box-medium" data-ng-hide="allowAddAttribute || attributeLength() > 0 || noAttributesSaved() > 0">
+                            <div class="no-attributes-svg">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'add-attr.svg' : realm.mode === 'ciam' ? 'add-attr-ciam.svg' : 'add-attr-bo.svg' }}"  alt="no-attributes-svg" class="opacity-40 no-entry-display"/>
+                                <p class="no-results-msg no-entry-display">{{:: 'no-attr' | translate}}</p>
+                                <button class="create-btn no-entry-display" id="addAttributeBtn" ng-click="addAttributeButton()">
+                                    <i class="os-icon os-icon-plus plus-icon"></i>
+                                    {{:: 'add-attr' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="element-box" data-ng-if="allowAddAttribute || attributeLength() > 0 || noAttributesSaved() > 0">
+                            <div class="table-responsive-md">
+                                <table class="table table-light-bordered mb-0">
+                                    <tr>
+                                        <td class="border-none pl-0 pb-0 w-40">
+                                            <input ng-model="newAttribute.key" class="form-control" placeholder="{{:: 'key' | translate}}" type="text" id="newAttributeKey" onchange="" />
+                                        </td>
+                                        <td class="border-none pb-0 w-40">
+                                            <input ng-model="newAttribute.value" class="form-control" placeholder="{{:: 'value' | translate}}" type="text" id="newAttributeValue" /> 
+                                        </td>
+                                        <td class="border-none text-center pb-0 w-20">
+                                            <button class="add-btn" data-ng-click="addAttribute()" id="addNewAttributeBtn" data-ng-disabled="!newAttribute.key.length || !newAttribute.value.length || !isGroupAttributesLoaded || isKeyExist">
+                                                <span data-ng-show="!isAddGroupAttributeLoading">{{:: 'add' | translate}}</span>
+                                                <span data-ng-show="isAddGroupAttributeLoading">
+                                                     <div class="spinner-border spinner-border-sm" role="status"></div>
+                                                     <span>{{:: 'add-btn-loader' | translate}}</span>
+                                                </span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p class="text-danger control-label p-2 py-0 my-0" data-ng-show="isKeyExist">{{:: 'attribute-key-exist' | translate}}</p>
+                            </div>
+                            <div class="table-responsive-md mt-3">
+                                <form class="form-horizontal" name="clientForm" novalidate>
+                                    <div ng-show="attributeLength() > 0">
+                                    <table class="table  table-light-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th class="px-4 w-40">{{:: 'key' | translate}}</th>
+                                            <th class="px-4 w-40">{{:: 'value' | translate}}</th>
+                                            <th class="text-center w-20">{{:: 'actions' | translate}}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="(key, value) in groupAttributes | toOrderedMapSortedByKey">
+                                            <td class="w-40"><input class="form-control readonly-key p-2" type="text" value="{{key}}" readonly /> </td>
+                                            <td class="w-40"><input class="form-control readonly-key p-2" type="text" value="{{value}}" readonly /> </td>
+                                            <td class="kc-action-cell delete-attr-icon d-flex justify-content-center align-items-center">
+                                                <i data-ng-show="key!==selectedGroupAttribute && isGroupAttributesLoaded " id="{{key}}-deleteIcon" class="os-icon os-icon-ui-15 del-icon px-0 " data-ng-click="isGroupAttributesLoaded && removeAttribute(key)" ></i>
+                                                <i data-ng-show="key!==selectedGroupAttribute && !isGroupAttributesLoaded " id="{{key}}-deleteIcon" class="os-icon os-icon-ui-15 del-icon icon-btn-disabled px-0" ></i>
+                                                <span class="spinner-border spinner-border-sm text-danger m-0 p-0 text-center" id="{{key}}-deleteIcon" role="status" aria-hidden="true" data-ng-show="key === selectedGroupAttribute"></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

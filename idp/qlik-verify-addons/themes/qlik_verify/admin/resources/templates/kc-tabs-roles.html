@@ -1,0 +1,14 @@
+<div class="sub-top-bar mt-4 mb-4">
+    <ul>
+        <li ng-class="{active: path[2] == 'roles'}">
+            <a href="#/realms/{{realm.realm}}/roles">
+                {{:: 'realm-roles' | translate}}
+            </a>
+        </li>
+        <li ng-class="{active: path[2] == 'default-roles'}">
+            <a href="#/realms/{{realm.realm}}/default-roles">
+                {{:: 'default-roles' | translate}}
+            </a>
+        </li>
+    </ul>
+</div>

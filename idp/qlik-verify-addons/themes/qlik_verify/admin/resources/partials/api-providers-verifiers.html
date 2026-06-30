@@ -1,0 +1,31 @@
+<kc-menu></kc-menu>
+<div class="position-relative">
+    <div class="position-absolute">
+        <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+        <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon"
+            data-ng-click="toggleSideBarShow()">
+            <div id="setting-icon h1">
+                <i class="ti-angle-right cursor-pointer"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content-w bo-setting-menu-main-content">
+    <div class="content-i">
+
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div ng-hide="loading">
+                            <kc-tabs-management></kc-tabs-management>
+                        </div>
+                        <div class="element-box px-4">
+                            <kc-api-verifiers ></kc-api-verifiers>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

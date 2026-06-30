@@ -1,0 +1,117 @@
+---
+id : Logs
+title: Logs
+sidebar_label: Logs
+--- 
+
+import DynamicTableElement from '@site/src/components/docs/DynamicTableElement';
+import eventTypeData from './audit-logs-event-type.json';
+
+
+The **Audit Logs** functions as a comprehensive record of all actions performed outside the **Workspace**, providing detailed information. This includes  email notifications, logins, and other significant events.
+
+This page allows users to view, search, and analyze logs to ensure transparency, accountability, and security within the **Workspace**.
+
+Some of the things you can analyze with these **Logs** are:
+
+* View transaction made by a particular user.
+
+* Search for specific logs by entering relevant details.
+
+* Check the time of every event performed.
+
+> **To access the logs, ensure that the logs are enabled.**
+
+<br/>
+
+###  Enable Logs
+
+*1* Navigate to **Workspace**, and click on **Audit**.
+
+*2* In the **Logs** page,  click on the `SETTINGS` button located at the top right corner, toggle the **Enable** button, and then click on `SAVE` button.
+
+![Enable Logs](https://dashboard.eztovrfy.com/public/Docs/logs/enable-logs.png)
+
+*3* Once the logs are enabled, all events are recorded in the database, making them accessible for review.
+
+<br/>
+
+###  View Logs
+
+> If a transaction is executed through a **Sandbox** application, the **Sandbox** app ID will be displayed. For transactions done through the **Live** mode applications, the corresponding **Live** mode app ID will be shown.
+
+*1* Once the logs are enabled, you can view all active logs, displaying comprehensive details;
+
+![View Logs](https://dashboard.eztovrfy.com/public/Docs/logs/view-logs.png)
+
+<table>
+   <thead>
+      <tr>
+         <th width="144">Attributes</th>
+         <th>Descriptions</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><strong>Time</strong></td>
+         <td>This indicates the timestamp or moment when each action occurred, providing a chronological order of events.</td>
+      </tr>
+      <tr>
+         <td><strong>Event Type</strong></td>
+         <td>This field specifies the nature or category of each action, helping understand what type of activity took place.</td>
+      </tr>
+      <tr>
+         <td><strong>Application</strong></td>
+         <td>This section identifies the specific application involved in the recorded action, enabling to pinpoint which part of the workspace was affected.</td>
+      </tr>
+      <tr>
+         <td><strong>User</strong></td>
+         <td>It displays the username or user identifier associated with the individual who initiated the action, allowing for easy tracking.</td>
+      </tr>
+      <tr>
+         <td><strong>IP Address</strong></td>
+         <td>This shows the <strong>Internet Protocol</strong> (IP) address from which the action originated, aiding in security and auditing by revealing the source of the action.</td>
+      </tr>
+   </tbody>
+</table>
+
+*2* For more details on each log, click on the information icon.
+ 
+ 
+![Info](https://dashboard.eztovrfy.com/public/Docs/logs/info-logs.png)
+
+<br/>
+
+###  Get Logs
+
+*1* To retrieve a specific log, enter the relevant details into the provided fields and specify the number of days you want to view. For example, if you enter 7 days, the logs from the last 7 days will be displayed. 
+
+![Filter Logs](https://dashboard.eztovrfy.com/public/Docs/logs/filter-logs.png)
+
+<table>
+   <thead>
+      <tr>
+         <th width="144">Attributes</th>
+         <th>Descriptions</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><strong>Request ID</strong></td>
+         <td>Enter the request ID received in the response body of the initiated API request.</td>
+      </tr>
+      <DynamicTableElement title="Event Type" defaultSelection="" defaultDescription="Choose the specific event type from the drop-down." jsonData={eventTypeData} />
+      <tr>
+         <td><strong>Application</strong></td>
+         <td>Choose the application for which you want to fetch the logs.</td>
+      </tr>
+      <tr>
+         <td><strong>User</strong></td>
+         <td>Select the user for whom you want to retrieve the log information.</td>
+      </tr>
+   </tbody>
+</table>
+
+*2* Provide the details and click on the `FILTER` button.
+
+*3* To reset the fields and filters, simply click on the `RESET` button.

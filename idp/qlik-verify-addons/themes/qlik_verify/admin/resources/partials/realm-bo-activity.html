@@ -1,0 +1,112 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper pb-2">
+                        <h3 class="element-header">
+                            {{:: 'activity' | translate}}
+                        </h3>
+                        <form class="form-inline col-sm-12  mb-5 justify-content-sm-end" data-ng-if="isRootTenant">
+                          <select class="form-control rounded" ng-change="updateFilter()" data-ng-model="filter.selectedFilter" id="workspaceSelector">
+                            <option ng-repeat="x in filtersForRootTenant" value="{{x}}">{{:: x | translate}}</option>
+                          </select> 
+                        </form>
+                        <kc-loader loadertype="loaderTypeName" data-ng-if="dataLoading"></kc-loader>
+                        <div class="tablo-with-chart" data-ng-show="!dataLoading">
+                            <div class="row">
+                              <div class="col-sm-7" data-ng-class="{'col-sm-12': !isRootAccount}">
+                                <div class="mb-4">
+                                  <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                     <div class="bg-white m-2 p-4 rounded font-weight-bold text-center bo-activity-card" data-ng-repeat="activity in activityCardList">
+                                       <div class="font-size-17 font-weight-normal">
+                                        <img data-ng-src="{{resourceUrl}}/themes/img/{{activity.icon}}.svg"  alt="application-icon" class="pr-2" />
+                                      </div>
+                                      <div class="font-size-17 font-weight-normal py-4">
+                                        {{:: activity.title | translate}}
+                                      </div>                                                          
+                                       <div class="h4" data-ng-class="activity.theme" >
+                                         {{activity.value}}
+                                       </div>
+                                     </div>        
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-sm-12 px-3" data-ng-if="activityData.appsStats.length > 0">
+                                <div class="col-sm-12 mb-4 element-box py-4 px-5 min-h-255px">
+                                    <h6 class="element-header font-size-17 mb-3">{{::'clients' | translate }}</h6>
+                                      <div class="table-responsive">
+                                        <table class="table table-lightborder">
+                                          <thead class="text-center">
+                                            <th class="px-2 w-20" >{{::'app-id' | translate }}</th>
+                                            <th class="px-2">{{::'name' | translate }}</th>
+                                            <th class="px-2">{{::'is-live' | translate }}</th>
+                                            <th class="px-2">{{::'total-unique-users' | translate }}</th>
+                                            <th class="px-2">{{::'transactions' | translate }}</th>
+                                            <th class="px-2">{{::'completed' | translate }}</th>
+                                            <th class="px-2">{{::'rejected' | translate }}</th>
+                                            <th class="px-2">{{::'expired' | translate }}</th>
+                                            <th class="px-2">{{::'pending' | translate }}</th>
+                                          </thead>
+                                          <tbody class="text-center">
+                                            <tr data-ng-repeat="appStat in activityData.appsStats" ng-hide="(appStat.isAPIApp && !isAPIEnabled) || (!isWorkflowEnabled && !appStat.isAPIApp)">
+                                              {{appStat.isAPIApp}}
+                                              <td class="nowrap p-2" ng-show="appStat.isAPIApp">
+                                                {{appStat.appId}}
+                                              </td>
+                                              <td class="nowrap p-2 cursor-pointer" kc-open="/realms/{{realm.realm}}/clients/{{appStat.appId}}"  ng-show="(!appStat.isAPIApp && !appStat.sandboxAppId)">
+                                                {{appStat.appId}}
+                                              </td>
+                                               <td class="nowrap p-2 cursor-pointer" kc-open="/realms/{{realm.realm}}/clients/{{appStat.appId}}"  ng-show="(!appStat.isAPIApp && appStat.sandboxAppId)">
+                                                {{appStat.sandboxAppId}}
+                                              </td>
+                                              <td class="text-capitalize p-2 text-ellipsis" style="max-width: 200px;">
+                                                {{appStat.appName}}
+                                              </td>
+                                              <td class="nowrap text-capitalize p-2 ">
+                                                <div class="badge badge-success text-uppercase" data-ng-if="appStat.live">
+                                                  {{:: 'live' | translate}}
+                                                </div>
+                                                <div class="badge badge-danger text-uppercase p-2" data-ng-if="!appStat.live">
+                                                    {{:: 'not-live' | translate}}
+                                                </div>
+                                              </td>
+
+                                              <td class="nowrap text-capitalize p-2">
+                                                {{appStat.uniqueUsers}}
+                                              </td>
+                                              <td class="nowrap text-capitalize p-2">
+                                                  {{appStat.transactions}}
+                                              </td>
+                                              <td class="nowrap text-capitalize p-2">
+                                                {{appStat.completed}}
+                                              </td>
+                                              <td class="nowrap text-capitalize p-2">
+                                                  {{appStat.rejected}}
+                                              </td>
+                                                <td class="nowrap text-capitalize p-2">
+                                                    {{appStat.expired}}
+                                                </td>
+                                                <td class="nowrap text-capitalize p-2">
+                                                    {{appStat.pending}}
+                                                </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

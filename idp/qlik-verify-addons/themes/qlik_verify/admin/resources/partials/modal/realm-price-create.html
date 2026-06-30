@@ -1,0 +1,55 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{:: 'Pricing Details' | translate}}</h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row mb-3">
+        <label class="control-label col-3" for="selector">{{:: 'name' | translate}} <span class="required" >*</span></label>
+        <input id="newPriceName" autofocus class="form-control col-9" maxlength="48" type="text" data-ng-model="price.name" />
+    </div>
+    <div class="row mb-3">
+        <label class="control-label col-3" for="selector">{{:: 'Curreny' | translate}} <span class="required" >*</span></label>
+        <select class="form-control col-9" id="newCurrency" data-ng-model="price.currency">
+            <option value="" disabled>{{:: 'selectOne' | translate}}</option>
+            <option value="inr">INR</option>
+            <option value="usd">USD</option>
+        </select>
+    </div>
+    <div class="row mb-3">
+        <label class="control-label col-3" for="selector">{{ productName === 'tax' ? 'Percentage': 'Amount'}} <span class="required" >*</span></label>
+        <input id="newAmount" autofocus class="form-control col-9" type="text" data-ng-model="price.amount" data-ng-change="convertToNumberFormate()" />
+    </div>
+    <div class="row mb-3" ng-if="productName != 'tax' && productName != 'bo_tran' ">
+        <label class="control-label col-3" for="selector">{{:: 'default' | translate}}</label>
+        <div class="col-9">
+            <label for="default-toggle">
+                <div  class="os-toggler-w" ng-class="{on: price.consider}">
+                    <div class="os-toggler-i" id="enabledToggle">
+                        <div class="os-toggler-pill" ng-model="price.consider" name="default-toggle" id="default-toggle" onoffswitch >
+                        </div>
+                    </div>
+                </div>
+            </label>
+            <kc-tooltip>{{:: 'create-price-default-helper-txt' | translate}}</kc-tooltip>
+        </div>
+    </div>
+    <div class="row mb-3"  data-ng-show="isRootAccount"  ng-if="productName != 'tax'">
+        <label class="control-label col-3" for="selector">{{:: 'custom-plan-subtenant-supported' | translate}}</label>
+        <div class="col-9">
+            <label for="custom-subtenant-toggle" class="col-5">
+                <div  class="os-toggler-w" ng-class="{on: price.addToCustomSubtenant}">
+                    <div class="os-toggler-i" id="enabledToggle">
+                        <div class="os-toggler-pill" ng-model="price.addToCustomSubtenant" name="custom-subtenant-toggle" id="custom-subtenant-toggle" onoffswitch >
+                        </div>
+                    </div>
+                </div>
+            </label>
+            <kc-tooltip>{{:: 'add-in-custom-priced-workspace-helper-txt' | translate}}</kc-tooltip>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary" ng-click="create()" id="createPriceBtn" data-ng-disabled="price.name.trim().length == 0 || price.currency.trim().length == 0 || price.amount.trim().length == 0">{{:: 'create' | translate}}</button>
+</div>

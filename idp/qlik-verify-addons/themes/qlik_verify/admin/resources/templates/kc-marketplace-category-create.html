@@ -1,0 +1,18 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{title}}</h5>
+    <button type="button" id="closeModalBtn" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <form>
+        <div>
+            <label class="control-label" for="name">{{:: 'name' | translate}} <span class="required" >*</span></label>
+            <input class="form-control" maxlength="{{maxInputLength}}" type="text" id="{{title.toLowerCase().replaceAll(' ','-')}}-name" data-ng-model="input.value">
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" id="cancelBtn" ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+    <button type="button" class="btn btn-primary" id="successBtn" ng-click="ok()" data-ng-disabled="!changed">{{:: 'create' | translate}}</button>
+</div>

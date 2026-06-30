@@ -1,0 +1,200 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="role-list-container mb-4">
+                            <h1 class="user-list-heading">
+                                <span ng-show = "!isPricingLogs">{{:: 'api_logs' | translate}}</span>
+                                <span ng-show = "isPricingLogs">{{:: 'pricing_logs' | translate}}</span>
+                                <span ng-show = "!isPricingLogs"><kc-tooltip>{{:: 'api_logs.tooltip' | translate}}</kc-tooltip></span>
+                                <span ng-show = "isPricingLogs"><kc-tooltip>{{:: 'pricing_logs.tooltip' | translate}}</kc-tooltip></span>
+                            </h1>
+                            <div class="d-flex align-items-center">
+                                <button id="audit-generateReport" class="btn btn-secondary ml-2" data-ng-click="generateReport(isPricingLogs)">{{::
+                                    'generate-report' | translate}}</button>
+                            </div>
+                        </div>
+                        <kc-tabs-events></kc-tabs-events>
+                        <div id="content" data-ng-show="!(!apiLogs || apiLogs.length === 0)">
+                            <div class="controls-above-table  audit-filter p-3 border-radius-4px">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <p class="font-weight-bold">{{:: "filter" | translate}}</p>
+                                        <form class="row">
+                                            <div class="form-group col-3" data-ng-if="realm.mode == 'bo'">
+                                                <label class="row-md-3 control-label" for="requestId">{{:: 'request'
+                                                    | translate}}</label>
+                                                <div class="row-md-9">
+                                                    <input type="text" class="form-control" ng-model="query.requestId"
+                                                        id="requestId" placeholder="{{:: 'enterReqId' | translate}}" />
+                                                </div>
+                                            </div>
+                                            <div ng-show = "!isPricingLogs" class="form-group col-3">
+                                                <label class="row-md-3 control-label" for="eventTypes">{{:: 'event-type'
+                                                    | translate}}</label>
+                                                <div class="row-md-9" ng-paste="disablePaste($event)"
+                                                    onkeypress="return false;">
+                                                    <input ui-select2="eventSelectOptions" id="eventTypes"
+                                                        style="caret-color: transparent;" ng-model="query.type"
+                                                        data-placeholder="{{:: 'select-event-types.placeholder' | translate}}" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-3">
+                                                <label class="row-md-3 control-label" for="verifiersName">{{:: 'verifier_name' |
+                                                    translate}}</label>
+                                                <div class="row-md-9">
+                                                    <input ui-select2="verifierNameOptions" id="verifiersName"
+                                                           ng-model="query.filterByVerifierName"
+                                                           data-placeholder="{{:: 'select_verifier_name' | translate}}...">
+                                                    </input>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-2">
+                                                <label class="control-label" for="last">{{:: 'Last' |
+                                                    translate}}</label>
+                                                <div class="w-100">
+                                                    <select data-ng-model="query.last" id="last-selector"
+                                                        class="form-control form-control-sm rounded bright events-admin-search w-100 audit-list-count-select">
+                                                        <option value="7d">7 Days</option>
+                                                        <option value="15d">15 Days</option>
+                                                        <option value="30d">30 Days</option>
+                                                        <option value="45d">45 Days</option>
+                                                        <option value="60d">60 Days</option>
+                                                        <option value="75d">75 Days</option>
+                                                        <option value="90d">90 Days</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-4">
+                                                <label class="control-label" for="dateRange">{{:: 'Select Date Range' | translate }}</label>
+                                                <input type="text" class="form-control" id="dateRange" ng-model="query.dateRange" placeholder="Select date range"/>                                            </div>
+
+                                        </form>
+                                        <div class="d-flex align-items-center justify-content-end">
+                                            <div class="d-flex align-items-center">
+                                                <button class="btn btn-danger px-4 lh-normal py-2" id="resetBtn"
+                                                    data-ng-click="reset()">{{:: 'reset' |
+                                                    translate}}</button>
+                                                <button class="btn btn-primary px-4 lh-normal py-2" id="filterBtn"
+                                                    data-ng-click="update()">{{:: 'filter' |
+                                                    translate}}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex col-12 align-items-center justify-content-end" data-ng-show="(apiLogs && apiLogs.length > 5 && pageCount===entries) || (entries > 5)">
+                                <label class="row-md-3 control-label" for="page-count">{{::
+                                    'results-per-page' |
+                                    translate}}</label>
+                                <select id="page-count" data-ng-model="query.size"
+                                    data-ng-options="itemCount for itemCount in [5,10,50,100]"
+                                    class="form-control form-control-sm rounded bright events-admin-search audit-list-count-select w-10 ml-2 mb-3">
+                                    <option data-ng-repeat="itemCount in [5,10,50,100]"
+                                        data-ng-selected="query.size == itemCount"
+                                        data-ng-value="itemCount">
+                                        {{ itemCount }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="table-responsive-md clients-list">
+                                <table
+                                    class="table table-responsive table-light-bordered table-padded w-100 scroll-width-auto"
+                                    ng-hide="!(queryFinished) || navigationLoaded || !apiLogs || !apiLogs.length" id="logs-table">
+                                    <thead>
+                                        <tr class="position-relative fadeUp">
+                                            <th class="w-15">{{:: 'timestamp' | translate}}</th>
+                                            <th class="w-30">{{:: 'request_id' | translate}}</th>
+                                            <th ng-show = "!isPricingLogs" class="w-30">{{:: 'event_type' | translate}}</th>
+                                            <th ng-show = "!isPricingLogs" class="w-30">{{:: 'api_name' | translate}}</th>
+                                            <th ng-show = "isPricingLogs" class="w-30">{{:: 'deducted-for' | translate}}</th>
+                                            <th ng-show = "!isPricingLogs" class="w-30">{{:: 'api_error' | translate}}</th>
+                                            <th ng-show = "isPricingLogs" class="w-30">{{:: 'api_price' | translate}}</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr class="user-row position-relative fadeUp w-100"
+                                            data-ng-repeat="(index,apiLog) in apiLogs" ng-if="apiLogs.length>0">
+                                            <td>{{apiLog.timestamp | date:'medium' }}</td>
+                                            <td>{{apiLog.requestId ? apiLog.requestId : '-'}}</td>
+                                            <td ng-show = "!isPricingLogs">{{apiLog.resourceType}}</td>
+                                            <td>{{ apiLog.verifierName.toUpperCase() }}</td>
+                                            <td ng-show = "!isPricingLogs" class="row-action text-center">
+                                                <i ng-hide="!apiLog.error" class="ti-help-alt policy-help ml-2"
+                                                    tooltip="{{apiLog.error}}" tooltip-placement="left"
+                                                    tooltip-trigger="mouseover mouseout"></i>
+                                                <i ng-hide="apiLog.error" class="ti-help-alt policy-help ml-2 text-light-grey"
+                                                   tooltip="" tooltip-placement="left"
+                                                   tooltip-trigger="mouseover mouseout"></i>
+                                            </td>
+                                            <td ng-show = "isPricingLogs">{{apiLog.verifierPrice | roundTo:4}}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="pl-0" colspan="2"
+                                                data-ng-show="(apiLogs && apiLogs.length > 5 && pageCount===entries) || (entries > 5)">
+                                                <p class="mt-1">{{:: 'showing' | translate}} {{startCount}} -
+                                                    {{pageCount}} {{:: 'of' | translate}} {{entries}} {{:: 'logs' |
+                                                    translate}}</p>
+                                            </td>
+                                            <td class="pr-0 table-nav pull-right" colspan="9"
+                                                data-ng-show="(apiLogs && apiLogs.length > 5 && pageCount===entries) || (entries > 5)">
+                                                <div data-ng-hide="(entries <= query.size)">
+                                                    <button class="btn btn-sm btn-outline-primary table-pagination"
+                                                        id="firstPageBtn" data-ng-click="firstPage()"
+                                                        data-ng-class="currentPage === 0 && 'text-muted'"
+                                                        ng-disabled="currentPage === 0">
+                                                        <i
+                                                            class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon"></i>
+                                                        <i>{{:: 'first-page' | translate}}</i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-primary table-pagination"
+                                                        id="previousPageBtn" data-ng-click="previousPage()"
+                                                        data-ng-class="currentPage === 0 && 'text-muted'"
+                                                        ng-disabled="currentPage === 0">
+                                                        <i
+                                                            class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon"></i>
+                                                        <i>{{:: 'previous' | translate}}</i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-primary table-pagination"
+                                                        id="nextPageBtn" data-ng-click="nextPage()"
+                                                        data-ng-class="currentPage >= totalPages - 1 && 'text-muted'"
+                                                        ng-disabled="currentPage >= totalPages - 1">
+                                                        <i>{{:: 'next' | translate}}</i>
+                                                        <i
+                                                            class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div data-ng-if="!navigationLoaded && queryFinished && (apiLogs && apiLogs.length ===0)"
+                            class="element-box" id="content">
+                            <fieldset class="flex-txt-align-center">
+                                <div class="no-flow-div">
+                                    <p>{{:: 'logs-not-available' | translate}}</p>
+                                    <button data-ng-click="refresh()" class="create-btn" id="refreshBtn">
+                                        <i class="os-icon os-icon-refresh-cw plus-icon"></i>
+                                        {{:: 'refresh' | translate}}
+                                    </button>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!(queryFinished) || navigationLoaded">
+                <kc-loader loadertype="loaderTypeName"></kc-loader>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,88 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li>
+                    <a href="#/realms/{{realm.realm}}/connections/enterprise" class="ng-binding">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-enterprise-conn' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-ldap></kc-tabs-ldap><br>
+                        <div class="element-box py-5">
+                            <div>
+                                <div class="row" ng-show="mappers.length > 0">
+                                    <div class="col-sm-6">
+                                        <form class="form-inline form-group element-search" ng-hide="(mappers.length != 0) && (( mappers | filter:search | orderBy:sortMappersByPriority).length ==0) ">
+                                            <input class="form-control form-control-sm rounded bright"
+                                                data-ng-model="searchValue"
+                                                placeholder="{{:: 'search.placeholder' | translate}}" type="text"
+                                                onkeyup="if(event.keyCode === 13) document.getElementById('templatesSearch').click()">
+                                                <i class="os-icon os-icon-search2 search-icon" id="templatesSearch" data-ng-click="changeSearch()"></i>
+                                        </form>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <a class="btn btn-secondary" href="#/create/ldap-mappers/{{realm.realm}}/{{provider.id}}">{{:: 'create' | translate}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive-md">
+                                <table class="table table-lightborder table-layout-fixed table-striped">
+                                    <thead data-ng-hide="!mappers.length || !( mappers | filter:search | orderBy:sortMappersByPriority).length ">
+                                        <tr>
+                                            <th>
+                                                {{:: 'name' | translate}}
+                                            </th>
+                                            <th >
+                                                {{:: 'type' | translate}}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="user-row"
+                                            ng-repeat="mapper in mappers | filter:search | orderBy:sortMappersByPriority">
+                                            <td  class="overflow-ellipsis mb-0">
+                                                <a href="#/realms/{{realm.realm}}/ldap-mappers/{{provider.id}}/mappers/{{mapper.id}}">
+                                                    {{mapper.name}}
+                                                </a>
+                                            </td>
+                                            <td class="overflow-ellipsis mb-0">
+                                                {{mapper.providerId}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="element-box element-box-medium top-align shadow-none" ng-if="mappers.length === 0">
+                                    <div class="no-entry-svg">
+                                      <img data-ng-src="{{resourceUrl}}/themes/img/empty-box.svg"  alt="no-results-svg" class="opacity-40 no-entry-display"/>
+                                      <p class="no-results-msg no-entry-display mt-2">{{:: 'no-mappers-available' | translate}}</p>
+                                    </div>
+                                    <div class="ml-auto d-flex justify-content-center">
+                                        <a class="btn btn-secondary"
+                                            href="#/create/ldap-mappers/{{realm.realm}}/{{provider.id}}">{{::
+                                            'create' | translate}}</a>
+                                    </div>
+                                </div>
+                                <div class="element-box element-box-medium top-align shadow-none" ng-if="(mappers.length != 0) && (( mappers | filter:search | orderBy:sortMappersByPriority).length ==0) ">
+                                    <div class="no-entry-svg">
+                                    <img data-ng-src="{{resourceUrl}}/themes/img/empty-box.svg" alt="no-results-svg" class="opacity-40 no-entry-display" />
+                                    <p class="no-results-msg no-entry-display mt-2">{{:: 'no-results-found' | translate}}</p>
+                                    <button data-ng-click="clearSearch()" class="create-btn no-entry-display">
+                                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                        {{:: 'back-to-mappers' | translate}}
+                                    </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

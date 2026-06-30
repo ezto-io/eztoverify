@@ -1,0 +1,60 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <h3 class="element-header">
+                            {{ :: 'realm-tab-email' | translate }}
+                        </h3>
+                        <kc-tabs-email-providers></kc-tabs-email-providers>
+                        <div>
+                            <div class="element-box">
+                                <form class="form-horizontal" name="realmForm">
+                                    <fieldset class="mt-0">
+                                        <div class="form-group row" data-title="{{:: 'intro-email-temaplte-title' | translate}}" data-intro="{{:: 'intro-email-temaplte-desc' | translate}}">
+                                            <label class="col-md-3 control-label" for="mailTemplates">{{:: 'template-dd-title' | translate}}</label>
+                                            <div class="col-md-9">
+                                                <div>
+                                                    <select class="form-control" id="mailTemplates"
+                                                            ng-model="email.template"
+                                                            ng-options="t.displayName for t in emailTemplates" ng-change="changeTemplate(email.template)">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-0">
+                                            <label class="control-label mb-4 col-md-3" for="htmlTemp">{{:: 'message' | translate}}</label>
+                                        </div>
+                                        <div class="row position-relative edit-template-container w-100 overflow-hidden pt-4 pl-3 custom-email-template" >
+                                            <div class="position-absolute w-100" id="code"> </div>
+                                        </div>
+                                    </fieldset>
+                                    <div class="p-3 helper-text note-container mt-4 pt-0">
+                                        <span class="os-icon os-icon-alert-triangle note-icon-container"></span>
+                                        <p class="help-text">{{:: 'dont-override-variables' | translate}}&nbsp; </p> <p class="help-text" class="help-text" ng-non-bindable> {{ code }} </p>
+                                    </div>
+                                    <br><br>
+                                    <div class="form-group row">
+                                        <div class="col-md-12 d-flex flex-row-reverse">
+                                            <button class="ml-3" id = "submit" kc-save disabled >
+                                                <span ng-show=" stage === 1 " >{{:: 'save' | translate}}</span>
+                                                <div ng-show=" stage === 2 ">
+                                                    <kc-action-button-loading></kc-action-button-loading>
+                                                </div>
+                                            </button>
+                                            <button class="ml-0" id = "undo" kc-cancel data-ng-click="cancel()" disabled>{{:: 'undo-changes' | translate}}</button>
+                                            <button class="create-btn ml-3 mr-3" id="tryBtn"  data-ng-click="testTemplate()"> <i class="os-icon os-icon-play plus-icon"></i> {{::'test-email-temp-conn' | translate}}</button>
+                                            <button class="btn btn-secondary" id="resetBtn" data-ng-click="reset()"><i class="os-icon os-icon-rotate-ccw plus-icon"></i>{{ ::'reset-to-default' | translate }}</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+<div>
+    <div class="sub-top-bar mb-4">
+        <ul class="tab-status">
+            <li data-ng-class="{active: path[2] === 'logs'}" data-step="1"
+                data-title="{{:: 'intro-audit-logs-title' | translate}}"
+                data-intro="{{:: 'intro-audit-logs' | translate}}"
+                ng-show="isWorkflowEnabled">
+                <a aria-expanded="false" id="audit-log" href="#/realms/{{realm.realm}}/logs" class="d-flex align-items-center">
+                    {{:: 'logs' | translate}}
+                    <div class="badge badge-success text-success bg-light border border-success ml-1 text-uppercase" data-ng-if="eventsConfig.eventsEnabled">
+                        {{:: 'live' | translate}}
+                    </div>
+                    <div class="badge badge-danger text-danger bg-light border border-danger ml-1 text-uppercase" data-ng-if="!eventsConfig.eventsEnabled">
+                        {{:: 'not-live' | translate}}
+                    </div>
+                </a>
+            </li>
+            <li data-ng-class="{active: path[2] === 'admin-logs'}" data-step="2"
+                data-title="{{:: 'intro-audit-adminlogs-title' | translate}}"
+                data-intro="{{:: 'intro-audit-adminlogs' | translate}}">
+                <a aria-expanded="false" id="audit-adminLogs" href="#/realms/{{realm.realm}}/admin-logs" class="d-flex align-items-center">
+                    {{:: 'admin-events' | translate}}
+                    <div class="badge badge-success text-success bg-light border border-success ml-1 text-uppercase" data-ng-if="eventsConfig.adminEventsEnabled">
+                        {{:: 'live' | translate}}
+                    </div>
+                    <div class="badge badge-danger text-danger bg-light border border-danger ml-1 text-uppercase" data-ng-if="!eventsConfig.adminEventsEnabled">
+                        {{:: 'not-live' | translate}}
+                    </div>
+                </a>
+            </li>
+            <li data-ng-class="{active: path[2] === 'reports'}">
+                <a aria-expanded="false" id="audit-reports" href="#/realms/{{realm.realm}}/reports" class="d-flex align-items-center">
+                    {{:: 'reports' | translate}}
+                </a>
+            </li>
+            <li data-ng-class="{active: path[2] === 'history'}">
+                <a aria-expanded="false" id="history" href="#/realms/{{realm.realm}}/history" class="d-flex align-items-center">
+                    {{:: 'history' | translate}}
+                </a>
+            </li>
+            <li data-ng-if="realm.mode != 'bo'" data-ng-class="{active: path[2] === 'audit-listeners'}" data-step="3"
+                data-title="{{:: 'intro-audit-Streamers-title' | translate}}"
+                data-intro="{{:: 'intro-audit-Streamers' | translate}}">
+                <a aria-expanded="false" id="audit-streamers" href="#/realms/{{realm.realm}}/audit-listeners">
+                    {{:: 'listeners' | translate}}
+                </a>
+            </li>
+
+        </ul>
+    </div>
+</div>

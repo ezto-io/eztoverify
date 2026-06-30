@@ -1,0 +1,28 @@
+<div class="modal-header pb-0">
+    <div>
+        <h5 class="modal-title">{{:: "select-api-providers" | translate}}</h5>
+    </div>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <p class="helper-text w-100">{{:: "select-api-providers-help-text" | translate}}</p>
+    <ul class="list-unstyled"> 
+        <li ng-repeat="provider in verifier.availableProviders track by $index" class="d-flex justify-content-start py-2">
+            <input 
+                id="{{provider.toLowerCase().replace(' ', '-') + '-' + $index}}" 
+                name="apiProvider"
+                type="radio" 
+                ng-model="selectedProvider" 
+                value="{{provider}}" 
+                class="apiProvider-checkbox mr-2"
+            />
+            <label for="{{provider.toLowerCase().replace(' ', '-') + '-' + $index}}">{{provider}}</label>
+        </li>
+    </ul>
+</div>
+<div class="modal-footer pt-2">
+    <button type="button" class="btn btn-secondary" id="previewBtn" ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+    <button type="button" class="btn btn-primary" id="saveBtn" ng-click="save()">{{:: 'save' | translate}}</button>
+</div>

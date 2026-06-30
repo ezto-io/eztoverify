@@ -1,0 +1,460 @@
+<kc-menu></kc-menu>
+<div class="position-relative"> 
+  <div class="position-absolute">
+    <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+    <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon" data-ng-click="toggleSideBarShow()" >
+      <div id="setting-icon h1">
+        <i class="ti-angle-right cursor-pointer"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content-w bo-setting-menu-main-content">
+  <div class="content-i">
+    <div class="content-box">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="element-wrapper">
+            <!-- <kc-tabs-realm data-ng-if="realm.mode !== 'bo'"></kc-tabs-realm> -->
+            <div class="projects-list">
+              <div class="project-box">
+                <form class="form-horizontal" name="realmForm" novalidate kc-read-only="!access.manageRealm" ng-if="!realm.adminRealm">
+                  <div class="project-head d-flex flex-wrap">
+                    <div class="project-title">
+                      <div class="d-flex flex-wrap align-items-center justify-content-start" if="realm.workspace">
+                        <h6 class="text-initial letter-spacing-normal">
+                          {{:: 'your-workspace' | translate}}
+                        </h6>
+                        <span class="ml-2 silver-badge" ng-if="realm.hasCustomDomain"> {{:: 'custom-domain' | translate}} </span>
+                      </div>
+                      <div class="d-flex align-items-center justify-content-start">
+                        <p id="workspace_url" class="text-initial helper-text category-desc word-break-all pr-2 mb-0 text-center text-lg-left" >
+                          {{realm.workspace}}
+                        </p>
+                        <i class="os-icon os-icon-copy mr-2" data-ng-click="copyToClipboard('#workspace_url')" id="workspace-name-copy-icon" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-init="initWorkspaceNameCopy()"></i>
+                      </div>
+                    </div>
+                    <div class="project-users justify-content-center" ng-if="!realm.sandboxMode" data-ng-class="{'d-lg-flex': realm && rootAccountName && rootAccountName.toLowerCase() !== realm.realm.toLowerCase()}">
+                      <button type="button" data-ng-click="openCustomDomain()" id="general-urlCopyBtn" class="btn link-btn py-0 px-2  mb-1" data-ng-if="realm && rootAccountName && rootAccountName.toLowerCase() !== realm.realm.toLowerCase()">
+                        <img data-ng-src="{{resourceUrl}}/themes/img/globe.svg?version={{serverVersion}}"/>
+                        {{:: 'view-all-domains' | translate}}
+                      </button>
+                      <button type="button" data-ng-click="openCustomDomainSettings()" id="general-customDomainBtn" class="btn link-btn py-0 px-2  " data-ng-if="realm && rootAccountName && rootAccountName.toLowerCase() !== realm.realm.toLowerCase()">
+                        <i class="os-icon os-icon-plus plus-icon"></i>
+                        {{:: 'create-custom-domain' | translate}}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="d-flex gap-1 justify-content-between mx-0" ng-if="realm.adminRealm && realm.mode === 'bo'">
+                <div class="row w-70 project-box p-3 mt-0 mx-0 justify-content-between align-items-center">
+                  <div class="col-lg-6">
+                    <div class="d-flex flex-wrap align-items-center justify-content-start" if="realm.workspace">
+                      <h6 class="text-initial letter-spacing-normal m-0">
+                        {{:: 'your-workspace' | translate}}
+                      </h6>
+                      <span class="ml-2 silver-badge" ng-if="realm.hasCustomDomain"> {{:: 'custom-domain' | translate}} </span>
+                    </div>
+                    <p class="text-initial helper-text category-desc word-break-all mb-0 pr-2 text-center text-lg-left workspace-url m-0 mt-1 d-d" >
+                      <div class="d-flex align-items-center justify-content-start">
+                        <p id="workspace_url" class="text-initial helper-text category-desc word-break-all pr-2 mb-0 text-center text-lg-left" >
+                          {{realm.workspace}}
+                        </p>
+                        <i class="os-icon os-icon-copy mr-2" data-ng-click="copyToClipboard('#workspace_url')" id="workspace-name-copy-icon" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-init="initWorkspaceNameCopy()"></i>
+                      </div>
+                    </p>
+                  </div>
+                  <div class="col-lg-6 d-flex flex-column align-items-end" ng-if="!realm.sandboxMode">
+                    <button type="button" data-ng-click="openCustomDomain()" id="general-urlCopyBtn" class="btn link-btn py-0 px-2  mb-1" data-ng-if="realm && rootAccountName && rootAccountName.toLowerCase() !== realm.realm.toLowerCase()">
+                      <img data-ng-src="{{resourceUrl}}/themes/img/globe.svg?version={{serverVersion}}"/>
+                      {{:: 'view-all-domains' | translate}}
+                    </button>
+                    <button type="button" data-ng-click="openCustomDomainSettings()" id="general-customDomainBtn" class="btn link-btn py-0 px-2  " data-ng-if="realm && rootAccountName && rootAccountName.toLowerCase() !== realm.realm.toLowerCase()">
+                      <i class="os-icon os-icon-plus plus-icon"></i>
+                      {{:: 'create-custom-domain' | translate}}
+                    </button>
+                  </div>
+                </div>
+                <div class="row w-30 project-box p-3 m-0 justify-content-between align-items-center" ng-if="realm.adminRealm === true">
+                    <label class="col-8 control-label m-0" for="sandboxMode">{{:: 'sandbox-mode' | translate}}</label>
+                    <div class="col-4 d-flex align-items">
+                      <label for="sandboxMode" class="m-0">
+                        <div class="os-toggler-w" ng-class="{on: realm.sandboxMode}">
+                          <div class="os-toggler-i" id="enabledToggle">
+                            <div class="os-toggler-pill" ng-model="realm.sandboxMode" name="sandboxMode" id="sandboxMode" onoffswitch >
+                            </div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                </div>
+                <div class="project-head" ng-if="realm.adminRealm !== true">
+                  <div class="project-title">
+                    <h6 class="text-initial letter-spacing-normal" if="realm.workspace">
+                      {{:: 'your-workspace' | translate}}
+                    </h6>
+                    <p id="workspace_url" class="text-initial helper-text category-desc word-break-all pr-4 text-center text-lg-left" >
+                      {{realm.workspace}}
+                      <i class="os-icon os-icon-copy relative copy-icon mr-2" data-ng-click="copyToClipboard('#workspaceName')" id="workspace-name-copy-icon" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-init="initWorkspaceNameCopy()"></i></p>
+                  </div>
+                  <div class="project-users justify-content-center" data-ng-class="{'d-lg-flex': realm && rootAccountName && rootAccountName.toLowerCase() !== realm.realm.toLowerCase()}">
+                    <button type="submit" data-ng-click="copyToClipboard('#workspace_url')" id="general-urlCopyBtn" class="btn btn-secondary">{{:: 'copy' | translate}}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="element-box py-4" ng-if="realm.mode !== 'bo'">
+                <div class="form-group row mb-0 align-items-center">
+                  <label class="col-md-3 control-label" for="name">{{:: 'workspace-name' | translate}}</label>
+                  <div class="col-md-9">
+                      <input readonly class="form-control copy-with-icon br-top-4 br-bottom-4 mb-0" type="text" id="workspaceName" name="workspaceName" data-ng-model="realmName">
+                      <i class="os-icon os-icon-copy copy-icon mr-2" data-ng-click="copyToClipboard('#workspaceName')" id="workspace-name-copy-icon" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-init="initWorkspaceNameCopy()"></i>
+                  </div>
+                </div>
+            </div>
+            <div class="element-box py-5">
+              <form class="form-horizontal" name="realmForm" novalidate kc-read-only="!access.manageRealm">
+                <input id="realmRegion" type="hidden"/>
+                <div class="form-group row" ng-if="realm.mode == 'bo'">
+                  <label class="col-md-3 control-label" for="name">{{:: 'name' | translate}}</label>
+                  <div class="col-md-9">
+                    <input class="form-control" disabled="true" type="text" id="name" name="name"
+                      data-ng-model="realmName" autofocus required>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 control-label" for="wId">{{:: 'tenant-id' | translate}}</label>
+                  <div class="col-md-9">
+                      <div class="input-group">
+                          <input readonly  class="form-control copy-with-icon br-top-4 br-bottom-4" type="text" id="wId" name="wId" data-ng-model="realm.id">
+                          <i class="os-icon os-icon-copy copy-icon" data-ng-click="copyToClipboard('#wId')" id="genral-IdCopy-icon" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                      </div>
+                  </div>
+                </div>
+                <!-- <div class="form-group row" ng-if="realm.adminRealm === true">
+                  <label class="col-md-3 control-label" for="name">Sandbox Mode <span class="required">*</span></label>
+                  <div class="col-md-9">
+                      <label for="sandboxMode">
+                    <div  class="os-toggler-w" ng-class="{on: realm.sandboxMode}">
+                      <div class="os-toggler-i" id="enabledToggle">
+                        <div class="os-toggler-pill" ng-model="realm.sandboxMode" name="sandboxMode" id="sandboxMode" onoffswitch >
+                        </div>
+                      </div>
+                    </div>
+                  </label>
+                  </div>
+                </div> -->
+                <div class="form-group row">
+                  <label class="col-md-3 control-label" for="name">{{:: 'displayName' | translate}} <span class="required">*</span></label>
+                  <div class="col-md-9">
+                    <input class="form-control" type="text" id="displayName" name="displayName"
+                      data-ng-model="realm.displayName" autofocus required maxlength="55">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 control-label">{{:: 'tenant-logo' | translate}}</label>
+                  <div class="col-md-9" ng-controller="fileChangeCtrl">
+                    <div class="logo-container">
+                      <div ng-if="realm.realmLogo && realm.realmLogo !== ''">
+                        <img id="realmLogo" class="provider-image" data-ng-src="{{realm.realmLogo}}" alt="logo-img"> 
+                      </div>
+                      <div ng-if="!(realm.realmLogo) || realm.realmLogo === ''">
+                          <img ng-if= "realm.mode ==='bo'" id="realmLogo" class="provider-image" data-ng-src="{{resourceUrl}}/themes/img/eztovrfy-logo.svg?version={{serverVersion}}"  alt="default-logo-img">
+                          <img ng-if= "(realm.mode ==='wiam' || realm.mode ==='ciam')" id="realmLogo" class="provider-image" data-ng-src="{{resourceUrl}}/themes/img/logo.svg?version={{serverVersion}}"  alt="default-logo-img">
+                      </div>
+                    </div>
+                    <input type="file" id="updateLogo" class="display-none" accept="image/png, image/jpeg, image/jpg, image/svg+xml" /> 
+                    <a id="changeLogo" class="form-control logo-change-container" ng-click="fileNameChanged()">{{:: 'change-tenant-logo' | translate}}</a>
+                    <p class="helper-text" ng-bind-html="tenantLogoHelptxt | replaceWithVariant:serverInfo.variant"></p>
+                  </div>
+                </div>
+                <!-- <div class="form-group row" data-ng-if="!(rootAccount) ">
+                  <label class="col-md-2 control-label">{{:: 'enabled' | translate}}</label>
+                  <div class="col-sm-6">
+                    <label >
+                      <div  class="os-toggler-w" ng-class="{on: realm.enabled}">
+                        <div class="os-toggler-i">
+                          <div class="os-toggler-pill" ng-model="realm.enabled" name="enabled" id="enabled" onoffswitch >
+                          </div>
+                        </div>
+                      </div>
+                  </label>
+                  </div>
+                  <kc-tooltip>{{:: 'realm-detail.enabled.tooltip' | translate}}</kc-tooltip>
+                </div> -->
+                <div class="form-group row">
+                  <label class="col-md-3 control-label" for="name">{{:: 'default-region' | translate}}</label>
+                  <div class="col-md-9">
+                    <input class="form-control region-selector-input" type="text" id="defRegion" name="defRegion"
+                      data-ng-model="realm.defaultRegion" onchange="listenRegionChange()"/>
+                    <p data-ng-if="realm.mode !=='bo'" class="helper-text">{{:: 'default-region-helptext' | translate}}</p>
+                  </div>
+                </div>
+
+                <div data-ng-if="realm.mode != 'bo'" class="form-group row">
+                  <label class="col-md-3 control-label">{{:: 'endpoints' | translate}}</label>
+                  <div class="col-md-9">
+                    <a class="form-control mb-2"
+                      id="general-protocol-endpoint"
+                      ng-href="{{authServerUrl}}/realms/{{realm.realm}}/.well-known/openid-configuration"
+                      target="_blank">{{:: 'realm-detail.protocol-endpoints.oidc' | translate}}</a>
+
+                    <!-- <a class="form-control" ng-href="{{authServerUrl}}/realms/{{realm.realm}}/protocol/saml/descriptor"
+                      target="_blank">{{:: 'realm-detail.protocol-endpoints.saml' | translate}}</a> -->
+                  </div>
+                  <kc-tooltip>{{:: 'realm-detail.protocol-endpoints.tooltip' | translate}}</kc-tooltip>
+                </div>
+
+                <!-- <div class="form-group row">
+                  <label class="col-md-3 control-label" for="name">{{:: 'dashboard-locale-txt' | translate}}</label>
+                  <div class="col-md-9">
+                      <select id="dashboardLocale" ng-model="realm.attributes.dashboardLocale" class="form-control">
+                          <option value="en">English
+                          </option>
+                          <option value="zh_CN">Simplified Chinese</option>
+                      </select>
+                  </div>
+                </div> -->
+
+                <div class="form-group row" data-ng-show="supportedLocalesName.length > 0">
+                  <label class="col-md-3 control-label" for="name">{{:: realm.mode != 'bo' ? 'login-locale-txt' : 'workflow-locale-txt' | translate}}</label>
+                  <div class="col-md-9">
+                      <div class="w-100" ng-paste="disablePaste($event)" onkeypress="return false;">
+                        <input class="w-100"
+                            style="caret-color: transparent;"
+                            ui-select2="workflowSupportedLocaleOptions"
+                            id="loginlocale-input"
+                            ng-model="preferredLoginLocales"
+                            data-placeholder="{{:: 'Select Preferred Locale' | translate}}" />
+                        <p data-ng-if="realm.mode !=='bo'" class="helper-text">{{:: 'available-locale-helptext' | translate}}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <label class="col-md-3 control-label" for="name">{{:: 'GST number' | translate}}</label>
+                  <div class="col-md-9">
+                    <input class="form-control" type="text" id="gstNumber" name="gstNumber"
+                           data-ng-model="realm.attributes.gstNumber" autofocus required maxlength="55"/>
+                  </div>
+                </div>
+
+                <div class="form-group row" data-ng-show="isMarketplaceCategoriesLoaded && !isRootAccount">
+                  <label class="col-md-3 control-label" for="name">{{:: 'preferred-categories' | translate}}</label>
+                  <div class="col-9 mb-3">
+                    <div class="position-relative w-100 row m-0 custom-multi-select-container" ng-click="$event.stopPropagation()">
+                        <div class="w-100 p-1 form-control custom-select pr-4 d-flex flex-wrap" ng-click="showCategories($event)">
+                            <label ng-if="preferredCategories.length === 0">{{:: "select-category" | translate}}</label>
+                            <label ng-if="preferredCategories.length > 0" class="custom-multi-select mb-0 border border-primary" ng-repeat="category in preferredCategories" style="background-color: #cfdafb;flex-direction: row-reverse;padding: 1px 5px 1px 6px;">
+                                <span style="font-size: 14px;font-weight: 300;">{{ :: category }}</span>
+                                <span class="os-icon os-icon-close text-primary" style="font-size: 8px; color: #0000ff;" ng-click="removeCategory(category);$event.stopPropagation();"></span>
+                            </label>
+                        </div>
+                        <ul class="p-0 list-unstyled form-control mt-2 input-select" ng-show="showingCategories">
+                            <li>
+                              <input placeholder="{{'search-category' | translate}}" class="w-100 border-top-0 border-right-0 border-left-0 border-bottom p-2" type="text"
+                              data-ng-model="searchCategory"/>
+                              <input type="hidden"/>
+                              </li>
+                            <li class="p-2 d-flex align-items-center" ng-repeat="category in marketplaceCategories | filter : searchCategory | orderBy" ng-click="addCategory(category)">
+                                <span>{{ :: category }}</span>
+                            </li>
+                            <li class="p-2" ng-if="marketplaceCategories.length === 0 ">{{ :: "no-category-found" | translate }}</li>
+                        </ul>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- <div data-ng-if="realm.mode != 'bo'" class="form-group row">
+                  <label class="col-md-3 control-label" for="name">{{:: 'profile-locale-txt' | translate}}</label>
+                  <div class="col-md-9">
+                      <select id="profileLocale" ng-model="realm.attributes.profileLocale" class="form-control">
+                          <option value="en">English
+                          </option>
+                          <option value="ar">اَلْعَرَبِيَّةُ</option>
+                          <option value="zh_CN">Simplified Chinese</option>
+                      </select>
+                  </div>
+                </div> -->
+                <div data-ng-if="specialTabName && specialAttributes.length > 0">
+                  <div class="form-group row"  data-ng-repeat="attributes in specialAttributes">
+                    <label class="col-md-3 control-label" for="{{attributes.providerId}}">{{attributes.attributeName}}</label>
+                    <div class="col-md-9" data-ng-if="!attributes.secret">
+                      <div class="input-group">
+                          <input readonly  class="form-control copy-with-icon br-top-4 br-bottom-4" type="text" id="{{attributes.providerId}}" name="{{attributes.providerId}}" value="{{attributes.attributeValue}}">
+                          <i class="os-icon os-icon-copy copy-icon" data-ng-click="copyToClipboard(attributes.providerId)" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout"></i>
+                      </div>
+                    </div>
+                    <div class="col-md-9 secret-input only-rotate" data-ng-if="attributes.secret">
+                      <div class="input-group" id="{{attributes.providerId}}_show_hide_password">
+                        <input readonly class="form-control br-top-4 br-bottom-4 social-password" type="password" value="{{attributes.attributeValue}}" />
+                        <i class="os-icon os-icon-rotate-cw client-secrete-icon" data-ng-click="rotateSecret(attributes.providerId)" tooltip="{{::'rotate-secret-title' | translate}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout"></i>
+                    </div>
+                    </div>
+                  </div>
+                </div> 
+                <div class="form-buttons-w border-top-0 pr-0">
+                  <div class="col-md-12 d-flex flex-row-reverse" data-ng-if="createRealm && access.manageRealm">
+                    <button kc-save data-ng-show="changed" id="general-saveBtn" class="ml-3">{{:: 'save' | translate}}</button>
+                    <button kc-cancel data-ng-click="cancel()" id="general-cancelBtn">{{:: 'cancel' | translate}}</button>
+                  </div>
+                  <div class="col-md-12 d-flex flex-row-reverse pr-0" data-ng-if="!createRealm && access.manageRealm">
+                    <button kc-save  data-ng-disabled="!changed" id="general-saveBtn" class="ml-3">
+                      <span ng-show=" stage === 1 " >{{:: 'save' | translate}}</span>
+                      <div ng-show=" stage === 2 ">
+                        <kc-action-button-loading></kc-action-button-loading>
+                      </div>
+                    </button>
+                    <button id="cancelBtn" kc-reset data-ng-disabled="!changed">{{:: 'cancel' | translate}}</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          <!-- Cache Settings-->
+          <!-- <h3 class="cache-settings-title">{{:: 'cache-settings' | translate}}</h3> -->
+          <div class="projects-list">
+            <div class="project-box">
+              <form class="form-horizontal" name="realmForm" novalidate kc-read-only="!access.manageRealm">
+                <div class="project-head">
+                  <div class="project-title">
+                    <h6 class="text-initial letter-spacing-normal">
+                      {{:: 'realm-cache-clear' | translate}}
+                    </h6>
+                    <p class="text-initial helper-text category-desc" >{{:: 'realm-cache-clear.tooltip' | translate}}</p>
+                  </div>
+                  <div class="project-users">
+                    <button type="submit" data-ng-click="clearRealmCache()" id="workspaceCache-clearBtn" class="btn btn-secondary">{{:: 'clear' | translate}}</button>
+                  </div>
+                </div>
+                <div class="project-head">
+                  <div class="project-title">
+                    <h6 class="text-initial letter-spacing-normal">
+                      {{:: 'user-cache-clear' | translate}}
+                    </h6>
+                    <p class="text-initial helper-text category-desc">{{:: 'user-cache-clear.tooltip' | translate}}</p>
+                  </div>
+                  <div class="project-users">
+                    <button type="submit" data-ng-click="clearUserCache()" id="userCache-clearBtn" class="btn btn-secondary">{{:: 'clear' | translate}}</button>
+                  </div>
+                </div>
+                <div class="project-head">
+                  <div class="project-title">
+                    <h6 class="text-initial letter-spacing-normal">
+                      {{:: 'keys-cache-clear' | translate}}
+                    </h6>
+                    <p class="text-initial helper-text category-desc">{{:: 'keys-cache-clear.tooltip' | translate}}</p>
+                  </div>
+                  <div class="project-users">
+                    <button type="submit" data-ng-click="clearKeysCache()" id="keysCache-clearBtn" class="btn btn-secondary">{{:: 'clear' | translate}}</button>
+                  </div>
+                </div>
+                <div class="project-head">
+                  <div class="project-title">
+                    <h6 class="text-initial letter-spacing-normal">
+                      {{:: 'report-queue-clear' | translate}}
+                    </h6>
+                    <p class="text-initial helper-text category-desc">{{:: 'report-queue-clear.tooltip' | translate}}</p>
+                  </div>
+                  <div class="project-users">
+                    <button type="submit" data-ng-click="clearReportQueue()" id="reportQueue-clearBtn" class="btn btn-secondary">{{:: 'clear' | translate}}</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div data-ng-controller="RealmTabCtrl" data-ng-if="!(realm.realm === rootAccountName) && access.createRealm && serverInfo.systemInfo.offering != 'CLOUD'" >
+            <h3 class="danger-zone-main-title">{{:: 'danger-zone' | translate}}</h3>
+            <br>
+            <ul class="danger-zone-list">
+                <li>
+                    <div class="danger-zone-container">
+                        <div>
+                            <h4 class="danger-zone-title">{{:: 'delete-tenant-title' | translate}}</h4>
+                            <p class="mb-0">{{:: 'delete-tenant-content' | translate}}</p>
+                        </div>
+                        <div class="pull-right">
+                            <button class="delete-btn" id="deleteRealm" data-ng-show="access.manageRealm" data-ng-click="deleteRealm()">{{:: 'delete-tenant' | translate}}</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+          </div>
+          <!-- Danger Zone -->
+          <div data-ng-controller="RealmTabCtrl" data-ng-if="!(realm.realm === rootAccountName) && realm.enabled && serverInfo.systemInfo.offering == 'CLOUD'" >
+            <h3 class="danger-zone-main-title">{{:: 'danger-zone' | translate}}</h3>
+            <br>
+            <ul class="danger-zone-list">
+                <li>
+                    <div class="danger-zone-container">
+                        <div>
+                            <h4 class="danger-zone-title">{{:: 'remove-tenant-title' | translate}}</h4>
+                            <p class="mb-0" ng-bind-html="removeTenantDesc"></p>
+                        </div>
+                        <div class="pull-right">
+                            <button class="delete-btn" id="removeRealm" data-ng-show="access.manageRealm" data-ng-click="removeRealm()">{{:: 'remove-workspace' | translate}}</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+          </div>
+
+          <div data-ng-controller="RealmTabCtrl" data-ng-if="!(realm.realm === rootAccountName) && !realm.enabled && serverInfo.systemInfo.offering == 'CLOUD'" >
+            <h3 class="danger-zone-main-title">{{:: 'danger-zone' | translate}}</h3>
+            <br>
+            <ul class="danger-zone-list">
+                <li>
+                    <div class="danger-zone-container">
+                        <div>
+                            <h4 class="danger-zone-title">{{:: 'restore-tenant-title' | translate}}</h4>
+                            <p class="mb-0">{{:: 'restore-tenant-content' | translate}}</p>
+                        </div>
+                        <div class="pull-right">
+                            <button class="delete-btn" id="restoreRealm" data-ng-show="access.manageRealm" data-ng-click="restoreRealm()">{{:: 'restore-tenant' | translate}}</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+          </div>
+          <!-- Danger Zone ENDS-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  setTimeout(()=> document.getElementById("loginlocale-input").removeAttribute('disabled') ,500)
+</script>
+
+<!-- <div class="form-group">
+    <label class="col-md-2 control-label" for="name">{{:: 'displayNameHtml' | translate}}</label>
+    <div class="col-sm-6">
+        <input class="form-control" type="text" id="displayNameHtml" name="displayNameHtml" data-ng-model="realm.displayNameHtml">
+    </div>
+</div> -->
+
+<!-- <div class="form-group" data-ng-show="serverInfo.listProviderIds('hostname').includes('default')">
+    <label class="col-md-2 control-label" for="name">{{:: 'realm-detail.frontendUrl' | translate}}</label>
+    <div class="col-sm-6">
+        <input class="form-control" type="text" id="frontendUrl" name="frontendUrl" data-ng-model="realm.attributes.frontendUrl">
+    </div>
+    <kc-tooltip>{{:: 'realm-detail.frontendUrl.tooltip' | translate}}</kc-tooltip>
+</div> -->
+
+<!-- <div class="form-group" data-ng-show="serverInfo.listProviderIds('hostname').includes('fixed')">
+    <label class="col-md-2 control-label" for="name">{{:: 'realm-detail.hostname' | translate}}</label>
+    <div class="col-sm-6">
+        <input class="form-control" type="text" id="hostname" name="hostname" data-ng-model="realm.attributes.hostname">
+    </div>
+    <kc-tooltip>{{:: 'realm-detail.hostname.tooltip' | translate}}</kc-tooltip>
+</div> -->
+
+<!-- <div class="form-group">
+    <label class="col-md-2 control-label" for="userManagedAccessAllowed">{{:: 'userManagedAccess' | translate}}</label>
+    <div class="col-sm-6">
+        <input ng-model="realm.userManagedAccessAllowed" name="userManagedAccessAllowed" id="userManagedAccessAllowed" onoffswitch on-text="{{:: 'onText' | translate}}" off-text="{{:: 'offText' | translate}}" />
+    </div>
+    <kc-tooltip>{{:: 'realm-detail.userManagedAccess.tooltip' | translate}}</kc-tooltip>
+</div> -->

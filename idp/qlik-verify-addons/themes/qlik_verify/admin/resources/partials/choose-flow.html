@@ -1,0 +1,33 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/authentication/installed/flows">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-authentication' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <h1 class="element-header">{{:: 'choose-flow' | translate}}</h1>
+                            <ul class="flows-list cards-list pl-0">
+                                <li class="flow-li mw-100 cursor-pointer fadeUp authentication-step-{{$index+2}}" ng-click="onChooseFlow(chooseFlow)" ng-repeat="chooseFlow in chooseFlows track by $index">
+                                    <div class="flow-container w-100" data-title="{{ :: 'intro-'+ chooseFlow +'-title' | translate }}" data-intro="{{ :: 'intro-'+ chooseFlow +'-desc' | translate }}">
+                                        <div class="flow-content">
+                                            <div class="flow-icon">
+                                                <img data-ng-src="{{resourceUrl}}/themes/img/{{chooseFlow}}.svg" alt="flow-ico"> 
+                                            </div>
+                                            <h5 class="text-center mt-1 font-weight-normal">{{chooseFlow|capitalize}}</h5>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

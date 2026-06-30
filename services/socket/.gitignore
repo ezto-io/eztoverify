@@ -1,0 +1,11 @@
+node_modules/*
+package-lock.json
+charts
+Chart.lock
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+env.sh
+.DS_Store

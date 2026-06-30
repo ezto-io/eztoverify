@@ -1,0 +1,41 @@
+<div data-ng-controller="KcMarketplaceFlowCtrl">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+        <div class="d-flex">
+            <img data-ng-show="template.imageURL" data-ng-src="{{template.imageURL}}" class="mr-3 my-1 rounded border" alt="{{template.workflowName.toLowerCase().replaceAll(' ', '-')}}-logo" height="58" width="58" />
+            <div class="market-dtl-header-container mb-4">
+                <div class="market-dtl-content-container">
+                    <div class="market-dtl-title-btn-container d-block">
+                        <h1 class="market-dtl-title text-ellipsis-2-lines-marketplace" style="min-height: 40px;" title="{{template.workflowName}}"> {{ template.workflowName }} </h1>
+                        <p class="helper-text"> {{ 'marketplace-bo-template-description' | translate}} </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-secondary ml-0" data-ng-disabled="isPublished" data-ng-click="publishMarketplaceTemplate()" data-ng-if="isRootAccount && template.hasOwnProperty('published')">
+            <span data-ng-show="!loading && template.published">{{:: 'unpublish-template' | translate }}</span>
+            <span data-ng-show="!loading && !template.published">{{:: 'publish-template' | translate }}</span>
+            <div data-ng-show="loading">
+                <kc-action-button-loading></kc-action-button-loading>
+            </div>
+        </button>
+        <button class="btn btn-primary ml-2" data-ng-disabled="isInstalled" data-ng-click="installMarketplace()" data-ng-if="!isRootAccount">
+            <span data-ng-show="!loading">{{:: 'install-template' | translate}}</span>
+            <div data-ng-show="loading">
+                <kc-action-button-loading></kc-action-button-loading>
+            </div>
+        </button>
+    </div>
+    <kc-tabs-bo-marketplace></kc-tabs-bo-marketplace>
+    <div class="d-flex mt-3 mb-1" data-ng-show="isRootAccount">
+        <div class="alert alert-warning rounded w-100 d-flex align-items-center justify-content-between p-2" style="max-width: 100%" role="alert">
+            <span class="mr-2">{{ 'edit-environment-variable-description' | translate }}</span>
+            <button class="btn bg-white text-primary" data-ng-click="openActionVariableModal()">
+                <i class="ti-pencil-alt plus-icon m-0 mr-2"></i>
+                {{'edit-variable' | translate}}
+            </button>
+        </div>
+    </div> 
+    <div class="row mt-3" data-ng-if="isTemplateReady">
+        <kc-create-template></kc-create-template>
+    </div>
+</div>

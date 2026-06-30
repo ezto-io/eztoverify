@@ -1,0 +1,97 @@
+---
+id: AdminLogs
+title: Admin Logs
+sidebar_label: Admin Logs
+--- 
+
+import DynamicTableElement from '@site/src/components/docs/DynamicTableElement';
+import TypeData from './audit-admin-logs-type.json';
+import ResourceTypeData from './audit-admin-logs-resource-type.json';
+
+The **Admin Logs** functions as a comprehensive record of all actions performed within the **Workspace**.
+
+This page allows admins to view, search, and analyze logs to ensure transparency, accountability, and security within the **Workspace**.
+
+Some of the things you can analyze with these **Admin** **Logs** are:
+
+* All updates, creations, deletions on applications, rules, workflows, and relevant events can be viewed here.
+
+* View actions performed by the **Workspace** admins.
+
+* Search for specific admin logs by entering relevant details.
+
+> **To access the admin logs, ensure that the admin logs are enabled.**
+
+### Enable Admin Logs
+
+*1* Navigate to **Workspace**, and click on **Audit**.
+
+*2* Go to the **Admin Logs** page**,** click on the `SETTINGS` button located at the top right corner, toggle the **Enable** button, and then click on `SAVE` button.
+
+![Enable Logs](https://dashboard.eztovrfy.com/public/Docs/admin-logs/admin-enable-logs.png)
+
+*3* Once the admin logs are enabled, all events are recorded in the database, making them accessible for review.
+
+### View Admin Logs
+
+*1* Once the admin logs are enabled, you can view all active logs, displaying comprehensive details;
+
+![View Logs](https://dashboard.eztovrfy.com/public/Docs/admin-logs/admin-view-logs.png)
+
+<table>
+   <thead>
+      <tr>
+         <th width="176">Attributes</th>
+         <th>Descriptions</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><strong>Time</strong></td>
+         <td>This indicates the timestamp or moment when each action occurred, providing a chronological order of events.</td>
+      </tr>
+      <tr>
+         <td><strong>Type</strong></td>
+         <td>This field categorizes the type or nature of each action, allowing to discern whether it was an update, deletion, or any relevant events.</td>
+      </tr>
+      <tr>
+         <td><strong>User</strong></td>
+         <td>It identifies the specific admin responsible for initiating the action, ensuring accountability and tracking.</td>
+      </tr>
+      <tr>
+         <td><strong>Resource Type</strong></td>
+         <td>Specifies the type of resource or component within the <strong>Workspace</strong> that was affected by the action. It helps to understand which part of the <strong>Workspace</strong> underwent changes or received attention from admins.</td>
+      </tr>
+   </tbody>
+</table>
+
+*2* For more details on each log, click on the information icon.
+
+![Info](https://dashboard.eztovrfy.com/public/Docs/admin-logs/admin-info-logs.png)
+
+### Get Admin Logs
+
+*1* To retrieve a specific log, enter the relevant details into the provided fields and specify the number of days you want to view. For example, if you enter 7 days, the logs from the last 7 days will be displayed.
+
+![Filter Logs](https://dashboard.eztovrfy.com/public/Docs/admin-logs/admin-filter-logs.png)
+
+<table>
+   <thead>
+      <tr>
+         <th width="144">Attributes</th>
+         <th>Descriptions</th>
+      </tr>
+   </thead>
+   <tbody>
+      <DynamicTableElement title="Type" defaultSelection="" defaultDescription="Choose the type of logs you want to view, such as create logs, update logs, or delete logs." jsonData={TypeData} />
+      <DynamicTableElement title="Resource Type" defaultSelection="" defaultDescription="Choose the specific event type from the drop-down, such as client events, rule events, workspace events and so on." jsonData={ResourceTypeData} />
+      <tr>
+         <td><strong>Last</strong></td>
+         <td>Select the number of days you want to fetch the logs for, such as the last 7 days, last 30 days, or last 90 days</td>
+      </tr>
+   </tbody>
+</table>
+
+*2* Provide the details and click on the `FILTER` button.
+
+*3* To reset the fields and filters, simply click on the `RESET` button.

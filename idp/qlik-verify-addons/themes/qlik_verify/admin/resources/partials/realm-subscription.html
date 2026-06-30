@@ -1,0 +1,225 @@
+<kc-menu></kc-menu>
+<div class="position-relative"> 
+  <div class="position-absolute">
+    <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+    <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon" data-ng-click="toggleSideBarShow()" >
+      <div id="setting-icon h1">
+        <i class="ti-angle-right cursor-pointer"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content-w bo-setting-menu-main-content" ng-init="init()">
+  <div class="content-i">
+    <div class="content-box">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="element-wrapper">
+            <!-- <kc-tabs-realm data-ng-if="realm.mode !== 'bo'"></kc-tabs-realm> -->
+            <div ng-if="(dataLoaded)">
+              <ul class="blue-zone-list">
+                <li>
+                  <div class="blue-zone-container"
+                    ng-class="{ 'caution-zone-container': licenseInfo.body.days <= 10 && licenseInfo.body.days > 5,'red-bg' : ((licenseInfo.body.days <= 5 && licenseInfo.body.days !== -1 ) || !licenseInfo.body.days)  }">
+                    <div>
+                      <h4 class="blue-zone-title">
+                        {{:: 'subscription-status' | translate}}
+                      </h4>
+                      <p class="mb-0">{{:: realm.mode === 'bo' ? licenseMessage : 'pay-as-go'  | translate}}</p>
+                    </div>
+                    <div class="pull-right">
+                      <button class="mr-2 mt-2 btn btn-primary"
+                        ng-class="{ 'btn-warning': licenseInfo.body.days <= 10 && licenseInfo.body.days > 5,'btn-danger' : ((licenseInfo.body.days <= 5 && licenseInfo.body.days !== -1 ) || !licenseInfo.body.days) }"
+                        id="removeRealm" data-ng-show="showAction" data-ng-click="licenseAction()" kc-save
+                        data-ng-disabled="stage === 2">
+                        <span ng-show="stage === 1">{{:: licenseBtnTxt | translate}}</span>
+                        <div ng-show="stage === 2">
+                          <kc-action-button-loading></kc-action-button-loading>
+                        </div>
+                      </button>
+                      <!-- <a class="mr-2 mt-2 btn btn-primary" id="invoice-Btn" data-ng-show="invoice && invoice.url"
+                        href="{{invoice.url}}" target="_blank">
+                        {{::'invoice-btn' | translate}}
+                      </a> -->
+                      <button class="mr-2 mt-2 btn btn-primary" id="invoice-Btn" data-ng-show="invoice && invoice.url" data-ng-click="realm.sandboxMode !== true ? showContactSupport('view-invoice') : showChangeToLiveMode('view-invoice')">
+                        <span> {{::'invoice-btn' | translate}}</span>
+                    </button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="mt-3" data-ng-if="dataLoaded && !showAction">
+              <div class="d-flex flex-wrap align-items-center justify-content-between">
+                <h4 class="account-usage-title">{{:: 'account-usage' | translate}}</h4>
+                <div class="element-actions d-flex align-items-center application-step-1" data-ng-if="serverInfo.systemInfo.offering == 'CLOUD' && userCanUpdate && !rootAccount">
+                  <div class="mr-2">
+                      <a href="#/realms/{{realm.realm}}/realm-subscription/update-plan" id="update-plan-btn" ng-click="handleUpdatePlan($event)">
+                      <button class="btn btn-primary" id="updateSubscription-Btn">
+                        {{:: 'update-plan' | translate}}
+                      </button>
+                       </a>
+<!--                    <button class="cursor-pointer btn btn-primary" id="updateSubscription-Btn" data-ng-click="realm.sandboxMode !== true ? showContactSupport('update-plan') : showChangeToLiveMode('update-plan')">-->
+<!--                        <span> {{:: 'update-plan' | translate}}</span>-->
+<!--                    </button>-->
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 mt-3">
+                  <div class="row mx-0 account-usage-card-container" data-ng-if="licenseConfig.credits.length > 0 ">
+                    <div class="account-usage-card d-flex flex-column safe  position-relative">
+                      <!-- content top -->
+                      <div class="d-flex justify-content-between align-items-center">
+                        <!-- left block -->
+                        <div class="d-flex align-items-center h-100 w-100 justify-content-between flex-wrap gap-1">
+                          <div class="d-flex">
+                            <img class="account-usage-logo" data-ng-src="{{resourceUrl}}/themes/img/wallet.svg" />
+                            <span class="ml-1 d-block font-size-normal">{{:: 'your-wallet' | translate }}</span>
+                          </div>
+<!--                          <button class="cursor-pointer btn btn-primary" id="add-money-btn" data-ng-click="addMoney()">-->
+<!--                            <span data-ng-if="!isAddMoneyLoading">{{:: 'wallet-add' | translate }}</span>-->
+<!--                            <div ng-show="isAddMoneyLoading">-->
+<!--                              <kc-action-button-loading></kc-action-button-loading>-->
+<!--                            </div>-->
+<!--                          </button>-->
+                          <button class="cursor-pointer btn btn-primary" id="add-money-btn" data-ng-click="realm.sandboxMode !== true ? showAddMoneyModal() : showChangeToLiveMode('add-money')">
+                          <!-- <button class="cursor-pointer btn btn-primary" id="add-money-btn" data-ng-click="realm.sandboxMode !== true ? showContactSupport('add-money') : showChangeToLiveMode('add-money')"> -->
+                              <span data-ng-if="!isAddMoneyLoading">{{:: 'wallet-add' | translate }}</span>
+                          </button>
+
+                        </div>
+                      </div>
+                      <!-- bottom content -->
+                      <div
+                        class="account-usage-bottom d-flex flex-column align-items-start justify-content-end h-100 w-100">
+                        <div class="d-flex align-items-center justify-content-between text-right w-100">
+                          <div>
+                            <span class="account-usage-total mr-0">{{licenseConfig.walletBalance}}</span>
+                            <span class="account-usage-available">{{licenseConfig.walletCurrency}}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="account-usage-card d-flex flex-column safe cursor-pointer"
+                      data-ng-click="showCreditPricingMetadata(usageDetail, licenseConfig.walletCurrency )"
+                      data-ng-class="{'justify-content-between':usageDetail.freeTierCount}"
+                      data-ng-repeat="usageDetail in licenseConfig.credits" id="{{usageDetail.name.toLowerCase().replaceAll(' ','-')}}-card">
+                      <!-- content top -->
+                      <div class="d-flex justify-content-between align-items-center">
+                        <!-- left block -->
+                        <div class="d-flex align-items-center">
+                          <div class="account-usage-logo">
+                            <img data-ng-src="{{usageDetail.image}}" data-ng-alt="{{usageDetail.name}} logo">
+                          </div>
+                          <div class="font-size-normal">{{:: usageDetail.name | translate}}</div>
+                        </div>
+                      </div>
+                      <!-- bottom content -->
+                      <div class="account-usage-bottom d-flex align-items-center justify-content-between">
+                        <div data-ng-if="!usageDetail.freeTierCount" class="mt-4">
+                          <p data-ng-if="usageDetail.prodId!=='remove_qv_branding' && usageDetail.externalId!='dns' && usageDetail.externalId.startsWith('own')">
+                            {{:: 'subscription-custom-provider-txt' | translate}}
+                          </p>
+                          <p data-ng-if="usageDetail.prodId!=='remove_qv_branding' && usageDetail.externalId!='dns' && usageDetail.externalId!='wiam_authentication' && !usageDetail.externalId.startsWith('own')">
+                            {{:: usageDetail.name + '-subscription-default-provider-txt' | translate}}
+                          </p>
+                          <p data-ng-if="usageDetail.prodId!=='remove_qv_branding' && usageDetail.externalId == 'dns'">
+                            {{:: 'subscription-dns-provider-txt' | translate}}
+                          </p>
+                          <p data-ng-if="usageDetail.prodId==='remove_qv_branding'">{{:: 'subscription-branding-change'
+                            | translate}}
+                          </p>
+                        </div>
+                        <!-- left -->
+                        <div data-ng-if="usageDetail.freeTierCount">
+                          <div>
+                            <span class="account-usage-total">{{usageDetail.consumedCount}}</span>
+                            <span class="account-usage-available"
+                              data-ng-if="usageDetail.maxProdCount">/{{usageDetail.maxProdCount}}</span>
+                          </div>
+                          <div class="account-usage-type" data-ng-if="usageDetail.freeTierCount">{{:: usageDetail.title
+                            | translate}}
+                          </div>
+                        </div>
+                        <!-- right -->
+                        <div class="d-flex flex-column justify-content-right text-right"
+                          data-ng-if="usageDetail.freeTierCount">
+                          <div>
+                            <span class="account-usage-total mr-0">{{usageDetail.consumedCount >
+                              usageDetail.freeTierCount ? '0' :
+                              (usageDetail.freeTierCount - usageDetail.consumedCount)}}</span>
+                            <span class="account-usage-available"
+                              data-ng-if="usageDetail.freeTierCount">/{{usageDetail.freeTierCount}}</span>
+                          </div>
+                          <div class="account-usage-type">{{:: 'free-left' | translate}}</div>
+                        </div>
+                      </div>
+                      <div data-ng-if="usageDetail.externalId === 'wiam_authentication'" class="ng-scope"> 
+                          <div>
+                            <span class="account-usage-total ng-binding">{{:: licenseConfig.authenticationUsage | translate}}</span>
+                          </div>
+                          <div class="account-usage-type ng-binding ng-scope">{{:: 'authentication-count-helptext' | translate}}</div>
+                      </div>
+                    </div>
+                    <div data-ng-if="licenseConfig.recurrings.length > 0" class="account-usage-card d-flex flex-column safe"
+                      data-ng-class="{'justify-content-between':usageDetail.freeTierCount}"
+                      data-ng-repeat="usageDetail in licenseConfig.recurrings">
+                      <!-- content top -->
+                      <div class="d-flex justify-content-between align-items-center">
+                        <!-- left block -->
+                        <div class="d-flex align-items-center">
+                          <div class="account-usage-logo">
+                            <img data-ng-src="{{usageDetail.logo}}" data-ng-alt="{{usageDetail.title}} logo">
+                          </div>
+                          <div class="font-size-normal">{{:: usageDetail.title | translate}}</div>
+                        </div>
+                      </div>
+                      <!-- bottom content -->
+                      <div class="account-usage-bottom d-flex align-items-center justify-content-between">
+                        <div data-ng-if="!usageDetail.freeTierCount" class="mt-4">
+                          <p data-ng-if="usageDetail.prodId!=='remove_qv_branding' && usageDetail.prodId!=='dns'">{{::
+                            'subscription-change' | translate}}</p>
+                          <p data-ng-if="usageDetail.prodId==='dns'">{{:: 'dns-enabled' | translate}}</p>
+                          <p data-ng-if="usageDetail.prodId==='remove_qv_branding'">{{:: 'subscription-branding-change'
+                            | translate}}
+                          </p>
+                        </div>
+                        <!-- left -->
+                        <div data-ng-if="usageDetail.freeTierCount">
+                          <div>
+                            <span class="account-usage-total">{{usageDetail.consumedCount}}</span>
+                            <span class="account-usage-available"
+                              data-ng-if="usageDetail.maxProdCount">/{{usageDetail.maxProdCount}}</span>
+                          </div>
+                          <div class="account-usage-type" data-ng-if="usageDetail.freeTierCount">{{:: usageDetail.title
+                            | translate}}
+                          </div>
+                        </div>
+                        <!-- right -->
+                        <div class="d-flex flex-column justify-content-right text-right"
+                          data-ng-if="usageDetail.freeTierCount">
+                          <div>
+                            <span class="account-usage-total mr-0">{{usageDetail.consumedCount >
+                              usageDetail.freeTierCount ? '0' :
+                              (usageDetail.freeTierCount - usageDetail.consumedCount)}}</span>
+                            <span class="account-usage-available"
+                              data-ng-if="usageDetail.freeTierCount">/{{usageDetail.freeTierCount}}</span>
+                          </div>
+                          <div class="account-usage-type">{{:: 'free-left' | translate}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div ng-if="!(dataLoaded)">
+        <kc-loader loadertype="loaderTypeName"></kc-loader>
+      </div>
+    </div>
+  </div>
+</div>

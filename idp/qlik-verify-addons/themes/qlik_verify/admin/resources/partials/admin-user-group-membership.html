@@ -1,0 +1,89 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/dashboard-admins" id="back-to-admins-list" >
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-dashboard-admins' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-admin-user></kc-tabs-admin-user>
+                        <div class="element-box element-box-medium" data-ng-show="searchLoaded && (groupMemberships == null || groupMemberships.length == 0)">
+                            <div class="no-entry-svg">
+                                <i class="os-icon os-icon-users opacity-75 no-entry-display mb-3 icon-custom-70"></i>
+                                <p class="no-results-msg no-entry-display">{{:: 'noGroupsAvailable' | translate}}</p>
+                                <button class="create-btn no-entry-display" ng-click="addGroupsToUser()" id="addUserGroupsBtn" addRealmRole>
+                                    <i class="os-icon os-icon-plus plus-icon"></i>
+                                    {{:: 'add-group' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                        <div ng-if="!(searchLoaded)">
+                            <kc-loader loadertype="loaderTypeName"></kc-loader>
+                        </div>
+                        <div ng-hide="!searchLoaded || groupMemberships.length === 0">
+                            <div class="table-responsive-md clients-list">
+                                <table class="table table-light-bordered table-padded table-layout-fixed w-100">
+                                    <caption data-ng-show="groupMemberships" class="hidden">{{:: 'table-of-role-members'
+                                        |
+                                        translate}}</caption>
+                                    <thead>
+                                        <tr data-ng-show="groupMemberships.length > 0">
+                                            <th class="w-90" colspan="9">{{:: 'group-name' | translate}}</th>
+                                            <th class="text-center w-10" colspan="1">{{:: 'actions' | translate}}</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody>
+                                        <tr class="user-row position-relative fadeUp"
+                                            ng-repeat="group in groupMemberships">
+                                            <td class="overflow-ellipsis mb-0" colspan="9">
+                                                <div class="name-container align-items-center">
+                                                    <p class="overflow-ellipsis mb-0">{{group.name}}</p>
+                                                </div>
+                                            </td>
+                                            <td class="kc-action-cell text-center row-actions " colspan="1">
+                                                <a class="danger" data-ng-click="deleteUserGroup(group)" id="{{group.name}}-deleteIcon"><i class="os-icon os-icon-ui-15"
+                                                        tooltip="{{:: 'tooltip-remove-label' | translate}}"
+                                                        tooltip-placement="top"
+                                                        tooltip-trigger="mouseover mouseout"></i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr data-ng-hide="(!searchLoaded && groupMemberships && groupMemberships.length < 5) || (groupMemberships && groupMemberships.length ===0)">
+                                        <td class="pl-0 pb-0"  data-ng-show="(groupMemberships && groupMemberships.length > 5 && pageCount===entries) || (entries > 5)" colspan="6">
+                                            <p class="mt-1 mb-0">{{:: 'showing' | translate}} {{startCount}} - {{pageCount}} {{:: 'of' | translate}} {{entries}} {{:: 'roles' | translate}}</p>
+                                        </td>
+                                        <td class="pr-0 pb-0" data-ng-show="(groupMemberships && groupMemberships.length > 5 && pageCount === entries) || (entries > 5)" colspan="4">
+                                            <div class="table-nav pull-right" data-ng-hide="(entries <= query.max)">
+                                                <button class="btn btn-sm btn-outline-primary table-pagination" data-ng-click="firstPage()" class="first" ng-disabled="query.first === 0" data-ng-class="query.first === 0 && 'text-muted'">
+                                                    <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon"></i>
+                                                    <i>{{:: 'first-page' | translate}} </i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary table-pagination" data-ng-click="previousPage()" class="prev" ng-disabled="query.first === 0" data-ng-class="query.first === 0 && 'text-muted'"><i
+                                                        class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon"></i>
+                                                    <i> {{:: 'previous' | translate}} </i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary table-pagination pr-0" data-ng-click="nextPage()" class="next" ng-disabled="pageCount === entries" data-ng-class="pageCount === entries && 'text-muted'">
+                                                    <i> {{:: 'next' | translate}} </i>
+                                                    <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

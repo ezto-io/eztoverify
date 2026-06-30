@@ -1,0 +1,104 @@
+<div class="qv-nav-bar top-bar color-scheme-transparent bg-white pr-0" data-ng-controller="RealmTopNavCtrl">
+    <div class="logo-w position-absolute py-0 h-100 bg-white">
+      <a id="qv-workspace-logo" class="logo custom-values-given d-flex align-items-center realm-logo-container" href="index.html">
+        <div class="realm-logo-box" ng-class="{ 'border-0' : !current.realm.realm }" >
+          <img ng-if="!current.realm.realmLogo && current.realm && current.realm.realm && current.realm.mode === 'bo'" class="provider-image" data-ng-src="{{resourceUrl}}/themes/img/eztovrfy-logo.svg?version={{serverVersion}}"  alt="tenant logo image"/>
+          <img ng-if="!current.realm.realmLogo && current.realm && current.realm.realm && (current.realm.mode === 'wiam' || current.realm.mode === 'ciam')" class="provider-image"  data-ng-src="{{resourceUrl}}/themes/img/logo.svg?version={{serverVersion}}"  alt="tenant logo image"/>
+          <img ng-if="current.realm.realmLogo && current.realm && current.realm.realm" class="provider-image"  data-ng-src="{{current.realm.realmLogo}}" alt="tenant logo image"/>
+        </div>
+      </a>
+      <!-- Tenant Selector -->
+      <div id="tenantName" class="fancy-selector-w desktop fancy-selector-position cursor-pointer user-select-none" data-ng-show="current.realm && current.realm.realm" data-ng-click="navToRealmList(rootAccountName)">
+        <div class="fancy-selector-current fancy-selector-custom">
+          <div class="fs-main-info position-relative pr-4" ng-class="{ 'cursor-default' : !(access.createRealm || current.realm.realm === rootAccountName) }" >
+            <div class="fs-name pb-xsm-1 position-relative" data-ng-show="current.realm && current.realm.displayName">
+              {{current.realm.displayName|capitalize}}
+            </div>
+            <div class="fs-name pb-xsm-1 position-relative" data-ng-show="current.realm && !current.realm.displayName">
+              {{current.realm.realm|capitalize}}
+            </div>
+            <div class="fs-sub" data-ng-if="current.realm">
+              <span>{{:: 'workspace_txt' | translate}}</span>
+            </div>
+            <i class="os-icon tenant-switch os-icon-repeat position-absolute" data-ng-show="(access.createRealm || current.realm.realm === rootAccountName) && showSwitch == 'true'" ></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="top-menu-controls"> 
+      <div ng-if="current.realm && current.realm.realm !== rootAccountName && current.realm.mode == 'bo'" class="d-flex justify-content-center align-items-center text-light p-2 rounded {{current.realm.sandboxMode ? 'sandbox-mode-badge' : 'live-mode-badge' }}">
+          <img data-ng-src="{{resourceUrl}}/themes/img/{{current.realm.sandboxMode ? 'sandbox-mode' : 'live-mode' }}.svg" />
+          <span data-ng-if="current.realm.sandboxMode" class="pl-2">{{:: 'sandbox-mode' | translate}}</span>
+          <span data-ng-if="!current.realm.sandboxMode" class="pl-2">{{:: 'live-mode' | translate}}</span>
+      </div>
+      <div class="mx-4" data-ng-show="current.realm && serverInfo.supportedLocales">
+        <select ng-model="preferredLanguage" class="px-2 form-control" >
+          <option value="{{language.code}}" ng-repeat="language in supportedLocalesEntity">{{language.nativeName}}</option>
+        </select>
+      </div>
+      <a href="{{docsUrl ? docsUrl : resourceUrl + '/docs-not-configured.html'}}" id="qv-navbarItem-documentation" target="_blank" class="cursor-pointer color-inherit d-flex align-items-center header-menu text-decoration-none">
+        <span class="os-icon os-icon-book-open mr-2 menu-icon-prop"></span>
+        {{::'navbar-document' | translate}}
+      </a>
+      <div class="top-icon top-settings ml-2">
+        <!--Profile-->
+        <div class="logged-user-w">
+          <div id="profile-dropdown" class="logged-user-i" ng-if="auth.user" ng-init="initProfileElement()">
+            <div class="avatar-w" ng-click="toggleDropdown()" >         
+                <img id="adminUserProfilePic" ng-if="auth.user.profPic !== ''"  ng-src="{{getImage(auth.user.profPic)}}" alt="profile-pic" />
+                <img id="adminUserProfilePic" ng-if="auth.user.profPic === ''"  ng-src="{{resourceUrl}}/themes/img/default_avatar.svg" alt="profile-pic" /> 
+            </div>
+            <!--Dropdown-->
+            <div class="logged-user-menu color-style-bright border-top-radius-none">
+              <div class="logged-user-avatar-info d-flex align-items-center justify-content-start cursor-auto">
+                <div class="avatar-w dropdown-avatar-w mr-3 bg-white" ng-if="auth.user.profPic !== ''">
+                  <img class="user-image" ng-if="auth.user.profPic !== ''" data-ng-src="{{auth.user.profPic}}" alt="profile-pic" /> 
+                </div>
+                <div class="avatar-w mr-3 dropdown-avatar-w bg-white" ng-if="auth.user.profPic === ''">
+                  <img class="user-image" data-ng-src="{{resourceUrl}}/themes/img/default_avatar.svg" alt="profile-pic" />
+                </div> 
+                <div class="logged-user-info-w">
+                  <div class="logged-user-name user-info-overflow overflow-ellipsis">
+                    {{auth.user.displayName|capitalize}}  
+                  </div>
+                </div>
+              </div>
+              <div class="bg-icon">
+                <i class="os-icon os-icon-wallet-loaded"></i>
+              </div>
+              <ul>
+                <li data-ng-if="rootAccountName.length > 0">
+                  <a href="#/realms/{{auth.user.realm}}/admin/users/{{auth.user.userId}}" data-ng-if="auth.user.realm" id="qv-accountSettings" ng-click="toggleDropdown()">
+                    <i class="os-icon os-icon-user-male-circle2"></i>
+                    <span>{{:: 'account-settings' | translate}}</span>
+                  </a>
+                </li>
+                <li data-ng-if="auth.user.realm === rootAccountName">
+                  <a href="#/server-info" data-ng-if="auth.user.realm" ng-click="toggleDropdown()" id="qv-serverInfo" >
+                    <i class="os-icon os-icon-server"></i>
+                    <span>{{:: 'server-info' | translate}}</span>
+                  </a>
+                </li>
+               
+                <li data-ng-if="rootAccountName.length > 0">
+                  <a href="" data-ng-if="auth.user.realm" ng-click="auth.authz.logout()" id="qv-signOut" >
+                    <i class="os-icon os-icon-signs-11" data-ng-class="{'rotate-180' : isRTL()}"></i>
+                    <span>{{:: 'sign-out' | translate}}</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="language-switching-loader" id="language-switching-loader" data-ng-controller="RealmTopNavCtrl">
+    <div class="d-flex justify-content-center flex-column">
+      <img ng-if="!current.realm.realmLogo && current.realm && current.realm.realm && current.realm.mode === 'bo'" class="provider-image height-85px fade-in-out" data-ng-src="{{resourceUrl}}/themes/img/eztovrfy-logo.svg?version={{serverVersion}}"  alt="tenant logo image"/>
+      <img ng-if="!current.realm.realmLogo && current.realm && current.realm.realm && (current.realm.mode === 'wiam' || current.realm.mode === 'ciam')" class="provider-image height-85px fade-in-out"  data-ng-src="{{resourceUrl}}/themes/img/logo.svg?version={{serverVersion}}"  alt="tenant logo image"/>
+      <img ng-if="current.realm.realmLogo && current.realm && current.realm.realm" class="provider-image height-85px fade-in-out"  data-ng-src="{{current.realm.realmLogo}}" alt="tenant logo image"/>
+      <p dir="ltr" class="pt-4 font-size-19" data-ng-if="loadingText">{{'loading' | translate}}</p>
+    </div>
+  </div>

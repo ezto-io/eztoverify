@@ -1,0 +1,25 @@
+---
+id: "5.1.0"
+title: "5.1.0"
+sidebar_label: "5.1.0"
+---
+
+import LottiePlayer from "@site/src/components/changelogs/LottiePlayer";
+
+### Improvements
+
+- We've made our **Web SDK** flows even smoother! Before, when you start the verification process, it would open in a new tab. Now, instead of opening a new tab, everything happens right on the same page in a small window, making the process more seamless.
+
+<LottiePlayer lottie="5.1.0/SDK"/>
+
+- In our [Web to Device](/docs/EV/WorkflowModules/Device/WebtoDevice) template flow, we've added a link to the ezto verify mobile app on the QR page. This makes it super easy to access the mobile app during verification.
+
+### Bug Fixes
+
+#### Web to Device
+*1* Previously, selecting a specific device to send push notifications would mistakenly send notifications to all devices listed, along with an **"Access denied"** message. We've corrected this, so notifications are sent only to the chosen device.
+*2* When creating a [Web to Device](/docs/EV/WorkflowModules/Device/WebtoDevice) template from the **Templates** page, it used to show an `Unknown_error.` Now, this error message has been resolved.
+
+#### Email Validation
+*1* We fixed an issue where the email validation flow would complete without specifying a threshold value. This is now fixed.
+*2* Previously, when using a registered email ID for the email validation flow, the execution screen would display as **Verify Email** incorrectly. This has been fixed.

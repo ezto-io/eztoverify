@@ -1,0 +1,11 @@
+# Git LFS — store heavy binary docs media as LFS pointers (keeps the repo + history lean).
+# Applies when the monorepo is committed. Run `git lfs install` once per clone.
+# Scope: documentation assets only (docs/). SVGs are text — intentionally NOT tracked.
+
+docs/**/*.gif  filter=lfs diff=lfs merge=lfs -text
+docs/**/*.mp4  filter=lfs diff=lfs merge=lfs -text
+docs/**/*.mov  filter=lfs diff=lfs merge=lfs -text
+docs/**/*.webm filter=lfs diff=lfs merge=lfs -text
+docs/**/*.png  filter=lfs diff=lfs merge=lfs -text
+docs/**/*.jpg  filter=lfs diff=lfs merge=lfs -text
+docs/**/*.jpeg filter=lfs diff=lfs merge=lfs -text

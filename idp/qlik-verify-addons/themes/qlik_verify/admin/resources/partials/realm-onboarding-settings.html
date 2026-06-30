@@ -1,0 +1,87 @@
+<kc-menu></kc-menu>
+<div class="position-relative"> 
+    <div class="position-absolute">
+      <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+      <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon" data-ng-click="toggleSideBarShow()" >
+        <div id="setting-icon h1">
+          <i class="ti-angle-right cursor-pointer"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="content-w bo-setting-menu-main-content">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <!-- <kc-tabs-realm></kc-tabs-realm> -->
+                        <div class="element-box py-5">
+                            <form class="form-horizontal" name="realmForm" novalidate
+                                kc-read-only="!access.manageRealm"> 
+                                <div class="form-group row">
+                                    <label for="userInvite" class="col-md-3 control-label">{{:: 'userInviteClient' |
+                                        translate}}</label>
+                                    <div class="col-md-9">
+                                        <div>
+                                            <select id="clientList" class="form-control" data-ng-init="initClientStreams()" ng-model="realm.userInviteClientId" data-ng-if="clients">
+                                                <option ng-repeat="cli in clients" value="{{cli.clientId}}" title="{{cli.clientId}}">{{cli.name}} ({{cli.clientId}})</option>
+                                            </select>
+                                        </div>
+
+                                        <kc-tooltip>{{:: 'userInviteClient.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="userInvite" class="col-md-3 control-label">{{:: 'userInvite' |
+                                        translate}}</label>
+                                    <div class="col-md-9">
+                                        <div>
+                                            <select id="userInvite" ng-model="realm.userInviteWay"
+                                                class="form-control">
+                                                <option value="otp">{{:: 'via-otp' | translate}}
+                                                </option>
+                                                <option value="link">{{:: 'via-link' | translate}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <kc-tooltip>{{:: 'userInvite.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                                <div class="form-group row" data-ng-if="realm.userInviteWay.toLowerCase() === 'link'">
+                                    <label class="col-md-3 control-label" for="actionTokenAttributeTime"
+                                        class="two-lines">
+                                        {{:: 'link-expiration' | translate}} <span class="required">*</span></label>
+                                    <div class="form-inline col-md-9 time-selector pl-0">
+                                        <div class="col-md-6">
+                                            <input class="form-control w-40 time-selector-input mr-3" type="number" min="1" max="31536000"
+                                            data-ng-model="actionTokenAttribute.time" id="actionTokenAttributeTime"
+                                            name="actionTokenAttributeTime">
+                                            <select class="form-control w-40 time-selector-input mr-3" id="onboarding-time-selector" name="actionTokenAttributeUnit"
+                                            data-ng-model="actionTokenAttribute.unit">
+                                                <option value="Minutes">{{:: 'minutes' | translate}}
+                                                </option>
+                                                <option value="Hours">{{:: 'hours' | translate}}</option>
+                                                <option value="Days">{{:: 'days' | translate}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <kc-tooltip>
+                                        {{:: 'action-token-generated-by-user.tooltip' | translate}}
+                                    </kc-tooltip>
+                                </div>
+                                <div class="form-buttons-w border-top-0" data-ng-show="access.manageRealm">
+                                    <div class="col-md-12 d-flex flex-row-reverse pr-0">
+                                        <button kc-save data-ng-disabled="!changed" id="onboarding-saveBtn" class="ml-3">{{:: 'save' | translate}}</button>
+                                        <button kc-reset data-ng-disabled="!changed" id="onboarding-cancelBtn">{{:: 'cancel' |
+                                            translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!--END - Grid of tablo statistics-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

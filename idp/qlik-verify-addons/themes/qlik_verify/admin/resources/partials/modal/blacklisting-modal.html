@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{:: value.label | translate}}</h5>
+    <button type="button" class="close" ng-click="close()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="d-flex align-items-center justify-content-left blacklist-search-input">
+        <i class="os-icon os-icon-search2 blacklist-search-icon" id="search"></i>
+        <input class="col-10 blaclist-search mx-2" id="searchInputField" type="text" placeholder="{{:: 'search' | translate}}" ng-model="search" ng-change="handleSearch(search);">
+        <i ng-show="search!=''" class="os-icon os-icon-close blacklist-clear-icon" id="closesearch" ng-click="search=''"></i>
+    </div>
+    <div class="blacklist-values mt-3">
+        <ul>
+            <li ng-show="search === '' " ng-repeat="val in value.defaultValue">
+                <span>{{value.name === 'phone' ? '+' : ''}}{{val}}</span>
+                <i class="os-icon os-icon-close blacklist-clear-icon" id="closesearch" ng-click="removeValue(index, val);"></i>
+            </li>
+            <li ng-show="search !== '' " ng-repeat="val in searchResults">
+                <span>{{value.name === 'phone' ? '+' : ''}}{{val}}</span>
+                <i class="os-icon os-icon-close blacklist-clear-icon" id="closesearch" ng-click="removeValue(index, val);handleSearch(search);"></i>
+            </li>
+            <li class="border-bottom-0" ng-show="search === '' && value.defaultValue.length === 0 ">No value found</li>
+            <li class="border-bottom-0" ng-show="search !== '' && searchResults.length === 0 ">No result found</li>
+        </ul>
+    </div>
+</div>
+<div class="modal-footer">
+</div>

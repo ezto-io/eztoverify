@@ -1,0 +1,157 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-group-list></kc-tabs-group-list>
+                        <div class="admin-user-list-heading-container controls-above-table pt-2 mt-4 mb-4"
+                            data-ng-hide="isLoading">
+                            <div class="form-group">
+                                <div class="element-search" data-ng-hide="!lastSearch && (!groupList || groupList.length === 0)">
+                                    <input class="form-control" type="text" id="UserGroupSearchInputField"
+                                        placeholder="{{:: 'search-groups-placeholder' | translate}}"
+                                        data-ng-model="query.search"
+                                        onkeydown="if (event.keyCode == 13) document.getElementById('userSearch').click()"
+                                        class="py-2">
+                                    <i class="os-icon os-icon-search2 search-icon" id="userSearch"
+                                        data-ng-click="searchQuery()"></i>
+                                </div>
+                            </div>
+                            <div data-ng-show="access.manageUsers">
+                                <select data-ng-model="query.max" ng-change="selectQuery()" id="pageUserGroupCount"
+                                    data-ng-options="itemCount for itemCount in [5,10,50,100]"
+                                    data-ng-show="(users && users.length > 5 && pageCount===entries) || (entries > 5)"
+                                    class="form-control form-control-sm rounded bright events-admin-search w-auto mr-3 client-list-count-select">
+                                    <option data-ng-repeat="itemCount in [5,10,50,100]"
+                                        data-ng-selected="query.max === itemCount" data-ng-value="itemCount">
+                                        {{ itemCount }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div ng-if="!(searchLoaded)">
+                            <kc-loader loadertype="loaderTypeName"></kc-loader>
+                        </div>
+                        <div class="table-responsive-md clients-list" ng-if="groupList.length > 0">
+                            <table class="table table-light-bordered table-padded table-layout-fixed w-100 mb-0">
+                                <thead>
+                                    <tr class="position-relative fadeUp">
+                                        <th class="w-35">{{:: 'name' | translate}}</th>
+                                        <th class="w-35">{{:: 'users' | translate}}</th>
+                                        <th class="w-35">{{:: 'roles' | translate}}</th>
+                                        <th class="text-center w-30" colspan="1">{{:: 'actions' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-ng-show="groupList && groupList.length > 0">
+                                    <tr class="user-row position-relative fadeUp" ng-repeat="group in groupList">
+                                        <td class="overflow-ellipsis cursor-pointer mb-0"
+                                            kc-open="/realms/{{realm.realm}}/groups/{{group.id}}">
+                                            <a href="#/realms/{{realm.realm}}/groups/{{group.id}}" class="header-text-primary" id="userGroup-{{group.name.toLowerCase().replaceAll(' ','-')}}">
+                                                {{group.name}}
+                                            </a>
+                                        </td>
+                                        <td class="overflow-ellipsis mb-0 w-45">
+                                            <span ng-if="!group.inBuilt">{{group.usersCount}}</span>
+                                        </td>
+                                        <td class="overflow-ellipsis mb-0 w-45">
+                                            <span ng-if="!group.inBuilt">{{group.rolesCount}}</span>
+                                        </td>
+                                        <td class="row-actions w-15">
+                                            <div class="dropdown clearfix">
+                                                <div class="dropdown">
+                                                    <button id="{{group.name.toLowerCase().replaceAll(' ','-')}}-dLabel" class="dropdown-btn" type="button"
+                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false" data-ng-click="toggleShow($index)">
+                                                        <i class="os-icon os-icon-more-horizontal"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-right"
+                                                        aria-labelledby="dLabel">
+                                                        <li><a class="dropdown-item"
+                                                                ng-click="openUserInGroups()"
+                                                                href="#/realms/{{realm.realm}}/groups/{{group.id}}/roles-users" id="{{group.name.toLowerCase().replaceAll(' ','-')}}-usersInGroup" >{{:: 'users-in-group' | translate}}</a></li>
+                                                        <li ng-if="!group.inBuilt">
+                                                            <a class="dropdown-item delete-dropdown-item" id="{{group.name.toLowerCase().replaceAll(' ','-')}}-deleteUser"
+                                                                data-ng-click="remove(group)">
+                                                                <p class="text-danger m-0">{{ ::'delete' | translate
+                                                                    }}</p>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr
+                                        data-ng-hide="(!searchLoaded && groupList && groupList.length < 5) || (groupList && groupList.length ===0)">
+                                        <td class="pl-0 pb-0" 
+                                            data-ng-show="(groupList && groupList.length > 5 && pageCount===entries) || (entries > 5)">
+                                            <div>
+                                                <p class="m-0">{{:: 'showing' | translate}} {{startCount}} - {{pageCount}} {{:: 'of' | translate}} {{entries}}
+                                                    {{:: 'groups-page' | translate}}</p>
+                                            </div>
+
+                                        </td>
+                                        <td colspan="7" align="right" class="table-nav pull-right pr-0 pb-0"
+                                            data-ng-show="(groupList && groupList.length > 5 && pageCount === entries) || (entries > 5)">
+                                            <div class="pagination justify-content-end "
+                                                data-ng-hide="(entries <= query.max)">
+                                                <button class="btn btn-sm btn-outline-primary table-pagination" id="firstPageBtn"
+                                                    data-ng-click="firstPage()" class="prev"
+                                                    ng-disabled="query.first === 0">
+                                                    <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon"
+                                                        data-ng-class="query.first === 0 && 'text-muted'"></i>
+                                                    <i data-ng-class="query.first === 0 && 'text-muted'"> {{:: 'first-page' | translate}}
+                                                    </i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary table-pagination" id="previousPageBtn"
+                                                    data-ng-click="previousPage()" class="prev"
+                                                    ng-disabled="query.first === 0">
+                                                    <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon"
+                                                        data-ng-class="query.first === 0 && 'text-muted'"></i>
+                                                    <i data-ng-class="query.first === 0 && 'text-muted'"> {{:: 'previous' | translate}}
+                                                    </i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary table-pagination pr-0" id="nextPageBtn"
+                                                    data-ng-click="nextPage()" class="next"
+                                                    ng-disabled="pageCount === entries">
+                                                    <i
+                                                        data-ng-class="groupList.length <= query.max-1 && 'text-muted'">
+                                                        {{:: 'next' | translate}}  </i>
+                                                    <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon"
+                                                        data-ng-class="groupList.length <= query.max-1 && 'text-muted'"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div data-ng-if="searchLoaded && (!groupList || groupList.length === 0)">
+                            <div class="element-box">
+                                <div class="no-policy-img">
+                                    <div class="text-center mb-2">
+                                        <i class="opacity-40 os-icon os-icon-users text-primary font-s-75"></i>
+                                    </div>
+                                    <p class="no-results-msg no-entry-display" data-ng-show="lastSearch">{{:: 'noUserGroupsFound' | translate}}</p>
+                                    <p class="no-results-msg no-entry-display" data-ng-show="!lastSearch">{{:: 'no-groups-available' | translate}}</p>
+                                    <button data-ng-show="lastSearch" class="create-btn no-entry-display cursor-pointer" id="clearSearchBtn" data-ng-click="clearSearch()">
+                                        <i class="os-icon os-icon-close mr-2"></i>
+                                        {{ ::  'clear-search' | translate}}
+                                    </button>
+                                    <button class="create-btn no-entry-display" data-ng-click="createGroup(tree.currentNode)"  id="createGroupBtn"  data-ng-show="!lastSearch">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-group' | translate}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

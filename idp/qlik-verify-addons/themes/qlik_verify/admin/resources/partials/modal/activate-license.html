@@ -1,0 +1,19 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{:: 'activate-license' | translate}}</h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <form>
+        <div>
+            <label class="control-label" for="selector">{{:: 'license-key' | translate}} <span class="required" >*</span></label>
+            <input id="name" class="form-control margin-bottom-10" type="text" data-ng-model="license.key">
+            </input>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+    <button type="button" class="btn btn-primary" ng-click="activateLicense()" data-ng-disabled="!changed">{{:: 'activate' | translate}}</button>
+</div>

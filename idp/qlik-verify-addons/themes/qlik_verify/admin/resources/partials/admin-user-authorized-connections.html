@@ -1,0 +1,63 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/dashboard-admins" id="back-to-admins-list">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-dashboard-admins' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-admin-user></kc-tabs-admin-user>
+                            <div>
+                                <div class="table-responsive-md clients-list">
+                                    <table class="table table-light-bordered table-padded table-layout-fixed w-100">
+                                        <thead>
+                                            <tr>
+                                                <th class="w-40" colspan="4"> <p class="text-capitalize h6 m-0"> {{:: 'social' | translate}} </p></th>
+                                                <th class="w-50" colspan="5">{{:: 'user-table-username' | translate}}</th>
+                                                <th class="text-center w-10" colspan="1">{{:: 'actions' | translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-ng-show="federatedIdentities.length > 0">
+                                            <tr class="user-row position-relative fadeUp" ng-repeat="connection in federatedIdentities">
+                                                <td colspan="4" class="overflow-ellipsis mb-0">
+                                                    <div class="conn-with-logo">
+                                                        <div class="social-conn-logo-container">
+                                                            <img alt="" data-ng-src="{{resourceUrl}}/themes/img/social-icons/{{connection.identityProvider}}-logo.png">
+                                                        </div>
+                                                        <div>
+                                                            <span>{{connection.identityProvider | capitalize}}</span> 
+                                                        </div>
+                                                    </div> 
+                                                </td>
+                                                <td colspan="5" class="overflow-ellipsis mb-0 p-0">
+                                                    <div>
+                                                        <p class="mb-0"><code class="user-id-code">{{ connection.userName }}</code></p>
+                                                    </div>
+                                                </td>
+                                                <td class="kc-action-cell text-center row-actions " colspan="1">
+                                                    <div>
+                                                        <a class="danger" data-ng-click="removeProviderLink(connection)" id="{{connection.identityProvider}}-deleteIcon">
+                                                            <i class="os-icon os-icon-ui-15" tooltip="{{:: 'tooltip-remove-label' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="no-table-result" data-ng-if="!federatedIdentities.length" data-ng-show="federatedIdentities.length == 0">
+                                        {{ :: 'no-social-conn-user' | translate}}
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

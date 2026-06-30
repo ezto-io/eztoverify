@@ -1,0 +1,81 @@
+<div id="close" data-ng-click="dismissPanel()">
+    <i class="os-icon os-icon-close" id="closeIcon"></i>
+</div>
+<p id="header2">{{::'create-role'|translate}}</p>
+<div id="divisionthing"></div>
+<form class="form-horizontal clearfix margin-top-30px" name="realmForm" novalidate kc-read-only="!access.manageRealm" >
+    <fieldset class="pt-4">
+        <div class="form-group row">
+            <label class="col-md-3 control-label" for="name">{{:: 'role-name' | translate}} <span class="required">*</span> </label>
+            <div class="col-md-9">
+                <input class="form-control" type="text" id="name" name="name" data-ng-model="role.name" autofocus
+                    required>
+                <div class="help-block form-text text-muted form-control-feedback"> {{:: 'role-name-helptext' | translate}} </div>
+
+            </div>
+        </div>
+        <div class="form-group row clearfix" ng-show="isWorkflowAvailable">
+            <label class="col-md-3 control-label" for="role-toggle">{{:: 'is-workflow-role' | translate}}</label>
+            <div class="col-md-9 ">
+                <label>
+                    <div class="os-toggler-w"
+                        ng-class="{on: isWorkflow}">
+                        <div class="os-toggler-i" id="toggle">
+                            <div class="os-toggler-pill"
+                                ng-model="isWorkflow"
+                                onoffswitch>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+        <div class="form-group row" ng-show="isWorkflow">
+            <label class="col-md-3 control-label" for="name">{{:: 'connected-app' | translate}} <span class="required">*</span> </label>
+            <div class="col-md-9">
+                <select class="form-control" ng-model="flow.connectedApp" ng-change="setFlowName()">
+                    <option value="" disabled> {{:: 'selectOne' | translate}}</option>
+                    <option value="youtrack">{{:: 'youtrack' | translate}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row" ng-show="isWorkflow && flow.connectedApp">
+            <label class="col-md-3 control-label" for="name">{{:: 'flowname' | translate}} <span class="required">*</span> </label>
+            <div class="col-md-9">
+                <select class="form-control" ng-model="flow.flowName" ng-change="setPermission()">
+                    <option value="" disabled> {{:: 'selectOne' | translate}}</option>
+                    <option ng-repeat="name in AvailableFlowNames">{{name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row" ng-show="flow.flowName && isWorkflow">
+            <label class="col-md-3 control-label" for="name">{{:: 'permissions' | translate}} <span class="required">*</span> </label>
+            <div class="col-md-9">
+                <div class="form-control h-275px overflow-scroll">
+                    <ul class="list-style-none p-0">    
+                        <li class="my-1 cursor-pointer d-flex align-items-center" ng-repeat="permission in permissions"><input id="{{permission}}-id" type="checkbox" data-ng-model="permission.checked"/> <label for="{{permission}}-id" class="ml-2">{{permission.name}}</label></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 control-label" for="description">{{:: 'description' | translate}} </label>
+            <div class="col-md-9">
+                <textarea class="form-control" rows="5" maxlength="160" cols="50" id="description" name="description" data-ng-model="role.description"></textarea>
+                <div class="help-block form-text text-muted form-control-feedback"> {{:: 'content-length-restriction' | translate}} </div>
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="form-buttons-w border-top-0 mb-5">
+        <div class="col-md-12 d-flex flex-row-reverse pr-0" data-ng-show="access.manageRealm">
+            <button class="ml-3" kc-save data-ng-disabled="!changed" id="saveBtn">
+                <span ng-show=" stage === 1 " >{{:: 'save' | translate}}</span>
+                <div ng-show=" stage === 2 ">
+                    <kc-action-button-loading></kc-action-button-loading>
+                </div>
+            </button>
+            <button id="cancelBtn" kc-cancel data-ng-click="cancel()" data-ng-disabled="!changed">{{:: 'cancel' | translate}}</button>
+        </div>
+    </div> 
+</form>

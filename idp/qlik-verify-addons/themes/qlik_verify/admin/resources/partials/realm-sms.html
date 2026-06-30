@@ -1,0 +1,206 @@
+<!-- Side Menu -->
+<kc-menu></kc-menu>
+<!-- Main Content of the page-->
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper pb-0">
+                            <div class="element-actions d-flex align-items-center" ng-hide="((smsProviderType === 'default' && whatsappProviderType === 'default') && offering === 'CLOUD') || (offering==='ONPREMISE' && !realm.enabledOwnSmsProvider && realm.realm !== rootAccountName)">
+                                <div data-ng-if="configuredSmsProviders.length > 0 && searchLoaded">
+                                    <a class="text-decoration-none" href="#/realms/{{realm.realm}}/sms/providers/create">
+                                        <button class="btn btn-primary no-entry-display" id="addSmsProvider"
+                                            data-step='{{configuredSmsProviders.length > 0 ? 1 : 0}}' 
+                                            data-title="{{:: 'intro-no-sms-connections-found-title' | translate}}" 
+                                            data-intro="{{:: 'intro-no-sms-connections-found' | translate}}">
+                                            <i class="os-icon os-icon-plus plus-icon"></i>
+                                            {{:: 'create-sms-conn-btn' | translate}}
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                            <h1 class="element-header">{{:: 'sms-providers' | translate}}</h1>
+                            <div data-ng-if="offering==='ONPREMISE' &&configuredSmsProviders.length && realm.realm !== rootAccountName">
+                                <ul class="blue-zone-list">
+                                    <div class=" user-section blue-zone-container">
+                                        <div>
+                                            <h4 class="blue-zone-title ng-binding"> {{ :: 'use-own-sms-prov-zone-title' | translate}} </h4>
+                                            <div class="d-flex justify-content-between" >
+                                                <div>
+                                                    <p class="mb-0 ng-binding"> {{ :: 'use-own-sms-prov-zone-desc' | translate}} </p>
+                                                </div>  
+                                                <div class="col-md-6">
+                                                    <label>
+                                                        <div  class="os-toggler-w" ng-class="{on: realm.enabledOwnSmsProvider }">
+                                                          <div class="os-toggler-i" id="enabledOwnSmsProvider-toggle">
+                                                            <div class="os-toggler-pill" ng-model="realm.enabledOwnSmsProvider" name="enabledOwnSmsProvider" id="enabledOwnSmsProvider" onoffswitch ng-click="updateSmsProvider()">
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                    </label> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </ul>
+                            </div> 
+
+                            <div data-ng-if="offering === 'ONPREMISE' &&!configuredSmsProviders.length && realm.realm !== rootAccountName">
+                                <ul class="blue-zone-list">
+                                    <li>
+                                      <div class="blue-zone-container">
+                                        <div>
+                                          <h4 class="blue-zone-title">{{ :: 'default-sms-prov-zone-title' | translate }}</h4>
+                                          <p class="mb-0">{{ 'default-sms-prov-zone-desc' | translate}}</p>
+                                        </div>
+                                      </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="blue-zone-container getting-started-list getting-started-box red-bg" data-ng-if="serverInfo.systemInfo.offering == 'CLOUD' && unlicensedProduct && searchLoaded">
+                                <div>
+                                  <h4 class="blue-zone-title">{{:: 'subscription-status' | translate}}</h4>
+                                  <p class="mb-0">{{licenseMessage}}</p>
+                                </div>
+                                <div class="gs-action"> 
+                                    <a href="#/realms/{{realm.realm}}/realm-subscription" class="gs-action-link">
+                                        <button class="account-status slick-next slick-arrow pr-3 blue-zone-title pb-0" id="viewAccountStatus" aria-label="Next" type="button" aria-disabled="false"> {{ :: 'view-account-status' | translate }}  </button>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="controls-above-table mb-0" ng-hide="(smsProviderType === 'default' && whatsappProviderType === 'default' && offering === 'CLOUD' && searchLoaded) || unlicensedProduct">
+                                <div class="form-group mb-auto mr-2" data-ng-show="configuredSmsProviders.length > 0 && searchLoaded">
+                                    <form class="form-inline">
+                                        <div class="element-search">
+                                            <input class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched action-search-container" id="searchInput" type="text" placeholder="{{ :: 'search-sms-prov-placeholder' | translate}}"  ng-model="search" onkeydown="if (event.keyCode === 13) document.getElementById('socialConnectionsSearch').click()">
+                                            <i class="os-icon os-icon-search2 search-icon" id="socialConnectionsSearch" data-ng-click="changeSearchKey(search)"></i>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div ng-hide="(smsProviderType === 'default' && whatsappProviderType === 'default' && offering === 'CLOUD') || unlicensedProduct" ng-if="searchLoaded">
+                                <!-- <div class="mt-4" data-ng-if="configuredSmsProviders.length > 0 && !searchKey" ng-class="{divdisabled : !realm.enabledOwnSmsProvider && realm.realm != 'master'}"> -->
+                                <div class="mt-4" data-ng-if="configuredSmsProviders.length > 0 && !searchKey" ng-class="{divdisabled : offering==='ONPREMISE' && !realm.enabledOwnSmsProvider && realm.realm !== rootAccountName}">
+                                    <div class="element-box-tp">
+                                        <div class="table-responsive-md">
+                                            <table class="table table-padded">
+                                                <thead> </thead>
+                                                <tbody class="p-3">
+                                                    <tr ng-repeat="connection in configuredSmsProviders" class="fadeUp" data-ng-hide="(connection.id ==='whatsapp' && whatsappProviderType === 'default') || (connection.id !== 'whatsapp' && smsProviderType === 'default')">
+                                                        <td class="cursor-pointer" id="sms-provider-{{connection.displayName.toLowerCase().replaceAll(' ','-')}}" kc-open="/realms/{{realm.realm}}/sms/providers/settings/{{connection.id}}">
+                                                            <div class="conn-with-logo">
+                                                                <div class="social-conn-logo-container">
+                                                                    <img alt="{{connection.displayName}}" data-ng-src="{{resourceUrl}}/themes/img/{{connection.logo}}">
+                                                                </div>
+                                                                <div>
+                                                                    <a class="text-decoration-none header-text-primary" href="#/realms/{{realm.realm}}/sms/providers/settings/{{connection.id}}">
+                                                                        {{connection.displayName}}
+                                                                    </a>
+                                                                </div>
+                                                            </div> 
+                                                        </td>
+                                                        <td class="nowrap text-center">
+                                                            <div class="info-card-state bg-success small"><div class="info-state-circle"></div>{{:: 'enabled-txt' | translate}}</div>
+                                                        </td> 
+                                                        <td class="row-actions">
+                                                            <a kc-open="/realms/{{realm.realm}}/sms/providers/settings/{{connection.id}}" id="{{connection.displayName.toLowerCase().replaceAll(' ','-')}}-editIcon" >
+                                                                <i class="os-icon os-icon-ui-49" tooltip="{{:: 'edit' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                                            </a>
+                                                            <a class="danger" data-ng-click="remove(connection.id)" id="{{connection.displayName.toLowerCase().replaceAll(' ','-')}}-deleteIcon">
+                                                                <i class="os-icon os-icon-ui-15" tooltip="{{:: 'tooltip-delete-label' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--For search results-->
+                                <div class="mt-4" data-ng-if="configuredSmsProviders.length > 0 && searchKey && findConfigured(searchKey)">
+                                    <div class="element-box-tp">
+                                        <div class="table-responsive-md">
+                                            <table class="table table-padded">
+                                                <thead> </thead>
+                                                <tbody class="p-3">
+                                                    <tr ng-repeat="connection in configuredSmsProviders | filter:{'displayName':searchKey}" class="fadeUp"> 
+                                                        <td class="cursor-pointer" id="sms-provider-{{connection.displayName.toLowerCase().replaceAll(' ','-')}}" kc-open="/realms/{{realm.realm}}/sms/providers/settings/{{connection.id}}">
+                                                            <div class="conn-with-logo">
+                                                                <div class="social-conn-logo-container">
+                                                                    <img alt="{{connection.displayName}}" data-ng-src="{{resourceUrl}}/themes/img/{{connection.logo}}">
+                                                                </div>
+                                                                <div>
+                                                                    <a class="text-decoration-none" href="#/realms/{{realm.realm}}/sms/providers/settings/{{connection.id}}">
+                                                                        {{connection.displayName}}
+                                                                    </a>
+                                                                </div>
+                                                            </div> 
+                                                        </td>
+                                                        <td class="nowrap text-center">
+                                                            <div class="info-card-state bg-success small"><div class="info-state-circle"></div>{{:: 'enabled-txt' | translate}}</div>
+                                                        </td> 
+                                                        <td class="row-actions">
+                                                            <a kc-open="/realms/{{realm.realm}}/sms/providers/settings/{{connection.id}}" id="{{connection.displayName.toLowerCase().replaceAll(' ','-')}}-editIcon">
+                                                                <i class="os-icon os-icon-ui-49" tooltip="{{:: 'edit' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                                            </a>
+                                                            <a class="danger" data-ng-click="remove(connection.id)" id="{{connection.displayName.toLowerCase().replaceAll(' ','-')}}-deleteIcon">
+                                                                <i class="os-icon os-icon-ui-15" tooltip="{{:: 'tooltip-delete-label' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="element-box element-box-medium top-align" ng-show="searchKey && !findConfigured(searchKey)">
+                                    <div class="no-entry-svg">
+                                        <div class="no-entry-display text-center">
+                                            <i class="os-icon os-icon-mail-07 opacity-40 no-entry-icon"></i>
+                                        </div>
+                                        <p class="no-results-msg no-entry-display mt-2">{{:: 'no-sms-conn-found' | translate}}</p>
+                                        <button class="create-btn no-entry-display cursor-pointer" id="clearSearchBtn" data-ng-click="clearSearch()">
+                                            <i class="os-icon os-icon-close mr-2"></i>
+                                            {{ ::  'clear-search' | translate}}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="element-box mt-4" data-ng-if="!configuredSmsProviders.length">
+                                    <div class="no-policy-img" data-step='{{configuredSmsProviders.length === 0 ? 1 : 0}}' data-title="{{:: 'intro-no-sms-connections-found-title' | translate}}" data-intro="{{:: 'intro-no-sms-connections-found' | translate}}">
+                                        <img data-ng-src="{{resourceUrl}}/themes/img/sms.svg"  alt="no-policy-img" class="opacity-40 no-entry-display"/>
+                                        <p class="no-results-msg no-entry-display">{{:: 'no-sms-conn-configured' | translate}}</p>
+                                        <a class="text-decoration-none" href="#/realms/{{realm.realm}}/sms/providers/create">
+                                            <button class="create-btn no-entry-display" id="addSmsProviderBtn">
+                                                <i class="os-icon os-icon-plus plus-icon"></i>
+                                                {{:: 'create-sms-conn-btn' | translate}}
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SMS default section -->
+                            <div class="element-box mt-4" ng-if="smsProviderType === 'default' && whatsappProviderType === 'default' && offering === 'CLOUD'">
+                                <div class="no-policy-img">
+                                    <img data-ng-src="{{resourceUrl}}/themes/img/sms.svg"  alt="no-policy-img" class="opacity-40 no-entry-display"/>
+                                    <p class="no-results-msg no-entry-display"> <b> {{ :: 'no-custom-sms-provider' | translate }} </b> </p>
+                                    <p class="no-results-msg no-entry-display"> {{ :: 'upgrade-custom-sms' | translate }} </p>
+                                    <a class="create-btn no-entry-display" id="upgradeBtn" data-ng-if="userCanUpdate" href="#/realms/{{realm.realm}}/realm-subscription/update-plan">
+                                        {{ :: 'upgrade-now' | translate }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-4" ng-if="!(searchLoaded)">
+                            <kc-loader loadertype="loaderTypeName" ></kc-loader>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

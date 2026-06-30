@@ -1,0 +1,12 @@
+[
+    {
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.ezto.verify.flutter.internal",
+        "sha256_cert_fingerprints": [
+          "83:E3:76:04:CC:25:D5:74:9E:32:7F:61:73:0C:AC:44:6E:B6:EE:38:1F:E3:BB:27:91:40:06:06:E3:97:26:35"
+        ]
+      }
+    }
+  ]

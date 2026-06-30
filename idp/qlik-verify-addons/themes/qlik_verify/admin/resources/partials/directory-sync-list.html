@@ -1,0 +1,77 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li> 
+                    <a href="#/realms/{{realm.realm}}/users/directory-sync/connections/{{currentProvider.id}}" id="backToUserSync">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{::'directorySyncBackToConnections' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="role-list-container">
+                            <h1 class="user-list-heading">{{::'directorySyncTitle' | translate}}</h1>
+                        </div>
+                        <br>   
+                        <div class="card-striped row cards-list market-card-list mr-0 ml-0" data-ng-if="(directoryProviders.length > 0 && !searchKey)">
+                            <div class="project-box ng-scope social-card-container info-card mt-0" id="social-conn-{{connection}}" ng-repeat="connection in directoryProviders" data-step=' {{ $index === 0 ? 1 : 0 }} ' data-title="{{:: 'intro-social-connection-title' | translate}}" data-intro="{{:: 'intro-social-connection-desc' | translate}}">
+                                <div class="social-card-info" data-ng-click="save(connection)" id="{{connection}}-block" >
+                                    <div>
+                                        <div class="social-card-header">
+                                            <div class="social-card-logo">
+                                                <img class="social-card-img" data-ng-src="{{resourceUrl}}/themes/img/social-icons/{{connection}}_logo.png" alt="{{connection}}_logo">
+                                            </div>
+                                            <div class="market-title-container">
+                                                <div class="market-title">
+                                                    <h6 class="mb-1">{{ :: connection +'_name' | translate }} </h6>
+                                                    <p class="helper-text mt-0">User Directory</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="market-desc-container">
+                                            <p class="market-desc"> {{ :: connection +'_desc' | translate }}</p>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div> 
+                        </div>
+
+                        <div data-ng-if="directoryProviders.length > 0 && searchKey" class="card-striped row cards-list market-card-list mr-0 ml-0">
+                            <div class="project-box ng-scope social-card-container info-card mt-0" id="social-conn-{{connection}}" ng-repeat="connection in directoryProviders">
+                                <div class="social-card-info" data-ng-click="save()">
+                                    <div>
+                                        <div class="social-card-header">
+                                            <div class="social-card-logo">
+                                                <img class="social-card-img" data-ng-src="{{resourceUrl}}/themes/img/social-icons/{{connection}}_logo.png" alt="{{connection}}_logo">
+                                            </div>
+                                            <div class="market-title-container">
+                                                <div class="market-title">
+                                                <h6 class="mb-1">{{connection}} </h6>
+                                                <p class="helper-text mt-0">{{ :: 'social-conn-category-title' | translate }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="market-desc-container">
+                                            <p class="market-desc"> {{ :: connection +'-social-conn-desc' | translate }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="element-box element-box-medium top-align" ng-show="directoryProviders.length == 0">
+                            <div class="no-entry-svg">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/social-icons/no-social-conn.svg" alt="no-social-conn-img" class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display mt-2 col-md-5">{{:: 'no-user-sync-found' | translate}}</p> 
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

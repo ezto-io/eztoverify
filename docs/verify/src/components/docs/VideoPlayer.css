@@ -1,0 +1,9 @@
+.video-player {
+    width: 100%;
+}
+
+.video-player video {
+    width: 80%;
+    border-radius: 5px;
+    border: 1px solid silver;
+}

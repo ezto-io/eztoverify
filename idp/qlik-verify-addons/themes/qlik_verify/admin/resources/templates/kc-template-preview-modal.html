@@ -1,0 +1,47 @@
+<div class="modal-header">
+    <div class="template-preview-header-wrapper">
+        <div class="text-primary h5 mb-0 template-preveiw-header">{{selectedTemplateName}}</div>
+        <small data-ng-if="templatesLength > 0 && (!selectedTransactionFlow || !selectedTransactionFlow.length)">{{:: templateFlows[0].id | translate}}</small>
+        <small data-ng-show="templatesLength > 0">{{selectedTransactionFlow}}</small>
+    </div>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body mr-2">
+    <div class="d-flex justify-content-between align-items-center mb-5 template-preview-gif-bg rounded border" data-ng-show="templateFlows[0].error && templatesLength > 0">
+        <div class="w-100">
+            <h6 class="px-5 h5 font-weight-normal text-center">{{:: templateFlows[0].error | translate}}</h6>
+        </div>
+    </div>
+    <div class="row mb-5" data-ng-show="templatesLength > 0 && !templateFlows[0].error">
+        <div class="col-lg-4 template-preview-sidebar-wrapper">
+            <div class="border rounded template-preview-sidebar">
+                <div id="sidebar-{{template.id}}" data-ng-repeat="template in templateFlows track by $index">
+                    <div class="p-3 m-2 rounded cursor-pointer template-sidebar-card {{ (template.id === selectedTemplateId && !currentTemplate.subFlow)? 'template-sidebar-card-active' : 'template-sidebar-card' }}" data-ng-click="setCurrentTemplate(template, $index, template.subFlow ? 0 : -1 , template)">
+                        {{:: template.id | translate}}
+                    </div>
+                    <div data-ng-show="currentTemplate.id === template.id && currentTemplate.subFlow" data-ng-repeat="subTemplate in currentTemplate.subFlow track by $index"  class="ml-4 mr-2 my-0 p-3 cursor-pointer {{ subTemplate.id === selectedTemplateId ? 'template-sidebar-card-active' : 'template-sidebar-subcard' }}" data-ng-click="setCurrentTemplate(subTemplate, $parent.$index, $index, template)">
+                        {{:: subTemplate.id | translate}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8 d-flex justify-content-between align-items-center template-preview-gif-bg rounded border text-center">
+            <span class="ti-angle-left cursor-pointer template-preview-previous-btn p-2 {{isRTL && 'rotate-180'}}" data-ng-show="(currentIndex > 0 || currentIndex == 0 && childIndex > 0) && templatesLength != 1" data-ng-click="changePrev()"></span>  
+            <span class="p-2" data-ng-show="currentIndex == 0"></span>  
+            <img ng-src="{{templateFlows[currentIndex].gifUrl}}" data-ng-show="childIndex == -1" alt="{{selectedTransactionFlow.replaceAll(' ','-')}}-not-found" class="template-preview-gif" >  
+            <img ng-src="{{templateFlows[currentIndex].subFlow[childIndex].gifUrl}}" data-ng-show="childIndex != -1" alt="{{selectedTransactionFlow.replaceAll(' ','-')}}-not-found" class="template-preview-gif" >  
+            <span class="p-2" data-ng-show="templatesLength == currentIndex+1"></span>
+            <span class="ti-angle-right cursor-pointer template-preview-next-btn p-2 {{isRTL && 'rotate-180'}}" data-ng-show="templatesLength > currentIndex+1 && templatesLength != 1" data-ng-click="changeNext()"></span>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-5 template-preview-gif-bg rounded border" data-ng-show="templatesLength == 0">
+        <div class="w-100">
+            <h6 class="px-5 h5 font-weight-normal text-center" ng-if = !isSubWorkflow>{{:: 'empty-template' | translate}}</h6>
+            <h6 class="px-5 h5 font-weight-normal text-center" ng-if = isSubWorkflow>{{:: 'empty-sub-workflow' | translate}}</h6>
+            <p class="px-5 h6 font-weight-normal text-center" ng-if = !isSubWorkflow>{{:: 'add-template' | translate}}</p>
+            <p class="px-5 h6 font-weight-normal text-center" ng-if = isSubWorkflow>{{:: 'add-subworkflow-template' | translate}}</p>
+        </div>
+    </div>
+</div>

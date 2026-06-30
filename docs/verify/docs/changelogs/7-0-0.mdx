@@ -1,0 +1,49 @@
+---
+id: "7.0.0"
+title: "7.0.0"
+sidebar_label: "7.0.0"
+---
+
+import GifPlayer from "@site/src/components/changelogs/GifPlayer";
+
+### New Features
+
+- We've added **Arabic** language support in the **Workspace,** making it easier to switch the locale for users who prefer interacting in **Arabic**.
+
+ <GifPlayer name="7.0.0/english-to-arabic"/>
+
+- Introducing **deep-linking** functionality for our applications. So now, when you click on the link, it'll take you straight to the app if you already have it installed. And if not, it will redirect you to the appropriate app store for download.
+
+ <GifPlayer name="7.0.0/deeplinking"/>
+
+- We have also added an option to **duplicate** any created application, streamlining the process of creating similar applications based on the existing ones.
+
+### Improvements 
+
+- **Access keys** for management APIs are now conveniently managed at the workspace level, ensuring better security and easier access.
+
+ <GifPlayer name="7.0.0/device-management-api"/>
+
+- We've given the UI and API for the **Liveness** workflow a makeover. It's smoother now, making it easier to verify user identities.
+
+- We've made a helpful improvement in the workflow module, where there's a **"VISUALIZE"** button that allows you to see the flow of your chosen workflow module. Additionally, we've made it easier to understand each workflow module by adding an "info" tab in the side panel settings. This tab includes a brief description and a video explaining how the selected workflow works, providing you with a clearer understanding of your workflows.
+
+- Made several enhancements to the **Terms and Conditions** feature, including the ability to upload PDF documents (which can be downloaded if needed), a series of images, and links. Additionally, a text editor has been added to allow you to provide your own content.
+
+- Replaced the terminology **"Authentication"** for **"Verification"** throughout the Workspace, making it easier to understand.
+
+- We've removed support for **Vonage** and **Retaurus** from our SMS providers, simplifying your options.
+
+### Bug Fixes
+
+- We have fixed an issue in the **Audit** logs, where the logs related to `NOTIFICATION` **Event Type** were not printed.
+
+- Resolved an issue where the **Get Result API** for the **Verify Email** workflow did not display the default claims.
+
+- We fixed an issue where, if you selected **Push** or **Ping** for the **Hook** type and entered an incorrect **Hook** URL and threshold value, the hook failure email wasn't being sent after the transaction.
+
+- We fixed an issue where creating an application with a duplicate name did not trigger the appropriate error message. Now, you'll see the correct error message if you try to create an application with the same name twice.
+
+- There was an issue where the email notification for audit report generation wasn't being sent. This has been fixed, so you'll now receive the report generation email as expected.
+
+- Addressed improper error messages that were displayed when making changes to an application.

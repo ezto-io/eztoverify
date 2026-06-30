@@ -1,0 +1,112 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row" data-ng-show="loaded">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <h3 class="element-header">
+                            {{ :: 'realm-tab-security-defenses' | translate }}
+                        </h3>
+                        <kc-tabs-securitydefenses></kc-tabs-securitydefenses>
+                        <div class="element-box py-5 black-list">
+                            <form onkeydown="return event.key != 'Enter';" class="form-horizontal" name="realmForm"
+                                novalidate autocomplete="off">
+                                <div class="form-buttons-w border-top-0" data-ng-show="access.manageRealm">
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="control-label">
+                                                {{ :: isEnabled.label | translate}}
+                                            </label>
+                                            <kc-tooltip>
+                                                {{:: isEnabled.helpText | translate}}
+                                            </kc-tooltip>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>
+                                                <div class="os-toggler-w" ng-class="{on: isEnabled.defaultValue}">
+                                                    <div class="os-toggler-i" id="enabled-toggle">
+                                                        <div class="os-toggler-pill"
+                                                            data-ng-model="isEnabled.defaultValue"
+                                                            name="{{isEnabled.name}}" id="{{isEnabled.name}}"
+                                                            onoffswitch>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" ng-repeat="list in blackListArray track by $index"
+                                        ng-if="isEnabled.defaultValue && list.type === 'String'">
+                                        <div class="col-md-6">
+                                            <label class="control-label">
+                                                {{ :: list.label | translate}}
+                                            </label>
+                                            <kc-tooltip>{{ :: list.helpText | translate}}</kc-tooltip>
+                                        </div>
+                                        <div class="col-md-6 d-flex flex-column position-relative h-6rem">
+                                            <input class="form-control h-3rem" id="{{list.label}}"
+                                                ng-if="blackList[$index].name !== 'phone'"
+                                                data-ng-model="blackList[$index].newValue" autocomplete="off"
+                                                type="{{blackList[$index].name === 'phone' ? 'number' : 'text'}}"
+                                                placeholder="{{:: list.label+'-placeholder' | translate}}"
+                                                ng-keydown="handleEnter($event, $index)"
+                                                ng-keypress="handleKeyPress($event, blackList[$index].name)" />
+                                            <input class="form-control h-3rem"
+                                                ng-if="blackList[$index].name === 'phone'"
+                                                id="mobileNum"
+                                                data-ng-model="blackList[$index].newValue" autocomplete="off"
+                                                placeholder="{{:: list.label+'-placeholder' | translate}}"
+                                                ng-keydown="handleEnter($event, $index)"
+                                                ng-keypress="handleKeyPress($event, blackList[$index].name)" 
+                                                ng-init="telInit()"
+                                               /> 
+                                            <input ng-if="blackList[$index].name === 'phone'" type="hidden"
+                                                name="region" id="region" />
+                                            <div ng-show="list.defaultValue.length > 0"
+                                                class="multi-select position-absolute" ng-init="index = $index"
+                                                ng-class="{'move-multi-select' : list.name === selectedInput}"
+                                                ng-click="setSelectedInput(list.name)">
+                                                <div ng-show="list.defaultValue && list.defaultValue.length !== 0 && $index <= checkValueLen(list.defaultValue).maxIndex"
+                                                    class="multi-select-label"
+                                                    ng-repeat="value in list.defaultValue track by $index">
+                                                    <label>{{blackList[index].name === 'phone' ? '+' : ''}}{{value}}</label>
+                                                    <button ng-click="removeValue(index, value)"><span
+                                                            class="os-icon os-icon-close"></span></button>
+                                                </div>
+                                                <div ng-show="checkValueLen(list.defaultValue).showMore" class="cursor-pointer"
+                                                    ng-click="openModal(list, index)"><span
+                                                        class="text-primary"> {{:: 'black-list-more' | translate}}</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 d-flex flex-row-reverse pr-0">
+                                    <button class="ml-3" id="saveBtn" kc-save data-ng-disabled="!changed">
+                                        {{:: 'save' | translate}}
+                                    </button>
+                                    <button id="cancelBtn" kc-reset data-ng-disabled="!changed">
+                                        {{:: 'cancel' | translate}}
+                                    </button>
+                                </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <script type="text/javascript">
+   const telInit = () =>
+    $(document).ready(function(){
+        var input = document.querySelector("#mobileNum");
+        console.log(input)
+        var iti = window.intlTelInput(input, {
+            initialCountry: "in",
+            utilsScript: "${resourceUrl}/themes/bower_components/tele-input/utils.js",
+            separateDialCode: false
+        });
+    });
+</script> -->

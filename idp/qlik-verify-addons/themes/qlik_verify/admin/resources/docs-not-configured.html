@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Documentation not configured</title>
+  <style>
+    :root { --fg:#1c2434; --muted:#5b6577; --line:#e3e7ef; --accent:#2f6df6; --bg:#f4f6fb; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: var(--bg); color: var(--fg);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 24px;
+    }
+    .card {
+      background: #fff; max-width: 640px; width: 100%; border: 1px solid var(--line);
+      border-radius: 14px; padding: 40px; box-shadow: 0 8px 30px rgba(28,36,52,.06);
+    }
+    .logo { height: 36px; margin-bottom: 24px; }
+    h1 { font-size: 22px; margin: 0 0 12px; }
+    p { line-height: 1.6; color: var(--muted); margin: 0 0 16px; }
+    code, pre {
+      font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 13px;
+      background: #f0f3f9; color: var(--fg); border-radius: 6px;
+    }
+    code { padding: 2px 6px; }
+    pre { padding: 14px 16px; overflow-x: auto; border: 1px solid var(--line); margin: 0 0 16px; }
+    ol { color: var(--muted); line-height: 1.7; padding-left: 20px; margin: 0 0 8px; }
+    li { margin-bottom: 10px; }
+    .hint { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; margin-top: 24px; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="themes/img/logo.svg" alt="ezto Verify" onerror="this.style.display='none'">
+    <h1>Documentation isn't configured for this instance</h1>
+    <p>
+      This is a self-hosted ezto&nbsp;Verify deployment and no documentation URL has been set,
+      so there is nowhere to send you. An administrator can point the <strong>Docs</strong> link
+      at your own documentation.
+    </p>
+
+    <ol>
+      <li>
+        Set the <code>DOCS_URL</code> environment variable on the IdP to your hosted docs, then
+        restart it:
+        <pre>DOCS_URL=https://docs.your-domain.com</pre>
+      </li>
+      <li>
+        Don't host docs yet? The full documentation source ships with the platform under
+        <code>docs/verify</code> (a Docusaurus site). Build and serve it, then point
+        <code>DOCS_URL</code> at the result.
+      </li>
+    </ol>
+
+    <p class="hint">
+      Once <code>DOCS_URL</code> is set, the <strong>Docs</strong> link opens it directly and this
+      page is no longer shown.
+    </p>
+  </div>
+</body>
+</html>

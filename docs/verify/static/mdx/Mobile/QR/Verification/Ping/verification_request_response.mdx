@@ -1,0 +1,22 @@
+```json title='Sample request Body'
+{
+  "qr": "data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAgAAAAIAAQAAAADcA+lXAAAFmElEQVR4Xu2ZMZLcRgxFe2oDhXsEHoVHI482R+ERFE7gmjbeB0hJplUu28Ei+AhETbPxNgDwG2iO+T9t/HXh35oBBmAGGIAZYABmgAGYAQZgBhiAGdAJMGTbe4zPY53zj/E5n+MxXzzeH3Nq8duMX/EOexjQEKDfz+0Rb5c5w+X7kEs8dj1G7HwFnF+XgwHdAHg+N4K8zP09vs2DWL9iUSEPzwE1OMJtBjQG1DKAOXHB8/3xEvWDV5UVBnQGSJVVuYNNsUjkEee5P8JzMaA3gH+eW2yPvanKUc55nEZWfM+qxnP+RpUNaAAg3oo8e//hoa0GdASUUc4R+WxncSEPMvKh0dEjjauOywzoBMCBko1YR4+bj2iVxOGxMLggzpMHHa8BDQGKPMuKNQvxiMhDKBeJc3ioY7qpsgEdAPpNHuCB8kZVb9ncqsYP6lhwUe95YEAHAA3sMlXHVC6Ycy+lLkDVOHnwvPwM6ATIylXka+/C/KJTFZeRNa7k0PxiQEeA7l+jD6JHmggwFwdcA3HU5pZU5bxUuLe6BnQAyFSkJEBmRZiKe5AOzy3fsUpxnz4GdAI8eKs+lsiXqXIDp6yYOnjXGlGvP2xAJwCHayzrVF13bVnrxFWPK+rVBk/9RZkBrQC8xZNvI1t4pvLSDm36NrIGTor9W1U24OsBg+FSPRJVXZWbecDEAqeKm/ll3nskAzoAptqhfWDr2dxyxoYnY+iRvwbzp85YAzoCski3/LET62PNiXPduSIKF00zK8mho9aAhgAJMBzEWW8Pjlr1uDW4qPHNneOuygZ0AOjkfG5UdYRcBbxKlaO4s5yVB6cq38vZgA6An2NN5M88oDnKOoZDquj8NaAn4Gpgz9sg9l79b6pySrXS4YcZ0AmgOp57JICGEzg0R5pf1ByJAwDh5p0BHQHMKGE6XBkukeNcGnBCh1XVgRvkyH76GdAJkMuq6ivIe3rWxEKp46lUOZtiA+R4Pr8ckFPJjxlTeaD7g2iclCPbOarkFZ8BHQEo7xKtUoY8XD5ZHOTBQLFDqqGwRcJNOhjQDjBVpKNqtSZOXOLX41TsS5V1/hrQD0ABL5OqJgFUuTpVWZSnIk8CvItqQEvAq6YSSjZvfLS3FhX56nFV3KcZ0AowdHLyGSRCzsqhroijNlV5B0OPpMaJwjegHwBPCTCHK4/Jt62JOKPRscj9z6B/YufpZ0ArANE9lXcwf2bI1fhWyKvHzTy4qbIBLQBTqowtU4frzL0Hx+lPd7O58z6xGNABoOEyNp2VGzpMAry4op1nc6SOiS1/o8oGdACogHPGXJ4bLhFrnbg1hp7vBI93BnQESIDXqcHlqeZ2uRaVHHVFu56qXH4G9AIQ+SvWObFgeZsgzzefSKLGs/BPM6ATQFqLabjMHnfocJVGM8agysoDODdVNqADoAT4DHKWbDVOwcn+F6omlknGGNARgADvhJw8YL8ql8W6zdMaBm4zoCNAnU9FflKyJED2v8hxJkde2P5qBnQClOWMIo0+Vv3iOJ3kgSp+1sT5vKlymQFfCshzdJPyTlSZczTCLwHO41T3B8LpY7QBDQGxlzr+pVUaanwnMyaNb3qOOoYN6AiQpSorAXT/Wmcsip0PDl6tZY0b0BKgqtbEmQVMjUc6DL6NaFS5suKuymUGfCmA2A5UWXVc6YA4I8C0SlnASSVHys+AVgCFlSMzO94Mec2fdeKSDsspzrdyNqAFABf2vvRRhHJetRhWEwuqfOT8uZSXAT0BpcqKfPRIANbaoaN20TQj4S4zoCMg/nvoHCUPVM7qfyXOVeqXr8yAVgD+IQ8YNaXDR42aUcBZ4/S/kQr6G2MzoCNgyDaNKs+RJVtXtKMSgKw46JG41NsN6Aj4z2aAAZgBBmAGGIAZYABmgAGYAQZgBhiA/QmlBw44nqLQXgAAAABJRU5ErkJggg==",
+  "auth_req_id": "Will receive in Notification endpoint",
+  "result_delivery_mode": "hook@ping",
+  "user_id": "e3810c95-8a07-4adc-a890-5d1f6804999a",
+  "success": true,
+  "token_access_details": {
+    "content_type": "application/x-www-form-urlencoded",
+    "body": {
+      "auth_req_id": "Will receive in Notification endpoint",
+      "notification_way": "plaintext",
+      "app_id": "aa8bf68d-53ed-4240-994c-7cd9bf9a0e8c",
+      "app_secret": "Take from dashboard or request your admin to provide"
+    },
+    "request_id": "POST",
+    "token_endpoint": "https://sample.eztovrfy.com/auth/realms/sample/protocol/openid-connect/transaction/result"
+  },
+  "request_id": "d30be358-6cf4-49bb-a60c-cc85e7092961",
+  "expires_in": 1708765570
+}
+ ```

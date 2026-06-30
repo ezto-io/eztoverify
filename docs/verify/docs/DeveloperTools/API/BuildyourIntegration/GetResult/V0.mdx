@@ -1,0 +1,158 @@
+---
+id: "v0"
+title: "Get Result"
+description: "Get Result"
+sidebar_label: "V0"
+hide_title: true
+hide_table_of_contents: true
+api:
+  {
+    "tags": ["Result > API Builder"],
+    "requestBody":
+      {
+        "content":
+          {
+            "application/x-www-form-urlencoded":
+              {
+                "schema":
+                  {
+                    "type":"object",
+                    "properties":
+                      {
+                        "app_id": { "type": "string" },
+                        "app_secret": { "type": "string" },
+                        "request": { "type": "json" },
+                      },
+                    "example":
+                      {
+                        "app_id": "{{app_id}}",
+                        "app_secret": "{{app_secret}}",
+                        "request": "{{request}}",
+                      },
+                  },
+              },
+          },
+      },
+    "parameters":
+      [
+        {
+          "name": "workspaceName",
+          "in": "path",
+          "schema": { "type": "string" },
+          "required": true,
+        },
+      ],
+    "jsonRequestBodyExample":
+      {
+        "app_id": "{{app_id}}",
+        "app_secret": "{{app_secret}}",
+        "request": "{{request}}",
+      },
+
+    "method": "post",
+    "path": "/auth/realms/{workspaceName}/protocol/openid-connect/transaction/result",
+    "servers": [{ "url": "https://{{base_url}}" }],
+    "postman":
+      {
+        "name": "Authentication Url",
+        "description": { "type": "text/plain" },
+        "url":
+          {
+            "path":
+              [
+                "auth",
+                "realms",
+                "{{workspaceName}}",,
+                "protocol",
+                "openid-connect",
+                "transaction",
+                "result"
+              ],
+            "query": [],
+            "variable":
+              [
+                {
+                  "disabled": false,
+                  "description":
+                    { "content": "(Required) ", "type": "text/plain" },
+                  "type": "any",
+                  "value": "",
+                  "key": "workspaceName",
+                },
+              ],
+          },
+        "method": "POST",
+        "body":
+          {
+            "mode": "urlencoded",
+            "urlencoded":[],
+          },
+      },
+  }
+sidebar_class_name: "get api-method"
+
+---
+
+import ApiProps from "@site/src/components/docs/ApiProps";
+import request from "@site/src/components/api/getResult/request";
+import APIWrapper from "@site/src/components/api/APIWrapper";
+import response from "@site/src/components/api/getResult/response";
+import APIVersion from "@site/src/components/api/APIVersion";
+import APIBodyChanger from "@site/src/components/api/APIBodyChanger";
+
+
+<APIBodyChanger version={0} type="result"/>
+<APIVersion version={0} link2="/verify/docs/DeveloperTools/API/BuildyourIntegration/GetResult/v1/"  title="Building your Integration" />
+
+The **GET Result API** provides an overview of the verification process, delivering the results of the verification performed by the user.
+
+<APIWrapper apiType="result" />
+
+<div id="http-status-code-summary">
+
+<table>
+   <thead>
+      <tr>
+         <th align="left" colSpan="3">HTTP STATUS CODE SUMMARY</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td align="left">200</td>
+         <td align="left">OK</td>
+         <td align="left">Everything worked as expected.</td>
+      </tr>
+      <tr>
+         <td align="left">400</td>
+         <td align="left">Bad Request</td>
+         <td align="left">The request was unacceptable, often due to missing a required parameter.</td>
+      </tr>
+      <tr>
+         <td align="left">401</td>
+         <td align="left">Unauthorized</td>
+         <td align="left">No valid App secret or App ID provided.</td>
+      </tr>
+      <tr>
+         <td align="left">402</td>
+         <td align="left">Request Failed</td>
+         <td align="left">The parameters were valid but the request failed.</td>
+      </tr>
+      <tr>
+         <td align="left">403</td>
+         <td align="left">Forbidden</td>
+         <td align="left">The Application doesn't have permissions to perform the request.</td>
+      </tr>
+      <tr>
+         <td align="left">404</td>
+         <td align="left">Not Found</td>
+         <td align="left">The requested resource doesn't exist.</td>
+      </tr>
+      <tr>
+         <td align="left">500</td>
+         <td align="left">Server Errors</td>
+         <td align="left">Something went wrong on ezto verify's end. (These are rare.)</td>
+      </tr>
+   </tbody>
+</table>
+</div> 
+

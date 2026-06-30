@@ -1,0 +1,12 @@
+<div>
+    <div class="sub-top-bar mb-4">
+        <ul>
+          <li ng-class="{active: !path[5]}" ng-if="">
+            <a href="#/realms/{{realm.realm}}/authentication/flows/{{flow.id}}">{{:: 'realm-tab-general' | translate}}</a>
+          </li>
+          <li ng-class="{active: path[5] == 'flow'}">
+            <a href="#/realms/{{realm.realm}}/authentication/flows/{{flow.id}}/flow">{{:: 'flow' | translate}}</a>
+          </li>
+        </ul>
+    </div>
+  </div>

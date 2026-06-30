@@ -1,0 +1,131 @@
+<kc-menu></kc-menu>
+<div class="position-relative"> 
+  <div class="position-absolute">
+    <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+  </div>
+</div>
+<div class="content-w bo-setting-menu-main-content" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row" data-ng-show="isLoaded">
+                <div class="col-sm-12">
+                    <div class="element-wrapper"> 
+                        <div class="role-list-container border-0">
+                            <h3>
+                                <span>{{:: 'workspace-management' | translate}}</span>
+                                <kc-tooltip>{{:: 'workspace-management.tooltip' | translate}}</kc-tooltip>
+                            </h3>
+                        </div>
+                        <div class="controls-above-table mb-3">
+                            <div class="form-inline justify-content-between" ng-hide="!isLoaded">
+                                <!-- Search Bar -->
+                                <div class="form-group">
+                                    <div class="element-search">
+                                        <input id="realmSearchKey" class="form-control bg-color-transparent searchTerm" type="text"
+                                            placeholder="{{:: 'search-realm-placeholder' | translate}}"
+                                            data-ng-model="searchKey"
+                                            class="form-control form-control-sm rounded bright search"
+                                            onkeydown="if (event.keyCode == 13) document.getElementById('realmSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="realmSearch"
+                                            data-ng-click="searchRealm(searchKey)"></i>
+                                    </div>
+                                </div>
+                                <!-- Pagination Selector -->
+                                <div class="form-control d-flex py-0 px-2 gap-1" data-ng-show="realmcount > 5">
+                                    <label>{{ :: 'list-per-page' | translate}}</label>
+                                    <select data-ng-model="maxValue" ng-change="selectQuery(maxValue)"
+                                        data-ng-options="itemCount for itemCount in [5,10,50,100]" id="providersPageCount"
+                                        class="form-control form-control-sm rounded border-0 apiProvider-select">
+                                        <option data-ng-repeat="itemCount in [5,10,50,100]" data-ng-selected="limit === itemCount"
+                                            data-ng-value="itemCount">
+                                            {{ itemCount }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <kc-loader loadertype="loaderTypeName" ng-show="!isLoaded"></kc-loader>
+                        <div>
+                            <!-- No Access keys with search result -->
+                            <div class="element-box element-box-medium" data-ng-if="searchKey && realmcount <= 0">
+                                <div class="no-entry-svg">
+                                    <img data-ng-src="{{resourceUrl}}/themes/img/no-apps-bo.svg" alt="no-apps-svg"
+                                        class="opacity-40 no-entry-display" />
+                                    <p class="no-results-msg no-entry-display">{{:: 'no-workspace' | translate}}</p>
+                                    <button class="create-btn no-entry-display cursor-pointer" id="clearSearchBtn" data-ng-click="clearSearch()">
+                                        <i class="os-icon os-icon-close mr-2"></i>
+                                        {{ ::  'clear-search' | translate}}
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Workspace List -->
+                            <div class="table-responsive-md clients-list" data-ng-if="realms.length > 0">
+                                <table class="table table-light-bordered table-padded table-layout-fixed w-100" id="realm-table">
+                                    <tbody>
+                                        <tr class="user-row position-relative fadeUp" data-ng-repeat="r in realms" >
+                                            <td class="nowrap w-10 text-center">
+                                                <img height="30" ng-src="{{r.realmLogo ? getImage(r.realmLogo) : resourceUrl+'/themes/img/eztovrfy-logo.svg'+'?version='+serverVersion}}" alt="logo-img">
+                                            </td> 
+                                            <td class="cursor-pointer w-30" id="{{r.name}}" kc-open="/realms/{{realm.realm}}/management/{{r.realm}}">
+                                                <div class="conn-with-logo d-flex align-items-center">
+                                                    <div class="overflow-ellipsis" >
+                                                        <a class="aTagKcOpen" kc-open="/realms/{{realm.realm}}/management/{{r.realm}}">
+                                                            <span class="ml-1" >{{r.displayName}}</span>
+                                                        </a>
+                                                    </div>
+                                                </div> 
+                                            </td>
+                                            <td class="nowrap w-20">
+                                                <div class="d-flex gap-1">
+                                                    <div class="workspace-management-badge d-flex align-items-center px-1 text-white  border-radius-4px w-max {{!r.sandboxMode ? 'live-mode-badge' : 'sandbox-mode-badge'  }}" ng-class="{'bg-danger' : !r.live}">
+                                                        <svg data-ng-if="!r.sandboxMode" xmlns="http://www.w3.org/2000/svg" width="15" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-radio size-3" aria-hidden="true">
+                                                            <path d="M16.247 7.761a6 6 0 0 1 0 8.478"></path><path d="M19.075 4.933a10 10 0 0 1 0 14.134"></path>
+                                                            <path d="M4.925 19.067a10 10 0 0 1 0-14.134"></path><path d="M7.753 16.239a6 6 0 0 1 0-8.478"></path>
+                                                            <circle cx="12" cy="12" r="2"></circle>
+                                                        </svg>
+                                                        <svg data-ng-if="r.sandboxMode" xmlns="http://www.w3.org/2000/svg" width="15" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-box size-3" aria-hidden="true">
+                                                            <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path>
+                                                            <path d="m3.3 7 8.7 5 8.7-5"></path>
+                                                            <path d="M12 22V12"></path>
+                                                        </svg>
+                                                        <span data-ng-if="r.sandboxMode" class="pl-1">{{:: 'sandbox-mode' | translate}}</span>
+                                                        <span data-ng-if="!r.sandboxMode" class="pl-1">{{:: 'live-mode' | translate}}</span>
+                                                    </div>
+                                                </div>
+                                            </td> 
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="d-flex justify-content-between mt-3" ng-show="isLoaded && realmcount > maxValue">
+                                <p class="mt-1">
+                                    {{:: 'showing' | translate}}
+                                    {{presentIndex + 1}} - {{presentIndex + realms.length}} {{:: 'of' | translate}} {{realmcount}} {{:: 'tenants' | translate}}
+                                </p>
+                                <div>
+                                    <button data-ng-click="firstPage()" id="firstPageBtn" class="btn btn-sm btn-outline-primary border-none table-pagination" data-ng-class="query.first === 0 && 'text-muted'" ng-disabled="query.first === 0">
+                                        <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon"></i>
+                                        <span>{{::'first-page' | translate}}</span>
+                                    </button>
+                                    <button data-ng-click="previousPage()" id="previousPageBtn" class="btn btn-sm btn-outline-primary border-none table-pagination" data-ng-class="query.first === 0 && 'text-muted'" ng-disabled="query.first === 0">
+                                        <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon"></i>
+                                        <span>{{:: 'previous' | translate}}</span>
+                                    </button>
+                                    <button id="nextPageBtn" data-ng-click="nextPage()" class="btn btn-sm btn-outline-primary border-none table-pagination pr-0" ng-disabled="(presentIndex + realms.length) === realmcount" data-ng-class="realms.length < query.max && 'text-muted'">
+                                        <span>{{:: 'next' | translate}}</span>
+                                        <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Loader -->
+            <div ng-if="!isLoaded">
+                <kc-loader loadertype="loaderTypeName" ></kc-loader>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

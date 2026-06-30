@@ -1,0 +1,9 @@
+<div class="modal-header">
+	<h5 class="modal-title">{{:: 'object' | translate}</h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body pb-4">
+		<pre ng-bind = "{{object}} | json"></pre>
+</div>

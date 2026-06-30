@@ -1,0 +1,242 @@
+<kc-menu></kc-menu>
+<div class="position-relative">
+  <div class="position-absolute">
+    <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+    <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon" data-ng-click="toggleSideBarShow()">
+      <div id="setting-icon h1">
+        <i class="ti-angle-right cursor-pointer"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content-w bo-setting-menu-main-content mt-3">
+  <div class="content-i">
+    <div class="content-box">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="element-wrapper">
+            <!-- <kc-tabs-realm data-ng-if="realm.mode !== 'bo'"></kc-tabs-realm> -->
+            <div class="element-box py-5"
+              data-ng-if="specialAttributes.length > 0 && !loading && !special.hideTab && special.tabName.replaceAll(' ','-').toLowerCase() === path[3]"
+              data-ng-repeat="special in specialAttributes"
+              data-ng-hide="!isAccountCreator && (special.tabName==='DESKTOP APPS' || special.tabName==='MOBILE APPS')"
+              >
+              <form class="form-horizontal" name="realmForm" novalidate>
+                <div>
+                  <!-- <h6 class="mb-4" data-ng-if="special.tabName">{{:: special.tabName | translate}}</h6> -->
+                  <div ng-if="!special.underTrial && attributes.showInSubTenant" class="form-group row"
+                    data-ng-repeat="attributes in special.attributes | orderBy : 'order'">
+                    <div ng-show="special.tabName === 'SUPPORT'" class="row col-12">
+                      <label class="col-md-6 control-label" for="support-toggle"
+                      ng-hide="special.tabName === 'SUPPORT' && !useCustomSupport && !attributes.toggle">
+                        {{:: attributes.label | translate}}
+                        <kc-tooltip data-ng-if="attributes.helpText">{{:: attributes.helpText | translate}}</kc-tooltip>
+                      </label>
+                      <div class="col-md-6 d-flex align-items-center justify-content-between" ng-if="attributes.toggle">
+                        <label >
+                          <div class="os-toggler-w" ng-class="{on: attributes.attributeValue}">
+                              <div class="os-toggler-i">
+                                <div class="os-toggler-pill" ng-model="attributes.attributeValue"
+                                data-ng-click="handleToggle(!attributes.attributeValue, attributes.providerId)"
+                                data-ng-init="handleToggle(attributes.attributeValue, attributes.providerId)"
+                                id="support-toggle" name="{{attributes.providerId}}" onoffswitch>
+                               </div>
+                              </div>
+                          </div>
+                        </label>
+                      </div>
+                      <div class="col-md-6"
+                        ng-if="useCustomSupport && special.tabName === 'SUPPORT' && !attributes.toggle">
+                        <div class="workspace-input-group mb-0">
+                          <input class="workspace-input" ng-model="attributes.attributeValue" type="text"
+                            id="{{attributes.providerId}}" name="{{attributes.providerId}}"
+                            data-ng-change="enableSaveButton(attributes.providerId)"
+                            placeholder="{{:: attributes.label+'_placeholder' | translate}}" ng-trim="false" />
+                        </div>
+                      </div>
+                    </div>
+                    <div ng-show="special.tabName !== 'SUPPORT'" class="row col-12">
+                      <label class="col-md-3 control-label" for="{{attributes.providerId}}"
+                        ng-hide="special.tabName === 'SUPPORT' && !attributes.toggle">
+                        {{:: attributes.label | translate}}
+                      </label>
+                      <div class="col-md-9" ng-show="!attributes.toggle  && special.tabName !== 'SUPPORT'">
+                        <div class="workspace-input-group"
+                          data-ng-class="!attributes.canBeUpdated && 'workspace-input-disabled'">
+                          <textarea is="highlighted-code" cols="75" rows="12" language="json" tab-size="2"
+                            data-ng-if="attributes.json" class="workspace-input hide-scroll-bar px-1 py-2"
+                            ng-blur="prettyShow(special.tabName, attributes.providerId, attributes.json)"
+                            ng-model="attributes.attributeValue" data-ng-readonly="!attributes.canBeUpdated"
+                            id="{{attributes.providerId}}" name="{{attributes.providerId}}"
+                            data-ng-change="enableSaveButton(attributes.providerId)" ng-trim="false">
+                        </textarea>
+                          <input data-ng-if="!attributes.json" class="workspace-input"
+                            ng-model="attributes.attributeValue" type="{{attributes.secret ? 'password' : 'text'}}"
+                            data-ng-readonly="!attributes.canBeUpdated" id="{{attributes.providerId}}"
+                            name="{{attributes.providerId}}" data-ng-change="enableSaveButton(attributes.providerId)"
+                            ng-trim="false" />
+                          <div class="workspace-actions-container">
+                            <button class="icon-holder-btn" id="{{attributes.providerId}}-eyeIcon"
+                              data-ng-if="attributes.secret" data-ng-click="showHide(attributes.providerId)"
+                              tooltip="{{:: 'hide-secret' | translate}}" tooltip-placement="top"
+                              tooltip-trigger="mouseover mouseout">
+                              <i class="os-icon os-icon-eye"></i>
+                            </button>
+                            <button class="icon-holder-btn" id="{{attributes.providerId}}-rotateIcon"
+                              data-ng-if="attributes.canBeRotated && !attributes.canGenerate"
+                              data-ng-click="rotateSecret(attributes.providerId)"
+                              tooltip="{{::'rotate-secret-title' | translate}}" tooltip-placement="top"
+                              tooltip-trigger="hover mouseover mouseout">
+                              <i class="os-icon os-icon-rotate-cw"></i>
+                            </button>
+                            <button class="icon-holder-btn" id="{{attributes.providerId}}-generateIcon"
+                              data-ng-if="attributes.canGenerate" data-ng-click="generateSecret(attributes.providerId)"
+                              tooltip="{{::'generate' | translate}}" tooltip-placement="top"
+                              tooltip-trigger="hover mouseover mouseout">
+                              <i class="os-icon os-icon-download"></i>
+                            </button>
+                            <!-- <button class="icon-holder-btn" id="{{attributes.providerId}}-saveIcon" data-ng-if="attributes.canBeUpdated && realm.mode !== 'bo'" data-ng-click="update(attributes.providerId)" tooltip="{{:: 'save' | translate}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout" disabled>
+                            <i class="os-icon os-icon-save"></i>
+                          </button> -->
+                            <button class="icon-holder-btn" id="{{attributes.providerId}}-copyIcon"
+                              data-ng-disabled="!isValidCopy(attributes.providerId)"
+                              data-ng-click="copyToClipboard(attributes.providerId)" data-ng-mouseleave="resetCopy()"
+                              tooltip="{{tooltipTxt}}" tooltip-placement="top"
+                              tooltip-trigger="hover mouseover mouseout">
+                              <i class="os-icon os-icon-copy"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <kc-tooltip data-ng-if="attributes.helpText">{{:: attributes.helpText | translate}}</kc-tooltip>
+                      </div>
+                      <span>{{:: special.helpText | translate}}</span>
+                    </div>
+                  </div>
+                  <div ng-if="special.underTrial" class="d-flex align-items-center justify-content-between">
+                    <span>{{:: 'in-free-trial-please-upgrade' | translate}} <b>{{:: special.tabName | translate}}</b>
+                      account, Please click Upgrade.</span>
+                    <a class="btn btn-primary" href="#{{special.subscribeLink}}">{{:: 'upgrade' | translate}}</a>
+                  </div>
+                  <div class="col-md-12 d-flex flex-row-reverse pr-0" data-ng-if="path[3] != 'desktop-apps' && path[3] != 'mobile-apps' ">
+                    <button data-ng-click="update(special.tabName)" data-ng-disabled="!changed || stage == 2;"
+                      id="general-saveBtn" class="ml-3 btn btn-primary">
+                      <span ng-show=" stage === 1 ">{{:: 'save' | translate}}</span>
+                      <div ng-show=" stage === 2 ">
+                        <kc-action-button-loading></kc-action-button-loading>
+                      </div>
+                    </button>
+                    <button id="cancelBtn" kc-reset data-ng-disabled="!changed">{{:: 'cancel' | translate}}</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="element-box" data-ng-if="!(specialAttributes.length > 0) && !loading">
+              <div class="no-policy-img">
+                <img data-ng-src="{{resourceUrl}}/themes/img/workspace.png" alt="no-workspace-img"
+                  class="opacity-40 no-entry-display" />
+                <p class="no-results-msg no-entry-display">{{:: 'tenant-attributes-not-available' | translate}}</p>
+              </div>
+            </div>
+            <div data-ng-if="loading">
+              <kc-loader loadertype="loaderTypeName"></kc-loader>
+            </div>
+            <!-- Device App for Mobile and Desktop -->
+            <div class="element-box" data-ng-show="(path[3] == 'desktop-apps' || path[3] == 'mobile-apps') && !loading ">
+              <!-- Header -->
+              <div class="d-flex justify-content-between align-items-center my-4 ">
+                <h6>{{:: 'registered-app' | translate }}</h6>
+                <button class="btn btn-primary" data-ng-click="createDeviceApp()"><i class="os-icon os-icon-plus plus-icon"></i> {{:: 'add-app' | translate}}</button>
+              </div>
+              <!-- filter inputs -->
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex">
+                  <div class="mx-2">
+                    <label class="row-3 control-label" for="appName">{{:: 'app-name' | translate}}</label>
+                    <input type="text" class="form-control" data-ng-model="appName" id="AppName" placeholder="{{:: 'enter-app-name' | translate}}" />
+                  </div>
+                  <div class="mx-2">
+                    <label class="row-3 control-label" for="app-type">{{:: 'platform' | translate}}</label>
+                    <select id="platform" data-ng-model="platform" class="form-control" >
+                      <option value="" disabled >{{:: 'select-platform' | translate}}...</option>
+                      <option ng-repeat="platform in platformOption" value="{{platform}}">{{platform}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="d-flex flex-column" data-ng-show="deviceApplication.count > 5">
+                  <label class="row-md-3 control-label" for="page-count">{{:: 'results-per-page' | translate}}</label>
+                  <select id="page-count" data-ng-model="itemsPerPage" data-ng-options="itemCount for itemCount in [5,10,50,100]" class="form-control form-control-sm rounded bright events-admin-search w-100 audit-list-count-select" ng-change="pageCountChanged()">
+                    <option data-ng-repeat="itemCount in [5,10,50,100]" data-ng-selected="itemsPerPage === itemCount" data-ng-value="itemCount">{{ itemCount }}</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Control Buttons -->
+              <div class="d-flex align-items-center justify-content-between mb-4 mt-3">
+                <div class="d-flex align-items-center mt-3">
+                  <button class="btn btn-primary" id="filterBtn" data-ng-click="getDeviceList()">{{:: 'filter' | translate}}</button>
+                  <button class="btn btn-danger" id="resetBtn" data-ng-click="resetFilter()">{{:: 'reset' | translate}}</button>
+                </div>
+              </div>
+              <!-- Device List Table -->
+              <div class="table-responsive-md clients-list" data-ng-show="!isListLoading">
+                <table class="table table-light-bordered table-padded table-layout-fixed" data-ng-show="deviceApplication.result.length">
+                  <thead>
+                  <tr class="text-center">
+                    <th class="text-left" colspan="3">{{:: 'app-name' | translate}}</th>
+                    <th class="text-left" colspan="3">{{:: 'app-version' | translate}}</th>
+                    <th colspan="3">{{:: 'platform' | translate}}</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody class="p-3">
+                  <tr class="position-relative fadeUp text-center" data-ng-repeat="app in deviceApplication.result">
+                    <td class="device-list-table-row text-left overflow-ellipsis" colspan="3">
+                      {{app.appName}}
+                    </td>
+                    <td class="device-list-table-row text-left" colspan="3">{{app.appVersion}}</td>
+                    <td class="device-list-table-row" colspan="3">{{app.appPlatform}}</td>
+                    <td class="device-list-table-row row-actions">
+                      <i class="os-icon os-icon-external-link plus-icon m-0 cursor-pointer" data-ng-click="viewDeviceApp(app)"></i>
+                    </td>
+                  </tr>
+                  </tbody>
+                  <tfoot data-ng-show="deviceApplication.count > itemsPerPage" >
+                  <tr>
+                    <td class="pl-0"  colspan="2">
+                      <p class="mt-3">{{:: 'showing' | translate}} {{pagination.firstResult + 1}} - {{pagination.firstResult + deviceApplication.result.length}} {{:: 'of' | translate}} {{deviceApplication.count}} {{:: 'Apps' | translate}}</p>
+                    </td>
+                    <td></td>
+                    <td class="pr-0 pb-0 pt-0" align="right" colspan="7">
+                      <div data-ng-hide="deviceApplication.count < deviceApplication.result.length">
+                        <button class="btn btn-sm btn-outline-primary table-pagination border-0 bg-transparent" id="firstPageBtn" data-ng-click="changePage(1)" ng-disabled="pagination.firstResult === 0" data-ng-class="pagination.firstResult === 0 && 'text-muted'">
+                          <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left' }} pagination-icon"></i> <i>{{:: 'first-page' | translate}}</i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary table-pagination border-0 bg-transparent" id="previousPageBtn" data-ng-click="changePage(currentPage - 1)" ng-disabled="currentPage === 1" data-ng-class="currentPage === 1 && 'text-muted'">
+                          <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left' }} pagination-icon"></i> <i>{{:: 'previous' | translate}}</i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary table-pagination pr-0 border-0 bg-transparent" id="nextPageBtn" data-ng-click="changePage(currentPage + 1)" class="next" ng-disabled="deviceApplication.count === (pagination.firstResult + deviceApplication.result.length)" data-ng-class="deviceApplication.count === (pagination.firstResult + deviceApplication.result.length) && 'text-muted'">
+                          <i>{{::'next' | translate}}</i>
+                          <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right' }} pagination-icon"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                  </tfoot>
+                </table>
+                <!-- No Device App -->
+                <div data-ng-show="deviceApplication.result.length === 0">
+                  <div class="no-entry-svg device-list-table-row py-5">
+                    <img data-ng-src="{{resourceUrl}}/themes/img/no-device.svg" alt="no-policy-img" class="no-data-display mt-4" />
+                    <p class="no-results-msg no-entry-display mt-4">{{:: 'no-reg-app' | translate}}</p>
+                  </div>
+                </div>
+              </div>
+              <kc-loader data-ng-show="isListLoading" loadertype="loaderTypeName"></kc-loader>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module" defer>
+  (async ({ chrome, netscape }) => { if (!chrome && !netscape) await import('https://unpkg.com/@ungap/custom-elements'); const { default: HighlightedCode } = await import('https://unpkg.com/highlighted-code'); HighlightedCode.useTheme('github'); })(self);
+</script>

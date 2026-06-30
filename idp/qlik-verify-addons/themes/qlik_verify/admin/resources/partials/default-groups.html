@@ -1,0 +1,54 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-group-list></kc-tabs-group-list>
+                        <div class="element-box py-5">
+                            <form class="form-horizontal" name="realmForm" novalidate>
+                                <div class="form-group row" kc-read-only="!access.manageRealm">
+                                    <div class="col-md-10">
+                                        <div class="row">
+                                            <div class="col-md-6 selector-tree">
+                                                <label class="control-label" for="available">{{:: 'available-groups' | translate}}</label>
+                                                <div tree-id="tree"
+                                                        angular-treeview="true"
+                                                        tree-model="groupList"
+                                                        node-id="id"
+                                                        node-label="name"
+                                                        node-children="subGroups" 
+                                                        tabindex="0">
+                                                </div>
+                                                <button id="addDefaultGroup" data-ng-disabled="!tree.currentNode" data-ng-show="access.manageRealm" class="btn btn-primary btn-sm mt-2 w-100 selected-role-btn" type="submit" ng-click="addDefaultGroup()">
+                                                    {{:: 'add-selected' | translate}} <i class="icon-feather-chevrons-right"></i></button>
+                                                    <kc-tooltip>{{:: 'available-groups.tooltip' | translate}}</kc-tooltip>
+                                                </div>
+                                                <div class="col-md-6 selector-tree">
+                                                    <label class="control-label" for="assigned">{{:: 'default-groups' | translate}}</label>
+                                                    <kc-tooltip>{{:: 'default-groups.tooltip' | translate}}</kc-tooltip>
+                                                    <div tree-id="defaultTree"
+                                                        angular-treeview="true"
+                                                        tree-model="defaultGroups"
+                                                        node-id="id"
+                                                        node-label="path"
+                                                        node-children="subGroupsMembership"
+                                                        tabindex="0" >
+                                                    </div>
+                                                    <button id="removeDefaultGroup" data-ng-show="access.manageRealm" data-ng-disabled="!defaultTree.currentNode" class="btn btn-primary btn-sm mt-2 w-100 selected-role-btn" type="submit" ng-click="removeDefaultGroup()">
+                                                        <i class="icon-feather-chevrons-left"></i> {{:: 'remove-selected' | translate}}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

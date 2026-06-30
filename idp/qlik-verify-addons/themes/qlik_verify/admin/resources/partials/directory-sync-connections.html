@@ -1,0 +1,82 @@
+<kc-menu></kc-menu>
+<div class="content-w min-h-100" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="element-actions d-flex align-items-center">
+                            <div data-ng-if="configuredProviders.length > 0">
+                                <a class="create-btn no-entry-display" id="addUserSyncBtn"
+                                    href="#/realms/{{realm.realm}}/users/directory-sync/create">
+                                    <i class="os-icon os-icon-plus plus-icon"></i>
+                                    {{:: 'add-user-sync-btn' | translate}}
+                                </a>
+                            </div>
+                        </div>
+                        <h1 class="element-header text-capitalize">{{::'directorySyncConnections' | translate}}</h1>
+                        <div class="mt-4" data-ng-if="configuredProviders.length > 0 && !searchKey">
+                            <div class="element-box-tp">
+                                <div class="table-responsive-md clients-list">
+                                    <table class="table table-light-bordered table-padded table-layout-fixed w-100 mb-0">
+                                        <thead> </thead>
+                                        <tbody class="p-3">
+                                            <tr ng-repeat="connection in configuredProviders" class="user-row position-relative fadeUp">
+                                                <td class="cursor-pointer" colspan="4" id="user-sync-{{connection.name.toLowerCase().replaceAll(' ','-')}}"
+                                                    kc-open="/realms/{{realm.realm}}/users/directory-sync/connections/{{connection.providerId}}/{{connection.id}}">
+                                                    <div class="conn-with-logo">
+                                                        <div class="social-conn-logo-container">
+                                                            <img alt="{{connection.name}}"
+                                                                data-ng-src="{{resourceUrl}}/themes/img/social-icons/{{connection.providerId}}_logo.png">
+                                                        </div>
+                                                        <div class="name-container align-items-center">
+                                                            <a class="text-decoration-none cursor-pointer overflow-ellipsis header-text-primary"
+                                                                href="#/realms/{{realm.realm}}/users/directory-sync/connections/{{connection.providerId}}/{{connection.id}}">
+                                                                <span class="ml-1 text-capitalize font-size-normal">{{connection.name}}</span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </td> 
+                                                <td class="nowrap" colspan="5">
+                                                    <div class="user-id-container justify-content-center">
+                                                        {{::'directorySyncConnectionId' | translate}} <code
+                                                            class="user-id-code overflow-ellipsis"> {{connection.id}} </code>
+                                                    </div>
+                                                </td>
+                                                <!-- <td class="nowrap">
+                                                    <div class="user-id-container justify-content-center">
+                                                        {{ ::'directorySyncProviderId' | translate }} <code
+                                                            class="user-id-code overflow-ellipsis"> {{connection.providerId +'_short_name' | translate}} </code>
+                                                    </div>
+                                                </td> -->
+                                                <td class="clip row-actions" colspan="1">
+                                                    <a class="danger" data-ng-click="deleteConnection(connection)"><i
+                                                            class="os-icon os-icon-ui-15" id="{{connection.name.toLowerCase().replaceAll(' ','-')}}-deleteIcon"
+                                                            tooltip="{{:: 'tooltip-delete-label' | translate}}"
+                                                            tooltip-placement="top"
+                                                            tooltip-trigger="mouseover mouseout"></i></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="element-box mt-4" data-ng-if="!configuredProviders.length">
+                            <div class="no-policy-img">
+                                <i class="os-icon os-icon-cv-2 opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                <p class="text-center no-entry-display">{{:: 'no-user-sync-configured' | translate}}</p>
+                                <a class="create-btn no-entry-display" id="addUserSyncBtn"
+                                    href="#/realms/{{realm.realm}}/users/directory-sync/create">
+                                    <i class="os-icon os-icon-plus plus-icon"></i>
+                                    {{:: 'add-user-sync-btn' | translate}}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

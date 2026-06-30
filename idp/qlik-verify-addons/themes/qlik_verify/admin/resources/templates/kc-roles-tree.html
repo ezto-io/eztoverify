@@ -1,0 +1,42 @@
+<div class="content-w" data-ng-controller="KcRolesTreeCtrl">
+    <div class="element-wrapper pb-0">
+        <div class="element-box element-box-medium top-align p-4">
+            <div class="holder scrollbar-none" id="holder">
+                <div class="user-holder">
+                    <div>
+                        <div class="icon-w">
+                            <div class="os-icon os-icon-sliders w-5"></div>
+                        </div>
+                    </div>
+                    <div class="user-holder-desc">
+                        <p><span>{{totalRoles.length}}</span><span>{{:: 'users' | translate}}</span></p>
+                    </div>
+                </div>
+                <button class="roles roles-btn">
+                    <span>{{:: 'users' | translate}}</span>
+                    <div class="role-btn-line"></div>
+                </button>
+                <div class="roles-container groups" data-ng-class="{'remove-roles-border' : totalUsers.length === 0}">
+                    <ul data-ng-class="{'remove-roles-top-left' : totalUsers.length === 0}">
+                        <li data-ng-class="{'remove-roles-border' : totalUsers.length === 0}">
+                            <button class="add-group" ng-click="addUsers()">+ {{:: 'add-users' | translate}}</button>
+                        </li>
+                        <li data-ng-repeat="user in users">
+                            <div class="tree-label">
+                            <button ng-if="!user.attributes.roleViaGroup" class="roles-groups-delete-btn"
+                                ng-click="deleteRealmRole(user)">
+                                <i class="os-icon os-icon-ui-15 px-0 "></i></button><span
+                                class="roles-groups-name w-max-80">{{user.username}}</span>
+                            </div>
+                        </li>
+                        <li ng-if="users.length !== totalUsers.length"> <button class="add-group roles-show-more"
+                                ng-click="showMoreUsers()"><img
+                                    data-ng-src="{{resourceUrl}}/themes/img/down-arrow.svg" /><span>
+                                        {{:: 'show-more' | translate}}
+                                    </span></button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

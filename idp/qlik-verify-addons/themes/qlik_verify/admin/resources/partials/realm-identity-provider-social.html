@@ -1,0 +1,239 @@
+
+<form class="form-horizontal" name="realmForm" novalidate kc-read-only="!access.manageIdentityProviders">
+    <fieldset class="mt-0">
+        <div class="form-group row clearfix">
+            <label class="col-md-3 control-label" for="redirectUri">{{:: 'redirect-uri' | translate}}</label>
+            <div class="col-md-9">
+                <input class="form-control" id="redirectUri" type="text" value="{{callbackUrl}}{{identityProvider.alias}}/endpoint" readonly kc-select-action="click">
+            </div>
+            <kc-tooltip>{{:: 'redirect-uri.tooltip' | translate}}</kc-tooltip>
+        </div>
+    </fieldset>
+    <fieldset class="mt-0">
+        <div class="form-group row clearfix">
+            <label class="col-md-3 control-label" for="clientId">{{:: 'client-id' | translate}} <span class="required">*</span> </label>
+            <div class="col-md-9">
+                <input class="form-control" id="clientId" type="text" ng-model="identityProvider.config.clientId" required>
+            </div>
+            <kc-tooltip>{{:: 'social.client-id.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row clearfix">
+            <label class="col-md-3 control-label" for="clientSecret">{{:: 'client-secret' | translate}} <span class="required">*</span> </label>
+            <div class="col-md-9">
+                <div class="input-group" id="clientSecret_show_hide_password">
+                    <input class="form-control br-top-4 br-bottom-4 social-password" type="password" id="clientSecret" name="clientSecret" data-ng-model="identityProvider.config.clientSecret" required/>
+                    <div class="input-group-prepend hide_show">
+                        <a href="" data-ng-click="hideClientSecret ? hideShowPassword('clientSecret') : showSecret('clientSecret')"><span class="input-group-text tio hidden_outlined bottom-auto r-0"></span></a>
+                    </div>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'social.client-secret.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div data-ng-include data-src="resourceUrl + '/partials/realm-identity-provider-' + identityProvider.providerId + '-ext.html'"></div>
+        <div class="form-group row clearfix">
+            <label class="col-md-3 control-label" for="defaultScope">{{:: 'default-scopes' | translate}} </label>
+            <div class="col-md-9">
+                <input class="form-control" id="defaultScope" type="text" ng-model="identityProvider.config.defaultScope">
+            </div>
+            <kc-tooltip>{{:: 'social.default-scopes.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 control-label">{{:: 'store-tokens' | translate}}</label>
+            <div class="col-md-9">
+                <label for="storeToken">
+                    <div  class="os-toggler-w" ng-class="{on: identityProvider.storeToken}">
+                        <div class="os-toggler-i" id="storeToken-toggle">
+                            <div class="os-toggler-pill" ng-model="identityProvider.storeToken" name="storeToken" id="storeToken" onoffswitch >
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <kc-tooltip>{{:: 'identity-provider.store-tokens.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 control-label">{{:: 'stored-tokens-readable' | translate}}</label>
+            <div class="col-md-9">
+                <label for="storedTokensReadable">
+                    <div  class="os-toggler-w" ng-class="{on: identityProvider.addReadTokenRoleOnCreate}">
+                        <div class="os-toggler-i" id="storedTokensReadable-toggle">
+                            <div class="os-toggler-pill" ng-model="identityProvider.addReadTokenRoleOnCreate" name="storedTokensReadable" id="storedTokensReadable" onoffswitch >
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <kc-tooltip>{{:: 'identity-provider.stored-tokens-readable.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 control-label">{{:: 'enabled' | translate}}</label>
+            <div class="col-md-9">
+                <label for="enabled">
+                    <div  class="os-toggler-w" ng-class="{on: identityProvider.enabled}">
+                        <div class="os-toggler-i" id="enabled-toggle">
+                            <div class="os-toggler-pill" ng-model="identityProvider.enabled" name="enabled" id="enabled" onoffswitch>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <kc-tooltip>{{:: 'identity-provider.enabled.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 control-label">{{:: 'accepts-prompt-none-forward-from-client' | translate}}</label> 
+            <div class="col-md-9">
+                <label for="acceptsPromptNoneForwardFromClient">
+                    <div  class="os-toggler-w" ng-class="{on: identityProvider.config.acceptsPromptNoneForwardFromClient.toString() == 'true'}">
+                        <div class="os-toggler-i" id="acceptsPromptNoneForwardFromClient-toggle">
+                            <div class="os-toggler-pill" ng-model="identityProvider.config.acceptsPromptNoneForwardFromClient" name="acceptsPromptNoneForwardFromClient" id="acceptsPromptNoneForwardFromClient" onoffswitch>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <kc-tooltip>{{:: 'accepts-prompt-none-forward-from-client.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 control-label">{{:: 'disableUserInfo' | translate}}</label> 
+            <div class="col-md-9">
+                <label for="disableUserInfo">
+                    <div  class="os-toggler-w" ng-class="{on: identityProvider.config.disableUserInfo.toString() == 'true'}">
+                        <div class="os-toggler-i" id="disableUserInfo-toggle">
+                            <div class="os-toggler-pill" ng-model="identityProvider.config.disableUserInfo" name="disableUserInfo" id="disableUserInfo" onoffswitch>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <kc-tooltip>{{:: 'identity-provider.disableUserInfo.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 control-label">{{:: 'trust-email' | translate}}</label> 
+            <div class="col-md-9">
+                <label for="trustEmail">
+                    <div  class="os-toggler-w" ng-class="{on: identityProvider.trustEmail}">
+                        <div class="os-toggler-i" id="trustEmail-toggle">
+                            <div class="os-toggler-pill" ng-model="identityProvider.trustEmail" name="trustEmail" id="trustEmail" onoffswitch>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <kc-tooltip>{{:: 'trust-email.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 control-label">{{:: 'link-only' | translate}}</label> 
+            <div class="col-md-9">
+                <label for="linkOnly">
+                    <div  class="os-toggler-w" ng-class="{on: identityProvider.linkOnly}">
+                        <div class="os-toggler-i" id="linkOnly-toggle">
+                            <div class="os-toggler-pill" ng-model="identityProvider.linkOnly" name="linkOnly" id="linkOnly" onoffswitch>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <kc-tooltip>{{:: 'link-only.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 control-label">{{:: 'hide-on-login-page' | translate}}</label> 
+            <div class="col-md-9">
+                <label for="hideOnLoginPage">
+                    <div  class="os-toggler-w" ng-class="{on: identityProvider.config.hideOnLoginPage.toString() == 'true'}">
+                        <div class="os-toggler-i" id="hideOnLoginPage-toggle" >
+                            <div class="os-toggler-pill" ng-model="identityProvider.config.hideOnLoginPage" name="hideOnLoginPage" id="hideOnLoginPage" onoffswitch>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <kc-tooltip>{{:: 'hide-on-login-page.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row" data-ng-if="realm.enabledOwnEmailProvider || realm.realm === rootAccountName">
+            <label class="col-md-3 control-label" for="emailProvidersSelect">{{:: 'email-senders' | translate}} <span class="required">*</span></label>
+            <div class="col-md-9">
+                <div>
+                    <div data-ng-hide="emailProviders.length > 0">
+                        <p class="mb-1" ng-bind-html="noEmailSender" > </p>
+                    </div>
+                    <div data-ng-show="emailProviders.length > 0" >
+                        <select class="form-control" id="emailProvidersSelect"
+                                ng-model="identityProvider.emailSenderId" required>
+                                <option value="" disabled>{{ :: 'not-set' | translate}} </option>
+                                <option ng-repeat="emailProv  in emailProviders" value="{{emailProv}}" > {{emailProv | capitalize}} </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" data-ng-if="!realm.enabledOwnEmailProvider && realm.realm !== rootAccountName">
+            <label class="col-md-3 control-label" for="emailProvidersSelect">{{:: 'email-senders' | translate}}</label>
+            <div class="col-md-9">
+                <div class="p-2 helper-text panel-config-info mt-0 warning-config">
+                    <span class="os-icon os-icon-alert-triangle panel-config-info-icon"></span>
+                    <p class="help-text">{{ :: 'default-email-sender-msg' | translate | replaceWithVariant:serverInfo.variant}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 control-label" for="guiOrder">{{:: 'gui-order' | translate}}</label>
+            <div class="col-md-9">
+                <input class="form-control" id="guiOrder" type="text" ng-model="identityProvider.config.guiOrder">
+            </div>
+            <kc-tooltip>{{:: 'gui-order.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <!-- <div class="form-group row">
+            <label class="col-md-3 control-label" for="firstBrokerLoginFlowAlias">{{:: 'first-broker-login-flow' | translate}}</label>
+            <div class="col-md-9">
+                <div>
+                    <select class="form-control" id="firstBrokerLoginFlowAlias"
+                        ng-model="identityProvider.firstBrokerLoginFlowAlias">
+                        <option value="first broker login"> {{:: 'not-set' | translate}} </option>
+                        <option ng-repeat="flow in authFlows" value="{{flow.alias}}" > {{flow.alias}} </option>
+                    </select>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'first-broker-login-flow.tooltip' | translate}}</kc-tooltip>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 control-label" for="postBrokerLoginFlowAlias">{{:: 'post-broker-login-flow' | translate}}</label>
+            <div class="col-md-9">
+                <div>
+                    <select class="form-control" id="postBrokerLoginFlowAlias"
+                            ng-model="identityProvider.postBrokerLoginFlowAlias">
+                            <option value="">{{ :: 'not-set' | translate}} </option>
+                            <option ng-repeat="flow in postBrokerAuthFlows" value="{{flow.alias}}" > {{flow.alias}} </option>
+                    </select>
+                </div>
+            </div>
+            <kc-tooltip>{{:: 'post-broker-login-flow.tooltip' | translate}}</kc-tooltip>
+        </div> -->
+    </fieldset>
+
+    <div class="form-group row">
+        <div class="col-md-12 d-flex flex-row-reverse">
+            <button class="ml-3" kc-save data-ng-disabled="!changed" id="save-btn">{{:: 'save' | translate}}</button>
+            <button kc-cancel data-ng-click="cancel()" data-ng-disabled="!changed" id="cancel-btn">{{:: 'cancel' | translate}}</button>
+        </div>
+    </div>
+    <br>
+    <!-- Danger Zone  -->
+    <div data-ng-controller="IdentityProviderTabCtrl" data-ng-hide="newIdentityProvider">
+        <h3 class="danger-zone-main-title">{{:: 'danger-zone' | translate}}</h3>
+        <br>
+        <ul class="danger-zone-list" data-step= ' {{newIdentityProvider ? 0 : 2}} ' data-title="{{:: 'intro-application-dangerzone-title' | translate}}" data-intro="{{:: 'intro-application-dangerzone' | translate}}">
+            <li>
+                <div class="danger-zone-container">
+                    <div>
+                        <h4 class="danger-zone-title">{{:: 'delete-connection-title' | translate}}</h4>
+                        <p class="mb-0">{{:: 'delete-connection-content' | translate}}</p>
+                    </div>
+                    <div class="pull-right">
+                        <button class="btn btn-danger" id="removeClient" data-ng-show="access.manageIdentityProviders" data-ng-click="removeIdentityProvider()">{{:: 'delete-connection-btn' | translate}}</button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</form>
+

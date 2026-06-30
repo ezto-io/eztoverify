@@ -1,0 +1,103 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li>
+                    <a id="qv-link__providers" href="#/realms/{{realm.realm}}/email/providers" class="ng-binding">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6'}} breadcrumb-back-icon"></i>{{ :: 'back-to-email-conn' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="role-list-container">
+                            <h1 class="user-list-heading">{{:: 'new-email-conn-title' | translate}}</h1>
+                        </div>
+                        <br>
+                        <div class="element-box" ng-show="nonConfiguredEmailProviders.length == 0 && !searchKey">
+                            <div class="no-policy-img">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/smtp.svg" alt="no-social-conn-img" class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display mt-2">{{:: 'all-email-provider-enabled' | translate}}</p>
+                                <a href="#/realms/{{realm.realm}}/email/providers" class="text-decoration-none">
+                                <button class="create-btn no-entry-display" id="qv-link__providers" >
+                                    <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                    {{:: 'back-to-email-conn' | translate}}
+                                </button>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Search Containers -->
+                        <div>
+                            <div data-ng-show="nonConfiguredEmailProviders.length > 6">
+                                <form class="form-horizontal">
+                                    <div class="form-group element-search w-100">
+                                        <input id="search-input" class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched full-width-search-container" type="text" placeholder="{{ :: 'search-email-prov-placeholder' | translate}}"  ng-model="search" onkeydown="if (event.keyCode === 13) document.getElementById('connectionsSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="connectionsSearch" data-ng-click="changeSearchKey(search)"></i>
+                                    </div>
+                                </form>
+                            </div>
+                        </div> 
+                        <!-- Social Conn List -->
+                        <ul data-ng-if="(nonConfiguredEmailProviders.length > 0 && !searchKey)" class="cards-list email-cards" >
+                            <li class="info-card" ng-repeat="emailProvider in nonConfiguredEmailProviders">
+                                <div id="qv-link__provider_{{emailProvider.id}}" kc-open="/realms/{{realm.realm}}/email/providers/create/{{emailProvider.id}}" class="cursor-pointer">
+                                    <div class="info-card-wrapper">
+                                        <div class="info-card-header">
+                                            <div class="info-card-avatar align-self-center pt-0">
+                                                <div>
+                                                    <img  data-ng-src="{{resourceUrl}}/themes/img/{{emailProvider.logo}}" alt="{{emailProvider.logo}}-logo">
+                                                </div>
+                                            </div>
+                                            <div class="align-self-center">
+                                                <h2 class="ml-2 mb-0 email-title">{{:: emailProvider.displayName | translate}}</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul> 
+                         
+                        <!--For search results-->
+                        <ul data-ng-if="nonConfiguredEmailProviders.length > 0 && searchKey" class="cards-list email-cards" >
+                            <li class="info-card" ng-repeat="emailProvider in nonConfiguredEmailProviders | filter:{'displayName':searchKey}">
+                                <div id="qv-link__provider_{{emailProvider.id}}" kc-open="/realms/{{realm.realm}}/email/providers/create/{{emailProvider.id}}" class="cursor-pointer">
+                                    <div class="info-card-wrapper">
+                                        <div class="info-card-header">
+                                            <div class="info-card-avatar align-self-center pt-0">
+                                                <div>
+                                                    <img ng-if="emailProvider.logo != null" data-ng-src="{{resourceUrl}}/themes/img/{{emailProvider.logo}}" alt="">
+                                                    <img ng-if="emailProvider.logo == null" data-ng-src="{{resourceUrl}}/themes/img/smtp.svg" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="align-self-center">
+                                                "hello"
+
+                                                <h2 class="ml-2 mb-0 email-title">{{:: emailProvider.displayName | translate}}</h2>
+                                            </div>
+                                            <div class="align-self-center info-card-state bg-danger small" data-ng-if="!isEnabled(emailProvider.id)"><div class="info-state-circle"></div>{{:: 'not-live' | translate}}</div>
+                                            <div class=" align-self-center info-card-state bg-success small" data-ng-if="isEnabled(emailProvider.id)"><div class="info-state-circle"></div>{{:: 'Live' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="element-box element-box-medium top-align" ng-show="nonConfiguredEmailProviders.length > 0 && !findConnections(searchKey)">
+                            <div class="no-entry-svg">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/smtp.svg" alt="no-social-conn-img" class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display mt-2">{{:: 'no-email-conn-found' | translate}}</p>
+                                <button data-ng-click="clearSearch()" id="clearSearch" class="create-btn no-entry-display">
+                                    <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                    {{:: 'back-to-email-conn' | translate}}
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

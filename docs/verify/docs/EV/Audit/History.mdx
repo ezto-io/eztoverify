@@ -1,0 +1,90 @@
+---
+id: History
+title: History
+sidebar_label: History
+--- 
+
+The **History** tab displays the **workflow history** of all **Applications** within the Workspace. It provides details on which verifiers were executed, their execution status, and any errors that occurred during the process. Users can easily track and analyze verifier activities for better transparency and debugging.
+
+Some of the things you can analyze with this **History** are:
+
+* View detailed records of workflow executions linked to a particular request ID, helping you trace the complete process flow for that specific request.
+* Search and filter workflow histories using a request ID to quickly locate and review past executions within the workspace.
+* Identify whether each workflow ran successfully or encountered errors, providing clear visibility into the execution status of every verifier.
+
+---
+
+### View History
+
+*1* Once the workflow is executed, the history will display the execution details of each verifier.
+
+![History](https://dashboard.eztovrfy.com/public/Docs/history/history.png)
+
+<table>
+   <thead>
+      <tr>
+         <th width="144">Attributes</th>
+         <th>Descriptions</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><strong>Time</strong></td>
+         <td>Indicates the timestamp when each transaction occurred, providing a chronological order of transactions.</td>
+      </tr>
+      <tr>
+         <td><strong>Request ID</strong></td>
+         <td>Specifies a unique Request ID for transactions, making it easy to find, track, and match transactions with their results and follow-up actions.</td>
+      </tr>
+      <tr>
+         <td><strong>App ID</strong></td>
+         <td>This section identifies the specific application involved in the transaction, enabling to pinpoint which part of the workspace was affected.</td>
+      </tr>
+      <tr>
+         <td><strong>History</strong></td>
+         <td>Displays the History of workflow execution</td>
+      </tr>
+   </tbody>
+</table>
+
+*2* To see the history click the **i** icon in right side of each row.
+
+
+<br/>
+
+---
+
+### History Details
+
+*1* Once you click the **i** icon, a popup will appear displaying the detailed history of the verifier execution.
+
+*2* You can view the execution status, request ID, and any error messages associated with the verifier.
+
+*3* And you can view the validator direction to track the validator executions.
+
+*4* you can also view error messages for failed executions.
+
+![popup](https://dashboard.eztovrfy.com/public/Docs/history/historyPopup.png)
+
+### Search History  
+
+*1* To retrieve a specific history for a workflow, enter the relevant details into the provided fields. For example, you can enter a specific request ID to filter the history related to that request.
+
+![search](https://dashboard.eztovrfy.com/public/Docs/history/search.png)
+
+<table>
+   <thead>
+      <tr>
+         <th width="144">Attributes</th>
+         <th>Descriptions</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><strong>Request ID</strong></td>
+         <td>Enter the request ID that was generated for the API request.</td>
+      </tr>
+   </tbody>
+</table>
+
+*2* Provide the details and press the `Enter` key, to view the results.

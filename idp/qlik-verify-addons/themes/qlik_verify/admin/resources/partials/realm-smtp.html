@@ -1,0 +1,208 @@
+<!-- Side Menu -->
+<kc-menu></kc-menu>
+<!-- Main Content of the page-->
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12"> 
+                    <div class="element-wrapper pb-0">
+                        <h3 class="element-header">
+                            {{ :: 'realm-tab-email' | translate }}
+                        </h3>
+                        <kc-tabs-email-providers></kc-tabs-email-providers>
+                        <div class="element-actions d-flex align-items-center">
+                            <div data-ng-if="configuredEmailProviders.length > 0 && ((emailProviderType !==  'default' || offering !== 'CLOUD' ) || (offering==='ONPREMISE' && !realm.enabledOwnEmailProvider && realm.realm !== rootAccountName)) && searchLoaded">
+                                <a class="text-decoration-none" href="#/realms/{{realm.realm}}/email/providers/create">
+                                    <button id="qv-addprovider__button" class="btn btn-primary no-entry-display" data-step='{{configuredEmailProviders.length > 0 ? 1 : 0}}' 
+                                        data-title="{{:: 'intro-no-email-connections-found-title' | translate}}" 
+                                        data-intro="{{:: 'intro-no-email-connections-found' | translate}}">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-email-conn-btn' | translate}}
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="blue-zone-container getting-started-list getting-started-box red-bg" data-ng-if="serverInfo.systemInfo.offering == 'CLOUD' && unlicensedProduct && searchLoaded">
+                            <div>
+                                <h4 class="blue-zone-title">{{:: 'subscription-status' | translate}}</h4>
+                                <p class="mb-0">{{licenseMessage}}</p>
+                            </div>
+                            <div class="gs-action">
+                                <a href="#/realms/{{realm.realm}}/realm-subscription" class="gs-action-link">
+                                    <button class="account-status slick-next slick-arrow pr-3 blue-zone-title pb-0" id="view-account-status-btn" aria-label="Next" type="button" aria-disabled="false"> {{ :: 'view-account-status' | translate }}  </button>
+                                </a>
+                            </div>
+                        </div>
+                        <div data-ng-if="offering=== 'ONPREMISE' && configuredEmailProviders.length && realm.realm !== rootAccountName">
+                            <ul class="blue-zone-list">
+                                <div class=" user-section blue-zone-container">
+                                    <div>
+                                        <h4 class="blue-zone-title ng-binding"> {{ :: 'use-own-prov-zone-title' | translate}} </h4>
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <p class="mb-0 ng-binding"> {{ :: 'use-own-prov-zone-desc' | translate}} </p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>
+                                                    <div  class="os-toggler-w" ng-class="{on: realm.enabledOwnEmailProvider }">
+                                                      <div class="os-toggler-i" id="enabledOwnEmailProvider-toggle">
+                                                        <div class="os-toggler-pill" ng-model="realm.enabledOwnEmailProvider" name="enabledOwnEmailProvider" id="enabledOwnEmailProvider" onoffswitch ng-click="updateEmailProvider()">
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ul>
+                        </div>
+
+                        <div data-ng-if="offering=== 'ONPREMISE' && !configuredEmailProviders.length && realm.realm !== rootAccountName">
+                            <ul class="blue-zone-list">
+                                <li>
+                                    <div class="blue-zone-container">
+                                        <div>
+                                            <h4 class="blue-zone-title">{{ :: 'default-prov-zone-title' | translate }}</h4>
+                                            <p class="mb-0">{{ 'default-prov-zone-desc' | translate}}</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div ng-hide=" (emailProviderType === 'default' && offering === 'CLOUD' && searchLoaded) || unlicensedProduct">
+                            <div class="controls-above-table mb-0">
+                                <div class="form-group mb-auto mr-2" data-ng-show="configuredEmailProviders.length > 0 && searchLoaded">
+                                    <form class="form-inline">
+                                        <div class="element-search">
+                                            <input id="qv-input__search" class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched action-search-container" type="text" placeholder="{{ :: 'search-email-prov-placeholder' | translate}}" ng-model="search" onkeydown="if (event.keyCode === 13) document.getElementById('socialConnectionsSearch').click()">
+                                            <i class="os-icon os-icon-search2 search-icon" id="socialConnectionsSearch" data-ng-click="changeSearchKey(search)"></i>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="mt-4" data-ng-if="configuredEmailProviders.length > 0 && !searchKey && searchLoaded" ng-class="{divdisabled : offering==='ONPREMISE' && !realm.enabledOwnEmailProvider && realm.realm !== rootAccountName }">
+                                <div class="element-box-tp">
+                                    <div class="table-responsive-md">
+                                        <table class="table table-padded">
+                                            <thead> </thead>
+                                            <tbody class="p-3">
+                                                <tr ng-repeat="connection in configuredEmailProviders" class="fadeUp">
+                                                    <td class="cursor-pointer" id="{{connection.displayName.toLowerCase().replaceAll(' ','-')}}" kc-open="/realms/{{realm.realm}}/email/providers/settings/{{connection.id}}">
+                                                        <div class="conn-with-logo">
+                                                            <div class="social-conn-logo-container">
+                                                                <img alt="{{connection.displayName}}" data-ng-src="{{resourceUrl}}/themes/img/{{connection.logo}}">
+                                                            </div>
+                                                            <div>
+                                                                <a id="qv-provider__{{connection.id}}" class="text-decoration-none header-text-primary" href="#/realms/{{realm.realm}}/email/providers/settings/{{connection.id}}">
+                                                                        {{ connection.displayName | translate}}
+                                                                    </a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="nowrap text-center">
+                                                        <div class="info-card-state bg-success small">
+                                                            <div class="info-state-circle"></div>{{:: 'enabled-txt' | translate}}</div>
+                                                    </td>
+                                                    <td class="row-actions">
+                                                        <a id="{{connection.displayName.toLowerCase().replaceAll(' ','-')}}-edit" kc-open="/realms/{{realm.realm}}/email/providers/settings/{{connection.id}}">
+                                                            <i class="os-icon os-icon-ui-49" tooltip="{{:: 'edit' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                                        </a>
+                                                        <a id="{{connection.displayName.toLowerCase().replaceAll(' ','-')}}-delete" class="danger" data-ng-click="remove(connection.id)">
+                                                            <i class="os-icon os-icon-ui-15" tooltip="{{:: 'tooltip-delete-label' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--For search results-->
+                            <div class="mt-4" data-ng-if="configuredEmailProviders.length > 0 && searchKey && findConfigured(searchKey)">
+                                <div class="element-box-tp">
+                                    <div class="table-responsive-md">
+                                        <table class="table table-padded">
+                                            <thead> </thead>
+                                            <tbody class="p-3">
+                                                <tr ng-repeat="connection in configuredEmailProviders | filter:{'displayName':searchKey}" class="fadeUp">
+                                                    <td class="cursor-pointer" id="email-provider-{{connection.displayName.toLowerCase().replaceAll(' ','-')}}" kc-open="/realms/{{realm.realm}}/email/providers/settings/{{connection.id}}">
+                                                        <div class="conn-with-logo">
+                                                            <div class="social-conn-logo-container">
+                                                                <img alt="{{connection.displayName}}" data-ng-src="{{resourceUrl}}/themes/img/{{connection.logo}}">
+                                                            </div>
+                                                            <div>
+                                                                <a class="text-decoration-none" href="#/realms/{{realm.realm}}/email/providers/settings/{{connection.id}}">
+                                                                        {{connection.displayName}}
+                                                                    </a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="nowrap text-center">
+                                                        <div class="info-card-state bg-success small">
+                                                            <div class="info-state-circle"></div>{{:: 'enabled-txt' | translate}}</div>
+                                                    </td>
+                                                    <td class="row-actions">
+                                                        <a kc-open="/realms/{{realm.realm}}/email/providers/settings/{{connection.id}}" id="{{connection.displayName.toLowerCase().replaceAll(' ','-')}}-editIcon">
+                                                            <i class="os-icon os-icon-ui-49" tooltip="{{:: 'edit' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                                        </a>
+                                                        <a class="danger" data-ng-click="remove(connection.id)" id="{{connection.displayName.toLowerCase().replaceAll(' ','-')}}-deleteIcon" >
+                                                            <i class="os-icon os-icon-ui-15" tooltip="{{:: 'tooltip-delete-label' | translate}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="element-box element-box-medium top-align" ng-show="searchKey && !findConfigured(searchKey)">
+                                <div class="no-entry-svg">
+                                    <div class="no-entry-display text-center">
+                                        <i class="os-icon os-icon-mail opacity-40 no-entry-icon"></i>
+                                    </div>
+                                    <p class="no-results-msg no-entry-display mt-2">{{:: 'no-email-conn-found' | translate}}</p>
+                                    <button class="create-btn no-entry-display cursor-pointer" id="clearSearch" data-ng-click="clearSearch()">
+                                        <i class="os-icon os-icon-close mr-2"></i>
+                                        {{ ::  'clear-search' | translate}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="element-box mt-4" data-ng-if="emailProviderType === 'own' && !configuredEmailProviders.length && searchLoaded">
+                            <div class="no-policy-img" data-step='{{configuredEmailProviders.length === 0 ? 1 : 0}}' data-title="{{:: 'intro-no-email-connections-found-title' | translate}}" data-intro="{{:: 'intro-no-email-connections-found' | translate}}">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/smtp.svg" alt="no-policy-img" class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display">{{:: 'no-email-conn-configured' | translate}}</p>
+                                <a class="text-decoration-none" href="#/realms/{{realm.realm}}/email/providers/create">
+                                    <button class="create-btn no-entry-display" id="add-email-provider-btn">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-email-conn-btn' | translate}}
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- email default section -->
+                        <div class="element-box mt-4" ng-if=" emailProviderType === 'default' && searchLoaded && offering === 'CLOUD' ">
+                            <div class="no-policy-img">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/smtp.svg" alt="no-policy-img" class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display"> <b> {{ :: 'no-custom-email-provider' | translate }} </b> </p>
+                                <p class="no-results-msg no-entry-display"> {{ :: 'upgrade-custom-email' | translate }} </p>
+                                <a class="create-btn no-entry-display" id="upgradeBtn" data-ng-if="userCanUpdate" href="#/realms/{{realm.realm}}/realm-subscription/update-plan">
+                                    {{ :: 'upgrade-now' | translate }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12" ng-if="!(searchLoaded)">
+                <kc-loader loadertype="loaderTypeName"></kc-loader>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

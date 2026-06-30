@@ -1,0 +1,254 @@
+---
+id: DNS
+title: DNS
+sidebar_label: DNS
+--- 
+
+import TabItem from "@theme/TabItem";
+import Tabs from '@theme/Tabs';
+import DropBox from "../../../src/components/docs/DropBox"
+import CheckBox from "../../../src/components/docs/CheckBox"
+
+Learn how to bring your own custom domain to ezto verify. If you are using the ezto verify host for your verification and workspace, you can add your own custom domain to ezto verify.
+
+## Use your custom domain
+
+*1* Navigate to your **Workspace** and click on **Settings**.
+
+*2* Click on **General**.
+
+*3* Click on the **CREATE CUSTOM DOMAIN** button.
+
+:::note
+You can also add multiple custom domains to a single workspace. The first domain you create will automatically be set as the primary domain. However, you can change the primary domain at any time by using the "Make Primary" option.
+
+Please note, only one domain can be designated as the primary at a time. The primary domain cannot be deleted unless you disable the DNS option in your subscription. Additionally, only fully configured domains will appear in the list of available domains.
+
+:::
+
+![CUSTOM DOMAIN](https://images.tango.us/workflows/e0b1e911-3803-4650-9f9b-52f5fb19b0f1/steps/ec216951-1187-4c5a-a2d3-4ee1d38ccbd8/fb225c21-c230-4ee9-93d0-641404a7bb78.png)
+
+*4* The custom domain settings will be opened, enter your custom domain, and click **NEXT**.
+
+![Add domain](https://images.tango.us/workflows/e0b1e911-3803-4650-9f9b-52f5fb19b0f1/steps/29d421ab-c872-48be-84cc-6526c85d5b9b/e49ead4f-3ffc-4560-8552-d50396348268.png)
+
+:::note
+Ensure to trigger the **Domain Verification** only when the record is verified by your preferred domain controller.
+:::
+
+*5* Copy the `TXT` record values to your clipboard.
+
+## Create required DNS records
+You will create the **DNS** records needed to connect your domain. As you move through each step, mark the checkboxes to keep track of your progress.
+
+Select the tab that matches your **DNS** provider below. This gives you a clear, guided instruction on how to create the necessary **DNS** records. If you don't find your **DNS** provider listed, follow the Standard instructions.
+
+
+<Tabs>
+
+<TabItem value="standardInstruction" label="Standard Instruction" default>
+
+These are standard instructions for creating your DNS records. If you have issues with any of the steps, please contact your DNS provider for more assistance.
+
+** <CheckBox name="DNSCheckBox1"/> Sign into your DNS provider**
+
+Find the control panel offered by your **DNS** provider, where you can sign in to manage your **DNS** settings.
+
+
+** <CheckBox name="DNSCheckBox2"/> Find the page to manage the DNS for your domain**
+
+Now that you’re logged in, find the section in your provider's control panel where you can manage the **DNS** records for your 
+domain. 
+
+If you’re having issues finding the right page, you can:
+- Check if your **DNS** provider has a help article for adding new **DNS** records to guide you.
+- Contact your **DNS** provider for additional support.
+
+** <CheckBox name="DNSCheckBox3"/> Create your TXT record**
+
+From your **DNS** control panel, add a new `TXT` record. This `TXT` record allows us to verify that you’re the owner of this domain.
+
+Enter these values and save the new **DNS** record:
+
+| Field | Instructions | Descriptions |
+|-------|--------------|--------------|
+| Type | Select `TXT` from the drop-down. | What kind of **DNS** record this is.|
+| Name | Enter your custom domain here. | For `TXT` records, this field refers to the subdomain part of your domain.|
+| Value | Enter the copied `TXT` values from your **ezto verify Workspace.** | This is a lengthy string present in the `TXT` verification contents.|
+| TTL/Expiry | Enter `300`. | A 5-minute (300 seconds) expiration is OK. Your **DNS** provider may not allow you to modify the **TTL** value. If this field is missing or inaccessible to change it, it is safe to ignore this part of the configuration. | 
+
+
+** <CheckBox name="DNSCheckBox4"/> Verify your TXT record**
+
+After you save your **DNS record,** verify that it has the correct values.
+
+*1* Wait up to 10 minutes for your **DNS** provider to update its nameservers.
+
+*2* Return to your **ezto verify Workspace**, and click on `VERIFY` for **Domain Verification.**
+
+*3* You will see the **CNAME Record Verification** values, this means your **Domain Verification** is completed.
+
+:::note
+The **CNAME Record Verification** values will only be displayed, if the **TXT record** is successful. Copy the **CNAME** record values to your clipboard from the **ezto verify Workspace**.
+
+![CNAME-standard](https://images.tango.us/workflows/e0b1e911-3803-4650-9f9b-52f5fb19b0f1/steps/6ad84113-5049-482b-99b6-d04ce2fa001b/db7a5180-c76f-4dfd-85c4-62bc9a93dc86.png)
+:::
+
+
+** <CheckBox name="DNSCheckBox5"/> Create your CNAME record**
+
+This **CNAME** record is what connects your subdomain to **ezto verify**. Navigate back to your domain controller, add a new record that maps your desired subdomain to **ezto verify.**
+
+Enter these values and save the new **DNS** record:
+
+| Field | Instructions | Descriptions |
+|-------|--------------|--------------|
+| Type | Select `CNAME` from the drop-down. | What kind of **DNS** record this is.|
+| Name | Enter your custom domain here. | For `CNAME` records, this field refers to the subdomain part of your domain.|
+| Value | Enter the copied `CNAME` values from your **ezto verify Workspace.** | This is a lengthy string present in the `CNAME` verification contents.|
+| TTL/Expiry | Enter `300`. | A 5-minute (300 seconds) expiration is OK. Your **DNS** provider may not allow you to modify the **TTL** value. If this field is missing or inaccessible to change it, it is safe to ignore this part of the configuration. |
+
+
+** <CheckBox name="DNSCheckBox6"/> Verify your CNAME record**
+
+After you save your **DNS record,** verify that it has the correct values.
+
+*1* Wait up to 10 minutes for your **DNS** provider to update its nameservers.
+
+*2* Return to your **ezto verify Workspace**, and click on `VERIFY` for **CNAME Record Verification.**
+
+*3* You will see the **Add Certificate,** this means your **CNAME Record Verification** is completed.
+
+
+** <CheckBox name="DNSCheckBox7"/> Add Certificate**
+
+This step is optional, if you do not have a certificate for this domain. The **"Lets's Encrypt"** certificate will be generated by default and the **Custom Domain** setup will be completed without certificate.
+
+But, if you have a certificate for this particular domain. Then, toggle enable, upload the **Certificate** and **Certificate Key.**
+
+![Certificate](https://images.tango.us/workflows/e0b1e911-3803-4650-9f9b-52f5fb19b0f1/steps/2c06a16f-2d9d-4dd3-8143-67150bc5fb8c/8caee319-0ed6-4944-afdc-f9312d76e57e.png)
+
+</TabItem>
+
+<TabItem value="route53" label="Route53" default>
+
+Use these instructions to create your **DNS** records with **Route53**. If you have issues with any of the steps, please contact **Route53** support for more assistance.
+
+** <CheckBox name="DNSCheckBox8"/> Sign into Route53**
+
+Visit **AWS** and log into the **AWS** dashboard.
+
+
+** <CheckBox name="DNSCheckBox9"/> Navigate to the DNS panel or your domain**
+
+From the **AWS** Dashboard:
+
+- Click on **Route53** from you available services.
+
+![Route53](https://images.tango.us/workflows/e0b1e911-3803-4650-9f9b-52f5fb19b0f1/steps/be64886c-9b3a-4dbb-a241-a1f8a9a2fd36/e6feea14-3cd1-49e7-bda8-2cd5de093d8b.png)
+
+- You will be taken to the **Route 53** dashboard, you should see a **DNS** management page for your domain, click on the **Hosted zones.** Choose your preferred host.
+
+![Hosted Zone](https://images.tango.us/workflows/e0b1e911-3803-4650-9f9b-52f5fb19b0f1/steps/87865f52-4533-4df9-ae25-30cf599dffee/73754d84-d128-4618-b228-0c12cb79a7c4.png)
+
+- Click on **Create Records.**
+
+
+** <CheckBox name="DNSCheckBox10"/> Create your TXT record**
+
+From your **DNS** control panel, add a new `TXT` record. This `TXT` record allows us to verify that you’re the owner of this domain.
+
+Enter these values and save the new **DNS** record:
+
+| Field | Instructions | Descriptions |
+|-------|--------------|--------------|
+| Type | Select `TXT` from the drop-down. | What kind of **DNS** record this is.|
+| Name | Enter your custom domain here. | For `TXT` records, this field refers to the subdomain part of your domain.|
+| Value | Enter the copied `TXT` values from your **ezto verify Workspace.** | This is a lengthy string present in the `TXT` verification contents.|
+| TTL/Expiry | Enter `300`. | A 5-minute (300 seconds) expiration is OK. Your **DNS** provider may not allow you to modify the **TTL** value. If this field is missing or inaccessible to change it, it is safe to ignore this part of the configuration. | 
+
+
+** <CheckBox name="DNSCheckBox11"/> Verify your TXT record**
+
+After you save your **DNS record,** verify that it has the correct values.
+
+*1* Wait up to 10 minutes for your **DNS** provider to update its nameservers.
+
+*2* Return to your **ezto verify Workspace**, and click on `VERIFY` for **Domain Verification.**
+
+*3* You will see the **CNAME Record Verification** values, this means your **Domain Verification** is completed.
+
+:::note
+The **CNAME Record Verification** values will only be displayed, if the **TXT record** is successful. Copy the **CNAME** record values to your clipboard from the **ezto verify Workspace**.
+
+![CNAME-route53](https://images.tango.us/workflows/e0b1e911-3803-4650-9f9b-52f5fb19b0f1/steps/ed0e0202-46e1-486e-8d2c-7a7df2045de1/46731beb-a6bf-41f8-a5f9-78a04dce5bb1.png)
+:::
+
+
+** <CheckBox name="DNSCheckBox12"/> Create your CNAME record**
+
+This **CNAME** record is what connects your subdomain to **ezto verify**. Navigate back to your domain controller, add a new record that maps your desired subdomain to **ezto verify.**
+
+Enter these values and save the new **DNS** record:
+
+| Field | Instructions | Descriptions |
+|-------|--------------|--------------|
+| Type | Select `CNAME` from the drop-down. | What kind of **DNS** record this is.|
+| Name | Enter your custom domain here. | For `CNAME` records, this field refers to the subdomain part of your domain.|
+| Value | Enter the copied `CNAME` values from your **ezto verify Workspace.** | This is a lengthy string present in the `CNAME` verification contents.|
+| TTL/Expiry | Enter `300`. | A 5-minute (300 seconds) expiration is OK. Your **DNS** provider may not allow you to modify the **TTL** value. If this field is missing or inaccessible to change it, it is safe to ignore this part of the configuration. |
+
+
+** <CheckBox name="DNSCheckBox13"/> Verify your CNAME record**
+After you save your **DNS record,** verify that it has the correct values.
+
+*1* Wait up to 10 minutes for your **DNS** provider to update its nameservers.
+
+*2* Return to your **ezto verify Workspace**, and click on `VERIFY` for **CNAME Record Verification.**
+
+*3* You will see the **Add Certificate,** this means your **CNAME Record Verification** is completed.
+
+
+** <CheckBox name="DNSCheckBox14"/> Add Certificate**
+
+This step is optional, if you do not have a certificate for this domain. The **"Lets's Encrypt"** certificate will be generated by default and the **Custom Domain** setup will be completed without certificate.
+
+But, if you have a certificate for this particular domain. Then, toggle enable, upload the **Certificate** and **Certificate Key.**
+
+![Certificate](https://images.tango.us/workflows/e0b1e911-3803-4650-9f9b-52f5fb19b0f1/steps/fd16e5fd-d4f2-44e1-b0d6-b189664dab40/8926bf60-8ec3-42f1-9f5a-6b3531080024.png)
+
+
+</TabItem>
+
+</Tabs>
+
+Once all the above records are configured and verified, click on **SAVE.** 
+
+Now that you’ve created your **DNS** records and verified them, **ezto verify** verifies the connection and provisions your domain on our end. We’ll send you an email notification when the domain is ready for you to access it.
+
+----
+
+<DropBox title="Removing your custom domain" optional={true}>
+
+If you need to remove your custom domain for any reason, you can do so. Deleting your custom domain requires removing any associated **DNS** records. By deleting, the custom domain will reset to the **Workspace** default domain.
+
+To remove your custom domain completely:
+
+*1* Navigate to **Workspace**, and click on **Settings**.
+
+*2* Click on **General** and select **VIEW ALL DOMAINS.**
+
+> You cannot delete the primary domain directly. To delete it, you must first set another domain as the primary by clicking the three-dot menu and selecting "Make Primary." Once a different domain is set as primary, you can delete the previous one. However, if there is only one domain created, it can be deleted without the need to assign a new primary domain.
+
+![View all domains](https://images.tango.us/workflows/e0b1e911-3803-4650-9f9b-52f5fb19b0f1/steps/4f042b51-aa55-4caa-8e79-8efa3f1cc487/6d04d8de-d5af-4702-85e5-40ffa46545f3.png)
+
+*3* Select the custom domain you want to delete, click on the three-dot menu, and choose Delete.
+
+![Three-dot](https://images.tango.us/workflows/e0b1e911-3803-4650-9f9b-52f5fb19b0f1/steps/5172f6a3-36f9-4a90-9adb-49a731e2c59a/61d9925f-5c1b-4465-9c16-308e54576765.png?mark-x=1438&mark-y=655&m64=aHR0cHM6Ly9pbWFnZXMudGFuZ28udXMvc3RhdGljL2JsYW5rLnBuZz9tYXNrPWNvcm5lcnMmYm9yZGVyPTQlMkNEQjMwMzAmdz05NiZoPTk3JmZpdD1jcm9wJmNvcm5lci1yYWRpdXM9MTA%3D)
+
+*4* You will be prompted with a confirmation to pop-up, click on **DELETE** to remove.
+
+![Remove Custom Domain](https://images.tango.us/workflows/e0b1e911-3803-4650-9f9b-52f5fb19b0f1/steps/012f48bc-372c-440b-87fd-d1562875790c/99e05834-5157-430d-ae5c-7288bd53800b.png)
+</DropBox>
+
+---

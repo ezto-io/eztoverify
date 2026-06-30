@@ -1,0 +1,81 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <h3 class="element-header">
+                            {{ :: 'realm-tab-security-defenses' | translate }}
+                        </h3>
+                        <kc-tabs-securitydefenses></kc-tabs-securitydefenses>
+                        <div ng-if="!configType.constraints.success">
+                            <ul class="blue-zone-list" data-ng-repeat="ctype in configType.constraints.data">
+                                <li>
+                                    <div class="blue-zone-container">
+                                        <div>
+                                            <h4 class="blue-zone-title ng-binding">{{:: 'alert' | translate}}</h4>
+                                            <p class="mb-0 ng-binding">{{ctype.message}}</p>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="{{ctype.redirectUrl}}" id="takeMeBtn" class="mr-2 mt-2 btn btn-primary">{{:: 'take-me-txt' | translate}}</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                          </div>
+                        <div class="element-box py-5" ng-if="configType.constraints.success">
+                            <form class="form-horizontal" name="realmForm" novalidate
+                                kc-read-only="!access.manageRealm" >
+                                <fieldset class="mt-0" >
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="enabled">{{:: 'enabled' | translate}}
+                                            {{:: configType.name | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label>
+                                                <div class="os-toggler-w" ng-class="{on: isEnabled.value}">
+                                                    <div class="os-toggler-i"  id="enabled-toggle" >
+                                                        <div class="os-toggler-pill" data-ng-model="isEnabled.value" name="enabled"
+                                                            id="enabled" onoffswitch>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group clearfix row mb-0 pb-4"
+                                        data-ng-show="config && config.id && isEnabled.value">
+                                        <label class="col-md-3 control-label" for="configId">{{:: 'id' | translate}}
+                                        </label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" id="configId" type="text" ng-model="config.id"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    <kc-provider-config
+                                        data-ng-if="configType.properties.length > 0 && isEnabled.value"
+                                        realm="realm" config="config.config" properties="configType.properties">
+                                    </kc-provider-config>
+                                </fieldset>
+                                <div class="form-buttons-w border-top-0 mt-2">
+                                    <div class="col-md-12 d-flex flex-row-reverse pr-0">
+                                        <button id="submit" data-ng-disabled="!toggleChanged" class="btn btn-primary ml-3"
+                                            data-ng-click="save()">
+                                            <span ng-show=" subStage === 1 ">{{:: 'save' | translate}}</span>
+                                            <div data-ng-if=" subStage === 2 ">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </div>
+                                        </button>
+                                        <button id="cancelBtn"  kc-reset data-ng-disabled="!toggleChanged">{{:: 'cancel' |
+                                            translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!--END - Grid of tablo statistics-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

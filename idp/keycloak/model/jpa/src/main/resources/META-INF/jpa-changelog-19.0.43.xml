@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="GROOTAN System" id="ezto-verify-19.0.43">
+        <createTable tableName="CUSTOM_DOMAIN_MAPPINGS">
+            <column name="ID" type="varchar(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CUSTOM_DOMAIN" type="varchar(255)"/>
+            <column name="TXT_RECORD_NAME" type="varchar(255)"/>
+            <column name="TXT_RECORD_VALUE" type="varchar(255)"/>
+            <column name="A_RECORD_NAME" type="varchar(255)"/>
+            <column name="A_RECORD_VALUE" type="varchar(255)"/>
+            <column name="TXT_RECORD_VERIFIED" type="boolean" defaultValueBoolean="false"/>
+            <column name="A_RECORD_VERIFIED" type="boolean" defaultValueBoolean="false"/>
+            <column name="IS_SETUP_COMPLETED" type="boolean" defaultValueBoolean="false"/>
+            <column name="IS_ACTIVE" type="boolean" defaultValueBoolean="false"/>
+            <column name="IS_PRIMARY" type="boolean" defaultValueBoolean="false"/>
+            <column name="REALM" type="varchar(36)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

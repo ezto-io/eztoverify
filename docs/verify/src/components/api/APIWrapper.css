@@ -1,0 +1,309 @@
+.api-wrapper {
+  padding: 1rem;
+  /* width: 980px; */
+}
+
+.select-box {
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-radius: 5px;
+}
+
+.select-box label {
+  padding: 0.5rem 0;
+  font-weight: 500;
+  color: #525252;
+}
+
+.select-box select {
+  border: 1px solid silver;
+  padding: 0.7rem;
+  padding-left: 1rem;
+  border-radius: 0.5rem;
+  min-width: 10.5rem;
+}
+
+.select-box-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.controller-card{
+  border: 1px solid #D8D8D8;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #F5F6F8;
+}
+
+html[data-theme="dark"] .controller-card{
+  background-color: #3a3e46;
+  border: 1px solid rgb(192 192 192 / 35%);
+}
+
+.controller-card-header{
+ font-size: 1.2rem;
+ font-weight: 600;
+ font-size: 18px;
+ color: var(--ifm--custom-primary);
+ margin-bottom: 4px;
+}
+
+html[data-theme="dark"] .controller-card-header{
+  color: #77a2f3;
+}
+
+.controller-card-description{
+  font-weight: 400;
+  margin-bottom: 4px;
+  color: #666666;
+}
+
+html[data-theme="dark"] .controller-card-description{
+  color: #fefefe;
+}
+
+.controller-card-divider{
+  margin: 8px 0px;
+  color: #D8D8D8;
+}
+
+html[data-theme="dark"] .controller-card-divider{
+  color: rgb(192 192 192 / 35%);
+
+}
+
+.btn-wrapper {
+    margin-bottom: 1rem;
+}
+
+.select-box select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7em top 50%;
+  background-size: 0.65em auto;
+}
+
+html[data-theme="dark"] .select-box select {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+}
+
+.select-box select::-ms-expand {
+  display: none;
+}
+
+.api-btn {
+    background-color: var(--ifm--custom-primary);
+    color: white;
+    font-family: inherit;
+    width: 100%;
+    height: 46px;
+    border-radius: 0.5rem;
+    border: none;
+    margin-bottom: auto;
+    margin-top: 10px;
+}
+
+html[data-theme="dark"] .api-btn{
+  background-color: #3d76e0;
+}
+
+.api-btn:disabled {
+  opacity: .6;
+}
+
+.drop-box {
+  width: 100%;
+  box-shadow: 1px 3px 3px rgba(161, 160, 160, 0.163);
+  border: 1px solid rgb(208, 207, 207);
+  margin: 1rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.drop-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 5px;
+  padding: 1rem;
+  background-color:#f4f4f4 ;
+}
+
+html[data-theme="dark"]  .drop-box-header{
+  background-color:#4e4e4e ;
+}
+
+.drop-box-header button {
+  background-color: transparent;
+  border: none;
+}
+.drop-box-header img {
+  width: 1rem;
+}
+.drop-box-header h4 {
+  margin: 0;
+}
+
+.drop-box-child {
+  padding: 0 15px 0px;
+}
+
+.status-code-wrapper{
+  display: flex;
+  justify-content: center;
+}
+
+.dropbox-header{
+  font-size: 1rem;
+  font-weight: 600;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  color: rgb(59, 69, 78);
+}
+
+.dropbox-header span {
+  color: rgba(59, 69, 78, 0.734);
+  margin-right: 10px;
+}
+
+html[data-theme="dark"] .dropbox-header{
+  color: rgb(202, 204, 205);
+}
+
+.dropbox {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropbox-icon > svg{
+  width: 1.2rem;
+  display: flex;
+  align-items: center;
+}
+
+.dropbox-description{
+ margin-left: 1rem;
+ font-size:.9rem;
+}
+
+.dropbox-body{
+  padding: 10px;
+}
+
+.dropbox-container{
+  border: 1px solid var(--custom-border-color);
+  margin: 10px 0;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.border-none{
+  border: none;
+}
+
+.drop-box th {
+  display: none;
+}
+.drop-box table {
+  width: 100%;
+}
+
+.select-box-label{
+  color: rgb(0, 0, 0)
+}
+
+html[data-theme="dark"] .select-box-label{
+  color: #fefefe;
+}
+
+.select-box-option{
+  font-family: var(--ifm-font-family-base);
+  background-color: #F5F6F8;
+  color:#202020;
+  font-size: 14px;
+}
+
+html[data-theme="dark"] .select-box-option{
+  background-color: #3a3e46;
+  color: #fefefe;
+  border: 1px solid rgb(192 192 192 / 35%);
+}
+
+.api-builder-page-header{
+  margin-bottom: 10px;
+  font-weight: 600;
+  margin-top: 2rem;
+}
+
+.api-builder-page-description{
+  line-height: normal;
+  font-weight: 400;
+  word-spacing: 2px;
+  letter-spacing: .1px;
+  font-size: 16px;
+  margin-bottom: 24px;
+  color: #666666;
+}
+
+html[data-theme="dark"] .api-builder-page-description{
+  color: #e3e3e3;
+}
+
+.api-builder-body-wrapper{
+  border: 1px solid #D8D8D8;
+  border-radius: 12px;
+  padding: 0rem 1rem;
+  margin: 1rem 0rem;
+}
+
+html[data-theme="dark"] .api-builder-body-wrapper {
+  border: 1px solid rgb(192 192 192 / 35%);
+}
+
+.api-builder-body-wrapper .propsHolder:last-child{
+  border: none !important;
+}
+
+.margin-0{
+  margin: 0px !important;
+}
+
+.padding-0{
+  padding: 0px !important;
+  border-width: 0px !important;
+}
+
+.padding-bottom-1rem{
+  padding-bottom: 1rem !important;
+}
+
+
+.app-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.app-details input {
+  width: 38%;
+  padding: 5px;
+  border: 1px solid rgb(192 192 192 / 35%);
+  border-radius: 3px;
+}

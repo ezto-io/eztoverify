@@ -1,0 +1,35 @@
+# Verify OSS — OPTIONAL overlay: custom domain + HTTPS via nginx.
+#
+# Adds an nginx TLS reverse proxy in front of the idp and switches the idp to
+# proxy/edge mode with your public https URL. Layer it on top of the base compose:
+#
+#   1. Set DOMAIN (and have certs) — see .env.example + nginx/README.md
+#   2. docker compose -f docker-compose.yml -f docker-compose.proxy.yml up -d
+#
+# Without this file, `docker compose up` stays plain HTTP on http://localhost:8080/auth.
+
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: ezto-nginx
+    restart: unless-stopped
+    depends_on:
+      idp:
+        condition: service_started
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env (e.g. verify.example.com)}
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+
+  # Override idp for public-domain + TLS-at-the-edge operation.
+  idp:
+    environment:
+      KC_HOSTNAME_URL: https://${DOMAIN}/auth
+      KC_HOSTNAME: ${DOMAIN}
+      KC_HOSTNAME_STRICT: "true"
+      KC_HOSTNAME_STRICT_HTTPS: "true"
+      KC_PROXY: edge

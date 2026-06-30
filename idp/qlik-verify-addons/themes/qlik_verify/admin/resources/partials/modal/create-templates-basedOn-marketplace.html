@@ -1,0 +1,201 @@
+<div>
+    <div class="modal-header align-items-start" >
+        <div class="w-100">
+            <div class="d-flex align-items-center cursor-pointer mb-4" data-ng-show="templateId.length" data-ng-click="setCurrentTab('templates', '', '')"> 
+                <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                {{'back' | translate}}
+            </div>
+            <div  class="d-flex flex-wrap justify-content-between align-items-center">
+                <div class="d-flex">
+                    <img data-ng-show="templateImageURL && templateId.length" data-ng-src="{{templateImageURL}}" class="mr-3 my-1 rounded border" alt="{{template.workflowName.toLowerCase().replaceAll(' ', '-')}}-logo" height="58" width="58" />
+                    <div data-ng-show="templateId.length">
+                        <h5 class="modal-title text-ellipsis-2-lines-marketplace" title="{{templateWorkflowName}}">{{ templateWorkflowName }}</h5>
+                        <p class="mr-5 mb-0">{{:: 'marketplace-bo-template-description' | translate}}</p>
+                    </div>
+                    <div data-ng-show="!templateId.length">
+                        <h5 class="modal-title" >{{:: 'choose-template' | translate}}</h5>
+                        <p class="mr-5 mb-0">{{:: 'choose-marketplace-template' | translate}}</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary ml-2" data-ng-disabled="isInstalled" data-ng-click="installMarketplace()" data-ng-if="!isRootAccount && templateId.length && currentTab == 'template-flow'">
+                    <span data-ng-show="!loading">{{:: 'install-template' | translate}}</span>
+                    <div data-ng-show="loading">
+                        <kc-action-button-loading></kc-action-button-loading>
+                    </div>
+                </button>
+            </div>
+        </div>
+        <button type="button" class="close my-2" ng-click="cancel()">
+            <span class="os-icon os-icon-close"></span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div data-ng-if="currentTab == 'templates'">
+            <div class="element-box  {{isSmallScreen ? 'shadow-none p-0' : '' }}" data-ng-controller="kcMarketplaceWorkflowsListCtrl">
+                <div class="element-search w-100 position-relative mb-3">
+                    <input class="form-control bg-color-transparent border searchTerm" style="padding-left: 2.5rem;" type="text" id="marketplace-workflow-search-input" placeholder="{{:: 'search' | translate}}" data-ng-model="searchInputValue" class="form-control form-control-sm rounded bright search" onkeydown="if (event.keyCode == 13) document.getElementById('marketplaceWorkflowSearchInput').click()">
+                    <i class="os-icon os-icon-search2 search-icon" id="marketplaceWorkflowSearchInput" data-ng-click="getTemplatesByValue()"></i>
+                </div>
+                <div class="row py-3 {{isSmallScreen ? 'desktop-h-40vh' : 'desktop-h-72vh' }}">
+                    <!-- Category Section -->
+                    <div class="col-md-3 pr-3 border-right {{isSmallScreen ? 'desktop-h-38vh' : 'desktop-h-70vh' }}">
+                        <h6 class="font-weight-bold mb-3">{{'category' | translate}}</h6>
+                        <div class="d-flex flex-column {{isSmallScreen ? 'desktop-h-35vh' : 'desktop-h-67vh' }}">
+                            <div class="py-3 border-bottom">
+                                <div class="d-flex justify-content-between align-items-center cursor-pointer" data-ng-click="toggleFilterVisibility()">
+                                    <p class="mb-0 font-weight-bold">{{'filter-and-sort' | translate}}</p>
+                                    <i class="ti-angle-{{isFilterOptionVisible ? 'down' : isRTL() ? 'left' : 'right' }} font-weight-bold"></i>
+                                </div>
+                                <div class="d-flex flex-wrap mt-2" data-ng-show="isFilterOptionVisible">
+                                    <span class="{{filterOrder == 'lastUpdated' ? 'bg-primary-lite text-primary border border-primary' : 'bg-secondary-lite border border-white' }} cursor-pointer rounded px-3 py-1 my-1 mr-2" data-ng-click="setFilterOrder('lastUpdated')">{{'last-updated' | translate}}</span>
+                                    <span class="{{filterOrder == 'asc' ? 'bg-primary-lite text-primary border border-primary' : 'bg-secondary-lite border border-white' }} cursor-pointer rounded px-3 py-1 my-1 mr-2" data-ng-click="setFilterOrder('asc')">A-Z</span>
+                                    <span class="{{filterOrder == 'dsc' ? 'bg-primary-lite text-primary border border-primary' : 'bg-secondary-lite border border-white' }} cursor-pointer rounded px-3 py-1 my-1 mr-2" data-ng-click="setFilterOrder('dsc')">Z-A</span>
+                                </div>
+                            </div>
+                            <div class="my-4 marketplace-sidebar-scroll">
+                                <p class="p-2 my-1 cursor-pointer rounded text-ellipsis {{selectedCategory == 'recommended' ? 'bg-primary-lite text-primary' : '' }}" data-ng-click="setCategory('recommended')" data-ng-show="!isRootAccount" >{{'recommended' | translate}}</p>
+                                <p class="p-2 my-1 cursor-pointer rounded text-ellipsis {{selectedCategory == category ? 'bg-primary-lite text-primary' : '' }}" data-ng-click="setCategory(category)" data-ng-repeat="category in categories" >{{category}}</p>
+                                <p class="text-center py-4" data-ng-show="categories.length == 0">{{ 'no-category-found' | translate}}</p>
+                            </div>
+                        </div>
+            
+                    </div>
+                    <!-- Template Section -->
+                    <div class="col-md-9 pl-4 {{isSmallScreen ? 'desktop-h-38vh' : 'desktop-h-70vh' }}">
+                        <h6 class="font-weight-bold mb-3">{{'templates' | translate}}</h6>
+                        <!-- Templates List -->
+                        <div class="row {{isSmallScreen ? 'desktop-h-36vh' : 'desktop-h-68vh' }} overflow-scroll align-content-start" data-ng-show="searchLoaded">
+                            <!-- Empty Category Fallback -->
+                            <div class="col-12" data-ng-show="selectedCategory == 'recommended' && templateRecommended.length == 0">
+                                <p data-ng-show="!isSearchResultAvailable">{{ 'marketplace-template-empty-recommended-fallback' | translate}} <a href="#/realms/{{realm.realm}}/realm-settings">{{ 'here' | translate}}</a></p>
+                                <div data-ng-show="isSearchResultAvailable">
+                                    {{ 'marketplace-template-empty-fallback' | translate}}
+                                    <div class="cursor-pointer py-2 px-4 my-3 rounded bg-primary text-white width-fit-content" data-ng-click="clearSearchInputValue()">{{'clear-search' | translate}}</div>
+                                </div>
+                            </div>
+                            <div class="col-12" data-ng-show="selectedCategory != 'recommended' && templates.length == 0">
+                                {{ 'marketplace-template-empty-fallback' | translate}}
+                                <div class="cursor-pointer py-2 px-4 my-3 rounded bg-primary text-white width-fit-content" data-ng-click="clearSearchInputValue()">{{'clear-search' | translate}}</div>
+                            </div>
+                            <div class="col-lg-6 pr-2 py-2" data-ng-repeat="template in templates | filter: {workflowCategory : selectedCategory}" data-ng-show="selectedCategory != 'recommended'">
+                                <a class="text-decoration-none text-dark" id="{{template.workflowName.toLowerCase().replaceAll(' ', '-')}}-card" data-ng-click="viewTemplate(template.id, template.workflowName, template.imageURL)">
+                                    <div class="d-flex align-items-center justify-content-between bg-white cursor-pointer border rounded p-2" >
+                                        <div class="d-flex align-items-center" style="width: 94%;">
+                                            <img data-ng-src="{{template.imageURL}}" class="m-1" alt="logo-image" height="48" width="50" />
+                                            <span class="font-weight-bold mx-2 text-ellipsis-2-lines-marketplace" title="{{template.workflowName}}">{{template.workflowName}}</span>
+                                        </div>
+                                        <i class="ti-arrow-{{ isRTL() ? 'left' : 'right'}} font-weight-600"></i>
+                                    </div>
+                                </a>
+                            </div>                                                                                                           
+                            <div class="col-lg-6 pr-2 py-2" data-ng-repeat="template in templateRecommended" data-ng-show="selectedCategory == 'recommended'">
+                                <a class="text-decoration-none text-dark" id="{{template.workflowName.toLowerCase().replaceAll(' ', '-')}}-card" data-ng-click="viewTemplate(template.id, template.workflowName, template.imageURL)">
+                                    <div class="d-flex align-items-center justify-content-between bg-white cursor-pointer border rounded p-2" >
+                                        <div class="d-flex align-items-center" style="width: 94%;">
+                                            <img data-ng-src="{{template.imageURL}}" class="m-1" alt="logo-image" height="48" width="50" />
+                                            <span class="font-weight-bold mx-2 text-ellipsis-2-lines-marketplace">{{template.workflowName}}</span>
+                                        </div>
+                                        <i class="ti-arrow-{{ isRTL() ? 'left' : 'right'}} font-weight-600"></i>
+                                    </div>
+                                </a>
+                            </div>                                                                                                           
+                        </div>
+                        <!-- Loader -->
+                        <div class="col-12 mt-3"  data-ng-show="!searchLoaded">
+                            <kc-loader loadertype="loaderTypeName"></kc-loader>
+                        </div>
+            
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-ng-if="currentTab == 'template-detail'">
+            <div data-ng-controller="KcMarketplaceDetailsCtrl">
+                <div class="sub-top-bar mt-2 shadow-none border-bottom">
+                    <ul>
+                        <li class="nav-item active">
+                            <a id="overview"  class="nav-link cursor-pointer p-3" data-ng-click="setCurrentTab('template-detail', template.workflowName, template.imageURL)">
+                                {{:: 'overview' | translate}}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="flow" class="nav-link cursor-pointer p-3" data-ng-click="setCurrentTab('template-flow', template.workflowName, template.imageURL)">
+                                {{:: 'workflow' | translate}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-8">
+                        <div class="element-wrapper">
+                            <div class="element-box shadow-none border p-3">
+                                <div id="markdown-content" data-ng-show="template.workflowDescription.length > 0"></div>
+                                <div data-ng-show="!template.hasOwnProperty('workflowDescription') || template.workflowDescription.length == 0">{{ 'marketplace-template-description-empty-fallback-value' | translate }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="element-wrapper">
+                            <div class="element-box shadow-none border p-3">
+                                <p class="mb-2 marketplace-install-template-title">{{ 'install-the-template' | translate}}</p>
+                                <p class="marketplace-install-template-desc">{{ 'install-bo-marketplace-template-description' | translate }}</p>
+                                <div data-ng-show="isRootAccount">
+                                    <button class="btn btn-primary w-100 ml-0 mb-2">{{ 'edit-template' | translate}}</button>
+                                    <button class="btn text-danger bg-white w-100 ml-0 text-decoration-underline-hover" data-ng-click="deleteMarketplaceTemplate()">{{'delete-template' | translate}}</button>
+                                </div>
+                                <div data-ng-show="!isRootAccount">
+                                    <!-- <label class="text-muted">{{'name' | translate}} <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control w-100 mb-2" id="install-template-input-name" data-ng-model="installingTemplateName" maxlength="48" /> -->
+                                    <button class="btn btn-primary w-100 ml-0 mb-2" data-ng-click="installMarketplace()" data-ng-disabled="isInstalled">
+                                        <span data-ng-show="!loading" class="text-wrap py-2" style="line-height: 20px;">{{ 'install-template' | translate }}</span>
+                                        <div data-ng-show="loading">
+                                            <kc-action-button-loading></kc-action-button-loading>
+                                        </div>
+                                    </button>
+                                </div>
+                                <p class="my-2 marketplace-install-template-title"  ng-hide="!template.hasOwnProperty('workflowName') || template.templateTag.length == 0 || (template.templateTag.length == 1 && template.templateTag[0].length == 0)">{{ 'tags' | translate}}</p>
+                                <div class="marketplace-bo-tag-container" ng-hide="!template.hasOwnProperty('workflowName') || template.templateTag.length == 0 || (template.templateTag.length == 1 && template.templateTag[0].length == 0)">
+                                    <div class="marketplace-bo-tag" data-ng-repeat="tag in template.templateTag">{{tag}}</div>
+                                </div>
+                                <p ng-hide="!template.hasOwnProperty('workflowName') || templateCountry.length == 0" class="my-2 mt-4 marketplace-install-template-title">{{ 'country' | translate}}</p>
+                                <div ng-hide="!template.hasOwnProperty('workflowName') || templateCountry.length == 0" class="marketplace-bo-tag-container">
+                                    <div class="marketplace-bo-tag" data-ng-repeat="country in templateCountry">{{country.name}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-ng-if="currentTab == 'template-flow'">
+            <div data-ng-controller="KcMarketplaceFlowCtrl">
+                <div class="sub-top-bar mt-2 shadow-none border-bottom">
+                    <ul>
+                        <li class="nav-item">
+                            <a id="overview"  class="nav-link cursor-pointer p-3" data-ng-click="setCurrentTab('template-detail', template.workflowName, template.imageURL)">
+                                {{:: 'overview' | translate}}
+                            </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a id="flow" class="nav-link cursor-pointer p-3" data-ng-click="setCurrentTab('template-flow', template.workflowName, template.imageURL)">
+                                {{:: 'workflow' | translate}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="d-flex mt-3 mb-1" data-ng-show="isRootAccount">
+                    <div class="alert alert-warning rounded w-100 d-flex align-items-center justify-content-between p-2" style="max-width: 100%" role="alert">
+                        <span class="mr-2">{{ 'edit-environment-variable-description' | translate }}</span>
+                        <button class="btn bg-white text-primary" data-ng-click="openActionVariableModal()">
+                            <i class="ti-pencil-alt plus-icon m-0 mr-2"></i>
+                            {{'edit-variable' | translate}}
+                        </button>
+                    </div>
+                </div> 
+                <div class="row mt-3" style="min-height: 395px;">
+                    <kc-create-template  data-ng-if="isTemplateReady" data-ng-init="init(template)"></kc-create-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

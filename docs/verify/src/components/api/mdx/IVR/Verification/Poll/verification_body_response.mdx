@@ -1,0 +1,22 @@
+```json title='Sample request Body'
+{
+  "app_id": "2ed89c16-8cab-44c6-8329-0ac856276586",
+  "app_secret": "your-app-secret",
+  "request": {
+    "user": {
+      "phone": "1234567890",
+      "phoneRegion": "in",
+      "metadata": {
+        "pin": "1234"
+      }
+    },
+    "message": {
+          "metadata": {
+              "ivr_sender": "test",
+              "ivr_purpose_message": "this is a test message",
+              "ivr_validation_message": "please enter value provided for testing under metadata pin"
+          }
+      }
+  }
+}
+ ```

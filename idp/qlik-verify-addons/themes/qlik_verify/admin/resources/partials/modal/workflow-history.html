@@ -1,0 +1,40 @@
+<div class="modal-header">
+	<h5 class="modal-title">{{:: 'history' | translate}}</h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body pb-4 d-flex align-items-center justify-content-center w-100">
+    <div class="workflow-history-container">
+        <div class="workflow-history-started font-size-small"><span>{{'transaction-started' | translate}}</span></div>
+            <ul class="list-unstyled ml-4 worksflow-history-list mb-0 d-flex flex-column align-items-start justify-content-center">
+                <li class="workflow-history-item ml-4 d-flex justify-content-between align-items-center font-size-small" style="margin-bottom:{{getMargin(info.error, info.eventName)}}rem" ng-class="{error : info.error, validator : sanitizeName(info.eventName) === 'VALIDATOR'}" ng-repeat="info in workflowHistory" ng-if="info.eventName !== 'EZ_TRANSACTION_REQUEST_START' && info.eventName !== 'EZ_TRANSACTION_COMPLETED'">
+                    <span class="w-55 overflow-ellipsis text-capitalize"  tooltip="{{info.eventName.replace('EZ_', '').replaceAll('_', ' ')}}" tooltip-placement="top"
+                        tooltip-trigger="mouseover mouseout">
+                        {{sanitizeName(info.eventName)}}
+                    </span>
+                    <div class="history-status-badge px-3 py-2 d-flex align-items-center justify-content-center">
+                        <span class="skipped" ng-show="info.skipped"> 
+                            {{'skipped' | translate}}
+                        </span>
+                        <span class="skipped" ng-show="sanitizeName(info.eventName) === 'VALIDATOR' && !info.skipped">
+                            {{info.direction ? "Left" : "Right" | translate}}
+                        </span>
+                        <span ng-class="{success: !info.error, failed: info.error}" ng-hide="sanitizeName(info.eventName) === 'VALIDATOR' || info.skipped">
+                            {{ info.error ? 'failed' : 'success-badge' | translate}}
+                        </span>
+                    </div>
+                    <span class="history-error" ng-show="sanitizeName(info.eventName) !== 'VALIDATOR'">{{info.error | translate}}</span>
+                </li>
+            </ul>
+            <span class="history-empty" ng-hide="workflowHistory.length > 1 || loading">{{ 'no-data-found' | translate}}</span>
+            <div class="history-empty" ng-show="loading">
+                <div class="spinner-border" role="status"></div>
+            </div>
+            <div class="workflow-history-completed font-size-small">
+                <span>{{'transaction-completed' | translate}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+

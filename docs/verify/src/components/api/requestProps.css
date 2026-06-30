@@ -1,0 +1,18 @@
+.request-props {
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+    align-items: center;
+}
+
+.request-props input, .request-form select{
+    flex: 0.5;
+    border: 1px solid rgba(192, 192, 192, 0.483);
+    border-radius: 3px;
+    padding: 5px
+}
+
+.request-props input:focus, .request-form select:focus{
+    outline: none;
+    border-color: var(--ifm--custom-primary);
+}

@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <h6 class="modal-title" data-ng-if="!isTemplateCreated">{{:: 'create-workflow' | translate}}</h6>
+    <h6 class="modal-title" data-ng-if="isTemplateCreated">{{:: 'new-workflow' | translate}}</h6>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="d-flex align-items-center my-2">
+        <label class="control-label" for="create-template-input" style="white-space: nowrap;">{{:: 'workflow-name' | translate}}</label>
+        <input type="text" maxlength="48" data-ng-disabled="isTemplateCreated" class="form-control ml-3" id="create-template-input" />
+    </div>
+    <div data-ng-if="isTemplateCreated">
+        <kc-create-template></kc-create-template>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" id="create-workflow" data-ng-if="!isTemplateCreated" class="btn btn-primary" ng-click="create()">{{:: 'create' | translate}}</button>
+    <button type="button" id="cancel-workflow" data-ng-if="isTemplateCreated" class="btn btn-primary" ng-click="cancel()">{{:: 'close' | translate}}</button>
+</div>

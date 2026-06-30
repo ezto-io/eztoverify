@@ -1,0 +1,47 @@
+package com.qlikverify.services.theme.responses;
+
+
+public class QlikVerifyResponse<T> {
+    private String message;
+    private String status;
+    private T data;
+
+    public QlikVerifyResponse() {
+    }
+
+    public QlikVerifyResponse(String message, String status) {
+        this.data=null;
+        this.message = message;
+        this.status = status;
+    }
+
+    public QlikVerifyResponse(String message, String status, T data) {
+        this.message = message;
+        this.status = status;
+        this.data = data;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+}

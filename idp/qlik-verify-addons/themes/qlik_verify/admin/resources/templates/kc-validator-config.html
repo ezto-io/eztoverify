@@ -1,0 +1,92 @@
+<div ng-init="init(config, properties)">
+    <!-- Claim Validation Condition -->
+    <div class="mb-3 align-items-center row">
+        <label class="text-muted font-size-14px col-3" for="name-new">{{:: 'validation-condition' | translate}}<span class="text-danger px-1">*</span></label>
+        <div class="col-9">
+            <select class="form-control" data-ng-model="validatorConfigCondition" id="validator-condition">
+                <option value="and"> {{:: 'AND' | translate}}</option>
+                <option value="or"> {{:: 'OR' | translate}}</option>
+            </select>
+        </div>
+    </div>
+    <!-- List of Claim Validators -->
+    <div data-ng-repeat="config in validatorConfig track by $index">
+        <div class="border rounded p-3 mb-2 claim-validation-config-card">
+            <div class="row mb-2">
+                <div class="col-8 mb-3">
+                    <label for="name-new" class="text-muted font-size-14px">{{:: 'claim' | translate}}<span class="text-danger px-1">*</span></label>
+                    <div class="p-0 position-relative w-100">
+                        <input class="w-100 p-2 form-control custom-select pr-4" type="text" ng-click="selectClaim($index, false, true, false)" data-ng-model="config['name']" id="name-{{$index}}" data-ng-change="handleConfigChange($index, config['name'])" placeholder="{{:: 'selectOne' | translate}}" autocomplete="off"/>
+                        <ul class="p-0 list-unstyled form-control mt-2 input-select" ng-if="config.showClaims && searchList.length > 0">
+                            <li class="p-2" ng-repeat="claim in searchList" ng-click="handleConfigChange($parent.$index, claim, false)">{{ claim }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-4" data-ng-show="!availableClaims[config['name']]">
+                    <label for="validation-new" class="text-muted font-size-14px">{{:: 'type' | translate}}<span class="text-danger px-1">*</span></label>
+                    <select class="form-control" data-ng-model="config['type']" id="validation-new" data-ng-disabled="config['name'].length == 0" data-ng-change="clearClaimsOldValueByIndex($index)">
+                        <option value="" disabled> {{:: 'selectOne' | translate}}</option>
+                        <option ng-repeat="type in types" ng-value="type">{{ type | translate }}</option>
+                    </select>
+                </div>
+                <div class="col-4">
+                    <label for="validation-new" class="text-muted font-size-14px">{{:: 'condition' | translate}}<span class="text-danger px-1">*</span></label>
+                    <select class="form-control" data-ng-model="config['validation']" id="validation-{{$index}}" data-ng-disabled="config['name'].length == 0">
+                        <option value="" disabled> {{:: 'selectOne' | translate}}</option>
+                        <option ng-repeat="validation in validatorCondition[config.type]" ng-value="validation">{{ validation | replaceHypenWithSpace }}</option>
+                    </select>
+                </div>
+                <div class="col-8" ng-class="{'col-12' : availableClaims[config['name']]}" ng-if="!ignoreValueConditions.includes(config['validation'])">
+                    <label for="value-new" class="text-muted font-size-14px">{{:: 'value' | translate}}<span class="text-danger px-1">*</span></label>
+                    <input type="text" class="form-control" data-ng-model="config['value']" id="value-{{$index}}" data-ng-if="config['type'] != 'dt'" data-ng-disabled="!config['validation']"/>
+                    <input type="datetime-local" min="1930-01-01T22:22:55" max="2030-01-01T21:25:33" class="form-control" data-ng-model="config['value']" id="value-{{$index}}" data-ng-if="config['type'] == 'dt'"  data-ng-disabled="!config['validation']"/>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end" data-ng-show="validatorConfig.length > 1">
+            <span class="bg-danger-lite cursor-pointer text-danger p-2 d-flex align-items-center" data-ng-click="removeClaimValidator($index)" >
+                <i class="os-icon os-icon-ui-15 plus-icon m-0 mr-1"></i>
+                <span>{{:: 'remove' | translate }}</span>
+            </span>
+        </div>
+        <div class="d-flex justify-content-center align-items-center" ng-show="validatorConfig.length - 1 !== $index">
+            <p class="text-muted font-size-14px">{{ validatorConditionDisplayTxt }}</p>
+        </div>
+    </div>
+    <!-- New Claim Validation -->
+    <div class="border rounded p-3 claim-validation-config-card" ng-show="validatorConfig.length == 0">
+        <div class="row mb-2">
+            <div class="col-8 mb-3">
+                <label for="name-new" class="text-muted font-size-14px">{{:: 'claim' | translate}}<span class="text-danger px-1">*</span></label>
+                <div class="p-0 position-relative w-100">
+                    <input class="w-100 p-2 form-control custom-select pr-4" type="text" ng-click="selectClaim(0, true, true, false)" data-ng-model="newConfig['name']" id="name-{{$index}}" data-ng-change="handleChange($index, newConfig['name'])" placeholder="{{:: 'selectOne' | translate}}" autocomplete="off" />
+                    <ul class="p-0 list-unstyled form-control mt-2 input-select" ng-if="newConfig.showClaims && searchList.length > 0">
+                        <li class="p-2" ng-repeat="claim in searchList" ng-click="handleChange($index, claim)">{{ claim }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-4"  data-ng-show="!availableClaims[newConfig['name']]">
+                <label for="validation-new" class="text-muted font-size-14px">{{:: 'type' | translate}}<span class="text-danger px-1">*</span></label>
+                <select class="form-control" data-ng-model="newConfig['type']" id="validation-new" data-ng-disabled="newConfig['name'].length == 0"  data-ng-change="clearClaimsOldValueByIndex(-1)">
+                    <option value="" disabled> {{:: 'selectOne' | translate}}</option>
+                    <option ng-repeat="type in types" ng-value="type">{{ type | translate }}</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <label for="validation-new" class="text-muted font-size-14px">{{:: 'condition' | translate}}<span class="text-danger px-1">*</span></label>
+                <select class="form-control" data-ng-model="newConfig['validation']" id="validation-new" data-ng-disabled="newConfig['name'].length == 0">
+                    <option value="" disabled> {{:: 'selectOne' | translate}}</option>
+                    <option ng-repeat="validation in validatorCondition[newConfig['type']]" ng-value="validation">{{ validation | replaceHypenWithSpace }}</option>
+                </select>
+            </div>
+            <div class="col-8" ng-class="{'col-12' : availableClaims[newConfig['name']]}" ng-if="!ignoreValueConditions.includes(newConfig['validation'])">
+                <label for="value-new" class="text-muted font-size-14px">{{:: 'value' | translate}}<span class="text-danger px-1">*</span></label>
+                <input type="text" class="form-control" data-ng-model="newConfig['value']" id="value-new"  data-ng-if="newConfig['type'] != 'dt'" data-ng-disabled="!newConfig['validation']"/>
+                <input type="datetime-local" min="1930-01-01T22:22:55" max="2030-01-01T21:25:33" class="form-control" data-ng-model="newConfig['value']" id="value-new" data-ng-if="newConfig['type'] == 'dt'"  data-ng-disabled="!newConfig['validation']"/>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary btn-block mt-4" data-ng-click="addClaimValidator()" data-ng-disabled="!isValidConfig" >
+        {{:: 'add-condition' | translate }}
+    </button>
+</div>

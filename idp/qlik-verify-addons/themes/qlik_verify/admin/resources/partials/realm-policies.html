@@ -1,0 +1,149 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper pb-0">
+                        <div class="element-actions d-flex align-items-center">
+                            <button data-ng-hide="searchLoaded && !searchQueryLoaded && (policies && policies.length===0)" data-ng-click="create()" class="create-btn" id="createPolicyBtn" data-step='{{policies.length !== 0 ? 1 : 0}}' data-title="{{:: 'intro-no-policies-found-title' | translate}}" data-intro="{{:: 'intro-no-policies-found' | translate}}">
+                                    <i class="os-icon os-icon-plus plus-icon"></i>
+                                    {{:: realm.mode === 'bo' ? 'create-rule' : 'create-policy' | translate}}
+                            </button>
+                        </div>
+                        <h1 class="element-header">{{:: realm.mode === 'bo' ? 'rules' : 'policies' | translate}}</h1>
+                        <div class="controls-above-table" ng-if="(searchLoaded &&  policies.length > 0)||(searchLoaded && searchQueryLoaded && (policies && policies.length===0))">
+                            <div class="form-inline justify-content-between">
+                                <div class="form-group">
+                                    <div class="element-search">
+                                        <input class="form-control bg-color-transparent searchTerm" type="text" id="policySeachInput"
+                                            placeholder="{{:: realm.mode === 'bo' ? 'search-rule-placeholder' : 'search-policy-placeholder' | translate}}"
+                                            data-ng-model="query.policyName"
+                                            class="form-control form-control-sm rounded bright search"
+                                            onkeydown="if (event.keyCode == 13) document.getElementById('policySearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="policySearch"
+                                            data-ng-click="searchQuery()"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <select data-ng-model="query.max" ng-change="selectQuery()" id="pagePolicyCount"
+                                        data-ng-options="itemCount for itemCount in [5,10,50,100]"
+                                        data-ng-show="(policies && policies.length > 5 && pageCount===entries) || (entries > 5)"
+                                        class="form-control form-control-sm rounded bright events-admin-search client-list-count-select">
+                                        <option data-ng-repeat="itemCount in [5,10,50,100]"
+                                            data-ng-selected="query.max === itemCount" data-ng-value="itemCount">
+                                            {{ itemCount }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive-md clients-list" ng-if="searchLoaded &&  policies.length > 0">
+                            <table class="table table-light-bordered table-padded w-100 table-layout-fixed">
+                                <thead> </thead>
+                                <tbody class="p-3">
+                                    <tr class="position-relative fadeUp" id="policy-card-{{$index}}" ng-repeat="policy in policies"> 
+                                        <td class="cursor-pointer w-30" id="{{policy.policyName.toLowerCase().replaceAll(' ','-')}}" kc-open="/realms/{{realm.realm}}/policies/{{policy.policyType | lowercase}}/{{policy.id}}">
+                                            <div class="conn-with-logo">
+                                                <div class="social-conn-logo-container">
+                                                    <img alt="" data-ng-if="realm.mode === 'wiam'" data-ng-src="{{resourceUrl}}/themes/img/{{policy.policyType === 'webauthn'? policy.policyType + '-policy.svg'  : policy.policyType + '.svg'}}">
+                                                    <img alt="" data-ng-if="realm.mode === 'ciam'" data-ng-src="{{resourceUrl}}/themes/img/{{policy.policyType === 'webauthn'? policy.policyType + '-policy-ciam.svg'  : policy.policyType + '-ciam.svg'}}">
+                                                    <img alt="" data-ng-if="realm.mode === 'bo'" data-ng-src="{{resourceUrl}}/themes/img/{{policy.policyType === 'webauthn'? policy.policyType + '-policy-bo.svg'  : policy.policyType + '-bo.svg'}}">
+                                                </div>
+                                                <div class="overflow-ellipsis" >
+                                                    <a class="aTagKcOpen header-text-primary" kc-open="/realms/{{realm.realm}}/policies/{{policy.policyType | lowercase}}/{{policy.id}}">
+                                                        <span class="ml-1">{{policy.policyName}}</span>
+                                                    </a>
+                                                    <span ng-if="policy.realmPolicy" class="ng-scope"><strong class="badge badge-danger ng-binding">InBuilt</strong></span>
+                                                </div>
+                                            </div> 
+                                        </td>
+                                        <td class="nowrap w-20 overflow-ellipsis">
+                                            <span class="lighter">
+                                                {{:: 'type' | translate}}: 
+                                            </span>
+                                            <span class="helper-text ml-1" >
+                                                {{ :: policy.policyType | translate }}
+                                            </span>
+                                        </td>
+                                        
+                                        <td class="nowrap w-30">
+                                            <div class="lighter overflow-ellipsis">{{:: 'created-at' | translate}}: 
+                                                <span class="helper-text ml-1">
+                                                    {{policy.createdTimeStamp|timeago}}
+                                                </span>
+                                                
+                                            </div>
+                                        </td> 
+                                        <td class="row-actions w-20">
+                                            <a kc-open="/realms/{{realm.realm}}/policies/{{policy.policyType | lowercase}}/{{policy.id}}">
+                                                <i class="os-icon os-icon-ui-49" id="{{policy.policyName.toLowerCase().replaceAll(' ','-')}}-editIcon" tooltip="{{:: 'edit' | translate}}" tooltip-placement="top"
+                                                tooltip-trigger="mouseover mouseout"></i>
+                                            </a>
+                                            <span data-ng-hide="policy.realmPolicy">
+                                                <a class="danger" data-ng-click="delete(policy)">
+                                                    <i class="os-icon os-icon-ui-15" id="{{policy.policyName.toLowerCase().replaceAll(' ','-')}}-deleteIcon" tooltip="{{:: 'tooltip-delete-label' | translate}}" tooltip-placement="top"
+                                                    tooltip-trigger="mouseover mouseout"></i>
+                                                </a>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <div class="d-flex w-100 fadeUp-delayed"  data-ng-show="(searchLoaded && policies && policies.length > 5)">
+                                            <td class="pl-0 fadeUp-delayed" colspan="3" >
+                                                <p class="mt-1 mr-auto" data-ng-show="(searchLoaded && policies && policies.length > 5 && pageCount===entries) || (searchLoaded && entries > 5)">{{:: 'showing' | translate}} {{startCount}} - {{pageCount}} {{:: 'of' | translate}} {{entries}} {{:: realm.mode === 'bo' ? 'rules' : 'policies' | translate}}</p>
+                                            </td>
+                                            <td class="pr-0 fadeUp-delayed" colspan="9">
+                                                <div  align="right" class="table-nav" data-ng-show="(searchLoaded && policies && policies.length > 5 && pageCount === entries) || (searchLoaded &&entries > 5)">
+                                                    <div class="pagination justify-content-end" data-ng-hide="(entries <= query.max)">
+                                                        <button data-ng-click="firstPage()" id="firstPageBtn" class="btn btn-sm btn-outline-primary table-pagination" ng-disabled="query.first === 0" data-ng-class="query.first === 0 && 'text-muted'" > <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left' }} pagination-icon"></i> <i>{{:: 'first-page' | translate}}</i> 
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-primary table-pagination" id="previousPageBtn" data-ng-click="previousPage()" class="prev" ng-disabled="query.first == 0">
+                                                        <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left' }} pagination-icon" data-ng-class="query.first == 0 && 'text-muted'"></i>
+                                                        <i data-ng-class="query.first == 0 && 'text-muted'"> {{:: 'previous' | translate}} </i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-primary table-pagination pr-0" id="nextPageBtn" data-ng-click="nextPage()" class="next" ng-disabled="pageCount === entries">
+                                                        <i  data-ng-class="pageCount === entries && 'text-muted'"> {{:: 'next' | translate}} </i>
+                                                        <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right' }} pagination-icon mr-0" data-ng-class="pageCount === entries && 'text-muted'"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </div>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <div class="element-box element-box-medium top-align" data-ng-show="searchLoaded && searchQueryLoaded && (policies && policies.length===0)">
+                            <div class="no-entry-svg" data-step="{{searchLoaded && searchQueryLoaded && (policies && policies.length===0)?1:0}}" data-intro="{{:: 'intro-no-policies-found' | translate}}">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'no-policy.svg' : realm.mode === 'ciam' ? 'no-policy-ciam.svg' : 'no-policy-bo.svg' }}" alt="no-policy-img" class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display mt-2">{{:: realm.mode === 'bo' ? 'no-rules-found' : 'no-policy-found' | translate}}</p>
+                                <button class="create-btn no-entry-display cursor-pointer" id="clearSearchBtn" data-ng-click="clearSearch()">
+                                    <i class="os-icon os-icon-close mr-2"></i>
+                                    {{ ::  'clear-search' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="element-box element-box-medium top-align" data-ng-show="searchLoaded && !searchQueryLoaded && (policies && policies.length===0)">
+                            <div class="no-entry-svg" data-step="{{searchLoaded && searchQueryLoaded && (policies && policies.length===0)?1:0}}" data-intro="{{:: 'intro-no-policies-found' | translate}}">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'no-policy.svg' : realm.mode === 'ciam' ? 'no-policy-ciam.svg' : 'no-policy-bo.svg' }}" alt="no-policy-img" class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display mt-2">{{:: realm.mode === 'bo' ? 'no-rules-found' : 'no-policy-found' | translate}}</p>
+                                <button data-ng-click="create()" class="create-btn no-entry-display cursor-pointer" id="createPolicyEmptyBtn" data-step='{{policies.length !== 0 ? 1 : 0}}' data-title="{{:: 'intro-no-policies-found-title' | translate}}" data-intro="{{:: 'intro-no-policies-found' | translate}}">
+                                    <i class="os-icon os-icon-plus plus-icon"></i>
+                                    {{:: realm.mode === 'bo' ? 'create-rule' : 'create-policy' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!(searchLoaded)">
+                <kc-loader loadertype="loaderTypeName" ></kc-loader>
+            </div>
+        </div>
+    </div>
+</div>

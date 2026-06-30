@@ -1,0 +1,22 @@
+<div class="ae-side-menu" ng-controller="AuthTabCtrl">
+    <ul class="ae-main-menu">
+      <li data-ng-class="((path[2] === 'authentication' && path[4] === 'onboarding') || path[5] === 'onboarding') && 'active'">
+        <a href="#/realms/{{realm.realm}}/authentication/installed/onboarding"><i class="os-icon os-icon-user-male-circle2"></i><span>Onboarding <strong class="badge {{counter.onBoardingCount == 0 ? 'badge-danger':'badge-success'}} ng-scope">{{counter.onBoardingCount}}</strong></span></a>
+      </li>
+      <li data-ng-class="((path[2] === 'authentication' && path[4] === 'login') || path[5] === 'login') && 'active'">
+        <a href="#/realms/{{realm.realm}}/authentication/installed/login"><i class="os-icon os-icon-log-in"></i><span>Login <strong class="badge {{counter.loginCount == 0 ? 'badge-danger':'badge-success'}} ng-scope">{{counter.loginCount}}</strong></span></a>
+      </li>
+      <li data-ng-class="((path[2] === 'authentication' && path[4] === 'recovery') || path[5] === 'recovery') && 'active'">
+        <a href="#/realms/{{realm.realm}}/authentication/installed/recovery"><i class="os-icon os-icon-rotate-ccw"></i><span>Recovery <strong class="badge {{counter.recoveryCount == 0 ? 'badge-danger':'badge-success'}} ng-scope">{{counter.recoveryCount}}</strong></span></a>
+      </li>
+      <li data-ng-class="(path[3] === 'mfa') && 'active'">
+        <a href="#/realms/{{realm.realm}}/connections/mfa"><i class="os-icon os-icon-fingerprint"></i><span>MFA <strong class="badge {{counter.mfaCount == 0 ? 'badge-danger':'badge-success'}} ng-scope">{{counter.mfaCount}}</strong></span></a>
+      </li>
+      <li data-ng-class="(path[3] === 'social') && 'active'">
+        <a href="#/realms/{{realm.realm}}/connections/social"><i class="os-icon os-icon-cv-2"></i><span>Social <strong class="badge {{counter.socialCount == 0 ? 'badge-danger':'badge-success'}} ng-scope">{{counter.socialCount}}</strong></span></a>
+      </li>
+      <li data-ng-class="(path[1] === 'user-storage' || path[2] === 'user-storage' || path[3] === 'enterprise') && 'active'">
+        <a href="#/realms/{{realm.realm}}/connections/enterprise"><i class="os-icon os-icon-hierarchy-structure-2"></i><span>Enterprise <strong class="badge {{counter.enterpriseCount  == 0 ? 'badge-danger':'badge-success'}} ng-scope">{{counter.enterpriseCount}}</strong></span></a>
+      </li>
+    </ul>
+  </div>

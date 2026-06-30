@@ -1,0 +1,150 @@
+.propsHolder {
+  margin: 1rem 0;
+  border-bottom: 1px solid rgba(192, 192, 192, 0.353);
+}
+
+.prop-title {
+  padding: 0.5rem 0;
+  margin: 0;
+  font-weight: 600;
+}
+
+.prop {
+  width: 100%;
+  padding: 0.5rem 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+
+.prop p {
+  padding: 0;
+  margin: 0;
+}
+
+.prop-name {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  cursor: pointer;
+}
+
+.prop-name code {
+  font-weight: 600;
+  padding: 0;
+  font-family: monospace;
+  background-color: transparent;
+  font-size: 0.9rem !important;
+}
+
+.prop-name code span {
+  color: rgb(114, 114, 114);
+}
+
+html[data-theme="dark"] .prop-name code span {
+  color: rgb(183, 182, 182);
+}
+.prop-type {
+  color: rgba(109, 109, 109, 0.881);
+  padding: .1rem .4rem;
+}
+
+html[data-theme="dark"] .prop-type {
+  color: rgba(196, 196, 196, 0.881);
+}
+
+.prop-required {
+  color: rgb(251, 40, 40);
+  background-color:#f04c4c12;
+  border-radius: 5px;
+  padding: .1rem .3rem;
+}
+
+.prop-child {
+  padding: 0.3rem 0.3rem;
+  border-radius: 15px;
+  border: 1px solid rgba(192, 192, 192, 0.56);
+  width: max-content;
+  max-width: 100%;
+  transition: all linear 0.2s;
+  margin-top: .8rem;
+}
+
+.prop-child-btn {
+  background-color: transparent;
+  color: rgb(101, 101, 101);
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  gap: 0.3rem;
+}
+
+html[data-theme="dark"] .prop-child-btn {
+  color: rgb(216, 213, 213);
+}
+
+.prop-child-btn-icon {
+  width: 1rem;
+}
+
+.tilt-prop-child-btn-icon {
+  transform: rotate(45deg);
+  margin-bottom: 0.5rem;
+}
+
+.prop-child.prop:first {
+  margin-top: 1rem;
+  background-color: aqua;
+}
+
+.prop-child .prop {
+  border-top: 1px solid rgba(192, 192, 192, 0.353);
+  border-bottom: 0;
+}
+
+.prop-name-bold {
+  font-weight: bold;
+}
+
+.prop-arrows{
+  height: .7rem;
+  width: .7rem;
+  border: none;
+  margin: .5rem 0px;
+  padding: 0;
+}
+
+.params-title {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  gap: .5rem;
+  cursor: pointer;
+}
+
+.api-params-wrapper{
+  padding: 0rem 1rem;
+}
+
+.api-params-child{
+  padding-left: 0.4rem;
+}
+
+.propExample{
+  padding: 0.2rem 0.6rem;
+  display: inline-block;
+  border: solid .5px #D8D8D8;
+  border-radius: 20px;
+  max-width: 100%;
+}
+
+.propExample > span{ 
+  color: rgb(116, 115, 115);
+  font-weight: 600;
+}
+
+.d-flex{
+  display: flex !important;
+}

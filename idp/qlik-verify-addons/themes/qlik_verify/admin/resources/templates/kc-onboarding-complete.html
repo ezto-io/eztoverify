@@ -1,0 +1,39 @@
+<div class="modal-header">
+  <h5 class="modal-title text-capitalize">{{title}} {{::'onboarding-tour-completed' | translate}}</h5>
+  <button type="button" class="close" ng-click="cancel()">
+    <span class="os-icon os-icon-close"></span>
+  </button>
+</div>
+<div class="modal-body tour-modal">
+  <p>
+    {{::'onboarding-tour-completed-before' | translate}} <span class="text-capitalize">{{title}}</span> {{::'onboarding-tour-completed-after' | translate}}
+  </p>
+  <ul class="pl-0 blue-zone-list-container mt-4">
+    <li
+      class="blue-zone-list pb-3"
+      ng-repeat="introDetail in introTours track by $index"
+    >
+      <div class="blue-zone-container">
+        <div>
+          <h4 class="blue-zone-title text-capitalize">
+            {{introDetail.name}} {{::'onboarding-tour' | translate}}
+          </h4>
+          <p class="mb-0">{{introDetail.desc}}</p>
+        </div>
+        <div class="pull-right">
+          <div
+            class="mr-2 mt-2 btn btn-primary text-white cursor-pointer"
+            ng-click="redirectToTour(introDetail.name,introDetail.redirectUri, modalInstance,exitIntro)"
+          >
+            {{::'onboarding-tours-take-tour' | translate}}
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" ng-click="ok()">
+    {{::'onboarding-cancel' | translate}}
+  </button>
+</div>

@@ -1,0 +1,32 @@
+<div class="os-tabs-w mx-1">
+    <div class="sub-top-bar mb-4">
+        <ul class="nav nav-tabs upper">
+            <li data-ng-if="realm.mode != 'bo'" class="nav-item">
+                <a aria-expanded="false" class="nav-link" id="security-defenses-headers" data-ng-class="{active: path[3] == 'headers'}"
+                    href="#/realms/{{realm.realm}}/defense/headers"> {{:: 'headers' |
+                    translate}}</a>
+            </li>
+            <li data-ng-if="realm.mode != 'bo'" class="nav-item">
+                <a aria-expanded="false" class="nav-link" id="black-list" data-ng-class="{active: path[3] == 'black-list'}"
+                   href="#/realms/{{realm.realm}}/defense/black-list"> 
+                   {{:: 'black-list' | translate}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a aria-expanded="false" class="nav-link" id="security-defenses-brute-force-detection" data-ng-class="{active: path[3] == 'brute-force'}"
+                    href="#/realms/{{realm.realm}}/defense/brute-force"> {{:: 'brute-force-detection'
+                    | translate}}</a>
+            </li>
+            <li class="nav-item">
+                <a aria-expanded="false" class="nav-link" id="security-defenses-anomaly-detection" data-ng-class="{active: path[3] == 'anomaly'}"
+                    href="#/realms/{{realm.realm}}/defense/anomaly"> {{:: 'anomaly-detection'
+                    | translate}}</a>
+            </li>
+            <li class="nav-item">
+                <a aria-expanded="false" class="nav-link" id="security-defenses-keys" data-ng-class="{active: path[3] == 'keys'}"
+                   href="#/realms/{{realm.realm}}/defense/keys"> {{:: 'keys'
+                    | translate}}</a>
+            </li>
+        </ul>
+    </div>
+</div>

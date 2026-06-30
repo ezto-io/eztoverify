@@ -1,0 +1,23 @@
+<div class="modal-header">
+	<h5 class="modal-title">{{:: 'details' | translate}}</h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body pb-4">
+	<form>
+		<div>
+			<p ng-if="event.authDetails.clientId"><b>{{:: 'client' | translate}}</b></p>
+			<p ng-if="event.authDetails.clientId">{{event.authDetails.clientId}}</p>
+			<p><b> {{:: 'ip-address' | translate}} </b></p>
+            <p>{{event.authDetails.ipAddress}}</p>
+			<p ng-if="event.error"><b> {{:: 'error' | translate}} </b></p>
+            <p ng-if="event.error">{{:: event.error | translate}}</p>
+			<p ng-if="event.details"><b> {{:: 'additional-details' | translate}} </b></p>
+            <p ng-if="event.details">{{event.details}}</p>
+			<p><b>{{:: 'representation' | translate}}</b></p>
+			<pre ng-bind="{{event.representation}} | json"></pre>
+		</div>
+	</form>
+</div>
+

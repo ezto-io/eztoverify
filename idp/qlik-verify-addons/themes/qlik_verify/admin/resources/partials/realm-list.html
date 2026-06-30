@@ -1,0 +1,160 @@
+<div class="content-w" data-ng-controller="RealmTopNavCtrl" ng-init="init()" >
+    <div class="content-i">
+        <div class="content-box realm-container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper" data-ng-if="current">
+                        <div class="element-actions d-flex align-items-center application-step-1" ng-hide="isLoaded && !realms.length && !query.realmName">
+                            <div data-ng-show="access.createRealm">
+                                <a class="text-decoration-none" href="" ng-click="createNewRealm()">
+                                    <button  id="workspaceCreateBtn"  class="create-btn">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-tenant' | translate}}
+                                    </button>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="element-header">
+                            {{:: 'tenants' | translate}}
+                        </h3>
+                        <div class="controls-above-table mb-4" data-ng-show="isLoaded" ng-if="!isBo">
+                            <div class="form-inline justify-content-between">
+                                <div class="form-group">
+                                    <div class="element-search" data-ng-show="realms && realms.length>0">
+                                        <input id="realmSearchKey" class="form-control bg-color-transparent searchTerm" type="text"
+                                            placeholder="{{:: 'search-realm-placeholder' | translate}}"
+                                            data-ng-model="searchKey"
+                                            class="form-control form-control-sm rounded bright search"
+                                            onkeydown="if (event.keyCode == 13) document.getElementById('realmSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="realmSearch"
+                                            data-ng-click="searchRealm(searchKey)"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <select  data-ng-show="realmcount > 10" data-ng-model="maxValue" ng-change="selectQuery(maxValue)"
+                                        data-ng-options="itemCount for itemCount in [10,20,50,100]"
+                                        class="form-control form-control-sm rounded bright events-admin-search client-list-count-select">
+                                        <option data-ng-repeat="itemCount in [10,20,50,100]"
+                                            data-ng-selected="query.max === itemCount" data-ng-value="itemCount">
+                                            {{ itemCount }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="realm-list-container element-box fadeUp" data-ng-show="isLoaded" >
+                            <div class="controls-above-table mb-4" data-ng-show="isLoaded">
+                                <div class="os-tabs-w" ng-if="isBo">
+                                    <div class="sub-top-bar">
+                                        <ul class="nav nav-tabs upper">
+                                            <li class="nav-item" >
+                                                <a aria-expanded="false" id="sso-tab" class="nav-link" data-ng-class="{active: mode === 'live'}" ng-click="setMode('live')">
+                                                    {{:: 'live' |    translate}}
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a aria-expanded="false" id="iws-tab" class="nav-link" data-ng-class="{active: mode === 'sandbox'}" ng-click="setMode('sandbox')">
+                                                    {{:: 'sandbox-tab' |    translate}}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="form-inline justify-content-between">
+                                            <div class="form-group mr-2">
+                                                <div class="element-search" data-ng-show="realms && realms.length>0">
+                                                    <input id="realmSearchKey" class="form-control bg-color-transparent searchTerm" type="text"
+                                                        placeholder="{{:: 'search-realm-placeholder' | translate}}"
+                                                        data-ng-model="searchKey"
+                                                        class="form-control form-control-sm rounded bright search"
+                                                        onkeydown="if (event.keyCode == 13) document.getElementById('realmSearch').click()">
+                                                    <i class="os-icon os-icon-search2 search-icon" id="realmSearch"
+                                                        data-ng-click="searchRealm(searchKey)"></i>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <select  data-ng-show="realmcount > 10" data-ng-model="maxValue" ng-change="selectQuery(maxValue)"
+                                                    data-ng-options="itemCount for itemCount in [10,20,50,100]"
+                                                    class="form-control form-control-sm rounded bright events-admin-search client-list-count-select">
+                                                    <option data-ng-repeat="itemCount in [10,20,50,100]"
+                                                        data-ng-selected="query.max === itemCount" data-ng-value="itemCount">
+                                                        {{ itemCount }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="realm-list-caption-with-list" data-ng-hide="query.realmName && !realms.length">
+                                 <ul class="realm-list m-0 p-0">
+                                     <li data-ng-repeat="r in realms">
+                                        <a class="text-decoration-none position-relative d-block" href="#/realms/{{r.realm}}">
+                                         <div class="info-card-state px-2 text-ciam-primary border border-dark small" data-ng-if="r.mode == 'ciam' && rootAccountName && rootAccountName.toLowerCase() != r.realm.toLowerCase() && showMode">{{:: 'ciam-label' | translate}}</div>
+                                         <div class="info-card-state px-2 text-wiam-primary border border-success small" data-ng-if="r.mode == 'wiam' && rootAccountName && rootAccountName.toLowerCase() != r.realm.toLowerCase() && showMode">{{:: 'wiam-label' | translate}}</div>
+                                         <div class="info-card-state info-card-state-root bg-danger small" data-ng-if="r.live && rootAccountName && rootAccountName.toLowerCase() === r.realm.toLowerCase()">
+                                            <img data-ng-src="{{resourceUrl+'/themes/img/root-tenant.svg'}}" alt='root tenant logo'/>{{:: 'root-tenant-admin' | translate}}
+                                        </div>
+                                         <button class="realm-list-card" data-ng-class="r.live ? 'realm-list-live-card' : 'realm-list-not-live-card'">
+                                             <div class="realm-list-card-content d-flex flex-column align-items-center justify-content-evenly w-100">
+                                                 <img data-ng-if="r.mode == 'bo'" class="realm-logo mb-1" ng-src="{{r.realmLogo ? getImage(r.realmLogo) : resourceUrl+'/themes/img/eztovrfy-logo.svg'+'?version='+serverVersion}}" alt="logo-img">
+                                                 <img data-ng-if="(r.mode == 'wiam' || r.mode == 'ciam')" class="realm-logo mb-1" ng-src="{{r.realmLogo ? getImage(r.realmLogo) : resourceUrl+'/themes/img/logo.svg'+'?version='+serverVersion}}" alt="logo-img">
+                                                <p class="realm-name-prop m-0 mt-1 p-0 text-truncate w-100 px-2" title="{{r.displayName | capitalize}}"><strong>{{r.displayName | capitalize}}{{realm}}</strong></p>
+                                                <p class="realm-name-prop m-0 mt-2 p-0 text-truncate w-100 px-2 workspace-name" title="{{r.realm | capitalize}}">{{:: 'workspace-key' | translate}} {{r.realm | capitalize}}</p>
+                                             </div>
+                                         </button>
+                                        </a>
+                                     </li>
+                                 </ul>
+                            </div>
+                            <div data-ng-show="query.realmName && !realms.length">
+                                <div class="element-box">
+                                    <div class="no-policy-img"
+                                        data-step='{{searchLoaded && searchQueryLoaded && (clients && clients.length===0)?1:0}}'
+                                        data-intro="{{:: 'intro-no-users-available' | translate}}">
+                                        <img data-ng-src="{{resourceUrl}}/themes/img/{{variant === 'ezto auth' ? 'no-apps.svg' : 'no-apps-bo.svg' }}" alt="no-users-svg"
+                                            class="opacity-40 no-entry-display" />
+                                        <p class="no-results-msg no-entry-display">{{:: 'no-realms' | translate}}</p>
+                                        <a class="text-decoration-none">
+                                            <button id="workspaceCreateBtn" class="create-btn no-entry-display cursor-pointer" data-ng-click="clearSearch()">
+                                                <i class="os-icon os-icon-close mr-2"></i>
+                                                {{ ::  'clear-search' | translate}}
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                data-ng-show="isLoaded && !realms.length && !query.realmName">
+                                <div class="no-policy-img">
+                                    <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'no-apps.svg' : realm.mode === 'ciam' ? 'no-apps-ciam.svg' : 'no-apps-bo.svg' }}" alt="no-apps-svg"
+                                        class="opacity-40 no-entry-display" />
+                                    <p class="no-results-msg no-entry-display">{{:: 'no-workspace' | translate}}</p>
+                                    <a class="text-decoration-none" id="createRealm" href="" ng-click="createNewRealm()">
+                                        <button  id="workspaceCreateBtn"  class="create-btn no-entry-display">
+                                            <i class="os-icon os-icon-plus plus-icon"></i>
+                                            {{:: 'create-tenant' | translate}}
+                                        </button>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                         </div>
+                         <div class="d-flex justify-content-between mt-4" data-ng-hide="(query.realmName && !realms.length) || !isLoaded ">
+                             <div>
+                                <p class="mt-1 mr-auto">{{:: 'showing' | translate}} {{presentIndex + 1}} - {{presentIndex + realms.length}} {{:: 'of' | translate}} {{realmcount}} {{:: 'tenants' | translate}}</p>
+                             </div>
+                             <div data-ng-show="realmcount > query.max" >
+                                <button data-ng-click="firstPage()" class="btn btn-sm btn-outline-primary table-pagination" ng-disabled="query.first === 0" data-ng-class="query.first === 0 && 'text-muted'" > <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left' }} pagination-icon"></i> <i>{{:: 'first-page' | translate}}</i> </button>
+                                <button data-ng-click="previousPage()" class="btn btn-sm btn-outline-primary table-pagination" ng-disabled="query.first === 0" data-ng-class="query.first === 0 && 'text-muted'" ><i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left' }} pagination-icon"></i> <i>{{:: 'previous-page' | translate}}</i> </button>
+                                <button data-ng-click="nextPage()" class="btn btn-sm btn-outline-primary table-pagination pr-0" ng-disabled="(presentIndex + realms.length) === realmcount" data-ng-class="realms.length < query.max && 'text-muted'" > <i>{{:: 'next-page' | translate}}</i> <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right' }} pagination-icon"></i> </button>
+                             </div>
+                        </div>
+                         <div data-ng-show="!isLoaded">
+                            <kc-loader loadertype="loaderTypeName" ></kc-loader>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

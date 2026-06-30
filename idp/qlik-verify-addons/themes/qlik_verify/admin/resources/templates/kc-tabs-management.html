@@ -1,0 +1,43 @@
+<div data-ng-controller="ManagementTabCtrl">
+    <ol class="breadcrumb pl-2">
+        <li>
+            <a href="#/realms/{{realm.realm}}/management" id="backToWorkspaceList">
+                <i
+                    class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{
+                :: 'back-to-workspaces' | translate}}
+            </a>
+        </li>
+    </ol>
+    <div class="role-list-container border-0 d-flex align-items-center gap-1 justify-content-start">
+        <div class="spinner-border spinner-border-sm" role="status" ng-show="loading"></div>
+        <img ng-if="!loading" height="30"
+            ng-src="{{currentRealm.logo ? currentRealm.logo : resourceUrl+'/themes/img/eztovrfy-logo.svg'+'?version='+serverVersion}}"
+            alt="logo-img" />
+        <h3 ng-show="!loading">
+            <span>{{currentRealm.displayName}}</span>
+        </h3>
+        <div class="role-list-container border-0 d-flex align-items-center gap-1 ml-auto justify-content-start" ng-show="path[4] !== 'products' && (master.realm === currentRealmName  && path[4] != null && path[4] === 'api-providers') || (path[4] !== 'products' && path[4] !== 'api-providers' && showSync)">
+            <button id="audit-generateReport" class="btn btn-primary d-flex gap-1 ml-auto" ng-click="syncTenant()">
+                <img ng-class="syncLoading && 'spinner'" id="templateLogo" width="20" data-ng-src="{{resourceUrl}}/img/sync.svg" alt="logo-img">
+                {{:: 'sync' | translate}}
+            </button>
+        </div>
+    </div>
+
+    <div class="sub-top-bar mb-4 mt-2">
+        <ul data-ng-hide="create && !path[4]">
+            <li ng-class="{active: !path[4]}" data-step="1">
+                <a href="#/realms/{{realm.realm}}/management/{{currentRealmName}}" id="workspaceDetailsTab">{{::
+                    'workspace-details' | translate}}</a>
+            </li>
+            <li ng-class="{active: path[4] === 'api-providers'}">
+                <a href="#/realms/{{realm.realm}}/management/{{currentRealmName}}/api-providers" id="apiTab">{{::
+                    'api-providers-tab-title' | translate}}</a>
+            </li>
+            <li ng-class="{active: path[4] === 'products'}" ng-show="showPricing">
+                <a href="#/realms/{{realm.realm}}/management/{{currentRealmName}}/products" id="productTab">{{::
+                    'product-price-tab-title' | translate}}</a>
+            </li>
+        </ul>
+    </div>
+</div>

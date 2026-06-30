@@ -1,0 +1,16 @@
+<div class="os-tabs-w mx-1">
+    <div class="sub-top-bar mb-4">
+        <ul class="nav nav-tabs upper">
+            <li class="nav-item">
+                <a aria-expanded="false" id="email-providers-tab" class="nav-link" data-ng-class="{active: path[3] == 'providers'}"
+                    href="#/realms/{{realm.realm}}/email/providers"> {{:: 'email-providers' |
+                    translate}}</a>
+            </li>
+            <li class="nav-item" ng-if="realm.mode !=='bo'">
+                <a aria-expanded="false" id="email-templates-tab" class="nav-link" data-ng-class="{active: path[3] == 'templates'}"
+                    href="#/realms/{{realm.realm}}/email/templates"> {{:: 'email-templates' |
+                    translate}}</a>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/groups" id="backToGroups">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                            {{ :: 'back-to-groups' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-group></kc-tabs-group>
+                        <div class="element-box">
+                            <form class="form-horizontal clearfix" name="clientForm" novalidate>
+                                <fieldset class="mb-3">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="name">{{:: 'name' | translate}} <span
+                                                class="required">*</span></label>
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" id="name" name="name"
+                                                data-ng-model="group.name" autofocus>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row clearfix block">
+                                        <label class="col-md-3 control-label">{{ :: 'default' | translate }}</label>
+                                        <div class="col-md-9">
+                                            <label for="defaultGroup">
+                                                <div class="os-toggler-w" ng-class="{on: group.defaultGroup}">
+                                                    <div class="os-toggler-i" id="defaultGroup-toggle">
+                                                        <div class="os-toggler-pill" ng-model="group.defaultGroup"
+                                                            name="defaultGroup" id="defaultGroup" onoffswitch>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="form-group row" data-ng-show="group.access.manage">
+                                    <div class="col-md-12 d-flex flex-row-reverse">
+                                        <button kc-save data-ng-disabled="!changed || !group.name" class="ml-3" id="saveBtn">{{::
+                                            'save' | translate}}</button>
+                                        <button kc-reset data-ng-disabled="!changed" data-ng-click="cancel()" id="cancelBtn">{{::
+                                            'cancel' | translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <br>
+                            <div data-ng-controller="GroupTabCtrl">
+                                <h3 class="danger-zone-main-title">{{:: 'danger-zone' | translate}}</h3>
+                                <br>
+                                <ul class="danger-zone-list">
+                                    <li>
+                                        <div class="danger-zone-container">
+                                            <div>
+                                                <h4 class="danger-zone-title">{{:: 'delete-group-title' | translate}}</h4>
+                                                <p  class="mb-0">{{:: 'delete-group-content' | translate}}</p>
+                                            </div>
+                                            <div class="pull-right">
+                                                <button id="removeGroup" class="delete-btn" data-ng-show="access.manageRealm" data-ng-click="removeGroup()">
+                                                    {{::'delete-group-btn'|translate}}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+{
+    "Default": {
+        "desc": "You can choose from the available default fonts in the drop-down menu. These fonts are available within the **Workspace** for easy selection. ",
+        "child": {
+            "Font": { 
+                "desc" : "This setting allows you to modify the font used for displaying content. By clicking on the drop-down, you can select available default fonts, based on your preferences."
+            }    
+        }
+    },
+    "Custom": {
+        "desc":"This option allows you to upload and use your own fonts, either by providing a link or uploading a font file. You can choose fonts from open-source libraries or other sources.",
+        "child":{
+            "Font Link": {
+                "desc": "Enter the font link from an open-source font provider, such as Google Fonts. Example: https://fonts.google.com/share?selection.family=Roboto."
+            },
+            "Font File": {
+                "desc": "Upload the font file that you want to use in your branding."
+            }
+        }
+    }
+}
+

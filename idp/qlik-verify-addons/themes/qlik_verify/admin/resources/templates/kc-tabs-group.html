@@ -1,0 +1,45 @@
+<div data-ng-controller="GroupTabCtrl">
+    <div class="user-details-top action-details pb-0">
+        <div class="text-overflow-control">
+            <div class="flex-start">
+                <h1 class="role-detail-rolename word-break-all">{{group.name|capitalize}}</h1>
+            </div>
+        </div>
+        <div class="pb-2">
+            <button id="groupInvite" class="create-btn" data-ng-show="access.manageRealm"
+                data-ng-hide="changed" data-ng-disabled="!inviteStatus.enable"
+                data-ng-click="inviteGroup()" data-ng-class="{'pointer-events-none opacity-75': !inviteStatus.enable}">
+                <span data-ng-if="inviteStatus.enable" class="d-flex align-items-center"><i
+                        class="os-icon os-icon-user-plus plus-icon"></i> {{:: 'send-group-invite-btn-txt' |
+                    translate}}</span>
+                <div data-ng-if="!inviteStatus.enable">
+                    <kc-action-button-loading></kc-action-button-loading>
+                </div>
+            </button>
+        </div>
+    </div>
+    <div class="os-tabs-w mt-2">
+        <div class="os-tabs-controls">
+            <ul class="nav nav-tabs upper bg-white">
+                <li class="nav-item">
+                    <a aria-expanded="false" id="userGroup-settings" class="nav-link p-3" data-ng-class="{active: !path[4]}"
+                        href="#/realms/{{realm.realm}}/groups/{{group.id}}">
+                        {{:: 'settings' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a aria-expanded="false" id="userGroup-metadata" class="nav-link p-3" data-ng-class="{active: path[4] == 'attributes'}"
+                        href="#/realms/{{realm.realm}}/groups/{{group.id}}/attributes">
+                        {{:: 'meta-data' | translate}}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a aria-expanded="false" id="userGroup-roles" class="nav-link p-3" ng-class="{active: path[4] == 'roles-users'}"
+                        href="#/realms/{{realm.realm}}/groups/{{group.id}}/roles-users">
+                        {{:: 'roles-users' | translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

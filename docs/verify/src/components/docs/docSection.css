@@ -1,0 +1,82 @@
+.doc-section {
+  display: flex;
+  width: 100%;
+  gap: 2rem;
+  justify-content: space-between;
+  margin-bottom: 5rem;
+  align-items: center;
+}
+
+.doc-section-left {
+  flex-direction: row-reverse;
+}
+.doc-section-content-holder {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 40%;
+  gap: 2rem;
+}
+.doc-section-img-holder,.doc-section-lottie-holder {
+  width: 55%;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid silver;
+  box-shadow: var(--custom-image-box-shadow);
+  background-color: white;
+  overflow: hidden;
+}
+
+.doc-section-img {
+  border-radius: 1rem;
+  background: transparent;
+  object-fit: fill;
+  width: 99%;
+}
+.doc-section-content {
+  text-align: justify;
+  font-size: 1rem;
+}
+
+.doc-section-header {
+  display: flex;
+  min-height: 3rem;
+  gap: 1rem;
+  align-items: center;
+}
+
+.doc-section-title {
+  margin: 0;
+  color: var(--doc-section-heading);
+}
+.doc-section-icon {
+  width: 2rem;
+  display: block;
+  height: 2rem;
+  background-color: white;
+  border-radius: 15px;
+  border: 2px var(--ifm--custom-primary-darker) dotted;
+  padding: 10px;
+  box-sizing: content-box;
+}
+
+.doc-section-highlight {
+  font-weight: 600;
+  padding-right: 0.5rem;
+}
+
+.text-decoration-none:hover {
+  text-decoration: none !important;
+}
+
+@media screen and (max-width: 980px) {
+  .doc-section {
+    flex-wrap: wrap;
+  }
+  .doc-section-content-holder, .doc-section-img-holder, .doc-section-lottie-holder{
+    width: 100%;
+  }
+}
+

@@ -1,0 +1,191 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <h3 class="element-header">
+                            {{ :: 'realm-tab-security-defenses' | translate }}
+                        </h3>
+                        <kc-tabs-securitydefenses></kc-tabs-securitydefenses>
+                        <div class="element-box py-5">
+                            <form class="form-horizontal" name="realmForm" novalidate
+                                kc-read-only="!access.manageRealm">
+                                <fieldset class="mt-0">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label" for="bruteForceProtected">{{:: 'enabled' |
+                                            translate}}</label>
+                                        <div class="col-md-9">
+                                            <label>
+                                                <div  class="os-toggler-w" ng-class="{on: realm.bruteForceProtected}">
+                                                  <div class="os-toggler-i"   id="bruteForceProtected-toggle">
+                                                    <div class="os-toggler-pill" ng-model="realm.bruteForceProtected" name="bruteForceProtected"
+                                                    id="bruteForceProtected" onoffswitch>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                            </label>
+                                            <!-- <input ng-model="realm.bruteForceProtected" name="bruteForceProtected"
+                                                id="bruteForceProtected" onoffswitch
+                                                on-text="{{:: 'onText' | translate}}"
+                                                off-text="{{:: 'offText' | translate}}" /> -->
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" data-ng-show="realm.bruteForceProtected">
+                                        <label class="col-md-3 control-label" for="permanentLockout">{{::
+                                            'permanent-lockout' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <label>
+                                                <div  class="os-toggler-w" ng-class="{on: realm.permanentLockout}">
+                                                  <div class="os-toggler-i"  id="permanentLockout-toggle">
+                                                    <div class="os-toggler-pill" ng-model="realm.permanentLockout" name="permanentLockout"
+                                                    id="permanentLockout" onoffswitch>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                            </label>
+                                            <!-- <input ng-model="realm.permanentLockout" name="permanentLockout"
+                                                id="permanentLockout" onoffswitch on-text="{{:: 'onText' | translate}}"
+                                                off-text="{{:: 'offText' | translate}}" /> -->
+                                        </div>
+                                        <kc-tooltip>{{:: 'permanent-lockout.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+
+                                    <div class="form-group row" data-ng-show="realm.bruteForceProtected">
+                                        <label class="col-md-3 control-label" for="failureFactor">{{::
+                                            'max-login-failures' | translate}}</label>
+
+                                        <div class="col-md-9">
+                                            <input class="form-control " type="number" min="1" max="31536000"
+                                                id="failureFactor" name="failureFactor"
+                                                data-ng-model="realm.failureFactor" autofocus required>
+                                        </div>
+                                        <kc-tooltip>{{:: 'max-login-failures.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row"
+                                        data-ng-show="realm.bruteForceProtected && !realm.permanentLockout">
+                                        <label class="col-md-3 control-label" for="waitIncrement">{{:: 'wait-increment'
+                                            | translate}}</label>
+                                        <div class="col-md-9 row pr-0">
+                                            <div class="col-md-6" >
+                                                <input class="form-control mr-1" type="number" required min="1" max="31536000"
+                                                data-ng-model="realm.waitIncrement" id="waitIncrement"
+                                                name="waitIncrement" />
+                                            </div>
+                                            <div class="col-md-6 pr-0" >
+                                                <select class="form-control" name="waitIncrementUnit" id="waitIncrement-timeSelector"
+                                                data-ng-model="realm.waitIncrementUnit">
+                                                <option data-ng-selected="!realm.waitIncrementUnit" value="Seconds">{{::
+                                                    'seconds' | translate}}</option>
+                                                <option value="Minutes">{{:: 'minutes' | translate}}</option>
+                                                <option value="Hours">{{:: 'hours' | translate}}</option>
+                                                <option value="Days">{{:: 'days' | translate}}</option>
+                                            </select>
+                                            </div>
+                                        </div>
+                                        <kc-tooltip>{{:: 'wait-increment.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row" data-ng-show="realm.bruteForceProtected">
+                                        <label class="col-md-3 control-label" for="quickLoginCheckMilliSeconds">{{::
+                                            'quick-login-check-millis' | translate}}</label>
+
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="number" min="1" max="31536000"
+                                                id="quickLoginCheckMilliSeconds" name="quickLoginCheckMilliSeconds"
+                                                data-ng-model="realm.quickLoginCheckMilliSeconds" autofocus required>
+                                        </div>
+                                        <kc-tooltip>{{:: 'quick-login-check-millis.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row" data-ng-show="realm.bruteForceProtected">
+                                        <label class="col-md-3 control-label" for="minimumQuickLoginWait">{{::
+                                            'min-quick-login-wait' | translate}}</label>
+                                        <div class="col-md-9 row pr-0">
+                                            <div class="col-md-6">
+                                                <input class="form-control mr-1 w-100" type="number" required min="1" max="31536000"
+                                                data-ng-model="realm.minimumQuickLoginWait" id="minimumQuickLoginWait"
+                                                name="minimumQuickLoginWait" />
+                                            </div>
+                                            <div class="col-md-6 pr-0" >
+                                                <select class="form-control w-100" name="minimumQuickLoginWaitUnit" id="minimumQuickLoginWait-timeSelector"
+                                                data-ng-model="realm.minimumQuickLoginWaitUnit">
+                                                <option data-ng-selected="!realm.minimumQuickLoginWaitUnit"
+                                                    value="Seconds">{{:: 'seconds' | translate}}</option>
+                                                <option value="Minutes">{{:: 'minutes' | translate}}</option>
+                                                <option value="Hours">{{:: 'hours' | translate}}</option>
+                                                <option value="Days">{{:: 'days' | translate}}</option>
+                                            </select>
+                                            </div>
+                                        </div>
+                                        <kc-tooltip>{{:: 'min-quick-login-wait.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row"
+                                        data-ng-show="realm.bruteForceProtected && !realm.permanentLockout">
+                                        <label class="col-md-3 control-label" for="maxFailureWait">{{:: 'max-wait' |
+                                            translate}}</label>
+                                        <div class="col-md-9 row pr-0">
+                                            <div class="col-md-6">
+                                                <input class="form-control mr-1 w-100" type="number" required min="1" max="31536000"
+                                                data-ng-model="realm.maxFailureWait" id="maxFailureWait"
+                                                name="maxFailureWait" />
+                                            </div>
+                                            <div class="col-md-6 pr-0">
+                                                <select class="form-control w-100" name="maxFailureWaitUnit" id="maxFailureWait-timeSelector"
+                                                data-ng-model="realm.maxFailureWaitUnit">
+                                                <option data-ng-selected="!realm.maxFailureWaitUnit" value="Seconds">
+                                                    {{:: 'seconds' | translate}}</option>
+                                                <option value="Minutes">{{:: 'minutes' | translate}}</option>
+                                                <option value="Hours">{{:: 'hours' | translate}}</option>
+                                                <option value="Days">{{:: 'days' | translate}}</option>
+                                            </select>
+                                            </div>
+                                        </div>
+                                        <kc-tooltip>{{:: 'max-wait.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                    <div class="form-group row"
+                                        data-ng-show="realm.bruteForceProtected && !realm.permanentLockout">
+                                        <label class="col-md-3 control-label" for="maxDeltaTime">{{::
+                                            'failure-reset-time' | translate}}</label>
+                                        <div class="col-md-9 row pr-0">
+                                            <div class="col-md-6">
+                                                <input class="form-control mr-1 w-100" type="number" required min="1" max="31536000"
+                                                data-ng-model="realm.maxDeltaTime" id="maxDeltaTime"
+                                                name="maxDeltaTime" />
+                                            </div>
+                                            <div class="col-md-6 pr-0">
+                                                <select class="form-control w-100" name="maxDeltaTimeUnit" id="maxDeltaTime-timeSelector"
+                                                data-ng-model="realm.maxDeltaTimeUnit">
+                                                <option data-ng-selected="!realm.maxDeltaTimeUnit" value="Seconds">{{::
+                                                    'seconds' | translate}}</option>
+                                                <option value="Minutes">{{:: 'minutes' | translate}}</option>
+                                                <option value="Hours">{{:: 'hours' | translate}}</option>
+                                                <option value="Days">{{:: 'days' | translate}}</option>
+                                            </select>
+                                            </div>
+                                            
+                                        </div>
+                                        <kc-tooltip>{{:: 'failure-reset-time.tooltip' | translate}}</kc-tooltip>
+                                    </div>
+                                </fieldset>
+
+                                <div class="form-buttons-w border-top-0" data-ng-show="access.manageRealm">
+                                    <div class="col-md-12 d-flex flex-row-reverse">
+                                        <button class="ml-3" kc-save data-ng-disabled="!changed" id="saveBtn">
+                                            <span ng-show=" stage === 1 " >{{:: 'save' | translate}}</span>
+                                            <div ng-show=" stage === 2 ">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </div>
+                                        </button>
+                                        <button id="cancelBtn" kc-reset data-ng-disabled="!changed">{{:: 'cancel' |
+                                            translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!--END - Grid of tablo statistics-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

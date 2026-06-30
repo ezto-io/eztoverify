@@ -1,0 +1,12 @@
+<div class="modal-header">
+	<h5 class="modal-title">{{:: 'key-detail' | translate}}</h5>
+    <button type="button"  class="close" id="closeIcon" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body key-detail-modal pb-5">
+      <div class="pb-3 px-3 pt-5 position-relative key-details-container">
+        <i id="copyIcon" class="btn btn-primary px-3 py-1 os-icon os-icon-copy copy-paste-icon snippet-copy-icon position-absolute text-white cursor-pointer key-copy-icon" data-ng-click="copyToClipboard('#key')"  tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="hover mouseover mouseout" ng-init="init()"></i>
+        <div class="scrollbar-none key-details" id="key">{{key}}</div>
+    </div>
+</div>

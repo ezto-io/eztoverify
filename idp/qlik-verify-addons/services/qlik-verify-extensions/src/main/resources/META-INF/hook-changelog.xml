@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="lokesh.ravichandru@grootan.com" id="hook-1.0">
+
+        <createTable tableName="HOOK">
+            <column name="ID" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="KEY" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CHAT_CODE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REALM_ID" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="HOOK_RESULT" type="VARCHAR(4000)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="CREATED_TIME" type="BIGINT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="HOOK" indexName="IDX_QV_HOOK_CREATED_TIME">
+            <column name="CREATED_TIME" type="BIGINT" />
+        </createIndex>
+
+        <addPrimaryKey
+            constraintName="PK_HOOK"
+            tableName="HOOK"
+            columnNames="ID"
+        />
+
+    </changeSet>
+    
+</databaseChangeLog>

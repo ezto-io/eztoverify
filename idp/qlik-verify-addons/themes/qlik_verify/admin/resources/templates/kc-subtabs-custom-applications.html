@@ -1,0 +1,31 @@
+<div class="os-tabs-w mx-1">
+    <div class="subtabs-top-bar mt-2">
+        <ul class="nav nav-subtabs-upper">
+            <li class="nav-item">
+                <a aria-expanded="false" id="highSecure-tab" class="nav-link" data-ng-class="{active: path[4] == 'high-secure'}" href="#/realms/{{realm.realm}}/clients/type/high-secure"> 
+                    {{:: 'highSecure' | translate}} 
+                </a>
+            </li>
+            <li class="nav-item">
+                <a aria-expanded="false" id="saml-tab" class="nav-link" data-ng-class="{active: path[4] == 'saml'}" href="#/realms/{{realm.realm}}/clients/type/saml"> 
+                    {{:: 'saml-tab' | translate}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a aria-expanded="false" id="restAPI-tab" class="nav-link" data-ng-class="{active: path[4] == 'rest-api'}" href="#/realms/{{realm.realm}}/clients/type/rest-api"> 
+                    {{:: 'restAPI' | translate}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a aria-expanded="false" id="machineToMachine-tab" class="nav-link" data-ng-class="{active: path[4] == 'machine-to-machine'}" href="#/realms/{{realm.realm}}/clients/type/machine-to-machine">
+                    {{:: 'machineToMachine' | translate}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a aria-expanded="false" id="browserBased-tab" class="nav-link" data-ng-class="{active: path[4] == 'browser-based'}" href="#/realms/{{realm.realm}}/clients/type/browser-based"> {{:: 'browserBased' |
+                    translate}}
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

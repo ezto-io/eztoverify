@@ -1,0 +1,81 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{title}}</h5>
+</div>
+<div class="modal-body mb-4">
+  <div class="rounded border position-relative workspace-input-group">
+    <textarea is="highlighted-code" cols="75" rows="12" language="json" tab-size="2"
+      class="workspace-input hide-scroll-bar px-1 py-2" id="action-variables" ng-trim="true" placeholder="" ng-model="actionVariables" name="actionVariables" data-ng-change="enableButton()">{{actionVariables}}</textarea>
+  </div>
+  <div class="helper-text panel-config-info warning-config p-16">
+    <p>
+      {{:: 'action-variables-placeholder' | translate}}
+    </p>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+  <button type="button" class="btn btn-primary" ng-disabled="saveBtnDisabled" ng-click="save()">{{:: 'save' | translate}}</button>
+</div>
+<script type="module" defer>
+
+  $(document).ready(function () {
+    const placeHolder = {
+      "login": {
+        "client_id": "XXXXXXXXXX",
+        "client_secret": "XXXXXXXXXX"
+      },
+      "registration": {
+        "client_id": "XXXXXXXXXX",
+        "client_secret": "XXXXXXXXXX"
+      },
+      "access_token": "XXXXXXXXXX"
+    };
+
+    $("#action-variables").attr("placeholder", JSON.stringify(placeHolder, null, 2));
+
+    function isValidJSON(str) {
+      // Check for valid JSON format using a regular expression
+      const jsonPattern = /^[\],:{}\s]*$/;
+      const jsonString = str.replace(/\\["\\\/bfnrtu]/g, '@')
+        .replace(/"[^"\\\n]*(\\["\\\/bfnrtu][^"\\\n]*)*"/g, ']')
+        .replace(/(?:^|:|,)(?:\s*\[)+/g, '')
+        .replace(/(?:^|:|,)(?:\s*\{)+/g, '')
+        .replace(/(?:^|:|,)(?:\s*[\d.-]+)(?=\s*[\],}])/g, '')
+        .replace(/(?:^|:|,)(?:\s*true|false|null)(?=\s*[\],}])/g, '');
+
+      console.log(jsonPattern.test(jsonString));
+      return jsonPattern.test(jsonString);
+    }
+
+
+    $("#action-variables").on('blur', function () {
+      if (isValidJSON($("#action-variables").val())) {
+        try {
+          let input = $("#action-variables").val().trim();
+          if (input.replace(/\s+/g, '') === '' || input.replace(/\s+/g, '') === '{}') {
+            return;
+          }
+
+          // Check if any value in the JSON is an empty object
+          const parsedData = JSON.parse(input);
+          const hasEmptyObject = Object.values(parsedData).some(value =>
+            typeof value === 'object' && value !== null && Object.keys(value).length === 0
+          );
+
+          if (!hasEmptyObject) {
+            const prettifiedJson = JSON.stringify(parsedData, null, 2);
+            $("#action-variables").val(prettifiedJson);
+            $('#action-variables').change();
+          }
+        } catch (error) {
+        }
+      }
+    });
+  });
+
+  (async ({ chrome, netscape }) => {
+    if (!chrome && !netscape) await import('https://unpkg.com/@ungap/custom-elements'); const { default: HighlightedCode } = await import('https://unpkg.com/highlighted-code'); HighlightedCode.useTheme('github');
+  })(self);
+
+
+</script>

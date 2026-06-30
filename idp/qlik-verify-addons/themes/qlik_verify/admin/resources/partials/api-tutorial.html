@@ -1,0 +1,56 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="element-box">
+                            <p class="helper-text w-100">
+                                {{:: 'select-the-category-api' | translate}}
+                            </p>
+                            <ul class="d-flex gap-1 list-unstyled ">
+                                <li class="api-category-tag" ng-repeat="category in apiCategories" ng-class="{active : category === selectedCategory}" ng-click="handleCategoryChange(category)" id="{{category}}">
+                                    {{:: category | translate}}
+                                </li>
+                            </ul>
+                            <div class="d-flex mt-4 gap-1">
+                                <div class="w-50 bg-gray px-3 py-2 border-radius-4px">
+                                    <ul class="list-unstyled d-flex flex-column gap-1">
+                                        <li ng-repeat="data in apiData[selectedCategory]" class="api-tag">
+                                            <div class="d-flex align-items-center gap-1" ng-click="openTag(data.tagName)">
+                                                <i class="os-icon os-icon-arrow-right4 api-tag-icon" ng-show="openedTag !== data.tagName"></i>
+                                                <i class="os-icon os-icon-arrow-down4 api-tag-icon" ng-show="openedTag === data.tagName"></i>
+                                                <span class="api-tag-name">{{:: data.tagName | translate}}</span>
+                                            </div>
+                                            <ul class="d-flex list-unstyled flex-wrap" ng-show="openedTag === data.tagName">
+                                                <li class="api-category-tag mt-2 mr-2" ng-repeat="api in data.apis" >
+                                                    {{:: api | translate}}
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="w-50">
+                                    <div class="px-2 d-flex justify-content-between align-items-center mb-2">
+                                         <p class="font-weight-bolder m-0">{{::'curl-for-the-selected-api' | translate}}</p>
+                                         <div>
+                                            <span>{{::'language' | translate}}</span>
+                                            <select class="api-category-tag border-radius-4px py-1">
+                                                <option ng-repeat="language in supportedLanguages">{{:: language | translate}}</option>
+                                            </select>
+                                            <button class="btn-primary btn lh-normal px-2 py-1 btn-sm font-normal">{{::'test' | translate}}</button>
+                                         </div>
+                                    </div>
+                                    <div class="api-curl-box d-flex align-items-center justify-content-center border-radius-4px">
+                                        <p class="text-white">{{:: 'select-the-api-for-curl' | translate}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

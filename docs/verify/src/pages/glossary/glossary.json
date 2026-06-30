@@ -1,0 +1,212 @@
+[
+    {
+        "title":"Authentication Way",
+        "desc":"It is how users verify their identity and **ezto** **verify** typically offers various authentication methods, such as [Mobile,](/docs/EV/applications/applicationexecution/Mobile) [IVR](/docs/EV/applications/applicationexecution/IVR) (Interactive Voice Response) verification, and [Web.](/docs/EV/applications/applicationexecution/Web) Select the method that best suits your use case and your users' preferences. This choice may influence the user experience and security of your application.",
+        "link":""
+    },
+    {
+        "title":"Access Token",
+        "desc":"A credential utilized by an application to gain access to an API, serving as an authorization indicator that confirms the bearer's permission to interact with the API and execute particular actions.",
+        "link":""
+    },
+    {
+        "title":"Actions",
+        "desc":"Actions serve as a pivotal means for customizing and expanding capabilities within a system by implementing bespoke logic tailored to specific needs and requirements. This empowers users to fine-tune the functionality and behavior of the system.",
+        "link":""
+    },
+    {
+        "title":"Application",
+        "desc":"This the central hub for managing and customizing your verification services. It serves as the cornerstone of your interaction with the ezto auth platform, offering a range of features and settings to ensure a seamless and secure verification experience.",
+        "link":"/docs/EV/applications/Overview"
+    },
+    {
+        "title":"Activity",
+        "desc":"It encompasses a wide range of actions, operations, and interactions. These activities play a vital role in the management and oversight of verification processes, guaranteeing their smooth execution, security, and alignment with your specified requirements.",
+        "link":"/docs/EV/workspace/Workspace Activity"
+    },
+    {
+        "title":"App ID",
+        "desc":"This is a unique identifier generated for an [application](/docs/EV/applications/Overview) to distinguish it from others. It serves as a means to reference and manage the application within a system or platform.",
+        "link":""
+    },
+    {
+        "title":"App Secret",
+        "desc":"An App Secret is a confidential and integral piece of information employed to authenticate and ensure security within an application. Its primary purpose lies in verifying the [application's](/docs/EV/applications/Overview) identity during interactions with external services or APIs, and it is safeguarded as a precautionary measure to thwart unauthorized access.",
+        "link":""
+    },
+    {
+        "title":"Audit",
+        "desc":"This serves as a comprehensive record(logs) of all actions executed within the [dashboard,](/docs/EV/workspace/Dashboard) offering detailed information to empower organizations to operate with greater effectiveness and responsibility, facilitating continuous improvement.",
+        "link":"/docs/EV/audit/Overview"
+    },
+    {
+        "title":"Admin",
+        "desc":"A **Workspace** **Admin** in **ezto** **verify**, refers to the primary account creator and the individuals designated as co-administrators within the workspace. During the initial setup of a Workspace, users are given the opportunity to appoint co-administrators.",
+        "link":"/docs/EV/workspace/workspacesettings/Workspace Admins"
+    },
+    {
+        "title":"Account Usage",
+        "desc":"Account Usage section provides users with detailed insights into their usage metrics. This section offers information regarding the utilization of various services, including **Transaction,** **Emails,** **SMS,** and **WhatsApp,** within the **ezto** **verify** platform.",
+        "link":"/docs/EV/workspace/workspacesettings/Subscription"
+    },
+    {
+        "title":"Account Status",
+        "desc":"Account Status, encompasses a comprehensive collection of information and metrics regarding various aspects of an account's usage and performance. This includes details related to WhatsApp usage, transaction statistics, email activity, and SMS.",
+        "link":"/docs/EV/workspace/workspacesettings/Subscription"
+    },
+    {
+        "title":"Anomaly Detection",
+        "desc":"It is a data analysis technique that involves identifying uncommon or a typical occurrences within a dataset that largely consists of typical or expected data points. This method is employed to pinpoint rare or unusual events or patterns within **ezto** **verify,** which can be crucial for tasks such as problem detection and fraud prevention.",
+        "link":"/docs/EV/securitydefenses/Anomaly Detection"
+    },
+    {
+        "title":"Admin Logs",
+        "desc":"Admin Logs are dedicated record or log page that tracks and displays all actions associated with administrators. These logs provide detailed information, including the timestamp (TIME), the type of action (TYPE), the user responsible for the action (USER), and the type of resource or element affected by the action (RESOURCE TYPE).",
+        "link":"/docs/EV/audit/Overview"
+    },
+    {
+        "title":"Bruteforce Detection",
+        "desc":"This is a crucial cybersecurity mechanism designed to monitor login attempts and detect indications of brute force attacks. These attacks involve adversaries attempting numerous password guesses systematically or attacks that occur from a single IP address and target a single user account.",
+        "link":"/docs/EV/securitydefenses/Brute%20Force%20Detection/"
+    },
+    {
+        "title":"Branding",
+        "desc":"The process of tailoring the visual identity and user interface of the **ezto** **verify** platform to align with an organization's branding preferences and user expectations. By customizing **ezto** **verify** resources, organizations can create a consistent and recognizable user experience that instills confidence among users, emphasizing the platform's reputation as a secure and reputable service provider.",
+        "link":"/docs/EV/brandings/Overview"
+    },
+    {
+        "title":"Custom Domain",
+        "desc":"The capability of personalizing your [Workspace](/docs/EV/workspace/Overview) URL by replacing the default domain name with a custom and user-defined domain name.",
+        "link":"/docs/EV/workspace/workspacesettings/DNS/Create Custom DNS"
+    },
+    {
+        "title":"Claims",
+        "desc":"An attribute contained within a security token represents a statement or assertion made by the issuer of the token regarding a specific entity. This field is available in all **ezto** **verify** templates.",
+        "link":""
+    },
+    {
+        "title":"Consent",
+        "desc":"Consent, within the context of onboarding and verification processes, is the formal agreement or authorization obtained from a user before proceeding with specific actions, such as onboarding onto a platform or conducting verification procedures.",
+        "link":""
+    },
+    {
+        "title":"Configuration",
+        "desc":"Specifying, setting, or customizing the operational parameters, settings, or attributes of an [application](/docs/EV/applications/Overview) or [template](/docs/EV/templates/Overview) to tailor its behavior or functionality to specific requirements. It encompasses the arrangement and adjustment of various components to optimize performance, security, and functionality.",
+        "link":""
+    },
+    {
+        "title":"Docs",
+        "desc":"Docs refers to a set of written materials and resources that provide comprehensive information, specifications, and instructions about our product, process, and service.",
+        "link":""
+    },
+    {
+        "title":"Developers",
+        "desc":"Developers may handle confidential information such as App IDs and App Secrets of an [application.](/docs/EV/applications/Overview) These are critical components of secure authentication and data exchange processes, ensuring that applications can interact with servers and APIs in a protected and trusted manner.",
+        "link":""
+    },
+    {
+        "title":"Decryption",
+        "desc":"Converting encrypted or coded information back into its original, human-readable form. It is the reverse operation of encryption, where data is transformed into a secure and unreadable format to protect it from unauthorized access.",
+        "link":"/docs/EV/applications/encdyc/Decryption Execution"
+    },
+    {
+        "title":"Default",
+        "desc":"Refers as a predefined or standard setting, state, or value that is automatically applied when no specific alternative or user-defined choice is made. In various contexts, default settings serve as a starting point or a fallback option when a user or system does not provide explicit instructions or preferences.",
+        "link":""
+    },
+    {
+        "title":"Email Provider",
+        "desc":"Feature or component within an application or system that is specifically designed to facilitate the integration of various email service providers. Its primary purpose is to manage and streamline the process of sending and receiving email notifications by enabling communication via email.",
+        "link":"/docs/EV/notifications/email/emailproviders/Create%20Email%20Provider/"
+    },
+    {
+        "title":"Encryption",
+        "desc":"Encryption is a process of converting plaintext or readable data into an unreadable format known as ciphertext, using encryption algorithms and cryptographic keys. The primary purpose of encryption is to protect sensitive information and ensure data confidentiality.",
+        "link":"/docs/EV/applications/encdyc/Encryption Execution"
+    },
+    {
+        "title":"Firebase JSON",
+        "desc":"Firebase JSON is the data format employed within Firebase, a widely used mobile and web application development platform developed by Google. It relies on JSON to manage and transmit data within Firebase, granting developers the capability to structure and manipulate data in a manner that is both hierarchical and readily accessible.",
+        "link":""
+    },
+    {
+        "title":"IVR",
+        "desc":"Interactive Voice Response (IVR) is an automated telephony technology that enables interactions between callers and computer systems through voice or keypad inputs. IVR is used as a high secured transaction process in **ezto** **verify**.",
+        "link":""
+    },
+    {
+        "title":"IDP",
+        "desc":"An Identity Provider (IDP) serves as a reliable online service or system tasked with the authentication and validation of users or entities, granting them secure access to a variety of applications, services, or resources.",
+        "link":""
+    },
+    {
+        "title":"Keys",
+        "desc":"Keys, in the realm of information security, are cryptographic components used to secure digital communication, protect data, verify identities, and uphold the core principles of information security: confidentiality, integrity, and authenticity. Keys are instrumental in encryption and decryption processes, serving as secret codes or parameters that govern how data is transformed into a secure format and back to its original state.",
+        "link":"/docs/EV/securitydefenses/keys/Overview"
+    },
+    {
+        "title":"Logs",
+        "desc":"Logs are chronological records or entries that capture specific events, activities, or transactions within a computer system, network, application, or device. Logs are essential for monitoring, troubleshooting, auditing, and security analysis, providing a historical record of system behavior and user interactions.",
+        "link":"/docs/EV/audit/Overview"
+    },
+    {
+        "title":"Mobile",
+        "desc":"This is one of the authentication methods used by the **ezto** **verify** application to verify the identity of users. This method involves the use of mobile devices, as a means to confirm a user's identity and grant them access to the application or services provided by **ezto** **verify.**",
+        "link":"/docs/EV/applications/applicationexecution/Mobile"
+    },
+    {
+        "title":"Push",
+        "desc":"Once a task or process has finished, you can review its outcomes by making a API request to the designated endpoint where the results are available. This endpoint typically holds the data generated from the completed process, allowing you to retrieve and analyze the relevant information.",
+        "link":"/docs/EV/applications/applicationdetails/Configurations/overview"
+    },
+    {
+        "title":"Ping",
+        "desc":"Ping is employed to verify the accessibility and response duration of a network-connected device or server. In simpler terms, it will alert you once the authentication process has been finalized.",
+        "link":"/docs/EV/applications/applicationdetails/Configurations/overview"
+    },
+    {
+        "title":"Poll",
+        "desc":"Polling refers to the process of regularly checking a data source, service, or endpoint for updates or changes. It involves sending requests at set intervals to gather the latest information or to see if there have been any modifications since the last check.",
+        "link":"/docs/EV/applications/applicationdetails/Configurations/overview"
+    },
+    {
+        "title":"Policy",
+        "desc":"A policy refers to a predefined set of guidelines, rules, or conditions that dictate how transactions are processed, monitored, or controlled within a system or application. These policies can encompass various aspects, such as metadata handling, historical IP changes, IP blacklisting, webhook notifications, and IP range restrictions, among others.",
+        "link":""
+    },
+    {
+        "title":"Result Notification Way",
+        "desc":"It serves as a means to inform users or relevant parties about the status, outcomes, or updates of specific processes or actions. In the case of the **ezto** **verify** application, it specifically supports the **Hook** method, which is a notification approach that involves **Ping,** **Push,** and **Poll.**",
+        "link":""
+    },
+    {
+        "title":"Rotate Secret",
+        "desc":"It is a security practice in which the confidential authentication key or secret key used by an application is periodically changed or updated.",
+        "link":""
+    },
+    {
+        "title":"Security Defense",
+        "desc":"A comprehensive set of protective measures, strategies, and mechanisms implemented within an information technology environment to safeguard against unauthorized access, cyber threats, and vulnerabilities. ",
+        "link":"/docs/EV/securitydefenses/Overview"
+    },
+    {
+        "title":"Subscription Plan",
+        "desc":"A payment arrangement where users are required to pay a recurring fee to access and utilize the services and features offered by **ezto** **verify.**",
+        "link":"/docs/EV/workspace/workspacesettings/Subscription"
+    },
+    {
+        "title":"SMS Provider",
+        "desc":"An SMS Provider is a specialized service or platform that offers the capability to send, receive, and manage Short Message Service (SMS) messages, commonly known as text messages, over a telecommunications network.",
+        "link":"/docs/EV/notifications/sms/smsprovider/sms/Create SMS Provider"
+    },
+    {
+        "title":"Workspace",
+        "desc":"The **ezto** **verify** **Workspace** / **Dashboard** is where you manage all aspects of your **ezto** **verify** subscription and configuration.",
+        "link":""
+    },
+    {
+        "title":"Workspace Setting",
+        "desc":"It refers to a collection of configurable options and parameters within a worksapce. These settings allow users, administrators, or workspace owners to customize and manage various aspects of the workspace's functionality and behavior. Workspace settings often include components such as subscription settings, general settings, workspace admin settings, and workspace attributes.",
+        "link":"/docs/EV/workspace/workspacesettings/Subscription"
+    }
+]

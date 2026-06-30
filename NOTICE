@@ -1,0 +1,29 @@
+Verify Platform
+Copyright (c) ezto Technologies and the Verify Platform contributors.
+
+This product is licensed under the GNU Affero General Public License v3.0
+(AGPL-3.0). The full license text is in the LICENSE file at the root of this
+repository.
+
+------------------------------------------------------------------------------
+Third-party components
+------------------------------------------------------------------------------
+
+This product includes and is derived from software developed by third parties.
+Those components remain under their original licenses; the combined work is
+distributed under AGPL-3.0.
+
+Keycloak
+  Copyright 2016 Red Hat, Inc. and/or its affiliates, and other contributors
+  as indicated by the @author tags.
+  Licensed under the Apache License, Version 2.0.
+  https://github.com/keycloak/keycloak
+  The idp/keycloak/ tree is a fork of Keycloak 18; those files retain their
+  original Apache-2.0 license headers and are unmodified in license.
+
+Apache-2.0 license text: https://www.apache.org/licenses/LICENSE-2.0
+
+Other dependencies (Quarkus, Spring Boot, Flutter/Dart packages, Node.js
+packages, Docusaurus, etc.) are pulled in via their respective build tools and
+remain under their own licenses as declared in each module's dependency
+manifests (pom.xml, pubspec.yaml, package.json).

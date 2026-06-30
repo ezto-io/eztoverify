@@ -1,0 +1,274 @@
+{
+	"info": {
+		"_postman_id": "31f6a64d-df01-4f9a-ae2b-ca1633f67403",
+		"name": "Liveliness",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Enroll Photo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/subin/Desktop/Screenshot 2023-07-28 at 11.04.16 AM.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/enroll/photo",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"enroll",
+						"photo"
+					],
+					"query": [
+						{
+							"key": "video_id",
+							"value": "asdf",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Video",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/subin/Downloads/linux_logon.mov"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/upload/video",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"upload",
+						"video"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check All",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"video_id\":\"b42395c3-8c61-4e0a-a3b0-991e3bcafc32\",\n    \"blink_expected\": 7,\n    \"finger_expected\": 4,\n    \"word_expected\": \"apple\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/live/all",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"live",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Face Compare",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"video_id\": \"b42395c3-8c61-4e0a-a3b0-991e3bcafc32\",\n    \"image_id\": \"8b7ca306-68fb-43a4-a3d6-6beba7960215\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/live/face_compare",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"live",
+						"face_compare"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Blink",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"video_id\": \"b42395c3-8c61-4e0a-a3b0-991e3bcafc32\",\n    \"blink_expected\": 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/live/blink",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"live",
+						"blink"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Movement",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"video_id\": \"b42395c3-8c61-4e0a-a3b0-991e3bcafc32\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/live/movement",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"live",
+						"movement"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Finger count",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"video_id\": \"e9758fbc-5f0d-4c75-90e7-f53be9afd9e2\",\n    \"finger_expected\": 4\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/live/fingercount",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"live",
+						"fingercount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Speech",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"video_id\": \"b42395c3-8c61-4e0a-a3b0-991e3bcafc32\",\n    \"word_expected\": \"apple\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/live/speech",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"live",
+						"speech"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

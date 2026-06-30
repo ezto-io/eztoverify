@@ -1,0 +1,135 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{title}}</h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body" name="realmForm" novalidate>
+    <form>
+        <fieldset class="mt-0" >
+            <div class="form-group row mb-3">
+                <label for="name" class="col-md-3 control-label">{{:: 'name' | translate}} <span class="required">*</span></label>
+            
+                <div class="col-md-9">
+                    <input class="form-control" type="text" id="name" name="name"  data-ng-change="validateAddress()" data-ng-model="realm.displayName" autofocus required>
+                    <p class="text-danger mt-1 small" id="error_msg" data-ng-if="error">{{error}}</p>
+                </div>
+            </div>
+            <div class="form-group row mb-3">
+                <label for="email" class="col-md-3 control-label">{{:: 'admin-email' | translate}} <span class="required">*</span></label>
+            
+                <div class="col-md-9">
+                    <input class="form-control" type="text" id="email" name="email"  data-ng-change="validateAddress()" data-ng-model="realm.accountCreator.email" required>
+                    <p class="text-danger mt-1 small"  id="email_msg" data-ng-if="emailError">{{emailError}}</p>
+                </div>
+            </div>
+            <div class="form-group row mb-3" data-ng-if="showMode">
+                <label for="mode" class="col-md-3 control-label">{{:: 'workspace-mode' | translate}} <span class="required">*</span></label>
+            
+                <div class="col-md-9">
+                    <select id="mode" class="form-control logo-position-select" ng-model="realm.mode"  data-ng-change="validateAddress()">
+                        <option ng-repeat="m in modes" value="{{m}}">{{m | translate}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row mb-3">
+                <label for="country" class="col-md-3 control-label">{{:: 'country' | translate}} <span class="required">*</span></label>
+
+                <div class="col-md-9">
+                    <select class="form-control"  id="country" name="country" data-ng-change="validateAddress()" data-ng-model="realm.billingAddress.country" required>
+                        <option selected value="" disabled>{{:: 'select-country' | translate}}</option>
+                        <option ng-repeat="c in countryList" value="{{c.value}}">{{c.label}}</option>
+                    </select>
+                    <p  id="country_error_msg" data-ng-if="countryError">{{countryError}}</p>
+                </div>
+            </div>
+            <div class="form-group row mb-3" data-ng-if="showMode">
+                <label for="mode" class="col-md-3 control-label">{{:: 'subscription-type' | translate}} <span class="required">*</span></label>
+                <div class="col-md-9">
+                    <select id="subscription-type" class="form-control logo-position-select" ng-model="realm.subscriptionType" data-ng-change="">
+                        <option value="wiam_users">{{:: 'subscription-type-users' | translate}}</option>
+                        <option value="wiam_authentication">{{:: 'subscription-type-authentication' | translate}}</option>
+                    </select>
+                </div>
+            </div>
+            <div data-ng-show="realm.billingAddress.country">
+                <div class="form-group row mb-3">
+                    <label for="address1" class="col-md-3 control-label">{{:: 'line1' | translate}} <span class="required">*</span></label>
+
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" id="address1" name="address1" data-ng-change="validateAddress()" data-ng-model="realm.billingAddress.line1"  required>
+                        <p  id="address1_msg" data-ng-if="address1Error">{{address1Error}}</p>
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    <label for="address2" class="col-md-3 control-label">{{:: 'line2' | translate}}</label>
+
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" id="address2" name="address2" data-ng-change="validateAddress()" data-ng-model="realm.billingAddress.line2" >
+                        <p  id="address2_msg" data-ng-if="address2Error">{{address2Error}}</p>
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    <label for="city" class="col-md-3 control-label">{{:: 'city' | translate}} <span class="required">*</span></label>
+
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" id="city" name="city" data-ng-change="validateAddress()" data-ng-model="realm.billingAddress.city" required>
+                        <p  id="city_msg" data-ng-if="cityError">{{cityError}}</p>
+                    </div>
+                </div>
+                <div class="form-group row mb-3" data-ng-show="stateList.length > 0">
+                    <label for="state" class="col-md-3 control-label">{{:: 'state' | translate}} <span class="required">*</span></label>
+
+                    <div class="col-md-9">
+                        <select class="form-control" id="state" name="state" data-ng-change="validateAddress()" data-ng-model="realm.billingAddress.state" required>
+                            <option selected value="" disabled>{{:: 'select-state' | translate}}</option>
+                            <option ng-repeat="s in stateList">{{s}}</option>
+                        </select>
+                        <p  id="state_msg" data-ng-if="stateError">{{stateError}}</p>
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    <label for="pin" class="col-md-3 control-label">{{:: 'pin' | translate}}<span class="required">*</span></label>
+
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" id="pin" name="pin" data-ng-change="validateAddress()" data-ng-model="realm.billingAddress.postal_code" required>
+                        <p  class="text-danger mt-1 small" id="pin_msg" data-ng-if="pinError">{{:: pinError | translate}}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="form-group row">
+                <label for="name" class="col-md-3 control-label">{{:: 'realm-logo' | translate}}</label>
+
+                <div class="col-md-9">
+                    <div class="logo-container create-tenant-logo-container">
+                      <div>
+                          <img data-ng-show="logoUpdated" id="realmTenantLogo" class="provider-image" src="{{resourceUrl}}/themes/img/logo.svg?version={{serverVersion}}"  alt="default-logo-img"> 
+                          <div data-ng-show="!logoUpdated" class="create-tenant-img"></div>
+                      </div>
+                    </div>
+                    <input type="file" id="updateTenantLogo" class="display-none" accept="image/*" />
+                    <div class="logo-change-container">
+                        <a class="form-control cursor-pointer text-center create-tenant-reset" ng-click="reset()">
+                            <i class="os-icon os-icon-rotate-ccw c-danger font-s-17 font-weight-600">
+                            </i>
+                        </a>
+                        <a id="changeTenantLogo" class="form-control cursor-pointer text-center create-tenant-logo" ng-click="changeLogo()">
+                            <i class="os-icon os-icon-upload font-s-17 c-success font-weight-600">
+                            </i>
+                        </a>
+                    </div> 
+                    <p class="helper-text" ng-bind-html="tenantLogoHelptxt"></p>
+                </div>
+            </div> -->
+        </fieldset>
+    </form>
+</div>
+<div class="modal-footer">
+    <button id="createTenantCancel"  type="button" class="btn btn-secondary" ng-click="cancel()">{{:: 'cancel' | translate}}</button>
+    <button id="createTenantSubmit" type="button" class="btn btn-primary" ng-click="ok()" data-ng-disabled="!realm.displayName || stage===2 || !realm.accountCreator.email || error || emailError || pinError || isAddressInvalid" kc-save>
+        <span ng-show="stage === 1" >{{::'loader-create-tenant'|translate}}</span>
+        <div ng-show="stage === 2">
+            <kc-action-button-loading loadername="tenantCreating"></kc-action-button-loading>
+        </div>
+    </button>
+</div>

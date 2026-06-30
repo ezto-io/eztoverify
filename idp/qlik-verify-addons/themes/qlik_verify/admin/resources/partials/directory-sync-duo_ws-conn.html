@@ -1,0 +1,152 @@
+<kc-menu></kc-menu>
+<div class="content-w min-h-100" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li> 
+                    <a href="#/realms/{{realm.realm}}/users/directory-sync/connections" id="backToUserSync">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{::'directorySyncBackToConnections' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                            <div class="element-actions d-flex flex-column align-items-center w-md-auto w-100 w-md-auto flex-md-row" >
+                                <button class="btn btn-danger w-100 w-md-auto mt-2 mt-md-0" id="{{currentConnection.name.toLowerCase().replaceAll(' ','-')}}-deleteBtn" data-ng-class="{'pointer-events-none opacity-75': directorySyncProgress.deleting}"  data-ng-click="deleteConnection()" data-ng-disabled="directorySyncProgress.deleting"><i class="os-icon os-icon-ui-15 plus-icon"></i>{{:: 'delete' | translate}}</button>
+                                <button class="btn btn-secondary ml-0 ml-md-2 w-100 w-md-auto mt-2 mt-md-0" id="{{currentConnection.name.toLowerCase().replaceAll(' ','-')}}-editBtn" data-ng-click="edit()" data-ng-class="{'pointer-events-none opacity-75': directorySyncProgress.syncing || directorySyncProgress.logging}" data-ng-disabled="directorySyncProgress.syncing || directorySyncProgress.logging">
+                                    <i class="os-icon os-icon-ui-49 plus-icon"></i>
+                                    {{:: 'edit' | translate}}
+                                </button> 
+                                <button class="create-btn ml-md-2 w-100 w-md-auto mt-2 mt-md-0" id="{{currentConnection.name.toLowerCase().replaceAll(' ','-')}}-syncDataBtn" data-ng-click="sync()" data-ng-class="{'pointer-events-none opacity-75': directorySyncProgress.syncing}" data-ng-disabled="directorySyncProgress.syncing" data-ng-if="connectionsHistory.length > 0 && isDirectoryLoggedIn && !directorySyncProgress.triggerId">
+                                    <span data-ng-if="!directorySyncProgress.syncing" class="d-flex align-items-center">
+                                        <i class="os-icon os-icon-refresh-ccw plus-icon"></i>
+                                        {{:: 'sync-data' | translate}}
+                                    </span>
+                                    <span data-ng-if="directorySyncProgress.syncing">
+                                        <kc-action-button-loading></kc-action-button-loading>
+                                    </span>
+                                </button>
+                            </div>
+                            <h1 class="element-header text-capitalize">
+                                <div class="overflow-ellipsis directory-sync-title pt-4 pt-md-0" title="{{currentConnection.name}}">{{currentConnection.name}}</div>
+                            </h1>
+                            <div class="projects-list" data-ng-if="isDirectoryLoggedIn && directorySyncProgress.message">
+                                <div class="project-box">
+                                  <form class="form-horizontal ng-pristine ng-valid" name="realmForm" novalidate="" kc-read-only="!access.manageRealm">
+                                    <div class="project-head">
+                                      <div class="project-title">
+                                        <h6 class="text-initial letter-spacing-normal">
+                                          {{:: 'current-sync-status' | translate}}
+                                        </h6>
+                                        <strong class="badge badge-success">{{directorySyncProgress.message}}</strong>
+                                      </div>
+                                      <div class="project-users justify-content-center d-flex align-items-right">
+                                         <button type="button" data-ng-click="cancelSync()" class="btn btn-secondary" data-ng-class="{'pointer-events-none opacity-75': directorySyncProgress.checking}" data-ng-disabled="directorySyncProgress.checking" data-ng-if="directorySyncProgress.message">
+                                            <span data-ng-if="!directorySyncProgress.cancelling" class="d-flex align-items-center">
+                                                {{ :: 'cancel-sync' | translate }}
+                                            </span>
+                                            <span data-ng-if="directorySyncProgress.cancelling">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </span>
+                                        </button>
+                                        <button type="button" id="{{currentConnection.name.toLowerCase().replaceAll(' ','-')}}-refreshBtn" data-ng-click="checkSyncStatus()" class="btn btn-secondary" data-ng-class="{'pointer-events-none opacity-75': directorySyncProgress.checking}" data-ng-disabled="directorySyncProgress.checking" data-ng-if="directorySyncProgress.message">
+                                            <span data-ng-if="!directorySyncProgress.checking" class="d-flex align-items-center">
+                                                {{:: 'refresh' | translate}}
+                                            </span>
+                                            <span data-ng-if="directorySyncProgress.checking">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </span>
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            <!-- <div class="controls-above-table mb-0">
+                                <div class="form-inline justify-content-between">
+                                    <div class="form-group mb-auto mr-2" data-ng-show="connectionsHistory.length > 0">
+                                        <form class="form-inline">
+                                            <div class="element-search">
+                                                <input class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched action-search-container" type="text" placeholder="{{:: 'search-connections-placeholder' | translate}}"  ng-model="search" onkeydown="if (event.keyCode === 13) document.getElementById('socialConnectionsSearch').click()">
+                                                <i class="os-icon os-icon-search2 search-icon" id="socialConnectionsSearch" data-ng-click="changeSearchKey(search)"></i>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="mt-4" data-ng-if="connectionsHistory.length > 0 && !searchKey && isDirectoryLoggedIn">
+                                <h6 class="element-header font-size-17">{{:: 'sync-history' | translate}}</h6>
+                                <div class="element-box-tp">
+                                    <div class="table-responsive-md clients-list">
+                                        <table class="table table-padded">
+                                            <thead>
+                                                <tr class="position-relative fadeUp">
+                                                    <th class="w-30">{{:: 'sync-status' | translate}}</th>
+                                                    <th class="w-20">{{:: 'total-sync' | translate}}</th>
+                                                    <th class="w-10">{{:: 'failed' | translate}}</th>
+                                                    <th class="w-20">{{:: 'start-time' | translate}}</th>
+                                                    <th class="w-20">{{:: 'end-time' | translate}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="p-3">
+                                                <tr ng-repeat="connection in connectionsHistory" class="fadeUp"> 
+                                                    <td>{{connection.details.status}}</td>
+                                                    <td>{{connection.details.totalSync}}</td>
+                                                    <td>{{connection.details.failed}}</td>
+                                                    <td>{{connection.details.created_time | timestampToDate}}</td>
+                                                    <td>{{connection.details.completed_time | timestampToDate}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="element-box element-box-medium top-align" ng-show="searchKey && !findConfigured(searchKey)">
+                                <div class="no-entry-svg">
+                                    <i class="os-icon os-icon-cv-2 opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                  <p class="text-center no-entry-display mt-2 col-md-5">{{:: 'no-social-conn-found' | translate}}</p>
+                                    <button data-ng-click="clearSearch()" class="create-btn no-entry-display">
+                                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                        {{:: 'back-to-social-conn' | translate}}
+                                    </button>
+                                </div>
+                            </div> -->
+
+                            <div class="element-box mt-4" data-ng-if="!connectionsHistory.length && isDirectoryLoggedIn">
+                                <div class="no-policy-img">
+                                    <i class="os-icon os-icon-agenda-1 opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                    <p class="text-center no-entry-display">{{:: 'sync-history-not-found' | translate}}</p>
+                                    <button class="create-btn no-entry-display" id="{{currentConnection.name.toLowerCase().replaceAll(' ','-')}}-syncDataBtn" data-ng-click="sync()" data-ng-class="{'pointer-events-none opacity-75': directorySyncProgress.syncing}" data-ng-disabled="directorySyncProgress.syncing" data-ng-if="!directorySyncProgress.triggerId">
+                                        <span data-ng-if="!directorySyncProgress.syncing" class="d-flex align-items-center">
+                                            <i class="os-icon os-icon-refresh-ccw plus-icon"></i>
+                                            {{:: 'sync-data' | translate}}
+                                        </span>
+                                        <span data-ng-if="directorySyncProgress.syncing">
+                                            <kc-action-button-loading></kc-action-button-loading>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="element-box mt-4" data-ng-if="!isDirectoryLoggedIn">
+                                <div class="no-policy-img">
+                                    <i class="os-icon os-icon-user-male-circle opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                    <p class="text-center no-entry-display">{{:: 'login-with' | translate}} {{currentProvider.name}} {{:: 'to-continue' | translate}}</p>
+                                        <button class="create-btn no-entry-display" id="{{currentConnection.name.toLowerCase().replaceAll(' ','-')}}-loginBtn" data-ng-click="loginDirectory()"  data-ng-class="{'pointer-events-none opacity-75': directorySyncProgress.logging}" data-ng-disabled="directorySyncProgress.logging">
+                                            <span data-ng-if="!directorySyncProgress.logging" class="d-flex align-items-center">
+                                                <i class="os-icon plus-icon os-icon-log-in"></i>
+                                             {{:: 'login-txt' | translate}}
+                                            </span>
+                                            <span data-ng-if="directorySyncProgress.logging">
+                                                <kc-action-button-loading></kc-action-button-loading>
+                                            </span>
+                                        </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

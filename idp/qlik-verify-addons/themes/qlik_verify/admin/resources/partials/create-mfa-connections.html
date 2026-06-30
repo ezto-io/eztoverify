@@ -1,0 +1,106 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <ul class="breadcrumb pd-left-0 pd-bottom-20">
+                <li>
+                    <a href="#/realms/{{realm.realm}}/connections/mfa" class="ng-binding">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-mfa-conn' | translate}}
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="role-list-container">
+                            <h1 class="user-list-heading">{{:: 'new-mfa-conn-title' | translate}}</h1>
+                        </div>
+                        <br>
+                        <div class="element-box" ng-show="nonConfiguredMfaProviders.length == 0 && !searchKey">
+                            <div class="no-policy-img">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/no-mfa.png" alt="no-social-conn-img" class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display mt-2">{{ :: 'all-mfa-conn-added' | translate }}</p>
+                                <a href="#/realms/{{realm.realm}}/connections/mfa" class="text-decoration-none">
+                                <button class="create-btn no-entry-display">
+                                    <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                    {{:: 'back-to-mfa-conn' | translate}}
+                                </button>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Search Containers -->
+                        <div>
+                            <div data-ng-show="nonConfiguredMfaProviders.length > 6">
+                                <form class="form-horizontal">
+                                    <div class="form-group element-search w-100">
+                                        <input class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched full-width-search-container" type="text" placeholder="{{:: 'search-mfa-placeholder' | translate}}"  ng-model="search" onkeydown="if (event.keyCode === 13) document.getElementById('connectionsSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="connectionsSearch" data-ng-click="changeSearchKey(search)"></i>
+                                    </div>
+                                </form>
+                            </div>
+                        </div> 
+                        <!--For search results-->
+                        <div data-ng-if="nonConfiguredMfaProviders.length > 0 && searchKey" class="card-striped row cards-list market-card-list mr-0 ml-0">
+                            <div class="project-box ng-scope social-card-container info-card mt-0" id="mfa-{{factor.id}}" ng-repeat="factor in nonConfiguredMfaProviders | filter:{'displayName':searchKey}">
+                                <div class="social-card-info" kc-open="/realms/{{realm.realm}}/connections/mfa/create-conn/{{factor.id}}">
+                                    <div>
+                                        <div class="social-card-header">
+                                            <div class="social-card-logo">
+                                                <img class="social-card-img" data-ng-src="{{resourceUrl}}/themes/img/{{factor.logo}}" alt="{{factor.id}}-logo">
+                                            </div>
+                                            <div class="market-title-container">
+                                                <div class="market-title">
+                                                <h6 class="mb-1">{{:: factor.displayName | translate}}</h6>
+                                                <p class="helper-text mt-0">{{ :: 'mfa-category-title'  | translate}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="market-desc-container">
+                                            <p class="market-desc"> {{ :: factor.description | translate}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- MFA Conn List -->
+                        <div class="card-striped row cards-list market-card-list mr-0 ml-0" data-ng-if="(nonConfiguredMfaProviders.length > 0 && !searchKey)">
+                            <div class="project-box ng-scope social-card-container info-card mt-0" id="mfa-{{factor.id}}" ng-repeat="factor in nonConfiguredMfaProviders">
+                                <div class="social-card-info" kc-open="/realms/{{realm.realm}}/connections/mfa/create-conn/{{factor.id}}">
+                                    <div>
+                                        <div class="social-card-header">
+                                            <div class="social-card-logo">
+                                                <img class="social-card-img" data-ng-src="{{resourceUrl}}/themes/img/{{factor.logo}}" alt="{{factor.id}}-logo">
+                                            </div>
+                                            <div class="market-title-container">
+                                                <div class="market-title">
+                                                    <h6 class="mb-1">{{:: factor.displayName | translate}}</h6>
+                                                    <p class="helper-text mt-0">{{ :: 'mfa-category-title'  | translate}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="market-desc-container">
+                                            <p class="market-desc"> {{ :: factor.description | translate}}</p>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div> 
+                        </div>
+
+                        <div class="element-box element-box-medium top-align" ng-show="nonConfiguredMfaProviders.length > 0 && !findConnections(searchKey)">
+                            <div class="no-entry-svg">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/no-mfa.png" alt="no-social-conn-img" class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display mt-2 col-md-5">{{:: 'no-mfa-conn-found' | translate}}</p>
+                                <button data-ng-click="clearSearch()" class="create-btn no-entry-display">
+                                    <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                    {{:: 'back-to-mfa-conn' | translate}}
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

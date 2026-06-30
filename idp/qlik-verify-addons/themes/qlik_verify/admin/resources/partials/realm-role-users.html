@@ -1,0 +1,34 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/roles" id="backToRoles">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                            {{ :: 'back-to-roles' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-role></kc-tabs-role>
+                        <div class="d-flex roles-groups" ng-if="view === 'treeView'">
+                            <div class="tabs">
+                                <button class="tabs-btn" ng-class="{'tabs-btn-active' : view === 'treeView'}"
+                                    ng-click="changeView('treeView')">{{ :: 'tree-view' | translate}}
+                                </button>
+                                <button class="tabs-btn" ng-class="{'tabs-btn-active' : view === 'listView'}"
+                                    ng-click="changeView('listView')">{{ :: 'list-view' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                        <kc-roles-tree ng-if="view === 'treeView'"></kc-roles-tree>
+                        <kc-realm-role-users-list ng-if="view === 'listView'"></kc-realm-role-users-list>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

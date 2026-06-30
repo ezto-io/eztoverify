@@ -1,0 +1,226 @@
+# Verify OSS — full core stack, one shot:  docker compose up --build
+#
+# Brings up backing infra (postgres / minio / elasticsearch) plus the
+# idp and 4 services, each BUILT FROM SOURCE on every run (no prebuilt images).
+#
+#   docker compose up --build         # build + start everything
+#   docker compose down               # stop
+#   docker compose down -v            # stop + wipe volumes
+#
+# Replace every REPLACE_ME / change_me_* value before any non-local use.
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: ezto-postgres
+    restart: unless-stopped
+    ports: ["5432:5432"]
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-databases.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio
+    container_name: ezto-minio
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    ports: ["9000:9000", "9001:9001"]
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    volumes: ["miniodata:/data"]
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio-init:
+    image: minio/mc
+    container_name: ezto-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 minioadmin minioadmin123 &&
+      mc mb -p local/ezto-verify || true &&
+      mc anonymous set download local/ezto-verify/public || true
+      "
+    restart: "no"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
+    container_name: ezto-elasticsearch
+    restart: unless-stopped
+    ports: ["9200:9200"]
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes: ["esdata:/usr/share/elasticsearch/data"]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sf http://localhost:9200/_cluster/health || exit 1",
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  idp:
+    build:
+      context: ./idp
+    container_name: ezto-idp
+    restart: unless-stopped
+    depends_on:
+      postgres: { condition: service_healthy }
+      minio: { condition: service_healthy }
+      minio-init: { condition: service_completed_successfully }
+      elasticsearch: { condition: service_healthy }
+      background: { condition: service_healthy }
+    ports: ["8080:8080", "8443:8443"]
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_PORT: "5432"
+      KC_DB_USERNAME: admin
+      KC_DB_PASSWORD: admin
+      KC_DB_URL_DATABASE: eztoverify
+      # Master-realm admin (created on first boot / fresh DB). Change before non-local use.
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME_URL: http://localhost:8080/auth
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_HTTP_ENABLED: "true"
+      IDP_HOST: http://idp:8080
+      ENV: dev
+      # Runtime product discriminator. RealmManager.createRealm + .ftl templates call
+      # EnvironmentReader.getValue("VARIANT").equalsIgnoreCase(...) with no null guard —
+      # unset => NPE during master-realm bootstrap. "ezto verify" = the Verify offering.
+      VARIANT: "ezto verify"
+      DASHBOARD_URL: http://localhost:8080
+      # Admin-console "Docs" link target. Set to your self-hosted documentation URL.
+      # Leave empty to show the bundled "documentation not configured" page instead.
+      DOCS_URL: ""
+      # "Docs" link in emails / welcome page / account console. Set to your self-hosted docs URL;
+      # leave empty to hide those links.
+      DOCS_LINK: ""
+      # Welcome page isLocal() does ROOT_ACCESS_IP.split(",") with no null guard —
+      # unset => NPE => catch rethrows HTTP 500 on GET /auth/. Admin-route whitelist.
+      # Host->container traffic via published port arrives with the gateway source IP
+      # (no proxy set; remoteAddr = TCP peer). On Docker Desktop (Mac/Win) that is
+      # 192.168.65.1 (the Desktop host gateway); on a plain Linux bridge it is the
+      # bridge gateway 172.20.0.1. Both allowed so the master-tenant onboarding welcome
+      # page renders from the host browser. Adjust the gateway IP for other networks.
+      ROOT_ACCESS_IP: 127.0.0.1,0.0.0.0,::1,172.20.0.1,192.168.65.1
+      BACKGROUND_JOB_URL: http://background:8070
+      SHORTENER_HTTPS_URL: http://url-shortener:3000
+      SHORTENER_HTTP_URL: http://url-shortener:3000
+      SHORTENER_KEY: change_me_key
+      SOCKET_URL: http://socket:3001
+      LIVELINESS_URL: http://liveness:5000
+      MINIO_SERVER_URL: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin123
+      MINIO_PUBLIC_URL: http://localhost:9000/ezto-verify/public
+      ES_HOST: elasticsearch
+      ES_PORT: "9200"
+      ES_SCHEME: http
+      # SMTP is configured per-tenant in the onboarding wizard (real provider). For local
+      # email testing run the maildev catcher from docker-compose.dev.yml and set
+      # SMTP_HOST=localhost SMTP_PORT=1025.
+      APP_PUSH_VERSION: 9.3.1
+    healthcheck:
+      # temurin jre has no curl; a bash TCP probe confirms the HTTP port is accepting.
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/8080' 2>/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  background:
+    build:
+      context: ./services/background
+    container_name: ezto-background
+    restart: unless-stopped
+    depends_on:
+      postgres: { condition: service_healthy }
+    ports: ["8070:8070"]
+    environment:
+      JOB_DB_TYPE: psql
+      JOB_DB_URL: jdbc:postgresql://postgres:5432/jobrnr
+      JOB_DB_USER: admin
+      JOB_DB_PASSWORD: admin
+    healthcheck:
+      # idp queries background at startup (management-keys scheduler) — wait for it.
+      # temurin jre has bash but no curl; use a bash TCP probe on the HTTP port.
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/8070' 2>/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  socket:
+    build:
+      context: ./services/socket
+    container_name: ezto-socket
+    restart: unless-stopped
+    depends_on:
+      postgres: { condition: service_healthy }
+    ports: ["3001:3001"]
+    environment:
+      PORT: "3001"
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGUSER: admin
+      PGPASSWORD: admin
+      PGDATABASE: socket
+
+  url-shortener:
+    build:
+      context: ./services/url-shortener
+    container_name: ezto-url-shortener
+    restart: unless-stopped
+    depends_on:
+      postgres: { condition: service_healthy }
+    ports: ["3000:3000"]
+    environment:
+      PORT: "3000"
+      DATABASE_URL: postgresql://admin:admin@postgres:5432/urlshortner?schema=public
+      VALID_API_KEYS: change_me_key
+      FALLBACK_URL: http://localhost:8080
+
+  liveness:
+    # Face-match / liveness inference (Python + deepface/whisper). Only needed for biometric
+    # face-liveness verification flows; the IdP does NOT depend on it to boot. Heavy/slow build,
+    # so it is opt-in via a compose profile. Start it with:  docker compose --profile face-biometrics up -d
+    profiles: ["face-biometrics"]
+    build:
+      context: ./services/liveness
+    container_name: ezto-liveness
+    restart: unless-stopped
+    depends_on:
+      minio: { condition: service_healthy }
+    ports: ["5000:5000"]
+    environment:
+      MINIO_HOST: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET: minioadmin123
+      FACE_TOLERANCE: "0.68"
+
+volumes:
+  pgdata: { driver: local }
+  miniodata: { driver: local }
+  esdata: { driver: local }

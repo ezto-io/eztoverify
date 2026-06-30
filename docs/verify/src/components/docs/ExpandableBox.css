@@ -1,0 +1,44 @@
+.expand-more {
+    height: max-content;
+}
+
+.expand-less {
+    height: 10rem;
+    overflow: hidden;
+}
+
+.expandable {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.6rem;
+}
+
+.expandable-btn {
+    width: 7rem;
+    background-color: transparent;
+    border: none;
+    color: var(--ifm--custom-primary);
+    font-family: inherit;
+    font-weight: 500;
+    position: relative;
+    left: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.expandable-btn:hover {
+    color: var(--ifm--custom-primary-darker);
+    cursor: pointer;
+}
+
+.expandable-btn svg {
+    width: 1rem;
+    position: relative;
+    top: 2px;
+}
+
+.show-less svg {
+    transform: rotate(180deg);
+    top: 0px;
+}

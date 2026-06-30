@@ -1,0 +1,7 @@
+<div class="form-group row clearfix">
+    <label class="col-md-3 control-label" for="baseUrl">{{:: 'openshift4.base-url' | translate}} <span class="required">*</span></label>
+    <div class="col-md-9">
+        <input class="form-control" id="baseUrl" type="text" ng-model="identityProvider.config.baseUrl" required>
+    </div>
+    <kc-tooltip>{{:: 'openshift4.base-url.tooltip' | translate}}</kc-tooltip>
+</div>

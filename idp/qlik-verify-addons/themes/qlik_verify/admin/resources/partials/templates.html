@@ -1,0 +1,203 @@
+<kc-menu></kc-menu>
+<div class="content-w min-h-100" ng-init="init()" >
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row" ng-if="searchLoaded">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                            <h1 class="element-header mb-0">{{:: 'workflows' | translate}}</h1>
+                            <div data-ng-if="access.manageRealm && actions.length > 0">
+                                <button data-ng-click="create()" class="create-btn my-3" id="create-template-btn"  data-step='{{actions.length !== 0 ? 1 : 0}}' data-title="{{:: 'intro-no-actions-found-title' | translate}}" data-intro="{{:: 'intro-no-actions-found' | translate}}">
+                                    <i class="os-icon os-icon-plus plus-icon"></i>
+                                    {{:: 'add-workflows' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="os-tabs-w mx-1">
+                            <div class="sub-top-bar mb-4">
+                                <ul class="nav nav-tabs upper">
+                                    <li class="nav-item">
+                                        <a aria-expanded="false" id="workflow-tab" class="nav-link" data-ng-class="{active: path[3] == 'templates'}" href="#/realms/{{realm.realm}}/authentication/templates">
+                                            {{:: 'workflows' | translate}}
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a aria-expanded="false" id="subworkflow-tab" class="nav-link" data-ng-class="{active: path[3] == 'sub-workflows'}" href="#/realms/{{realm.realm}}/authentication/sub-workflows">
+                                            {{:: 'bo-sub-workflows' | translate}}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="controls-above-table mb-0" ng-if="searchLoaded &&  actions.length > 0">
+                            <div class="form-inline justify-content-between">
+                                <div class="form-group">
+                                    <div class="element-search">
+                                        <input class="form-control bg-color-transparent searchTerm ng-pristine ng-valid ng-empty ng-touched action-search-container" id="templates-search-input" type="text" placeholder="{{ :: 'search-workflows-placeholder' | translate}}"  ng-model="search" onkeydown="if (event.keyCode === 13) document.getElementById('actionsSearch').click()">
+                                        <i class="os-icon os-icon-search2 search-icon" id="actionsSearch" data-ng-click="changeSearchKey(search)"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <select data-ng-if="!searchKey" ng-model="limit" ng-change="selectQuery(limit)"
+                                        data-ng-options="itemCount for itemCount in [5,10,50,100]" id="templatePageCount"
+                                        data-ng-show="(actions && actions.length > 5 )"
+                                        class="form-control form-control-sm rounded bright events-admin-search client-list-count-select">
+                                        <option data-ng-repeat="itemCount in [5,10,50,100]"
+                                            data-ng-selected="limit === itemCount" data-ng-value="itemCount">
+                                            {{ itemCount }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-ng-if="actions.length > 0 && !searchKey && searchLoaded" class="mt-4">
+                            <div class="table-responsive-md clients-list">
+                                <table class="table table-light-bordered table-padded w-100 table-layout-fixed">
+                                    <thead> </thead>
+                                    <tbody class="p-3">
+                                        <tr class="position-relative fadeUp" id="action-card-{{$index}}" ng-repeat="action in slicedAction"> 
+                                            <td class="cursor-pointer w-30" id="{{action.alias.toLowerCase().replaceAll(' ','-')}}" kc-open="/realms/{{realm.realm}}/authentication/templates/{{action.actionId}}">
+                                                <div class="conn-with-logo">
+                                                    <div class="social-conn-logo-container">
+                                                        <i class="os-icon os-icon-git-merge font-25"></i>
+                                                    </div>
+                                                    <div class="overflow-ellipsis" >
+                                                        <a class="aTagKcOpen" kc-open="/realms/{{realm.realm}}/authentication/templates/{{action.actionId}}">
+                                                            <span class="ml-1" >{{action.alias}}</span>
+                                                        </a>
+                                                    </div>
+                                                    
+                                                </div> 
+                                            </td>
+                                            <td class="nowrap w-30">
+                                                <div class="lighter overflow-ellipsis">{{:: 'last-updated' | translate}}
+                                                    <span class="helper-text ml-1"> {{ action.lastUpdatedTimestamp | timeago}}</span> 
+                                                </div>
+                                            </td> 
+                                            <td class="nowrap text-center w-20">
+                                                <div class="info-card-state bg-danger small" data-ng-if="!action.live && !action.marketplace"><div class="info-state-circle"></div>{{:: 'not-live' | translate}}</div>
+                                                <div class="info-card-state bg-success small" data-ng-if="action.live && !action.marketplace"><div class="info-state-circle"></div>{{:: 'live' | translate}}</div>
+                                                <div class="info-card-state bg-grey small" data-ng-if="action.marketplace"><div class="info-state-circle"></div>{{:: 'marketplace' | translate}}</div>
+                                            </td> 
+                                            </td> 
+                                            <td class="row-actions w-20">
+                                                <a kc-open="/realms/{{realm.realm}}/authentication/templates/{{action.actionId}}" id="workflow-edit-btn-{{$index}}">
+                                                    <i class="os-icon os-icon-ui-49" tooltip="{{:: 'edit' | translate}}" tooltip-placement="top"
+                                                    tooltip-trigger="mouseover mouseout"></i>
+                                                </a>
+                                                <a class="danger" data-ng-click="delete(action)" id="workflow-delete-btn-{{$index}}" data-ng-if="!action.marketplace">
+                                                    <i class="os-icon os-icon-ui-15" tooltip="{{:: 'tooltip-delete-label' | translate}}" tooltip-placement="top"
+                                                       tooltip-trigger="hover mouseover mouseout"></i>
+                                                </a>
+                                                <span data-ng-if="!action.marketplace" style="display: inline-block; width: 20px;"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <div class="d-flex w-100 fadeUp-delayed">
+                                            <td class="pl-0 fadeUp-delayed"  colspan="3">
+                                                <p class="m-0 d-flex align-items-center" data-ng-show="(searchLoaded && actions && actions.length > 5)">{{:: 'showing' | translate}} {{first + 1}} - {{ first + slicedAction.length }} {{:: 'of' | translate}} {{actions.length}} {{:: 'workflows' | translate}}</p>
+                                            </td>
+                                            <td class="pr-0 fadeUp-delayed" colspan="9">
+                                                <div  align="right" class="table-nav" data-ng-if="actions.length > limit">
+                                                    <div class="pagination justify-content-end" >
+                                                        <button data-ng-click="firstPage()" class="btn btn-sm btn-outline-primary table-pagination" id="go-to-first-page" ng-disabled="first === 0" data-ng-class="first === 0 && 'text-muted'" > <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left' }} pagination-icon"></i> <i>{{:: 'first-page' | translate}}</i> </button>
+                                                        <button class="btn btn-sm btn-outline-primary table-pagination" id="go-to-previous-page"  data-ng-class="first === 0 && 'text-muted'" ng-click="previous()" ng-disabled="first === 0">
+                                                            <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left' }} pagination-icon"></i>
+                                                            <i>{{:: 'previous' | translate}}</i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-primary table-pagination pr-0" id="go-to-next-page"  data-ng-class="last >= actions.length && 'text-muted'" ng-click="next()" ng-disabled="last >= actions.length">
+                                                            <i> {{:: 'next' | translate}} </i>
+                                                            <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right' }} pagination-icon mr-0"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </div>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div data-ng-if="searchKey && findActionsTab(searchKey) && searchLoaded" class="mt-4">
+                            <div class="table-responsive-md clients-list">
+                                <table class="table table-light-bordered table-padded w-100">
+                                    <thead> </thead>
+                                    <tbody class="p-3">
+                                        <tr class="position-relative fadeUp" id="action-card-{{$index}}" ng-repeat="action in actions | filter:{'alias':searchKey}" > 
+                                            <td class="cursor-pointer w-30" id="{{action.alias.toLowerCase().replaceAll(' ','-')}}"  kc-open="/realms/{{realm.realm}}/authentication/templates/{{action.actionId}}">
+                                                <div class="conn-with-logo">
+                                                    <div class="social-conn-logo-container">
+                                                        <i class="os-icon os-icon-git-merge font-25"></i>
+                                                    </div>
+                                                    <div class="overflow-ellipsis" >
+                                                        <a class="aTagKcOpen" kc-open="/realms/{{realm.realm}}/authentication/templates/{{action.actionId}}">
+                                                            <span class="ml-1" >{{action.alias}}</span>
+                                                        </a>
+                                                        <br/>
+                                                        <span class="helper-text ml-1"> {{ action.actionType | translate}}</span> 
+                                                    </div>
+                                                    
+                                                </div> 
+                                            </td>
+                                            <td class="nowrap w-30">
+                                                <div class="lighter overflow-ellipsis">{{:: 'last-updated' | translate}}
+                                                    <span class="helper-text ml-1"> {{ action.lastUpdatedTimestamp |timeago}}</span> 
+                                                </div>
+                                            </td> 
+                                            <td class="nowrap text-center w-20">
+                                                <div class="info-card-state bg-danger small" data-ng-if="!action.live && !action.marketplace"><div class="info-state-circle"></div>{{:: 'not-live' | translate}}</div>
+                                                <div class="info-card-state bg-success small" data-ng-if="action.live && !action.marketplace"><div class="info-state-circle"></div>{{:: 'live' | translate}}</div>
+                                                <div class="info-card-state bg-grey small" data-ng-if="action.marketplace"><div class="info-state-circle"></div>{{:: 'marketplace' | translate}}</div>
+                                            </td> 
+                                            <td class="row-actions w-20">
+                                                <a kc-open="/realms/{{realm.realm}}/authentication/templates/{{action.actionId}}" id="{{action.alias.toLowerCase().replaceAll(' ','-')}}-edit">
+                                                    <i class="os-icon os-icon-ui-49" tooltip="{{:: 'edit' | translate}}" tooltip-placement="top"
+                                                    tooltip-trigger="mouseover mouseout"></i>
+                                                </a>
+                                                <a class="danger" data-ng-click="delete(action)" id="{{action.alias.toLowerCase().replaceAll(' ','-')}}-delete" data-ng-if="!action.marketplace">
+                                                    <i class="os-icon os-icon-ui-15" tooltip="{{:: 'tooltip-delete-label' | translate}}" tooltip-placement="top"
+                                                       tooltip-trigger="hover mouseover mouseout"></i>
+                                                </a>
+                                                <span data-ng-if="!action.marketplace" style="display: inline-block; width: 20px;"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="element-box element-box-medium top-align mt-0" ng-show="!findActionsTab(searchKey) && searchLoaded">
+                            <div class="no-entry-svg">
+                                <i class="os-icon os-icon-git-merge opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                              <p class="text-center no-entry-display mt-2">{{:: 'no-action-found' | translate}}</p>
+                                <button data-ng-click="clearSearch()" class="create-btn no-entry-display" id="back-to-templates-btn">
+                                    <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                                    {{:: 'back-to-workflows' | translate}}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="element-box" data-ng-if="!actions.length && searchLoaded">
+                            <div class="no-policy-img" data-step='{{actions.length === 0 ? 1 : 0}}' data-title="{{:: 'intro-no-actions-found-title' | translate}}" data-intro="{{:: 'intro-no-actions-found' | translate}}">
+                                <i class="os-icon os-icon-git-merge opacity-75 no-entry-display mb-3 icon-custom-50"></i>
+                                <p class="text-center no-entry-display">{{:: 'no-workflow-available' | translate}}</p>
+                                <div class="d-flex justify-content-center align-items-center flex-wrap">
+                                    <button data-ng-click="create()" class="create-btn" id="add-templates-btn">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'add-workflows' | translate}} 
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!(searchLoaded)">
+                <kc-loader loadertype="loaderTypeName" ></kc-loader>
+            </div>
+        </div>
+    </div>
+</div>

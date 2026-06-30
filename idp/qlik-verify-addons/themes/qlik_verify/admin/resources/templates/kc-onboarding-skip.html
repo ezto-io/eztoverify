@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h5 class="modal-title text-capitalize">{{::'onboarding-skip-title' | translate}}</h5>
+  <button type="button" class="close" ng-click="cancel()">
+    <span class="os-icon os-icon-close"></span>
+  </button>
+</div>
+<div class="modal-body" name="realmForm" novalidate>
+  <div class="header-alert-container d-block">
+    <div class="panel-config-info info-config d-flex mw-100" role="alert">
+      <p class="text-small mb-0" ng-bind-html="'onboarding-skip-desc' | translate">
+      </p>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" ng-click="ok()">
+    {{::'set-onboarding-info' | translate}}
+  </button>
+</div>

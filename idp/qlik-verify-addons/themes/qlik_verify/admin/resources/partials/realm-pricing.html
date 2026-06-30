@@ -1,0 +1,94 @@
+<kc-menu></kc-menu>
+<div class="position-relative"> 
+  <div class="position-absolute">
+    <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+    <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon" data-ng-click="toggleSideBarShow()" >
+      <div id="setting-icon h1">
+        <i class="ti-angle-right cursor-pointer"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content-w bo-setting-menu-main-content">
+    <div class="content-i">
+        <div class="content-box">
+            <a href="#/realms/{{realm.realm}}/products/{{subRealm.realm}}/{{path[4]}}" class="text-decoration-none text-dark" id="back-to-product">
+                <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6'}} breadcrumb-back-icon"></i>{{ :: 'back-to-product' | translate}}
+            </a>
+            <div class="element-wrapper"> 
+                <div class="element-box py-5 mt-4">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h6>{{:: 'pricing-for-transaction' | translate}}</h6>
+                            <p class="font-weight-bold mb-2" data-ng-show="!isPriceEditable">{{ (price.name && price.name.length > 0) ? price.name : 'default'}} - {{price.currencyOptions[0].amount}} {{price.currencyOptions[0].currency.toUpperCase()}}</p>
+                            <div class="d-flex align-items-center mb-2" data-ng-show="isPriceEditable">
+                                <input class="form-control padding-6px mr-2 mb-0" type="text" id="priceName" data-ng-model="price.name"> -
+                                <input class="form-control padding-6px mx-2 mb-0" type="text" id="priceAmount" data-ng-model="price.currencyOptions[0].amount">
+                                <select id="priceCurrency" class="form-control p-1" data-ng-model="price.currencyOptions[0].currency">
+                                    <option value="" disabled>{{:: 'selectOne' | translate}}</option>
+                                    <option value="inr">INR</option>
+                                    <option value="usd">USD</option>
+                                </select> 
+                            </div>
+                            <p data-ng-if="price.hasOwnProperty('updatedAt')">{{:: 'last-edited' | translate}} {{:: price.updatedAt | timeago }}</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm px-3" id="editPriceBtn"  data-ng-show="!isPriceEditable" data-ng-click="makeEditable(true)">{{:: 'edit' | translate}}</button>
+                    </div>
+                    <!-- Metadata -->
+                    <div class="border rounded" ng-show="!loading">
+                        <div class="d-flex justify-content-between align-items-center border-bottom px-3 py-2">
+                            <p class="font-weight-600 h6 my-2">{{:: 'meta-data' | translate}}</p>
+                            <div class="d-flex align-items-center">
+                                <div class="element-search m-1" data-ng-show="!isPriceEditable">
+                                    <input class="form-control bg-color-transparent searchTerm" id="productSearchInput" type="text" placeholder="{{:: 'search-price' | translate}}" data-ng-model="searchValue" class="form-control form-control-sm rounded bright search" onkeydown="if (event.keyCode == 13) document.getElementById('productSearch').click()">
+                                    <i class="os-icon os-icon-search2 search-icon" id="productSearch" data-ng-click="pageCountChanged()"></i>
+                                </div>
+                                <select id="select-provider" class="form-control m-1 p-1" data-ng-model="selectedProvider" data-ng-show="product.externalId && product.externalId == 'bo_tran'">
+                                    <option value="" disabled>{{:: 'selectOne' | translate}}</option>
+                                    <option data-ng-repeat="provider in providers" value="{{provider}}">{{provider}}</option>
+                                </select> 
+                            </div>
+                        </div>
+                        <div class="metadata-wrapper" id="metadata-wrapper">
+                            <div class="row align-items-center px-3 py-2" ng-repeat="metadata in price.metadata | filter: {key: searchValue}">
+                                <div class="col-6">
+                                    <input class="form-control p-1" type="text" id="key-{{metadata.key.toLowerCase().replaceAll(' ','-')}}" data-ng-model="price.metadata[$index].key" data-ng-show="isPriceEditable">
+                                    <p class="font-weight-bold mb-0 text-truncate" data-ng-show="!isPriceEditable">{{metadata.key}}</p>
+                                </div>
+                                <div class="d-flex align-items-center {{isPriceEditable ? 'col-5' : 'col-6'}}">
+                                    <input class="form-control p-1" type="text" id="value-{{metadata.value.toLowerCase().replaceAll(' ','-')}}" data-ng-model="price.metadata[$index].value" data-ng-show="isPriceEditable">
+                                    <p class="font-weight-bold mb-0 text-truncate" data-ng-show="!isPriceEditable">{{metadata.value}}</p>
+                                </div>
+                                <div class="col-1 text-center" data-ng-show="isPriceEditable">
+                                    <i class="os-icon os-icon-ui-15 plus-icon text-danger cursor-pointer bg-danger-lite px-2 py-1" id="delete-{{metadata.key.toLowerCase().replaceAll(' ','-')}}" data-ng-click="removeMetaData($index)"></i>
+                                </div>
+                            </div>
+                            <div class="text-center text-muted font-size-16px py-5" data-ng-show="price.metadata.length == 0 && !isPriceEditable">
+                                {{'no-metadata-found' | translate}}
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center border-top px-3 py-2" data-ng-show="isPriceEditable">
+                            <i class="os-icon os-icon-plus text-primary border p-1 h5 mr-2 mb-0 cursor-pointer" id="addMetaDataIcon" data-ng-click="addMetaData()"></i>
+                            <span class="cursor-pointer" data-ng-click="addMetaData()" id="addMetaDataBtn">{{:: 'add-meta-data' | translate }}</span>
+                        </div>
+                    </div>
+                    <div ng-show="loading">
+                        <kc-loader loadertype="loaderTypeName" ></kc-loader>
+                    </div>
+                    <!-- Buttons -->
+                    <div class="col-md-12 d-flex flex-row-reverse pr-0 mt-5" data-ng-show="isPriceEditable" >
+                        <button kc-admin-save data-ng-disabled="!changed" id="details-saveBtn" class="ml-3 btn btn-primary" data-ng-click="updatePricing()">
+                            <span ng-show="!saveInProgress">{{:: 'save' | translate}}</span>
+                            <div ng-show="saveInProgress">
+                                <kc-action-button-loading></kc-action-button-loading>
+                            </div>
+                        </button>
+                        <button id="details-cancelBtn" kc-reset data-ng-click="makeEditable(false)">{{:: 'cancel' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,146 @@
+<div data-ng-controller="KcGroupRoleMappingsCtrl">
+    <div class="col-sm-12 px-0">
+        <div class="element-wrapper">
+            <div class="w-100 d-flex justify-content-end align-items-center">
+                <div class="d-flex roles-groups mr-auto">
+                    <div class="tabs">
+                        <button class="tabs-btn" ng-class="{'tabs-btn-active' : view === 'treeView'}"
+                            ng-click="changeView('treeView')">{{ :: 'tree-view' | translate}}</button>
+                        <button class="tabs-btn" ng-class="{'tabs-btn-active' : view === 'listView'}"
+                            ng-click="changeView('listView')">{{ :: 'list-view' | translate}}
+                            <svg width="5" class="ml-2" height="10" ng-class="{'rotate-180' : isRTL()}"  viewBox="0 0 5 10" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M0 10L5 5L0 0L0 10Z"
+                                    fill="currentColor" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="sub-tabs" ng-if="view === 'listView'">
+                        <button ng-click="changeSubTab('roles')" ng-class="{'active' : subTab === 'roles'}">{{
+                            :: 'roles' | translate}}</button>
+                        <button ng-click="changeSubTab('users')" ng-class="{'active' : subTab === 'users'}">{{
+                            :: 'users' | translate}}</button>
+                    </div>
+                </div>
+                <div class="d-flex mr-2 align-items-center">
+                    <div class="form-inline justify-content-between w-100">
+                    </div>
+                    <select data-ng-model="query.max" id="pageRolesCount" ng-change="searchQuery()"
+                        data-ng-options="itemCount for itemCount in [5,10,50,100]"
+                        data-ng-show="(users && users.length > 5 && pageCount===entries) || (entries > 5)"
+                        class="form-control form-control-sm rounded bright events-admin-search w-auto pt-1 pb-1 mt-1 mr-3">
+                        <option data-ng-repeat="itemCount in [5,10,50,100]" data-ng-selected="query.max === itemCount"
+                            data-ng-value="itemCount">
+                            {{ itemCount }}
+                        </option>
+                    </select>
+                </div>
+                <div data-ng-hide="realmMappings && realmMappings.length === 0">
+                    <a class="text-decoration-none">
+                        <button class="create-btn no-entry-display" id="createUser" ng-click="addRolesToGroup()"
+                            addRealmRole>
+                            <i class="os-icon os-icon-plus plus-icon"></i>
+                            {{:: 'add-roles' | translate}}
+                        </button>
+                    </a>
+                </div>
+            </div>
+            <div ng-hide="realmMappings.length === 0">
+                <div class="table-responsive-md clients-list">
+                    <table class="table table-light-bordered table-padded table-layout-fixed w-100 mt-3">
+                        <caption data-ng-show="realmMappings" class="hidden">{{:: 'table-of-role-members' |
+                            translate}}</caption>
+                        <thead>
+                            <tr data-ng-show="realmMappings.length > 0">
+                                <th class="w-90" colspan="9">{{:: 'role-name' | translate}}</th>
+                                <th class="text-center w-10" colspan="1">{{:: 'actions' | translate}}</th>
+                            </tr>
+
+                        </thead>
+                        <tfoot>
+                            <tr
+                                data-ng-hide="(!searchLoaded && realmMappings && realmMappings.length < 5) || (realmMappings && realmMappings.length ===0)">
+                                <td class="pl-0 pb-0" 
+                                    data-ng-show="(realmMappings && realmMappings.length > 5 && pageCount===entries) || (entries > 5)"
+                                    colspan="5">
+                                    <p class="mt-1 mb-0">{{:: 'showing' | translate}} {{startCount}} - {{pageCount}}
+                                        {{:: 'of' | translate}}
+                                        {{entries}} {{:: 'roles' | translate}}</p>
+                                </td>
+                                <td class="pr-0 pb-0" colspan="5"
+                                    data-ng-show="(realmMappings && realmMappings.length > 5 && pageCount === entries) || (entries > 5)">
+                                    <div class="table-nav pull-right" data-ng-hide="(entries <= query.max)">
+                                        <button class="btn btn-sm btn-outline-primary table-pagination"
+                                            id="firstPageBtn" data-ng-click="firstPage()" class="first"
+                                            ng-disabled="query.first === 0"
+                                            data-ng-class="query.first === 0 && 'text-muted'">
+                                            <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon"></i>
+                                            <i>{{:: 'first-page' | translate}} </i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary table-pagination"
+                                            id="previousPageBtn" data-ng-click="previousPage()" class="prev"
+                                            ng-disabled="query.first === 0"
+                                            data-ng-class="query.first === 0 && 'text-muted'"><i
+                                                class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon"></i>
+                                            <i> {{:: 'previous' | translate}} </i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary table-pagination pr-0"
+                                            id="nextPageBtn" data-ng-click="nextPage()" class="next"
+                                            ng-disabled="pageCount === entries"
+                                            data-ng-class="pageCount === entries && 'text-muted'">
+                                            <i> {{:: 'next' | translate}} </i>
+                                            <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tfoot>
+                        <tbody>
+                            <tr class="user-row position-relative fadeUp" ng-repeat="role in realmMappings">
+                                <td class="overflow-ellipsis mb-0" colspan="9">
+                                    <div class="name-container align-items-center">
+                                        <p class="overflow-ellipsis mb-0 d-flex align-items-center">
+                                            <span>{{role.name}}</span>
+                                            <span class="badge badge-success bg-dark border font-small ml-2" ng-show="role.workflowRole">
+                                                {{:: 'workflow' | translate}}
+                                            </span>
+                                            <span data-ng-if="group.attributes[role.name]" class="badge badge-danger">
+                                                <span style="font-size: 0.75rem;"></span>
+                                                <b>{{group.attributes[role.name][0]}}</b>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </td>
+                                <td class="kc-action-cell text-center row-actions " colspan="1">
+                                    <a data-ng-if="!group.attributes[role.name][0]" class="danger"
+                                        data-ng-click="deleteRealmRole(role)"><i
+                                            id="{{role.name.toLowerCase().replaceAll(' ','-')}}-deleteIcon"
+                                            class="os-icon os-icon-ui-15"
+                                            tooltip="{{:: 'tooltip-remove-label' | translate}}" tooltip-placement="top"
+                                            tooltip-trigger="mouseover mouseout"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="element-box element-box-medium mt-4"
+                data-ng-if="searchLoaded && !isLoading && realmMappings && realmMappings.length === 0">
+                <div class="no-attributes-svg">
+                    <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'add-attr.svg' : realm.mode === 'ciam' ? 'add-attr-ciam.svg' : 'add-attr-bo.svg' }}"
+                        alt="no-attributes-svg" class="opacity-40 no-entry-display" />
+                    <p class="no-results-msg no-entry-display">{{:: 'no-role-mappings' | translate}}</p>
+                    <button class="create-btn no-entry-display" ng-click="addRolesToGroup()" id="addRolesBtn"
+                        addRealmRole>
+                        <i class="os-icon os-icon-plus plus-icon"></i>
+                        {{:: 'add-roles' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="!(searchLoaded)">
+        <kc-loader loadertype="loaderTypeName"></kc-loader>
+    </div>
+</div>

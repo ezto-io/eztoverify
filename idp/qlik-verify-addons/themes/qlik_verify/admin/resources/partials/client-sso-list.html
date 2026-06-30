@@ -1,0 +1,184 @@
+<kc-menu></kc-menu>
+<div class="content-w" ng-init="init()">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper pb-0">
+                        <div class="element-actions d-flex align-items-center application-step-1">
+                            <div data-ng-show="access.manageClients" class="mr-2">
+                                <a class="text-decoration-none" data-ng-click="openTab()">
+                                    <button class="btn btn-secondary" id="ssoDashboardBtn">
+                                        {{:: 'sso-dashboard' | translate}}
+                                    </button>
+                                </a>
+                            </div>
+                            <div data-ng-show="access.manageClients && (!isClientListEmpty() || searchQueryLoaded)"
+                                data-step='{{!searchQueryLoaded && access.manageClients && !isClientListEmpty() ? 1 : 0}}'
+                                data-title=" {{:: 'intro-no-application-found-title' | translate}} "
+                                data-intro="{{:: 'intro-no-application-found' | translate}}">
+                                <a class="text-decoration-none" href="#/realms/{{realm.realm}}/marketplace/templates/sso-integrations">
+                                    <button class="create-btn" id="createSsoIntegrationBtn">
+                                        <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-sso-integration' | translate}}
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="element-header">
+                            {{ :: 'clients' | translate }}
+                        </h3>
+                        <kc-tabs-applications></kc-tabs-applications>         
+                        <div class="element-box mt-4" data-ng-show="(searchLoaded && (clients && clients.length === 0) && !searchQueryLoaded)">
+                            <div class="no-policy-img" data-step='{{(searchLoaded && (clients && clients.length === 0) && !searchQueryLoaded) ? 1 : 0}}' data-title=" {{:: 'intro-no-application-found-title' | translate}} " data-intro="{{:: 'intro-no-application-found' | translate}}">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/no-apps.svg"  alt="no-apps-svg" class="opacity-40 no-entry-display"/>
+                                <p class="no-results-msg no-entry-display">{{:: 'no-sso' | translate}}</p>
+                                <a class="text-decoration-none" id="createClient" href="#/realms/{{realm.realm}}/marketplace/templates/sso-integrations">
+                                    <button class="create-btn no-entry-display" id="createSsoIntegrationBtn">
+                                      <i class="os-icon os-icon-plus plus-icon"></i>
+                                        {{:: 'create-sso-integration' | translate}}
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="controls-above-table mb-4" ng-if="(searchLoaded &&  clients.length > 0) || (searchLoaded && searchQueryLoaded && (clients && clients.length===0))">
+                            <div class="form-inline justify-content-end">
+                                <div class="form-group mr-auto">
+                                    <div class="element-search">
+                                        <input class="form-control bg-color-transparent searchTerm" type="text" id="sso-search-input"
+                                            placeholder="{{:: 'client-sso-search-placeholder' | translate}}"
+                                            data-ng-model="query.clientName"
+                                            class="form-control form-control-sm rounded bright search"
+                                            onkeydown="if (event.keyCode == 13) document.getElementById('clientSearch').click()" 
+                                            style = "margin-top: 1.6rem;"
+                                        >
+                                        <i class="os-icon os-icon-search2 search-icon" id="clientSearch"
+                                            data-ng-click="searchQuery()" style="top: 70%"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <select data-ng-model="query.max" id="pageCountselector" ng-change="selectQuery()"
+                                        data-ng-options="itemCount for itemCount in [5,10,50,100]"
+                                        data-ng-show="(clients && clients.length > 5 && pageCount===entries) || (entries > 5)"
+                                        class="form-control form-control-sm rounded bright events-admin-search client-list-count-select">
+                                        <option data-ng-repeat="itemCount in [5,10,50,100]"
+                                            data-ng-selected="query.max === itemCount" data-ng-value="itemCount">
+                                            {{ itemCount }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="position-relative ml-4">
+                                    <div class="form-control filter mr-0 cursor-pointer" ng-click="showFilter=!showFilter">
+                                        <img ng-src="{{resourceUrl}}/img/filter.svg" class="pr-2">
+                                        <span>{{orderBy}}</span>
+                                    </div>
+                                    <ul ng-show="showFilter" class="position-absolute list-unstyled top-4 p-1 bg-white filter-list rounded d-flex flex-column gap-1" data-ng-class="realm.mode == 'bo' ? 'filter-list-bo' : 'filter-list-wiam'">
+                                        <li class="p-2 rounded" data-ng-class="query.orderBy=='asc' && 'active'" ng-click="setOrderBy('asc')">{{:: 'asc' | translate}}</li>
+                                        <li class="p-2 rounded" data-ng-class="query.orderBy=='desc' && 'active'" ng-click="setOrderBy('desc')">{{:: 'desc' | translate}}</li>
+                                        <li class="p-2 rounded" data-ng-class="query.orderBy=='last-updated' && 'active'" ng-click="setOrderBy('last-updated')">{{:: 'last-updated' | translate}}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive-md clients-list" ng-if="searchLoaded && clients.length>0">
+                            <table class="table table-light-bordered table-padded table-layout-fixed w-100">
+                                <thead> </thead>
+
+                                <tbody class="p-3">
+                                    <tr class="position-relative fadeUp"
+                                        ng-repeat="client in clients | filter:filterQuery as filtered">
+                                        <td class="cursor-pointer w-40"
+                                            kc-open="/realms/{{realm.realm}}/sso/{{client.id}}">
+                                            <div class="conn-with-logo">
+                                                <div class="social-conn-logo-container">
+                                                    <img alt="clientlogo"
+                                                        data-ng-src="{{client.attributes.logoUrl}}">
+                                                </div>
+                                                <div class="overflow-ellipsis">
+                                                    <a class="aTagKcOpen"
+                                                        kc-open="/realms/{{realm.realm}}/sso/{{client.id}}" >
+                                                        <span id="{{client.name.toLowerCase().replaceAll(' ','-')}}-sso" class="ml-1">{{client.name}} <strong ng-if="isInBuilt(client)" class="badge badge-danger">{{:: 'inbuilt' | translate}}</strong></span>
+                                                    </a><br>
+                                                    <!-- <span class="helper-text ml-1">{{ :: client.appType | translate }}
+                                                    </span> -->
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="nowrap w-45">
+                                            <div class="user-id-container">
+                                                {{ ::'client-id' | translate}} <code
+                                                    class="user-id-code overflow-ellipsis"> {{client.clientId}} </code>
+                                                <i class="os-icon os-icon-copy copy-paste-icon cursor-pointer" id="{{client.name.toLowerCase().replaceAll(' ','-')}}-copyIcon"
+                                                    data-ng-click="copyToClipboard($event.currentTarget,client.clientId)"
+                                                    tooltip="{{tooltipTxt}}" tooltip-placement="top"
+                                                    tooltip-trigger="mouseover mouseout"></i>
+                                            </div>
+                                        </td>
+                                        <td class="row-actions w-15">
+                                            <div class="dropdown clearfix">
+                                              <div class="dropdown">
+                                                    <button id="{{client.name.toLowerCase().replaceAll(' ','-')}}-dLabel" class="dropdown-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="os-icon os-icon-more-horizontal"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+                                                        <li><a class="dropdown-item" id="{{client.name.toLowerCase().replaceAll(' ','-')}}-settingsBtn" kc-open="/realms/{{realm.realm}}/sso/{{client.id}}">{{ ::'app-settings' | translate}}</a></li>
+                                                        <li><a class="dropdown-item" id="{{client.name.toLowerCase().replaceAll(' ','-')}}-authenticationBtn" kc-open="/realms/{{realm.realm}}/sso/{{client.id}}/flow-override">{{ ::'authentication-flow-overrides' | translate}}</a></li>
+                                                        <div class="dropdown-divider" ng-hide="isInBuilt(client)"></div>
+                                                        <li ng-hide="isInBuilt(client)">
+                                                            <a class="dropdown-item delete-dropdown-item" id="{{client.name.toLowerCase().replaceAll(' ','-')}}-deleteBtn" data-ng-click="removeClient(client)">
+                                                                <p class="text-danger m-0">{{ ::'delete' | translate }}</p>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                              </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <div class="d-flex w-100 fadeUp-delayed"  data-ng-show="(searchLoaded && clients && clients.length > 5)">
+                                <td class="pl-0 fadeUp-delayed" >
+                                    <p class="mt-1 mr-auto" data-ng-show="(searchLoaded && clients && clients.length > 5 && pageCount===entries) || (searchLoaded && entries > 5)">{{:: 'showing' | translate}} {{startCount}} - {{pageCount}} {{:: 'of' | translate}} {{entries}} {{:: 'clients' | translate}}</p>
+                                </td>
+                                <td class="pr-0 fadeUp-delayed" colspan="9">
+                                    <div  align="right" class="table-nav" data-ng-show="(searchLoaded && clients && clients.length > 5 && pageCount === entries) || (searchLoaded &&entries > 5)">
+                                        <div class="pagination justify-content-end" data-ng-hide="(entries <= query.max)">
+                                            <button data-ng-click="firstPage()" id="firstPageBtn" class="btn btn-sm btn-outline-primary table-pagination" ng-disabled="query.first === 0" data-ng-class="query.first === 0 && 'text-muted'" > <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon"></i> <i>{{:: 'first-page' | translate}}</i> </button>
+                                            <button class="btn btn-sm btn-outline-primary table-pagination" id="previousPageBtn" data-ng-click="previousPage()" class="prev" ng-disabled="query.first == 0">
+                                                <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon" data-ng-class="query.first == 0 && 'text-muted'"></i>
+                                                <i data-ng-class="query.first == 0 && 'text-muted'"> {{:: 'previous' | translate}} </i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-primary table-pagination pr-0" id="nextPageBtn" data-ng-click="nextPage()" class="next" ng-disabled="pageCount === entries">
+                                                <i  data-ng-class="pageCount === entries && 'text-muted'"> {{:: 'next' | translate}} </i>
+                                                <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon mr-0" data-ng-class="pageCount === entries && 'text-muted'"></i>
+                                            </button>
+                                        </div>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                    </div>
+                    <div data-ng-show="searchLoaded && searchQueryLoaded && (clients && clients.length===0)">
+                        <div class="element-box">
+                            <div class="no-policy-img"
+                                data-step='{{searchLoaded && searchQueryLoaded && (clients && clients.length===0)?1:0}}'
+                                data-intro="{{:: 'intro-no-users-available' | translate}}">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/no-apps.svg" alt="no-users-svg"
+                                    class="opacity-40 no-entry-display" />
+                                <p class="no-results-msg no-entry-display">{{:: 'no-sso' | translate}}</p>
+                                <button class="create-btn no-entry-display cursor-pointer" id="clearSearchBtn" data-ng-click="clearSearch()">
+                                    <i class="os-icon os-icon-close mr-2"></i>
+                                    {{ ::  'clear-search' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-3" ng-if="!searchLoaded">
+                <kc-loader loadertype="loaderTypeName" ></kc-loader>
+            </div>
+        </div>
+    </div>
+</div>

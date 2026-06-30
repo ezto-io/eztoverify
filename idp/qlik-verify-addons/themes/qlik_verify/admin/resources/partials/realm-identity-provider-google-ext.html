@@ -1,0 +1,35 @@
+<div class="form-group row">
+    <label class="col-md-3 control-label" for="hostedDomain">{{:: 'hostedDomain' | translate}}</label>
+    <div class="col-md-9">
+        <input ng-model="identityProvider.config.hostedDomain" id="hostedDomain" class="form-control" />
+    </div>
+    <kc-tooltip>{{:: 'identity-provider.google-hostedDomain.tooltip' | translate}}</kc-tooltip>
+</div>
+<div class="form-group row">
+    <label class="col-md-3 control-label">{{:: 'userIp' | translate}}</label>
+    <div class="col-md-9">
+        <label for="userIp">
+            <div  class="os-toggler-w" ng-class="{on: identityProvider.config.userIp}">
+                <div class="os-toggler-i"  id="userIp-toggle">
+                    <div class="os-toggler-pill" ng-model="identityProvider.config.userIp" name="userIp" id="userIp" onoffswitch >
+                    </div>
+                </div>
+            </div>
+        </label>
+    </div>
+    <kc-tooltip>{{:: 'identity-provider.google-userIp.tooltip' | translate}}</kc-tooltip>
+</div>
+<div class="form-group row">
+    <label class="col-md-3 control-label">{{:: 'offlineAccess' | translate}}</label>
+    <div class="col-md-9">
+        <label for="offlineAccess">
+            <div  class="os-toggler-w" ng-class="{on: identityProvider.config.offlineAccess}">
+                <div class="os-toggler-i" id="offlineAccess-toggle" >
+                    <div class="os-toggler-pill" ng-model="identityProvider.config.offlineAccess" name="offlineAccess" id="offlineAccess" onoffswitch >
+                    </div>
+                </div>
+            </div>
+        </label>
+    </div>
+    <kc-tooltip>{{:: 'identity-provider.google-offlineAccess.tooltip' | translate}}</kc-tooltip>
+</div>

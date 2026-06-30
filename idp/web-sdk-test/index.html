@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify — Web SDK Test Harness</title>
+  <style>
+    :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --txt:#e6edf3; --muted:#8b98a5; --accent:#4f8cff; --ok:#3fb950; --warn:#d29922; --err:#f85149; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--txt); }
+    .wrap { max-width:960px; margin:0 auto; padding:24px 16px 64px; }
+    h1 { font-size:20px; margin:0 0 4px; }
+    h2 { font-size:14px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:24px 0 8px; }
+    .sub { color:var(--muted); margin:0 0 20px; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media (max-width:640px){ .grid { grid-template-columns:1fr; } }
+    label { display:block; font-size:12px; color:var(--muted); margin:0 0 4px; }
+    input,select,textarea { width:100%; background:#0d1117; border:1px solid var(--line); color:var(--txt); border-radius:7px; padding:9px 10px; font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    textarea { resize:vertical; min-height:64px; }
+    .row { margin-bottom:12px; }
+    button { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:11px 22px; font-size:14px; font-weight:600; cursor:pointer; }
+    button:disabled { opacity:.5; cursor:not-allowed; }
+    button.secondary { background:#283039; }
+    .actions { display:flex; gap:10px; align-items:center; margin-top:16px; }
+    .status { margin-left:auto; font-size:13px; color:var(--muted); }
+    .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--muted); margin-right:6px; vertical-align:middle; }
+    .dot.run { background:var(--warn); } .dot.ok { background:var(--ok); } .dot.err { background:var(--err); }
+    #log { background:#0d1117; border:1px solid var(--line); border-radius:8px; padding:12px; font:12px/1.55 ui-monospace,Menlo,monospace; white-space:pre-wrap; word-break:break-word; max-height:340px; overflow:auto; }
+    .le { margin:0 0 2px; } .le .t { color:var(--muted); } .le.ok { color:var(--ok);} .le.err{color:var(--err);} .le.in{color:var(--accent);}
+    .check { list-style:none; padding:0; margin:0; }
+    .check li { padding:6px 0 6px 24px; position:relative; border-bottom:1px solid var(--line); }
+    .check li:last-child{border:0;} .check li:before{ content:"▸"; position:absolute; left:6px; color:var(--accent); }
+    code { background:#0d1117; padding:1px 5px; border-radius:4px; border:1px solid var(--line); font-size:12px; }
+    .pill { display:inline-block; font-size:11px; padding:2px 8px; border-radius:20px; background:#283039; color:var(--muted); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Verify — Web SDK Test Harness</h1>
+  <p class="sub">Drives the CIBA <span class="pill">Verification way: Web</span> + <span class="pill">Notification type: SDK</span> + <span class="pill">Hook: Web SDK</span> flow end-to-end using the official <code>eztoverify</code> SDK.</p>
+
+  <h2>Configuration</h2>
+  <div class="panel">
+    <div class="grid">
+      <div class="row"><label>IdP base URL</label><input id="base" value="http://192.168.5.64:8080" /></div>
+      <div class="row"><label>Realm (workspace)</label><input id="realm" value="new" /></div>
+      <div class="row"><label>Client / App ID</label><input id="client" value="3a2d18a2-cbf0-41c5-9e09-f73b1f3eff5f" placeholder="my-verify-app" /></div>
+      <div class="row"><label>API version</label>
+        <select id="apiv"><option value="1" selected>1 (Basic auth, recommended)</option><option value="0">0 (app_id/app_secret)</option></select>
+      </div>
+      <div class="row"><label>SDK source (jsDelivr gh)</label>
+        <select id="sdksrc">
+          <option value="ezto-io/web-push" selected>ezto-io/web-push (prod)</option>
+          <option value="ezto-io/dev-web-push">ezto-io/dev-web-push (dev)</option>
+        </select>
+      </div>
+      <div class="row"><label>Open verification UI in</label>
+        <select id="newtab"><option value="false" selected>Same tab / inline</option><option value="true">New tab</option></select>
+      </div>
+      <div class="row"><label>Target user — username or email (→ <code>request.user.userId</code> / <code>.email</code>)</label><input id="userid" placeholder="alice  or  alice@example.com" /></div>
+    </div>
+    <div class="row"><label>Request payload (JSON — passed as <code>request</code>; <code>user</code> is merged from the field above)</label><textarea id="payload">{}</textarea></div>
+    <div class="actions">
+      <button id="go">Start verification</button>
+      <button id="clear" class="secondary">Clear log</button>
+      <span class="status"><span id="dot" class="dot"></span><span id="statetxt">idle</span></span>
+    </div>
+  </div>
+
+  <h2>Result</h2>
+  <div id="log" class="panel">Waiting…</div>
+
+  <h2>Before it works — client setup checklist</h2>
+  <ul class="check panel">
+    <li>Client → <b>Verification way = Web</b>, <b>Notification type = SDK</b>.</li>
+    <li>Client → Hook → <b>Hook Notification Way = Web SDK</b>.</li>
+    <li>Client → <b>whitelist_host</b> must contain this page's exact origin: <code id="origin"></code></li>
+    <li>Serve this page over <b>http(s)</b> (an <code>Origin</code> header + real browser request are required). <code>file://</code> returns 401. Use <code>./serve.sh</code>.</li>
+    <li>IdP env <code>SOCKET_URL</code> set and the <code>services/socket</code> service running (result is delivered over socket.io).</li>
+    <li>A user/device enrolled so the verification UI has something to approve.</li>
+  </ul>
+</div>
+
+<script>
+  document.getElementById('origin').textContent = window.location.origin;
+  const $ = id => document.getElementById(id);
+  const log = (msg, cls='') => {
+    const t = new Date().toLocaleTimeString();
+    const el = document.createElement('div'); el.className = 'le ' + cls;
+    el.innerHTML = '<span class="t">'+t+'</span>  ' + msg;
+    const box = $('log'); if (box.textContent === 'Waiting…') box.textContent='';
+    box.appendChild(el); box.scrollTop = box.scrollHeight;
+  };
+  const setState = (s, cls) => { $('statetxt').textContent = s; $('dot').className = 'dot ' + cls; };
+
+  function loadSdk(ghRepo) {
+    return new Promise((resolve, reject) => {
+      if (window.eztoverify) return resolve();
+      const cssBase = 'https://cdn.jsdelivr.net/gh/' + ghRepo;
+      const css = document.createElement('link');
+      css.rel='stylesheet'; css.href = cssBase + '/eztoverify.min.css';
+      document.head.appendChild(css);
+      const io = document.createElement('script');
+      io.src = 'https://cdn.socket.io/4.7.2/socket.io.min.js';
+      io.onload = () => {
+        const s = document.createElement('script');
+        s.src = cssBase + '/eztoverify.min.js';
+        s.onload = () => window.eztoverify ? resolve() : reject(new Error('eztoverify global missing after load'));
+        s.onerror = () => reject(new Error('failed to load eztoverify.min.js from ' + cssBase));
+        document.head.appendChild(s);
+      };
+      io.onerror = () => reject(new Error('failed to load socket.io from CDN'));
+      document.head.appendChild(io);
+    });
+  }
+
+  $('clear').onclick = () => { $('log').textContent = 'Waiting…'; };
+
+  $('go').onclick = async () => {
+    const base = $('base').value.trim().replace(/\/$/,'');
+    const realm = $('realm').value.trim();
+    const client = $('client').value.trim();
+    const apiv = $('apiv').value;
+    const ghRepo = $('sdksrc').value;
+    if (!client) { log('Client / App ID is required.', 'err'); return; }
+    let payload;
+    try { payload = JSON.parse($('payload').value || '{}'); }
+    catch(e){ log('Invalid JSON payload: ' + e.message, 'err'); return; }
+
+    const userVal = $('userid').value.trim();
+    if (userVal) {
+      payload.user = payload.user || {};
+      if (userVal.includes('@')) payload.user.email = userVal;
+      else payload.user.userId = userVal;   // userId is matched as username by the resolver
+    }
+
+    const api = base + '/auth/realms/api/ezto_web_push/' + encodeURIComponent(client) + '/' + encodeURIComponent(realm) + '/register';
+    $('go').disabled = true; setState('loading SDK…','run');
+    try {
+      log('Loading SDK from <code>https://cdn.jsdelivr.net/gh/'+ghRepo+'</code> …');
+      await loadSdk(ghRepo);
+      log('SDK loaded.', 'ok');
+      log('POST <code>'+api+'</code> (api-version '+apiv+')', 'in');
+      setState('awaiting approval…','run');
+
+      log('request body: <code>' + JSON.stringify(payload) + '</code>', 'in');
+      const ez = new window.eztoverify();
+      ez.request(
+        { request: JSON.stringify(payload) },   // serialized string — backend needs request as JSON text, not an object
+        { api: api, apiVersion: apiv },
+        function (res) {
+          log('Result event received:', 'ok');
+          log(JSON.stringify(res, null, 2));
+          const ok = res && (res.error == null);
+          setState(ok ? 'completed' : 'failed', ok ? 'ok':'err');
+          $('go').disabled = false;
+        }
+      );
+    } catch (e) {
+      log('Error: ' + e.message, 'err');
+      setState('error','err');
+      $('go').disabled = false;
+    }
+  };
+</script>
+</body>
+</html>

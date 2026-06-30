@@ -1,0 +1,51 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a ng-if="path[2]!=='admin'" href="#/realms/{{realm.realm}}/users" id="backToUserList">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ :: 'back-to-users' |
+                            translate}}
+                        </a>
+                        <a ng-if="path[2]==='admin'" href="#/realms/{{realm.realm}}/dashboard-admins"
+                            id="backToUserList">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>{{ ::
+                            'back-to-dashboard-admins' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <kc-tabs-user ng-if="path[2]!=='admin'"></kc-tabs-user>
+                    <kc-tabs-admin-user ng-if="path[2]==='admin'"></kc-tabs-admin-user>
+                    <div>
+                        <div class="element-wrapper">
+                            <div class="d-flex roles-groups" ng-if="view==='treeView'">
+                                <div class="tabs mt-1">
+                                    <button class="tabs-btn" ng-class="{'tabs-btn-active' : view === 'treeView'}"
+                                        ng-click="changeView('treeView')">{{ :: 'tree-view' | translate}}</button>
+                                    <button class="tabs-btn" ng-class="{'tabs-btn-active' : view === 'listView'}"
+                                        ng-click="changeView('listView')">
+                                        {{ :: 'list-view' | translate}}
+                                        <svg width="5" class="ml-2" ng-class="{'rotate-180' : isRTL()}" height="10" viewBox="0 0 5 10" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 10L5 5L0 0L0 10Z"
+                                                fill="currentColor" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <kc-roles-groups-tree ng-if="view==='treeView'"></kc-roles-groups-tree>
+                            <kc-role-mappings ng-if="view==='listView' && subTab==='roles'"></kc-role-mappings>
+                            <kc-user-group-membership
+                                ng-if="view==='listView' && subTab==='groups'"></kc-user-group-membership>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="!(searchLoaded)">
+                    <kc-loader loadertype="loaderTypeName"></kc-loader>
+                </div>
+            </div>
+        </div>
+    </div>

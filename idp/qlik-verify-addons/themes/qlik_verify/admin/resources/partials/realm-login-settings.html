@@ -1,0 +1,159 @@
+<kc-menu></kc-menu>
+<div class="position-relative"> 
+    <div class="position-absolute">
+      <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+      <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon" data-ng-click="toggleSideBarShow()" >
+        <div id="setting-icon h1">
+          <i class="ti-angle-right cursor-pointer"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="content-w bo-setting-menu-main-content">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <!-- <kc-tabs-realm></kc-tabs-realm> -->
+                        <div class="element-box py-5">
+                            <form class="form-horizontal" name="realmForm" novalidate
+                                kc-read-only="!access.manageRealm">
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label">{{::
+                                        'editUsernameAllowed' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <label>
+                                            <div class="os-toggler-w" ng-class="{on: realm.editUsernameAllowed}">
+                                                <div class="os-toggler-i" id="login-editUserName-toggle" >
+                                                    <div class="os-toggler-pill" ng-model="realm.editUsernameAllowed"
+                                                        name="editUsernameAllowed" id="editUsernameAllowed" onoffswitch>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <!-- <input ng-model="realm.editUsernameAllowed" name="editUsernameAllowed"
+                                                id="editUsernameAllowed" onoffswitch
+                                                on-text="{{:: 'onText' | translate}}"
+                                                off-text="{{:: 'offText' | translate}}" /> -->
+                                    </div>
+                                    <kc-tooltip>{{:: 'editUsernameAllowed.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label">{{:: 'verifyEmail' |
+                                        translate}}</label>
+                                    <div class="col-md-9">
+                                        <label>
+                                            <div class="os-toggler-w" ng-class="{on: realm.verifyEmail}">
+                                                <div class="os-toggler-i" id="login-verifyEmail-toggle">
+                                                    <div class="os-toggler-pill" ng-model="realm.verifyEmail"
+                                                        name="verifyEmail" id="verifyEmail" onoffswitch>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <!-- <input ng-model="realm.verifyEmail" name="verifyEmail" id="verifyEmail"
+                                                onoffswitch on-text="{{:: 'onText' | translate}}"
+                                                off-text="{{:: 'offText' | translate}}" /> -->
+                                    </div>
+                                    <kc-tooltip>{{:: 'verifyEmail.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label">{{::
+                                        'loginWithEmailAllowed' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <label>
+                                            <div class="os-toggler-w" ng-class="{on: realm.loginWithEmailAllowed}">
+                                                <div class="os-toggler-i" id="login-emailLogin-toggle">
+                                                    <div class="os-toggler-pill" ng-model="realm.loginWithEmailAllowed"
+                                                        name="loginWithEmailAllowed" id="loginWithEmailAllowed"
+                                                        onoffswitch>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <!-- <input ng-model="realm.loginWithEmailAllowed" name="loginWithEmailAllowed"
+                                                id="loginWithEmailAllowed" onoffswitch
+                                                on-text="{{:: 'onText' | translate}}"
+                                                off-text="{{:: 'offText' | translate}}" /> -->
+                                    </div>
+                                    <kc-tooltip>{{:: 'loginWithEmailAllowed.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                                <div class="form-group row"
+                                    ng-show="!realm.loginWithEmailAllowed && !realm.registrationEmailAsUsername">
+                                    <label class="col-md-3 control-label">{{::
+                                        'duplicateEmailsAllowed' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <label>
+                                            <div class="os-toggler-w" ng-class="{on: realm.duplicateEmailsAllowed}">
+                                                <div class="os-toggler-i" id="login-mutiplePhoneNumber-toggle">
+                                                    <div class="os-toggler-pill" ng-model="realm.duplicateEmailsAllowed"
+                                                        name="duplicateEmailsAllowed" id="duplicateEmailsAllowed"
+                                                        onoffswitch>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <input ng-model="realm.duplicateEmailsAllowed" name="duplicateEmailsAllowed"
+                                            id="duplicateEmailsAllowed" onoffswitch
+                                            on-text="{{:: 'onText' | translate}}"
+                                            off-text="{{:: 'offText' | translate}}" />
+                                    </div>
+                                    <kc-tooltip>{{:: 'duplicateEmailsAllowed.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label">{{::
+                                        'duplicateMobNumAllowed' | translate}}</label>
+                                    <div class="col-md-9">
+                                        <label>
+                                            <div class="os-toggler-w" ng-class="{on: realm.duplicateMobNumAllowed}">
+                                                <div class="os-toggler-i" id="duplicateMobNumAllowed-toggle">
+                                                    <div class="os-toggler-pill" ng-model="realm.duplicateMobNumAllowed"
+                                                        name="duplicateMobNumAllowed" id="duplicateMobNumAllowed"
+                                                        onoffswitch>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <input ng-model="realm.duplicateMobNumAllowed" name="duplicateMobNumAllowed"
+                                            id="duplicateMobNumAllowed" onoffswitch
+                                            on-text="{{:: 'onText' | translate}}"
+                                            off-text="{{:: 'offText' | translate}}" />
+                                    </div>
+                                    <kc-tooltip>{{:: 'duplicateMobNumAllowed.tooltip' | translate}}</kc-tooltip>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="sslRequired" class="col-md-3 control-label">{{:: 'sslRequired' |
+                                        translate}}</label>
+                                    <div class="col-md-9">
+                                        <div>
+                                            <select id="sslRequired" ng-model="realm.sslRequired" class="form-control">
+                                                <option value="all">{{:: 'sslRequired.option.all' | translate}}
+                                                </option>
+                                                <option value="external">{{:: 'sslRequired.option.external' |
+                                                    translate}}</option>
+                                                <option value="none">{{:: 'sslRequired.option.none' | translate}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <kc-tooltip>{{:: 'sslRequired.tooltip' | translate}}</kc-tooltip>
+                                </div>
+
+                                <div class="form-buttons-w border-top-0" data-ng-show="access.manageRealm">
+                                    <div class="col-md-12 d-flex flex-row-reverse pr-0">
+                                        <button kc-save data-ng-disabled="!changed" id="login-saveBtn" class="ml-3">{{:: 'save' |
+                                            translate}}</button>
+                                        <button kc-reset data-ng-disabled="!changed" id="login-cancelBtn">{{:: 'cancel' |
+                                            translate}}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!--END - Grid of tablo statistics-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

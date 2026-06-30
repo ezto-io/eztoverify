@@ -1,0 +1,133 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <div class="role-list-container">
+                            <h1 class="user-list-heading">{{:: 'roles' | translate}}</h1>
+                            <div data-step='{{!searchQueryLoaded && roles && roles.length !== 0 ?1:0}}' data-title="{{:: 'intro-no-roles-found-title' | translate}}" data-intro="{{:: 'intro-no-roles-found' | translate}}">
+                                <button class="create-btn" data-ng-click="addNewRolePanel()" id="createRoleBtn">
+                                <i class="os-icon os-icon-plus plus-icon"></i>
+                                {{:: 'create-role' | translate}}
+                                </button>            
+                            </div>
+                        </div>
+                        <!-- Inline Tabs-->
+                        <!-- Main Content -->
+                        <br>
+                        <div class="controls-above-table d-flex mb-4">
+                            <div class="form-inline justify-content-between w-100">
+                               <div class="form-group">
+                                   <div class="element-search">
+                                       <input class="form-control" id="rolesSearchInput" type="text" placeholder="{{:: 'search-role-placeholder' | translate}}" data-ng-model="query.search"
+                                            onkeydown="if (event.keyCode == 13) document.getElementById('userSearch').click()" class="py-2">
+                                    <i class="os-icon os-icon-search2 search-icon" id="userSearch" data-ng-click="searchQuery()"></i>
+                                   </div>
+                               </div>
+                               <select data-ng-model="query.max" id="pageRolesCount" ng-change="selectQuery()" data-ng-options="itemCount for itemCount in [5,10,50,100]" data-ng-show="(roles && roles.length > 5 && pageCount===entries) || (entries > 5)"
+                                   class="form-control form-control-sm rounded bright events-admin-search w-auto client-list-count-select">
+                                  <option data-ng-repeat="itemCount in [5,10,50,100]" data-ng-selected="query.max === itemCount"
+                                       data-ng-value="itemCount">
+                                       {{ itemCount }}
+                                  </option>
+                              </select>
+                            </div>
+                        </div>
+                        <div data-ng-show="searchLoaded && searchQueryLoaded && (roles && roles.length===0)">
+                            <div class="element-box element-box-medium">
+                                <div class="no-entry-svg"
+                                     data-step='{{(searchLoaded && (users.length === 0 && !lastSearch)&& !searchQueryLoaded)?1:0}}'
+                                     data-title="{{:: 'intro-no-users-available-title' | translate}}"
+                                     data-intro="{{:: 'intro-no-users-available' | translate}}">
+                                    <img data-ng-src="{{resourceUrl}}//themes/img/add-attr.svg" alt="no-attributes-svg"
+                                         class="opacity-40 no-entry-display" />
+                                    <p class="no-results-msg no-entry-display">{{:: 'no-realm-roles-found' | translate}}</p>
+                                    <button class="create-btn no-entry-display cursor-pointer" id="clearSearchBtn" data-ng-click="clearSearch()">
+                                        <i class="os-icon os-icon-close mr-2"></i>
+                                        {{ ::  'clear-search' | translate}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive-md clients-list" ng-if="(searchLoaded && roles.length > 0)||(searchLoaded && searchQueryLoaded && (roles && roles.length > 0))" >
+                            <table class="table table-light-bordered table-padded table-layout-fixed w-100 mb-0">
+                                <thead>
+                                    <tr class="position-relative fadeUp">
+                                        <th class="w-75">{{:: 'role-name' | translate}}</th>
+                                        <th class="text-center w-25" colspan="1">{{:: 'actions' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-ng-show="roles && roles.length > 0">
+                                    <tr class="user-row position-relative fadeUp" ng-repeat="role in roles">
+                                        <td class="overflow-ellipsis cursor-pointer mb-0" id="role-{{role.name.toLowerCase().replaceAll(' ','-')}}"  kc-open="/realms/{{realm.realm}}/roles/{{role.id}}" >
+                                            <a href="#/realms/{{realm.realm}}/roles/{{role.id}}" class="pr-1 header-text-primary">
+                                                {{role.name}} 
+                                                <span class="badge badge-success bg-dark border font-small ml-2" ng-show="isWorkflow(role)">
+                                                    {{:: 'workflow' | translate}}
+                                                </span>
+                                            </a>
+                                            <span ng-if="!role.inBuilt" class="d-block overflow-ellipsis helper-text mb-0" title="{{role.description}}">{{role.description}}</span>
+                                            <span ng-if="role.inBuilt"><strong class="badge badge-danger">{{:: 'inbuilt' | translate}}</strong></span>
+                                        </td>
+                                        <td class="row-actions w-50">
+                                            <div class="dropdown clearfix">
+                                                <div class="dropdown">
+                                                    <button id="{{role.name.toLowerCase().replaceAll(' ','-')}}-dLabel" class="dropdown-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-ng-click="toggleShow($index)">
+                                                        <i class="os-icon os-icon-more-horizontal"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+                                                        <li><a class="dropdown-item" id="{{role.name.toLowerCase().replaceAll(' ','-')}}-settings" kc-open="/realms/{{realm.realm}}/roles/{{role.id}}">{{ ::'settings' | translate}}</a></li>
+                                                        <li><a class="dropdown-item" id="{{role.name.toLowerCase().replaceAll(' ','-')}}-usersInRole" kc-open="/realms/{{realm.realm}}/roles/{{role.id}}/users">{{:: 'authz-users' | translate}}</a></li>
+                                                        <div ng-if="!role.inBuilt" class="dropdown-divider"></div>
+                                                        <li ng-if="!role.inBuilt">
+                                                            <a class="dropdown-item delete-dropdown-item" id="{{role.name.toLowerCase().replaceAll(' ','-')}}-delete" data-ng-click="removeRole(role)">
+                                                                <p class="text-danger m-0">{{ ::'delete' | translate }}</p>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div> 
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr data-ng-hide="(!searchLoaded && roles && roles.length < 5) || (roles && roles.length ===0)">
+                                        <td class="pl-0 pb-0"  data-ng-show="(roles && roles.length > 5 && pageCount===entries) || (entries > 5)">
+                                                <div>
+                                                <p class="m-0">{{:: 'showing' | translate}} {{startCount}} - {{pageCount}} {{:: 'of' | translate}} {{entries}} {{:: 'roles' | translate}}</p>
+                                                </div>
+                                            
+                                        </td>
+                                        <td colspan="7" align="right" class="table-nav pull-right pr-0 pb-0"  data-ng-show="(roles && roles.length > 5 && pageCount === entries) || (entries > 5)">
+                                            <div class="pagination justify-content-end " data-ng-hide="(entries <= query.max)">
+                                                <button class="btn btn-sm btn-outline-primary table-pagination" data-ng-click="firstPage()" id="firstPageBtn" class="prev" ng-disabled="query.first === 0">
+                                                    <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left'}} pagination-icon" data-ng-class="query.first === 0 && 'text-muted'"></i>
+                                                    <i data-ng-class="query.first === 0 && 'text-muted'"> {{:: 'first-page' | translate}} </i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary table-pagination" data-ng-click="previousPage()" id="previousPageBtn" class="prev" ng-disabled="query.first === 0">
+                                                    <i class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left'}} pagination-icon" data-ng-class="query.first === 0 && 'text-muted'"></i>
+                                                    <i data-ng-class="query.first === 0 && 'text-muted'"> {{:: 'previous' | translate}} </i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary table-pagination pr-0" data-ng-click="nextPage()" id="nextPageBtn" class="next" ng-disabled="pageCount === entries">
+                                                    <i  data-ng-class="roles.length <= query.max-1 && 'text-muted'"> {{:: 'next' | translate}} </i>
+                                                    <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right'}} pagination-icon" data-ng-class="roles.length <= query.max-1 && 'text-muted'"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>        
+                            </table>
+                        </div>
+                        <div ng-if="!(searchLoaded)">
+                            <kc-loader loadertype="loaderTypeName" ></kc-loader>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+

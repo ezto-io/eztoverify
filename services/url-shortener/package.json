@@ -1,0 +1,23 @@
+{
+  "name": "qv-url-shortner",
+  "version": "1.0.0",
+  "description": "Customized Short Links",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx prisma migrate dev --name update && npx prisma db push && node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.1.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "install": "^0.13.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.1.1"
+  }
+}

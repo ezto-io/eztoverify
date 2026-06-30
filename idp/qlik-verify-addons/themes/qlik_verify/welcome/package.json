@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "build": "tailwindcss -i ./resources/css/source.css -o ./resources/css/dist.css",
+    "watch": "tailwindcss -i ./resources/css/source.css -o ./resources/css/dist.css --watch"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.4",
+    "tailwind-scrollbar-hide": "^1.1.7",
+    "tailwindcss": "^3.0.24"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.7"
+  }
+}

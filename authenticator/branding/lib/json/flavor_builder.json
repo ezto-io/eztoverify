@@ -1,0 +1,18 @@
+{
+    "ezto_prod": {
+       "permissions": "ezto_prod.Permissions()",
+       "deeplinks": "ezto_prod.Deeplinks()",
+       "appInfo": "ezto_prod.Appinfo()",
+       "flavorName": "ezto_prod",
+       "theme": "ezto_prod.Theme()",
+       "appSigning": "ezto_prod.AppSigning()"
+    },
+    "ezto_dev": {
+      "permissions": "ezto_dev.Permissions()",
+      "deeplinks": "ezto_dev.Deeplinks()",
+      "appInfo": "ezto_dev.Appinfo()",
+      "flavorName": "ezto_dev",
+      "theme": "ezto_dev.Theme()",
+      "appSigning": "ezto_dev.AppSigning()"
+   }
+ }

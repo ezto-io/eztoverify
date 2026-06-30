@@ -1,0 +1,27 @@
+<div data-ng-controller="ClientViewCtrl">
+    <div class="app-detail-tab-container mr-0" data-ng-hide="create">
+        <div class="app-detail-tab-content">
+            <div class="app-detail-tab-img-container">
+                <div class="app-detail-tab-img">
+                    <img id="client-logo" alt="clientlogo" data-ng-src="{{resourceUrl}}/themes/img/{{client.appType}}.svg" data-ng-if="path[2]==='clients' && client.attributes.logoUrl == null && !isWorkflow(client)"> 
+                    <img id="client-logo" alt="clientlogo" data-ng-src="{{client.attributes.logoUrl}}" data-ng-if="path[2]==='clients' && client.attributes.logoUrl != null"> 
+                    <img id="client-logo" alt="clientlogo" data-ng-src="{{client.attributes.logoUrl}}" data-ng-if="path[2]==='sso'"> 
+                    <img id="client-logo" alt="clientlogo" data-ng-src="{{resourceUrl}}/themes/img/streams.svg" data-ng-if="client.appType === 'saml' && isWorkflow(client)">
+                </div>
+                <div>
+                    <h1  class="user-detail-username word-break-all text-capitalize my-0">{{client.name}}<strong ng-if="isInBuilt" class="badge badge-danger ml-2">{{:: 'inbuilt' | translate}}</strong></h1>
+                    <div class="user-id-container">
+                    {{ ::'client-id' | translate}} <code id="clientid" name="clientid" class="user-id-code"> {{ client.clientId}}</code>
+                    <i class="os-icon os-icon-copy copy-paste-icon cursor-pointer" id="{{client.name.toLowerCase.replaceAll(' ','-')}}-copyIcon" data-ng-click="copyToClipboard('#clientid')" tooltip="{{tooltipTxt}}" tooltip-placement="top" tooltip-trigger="mouseover mouseout" ng-init="initCopyIcon()"></i>
+                    </div>
+                </div>   
+            </div>  
+            <div class="ml-auto" ng-if="path[4] == 'metadata'">
+                <a href="{{metaDataDownloadUrl}}" id="{{client.name.toLowerCase.replaceAll(' ','-')}}-downloadMetaDataBtn" class="btn btn-primary" style="float: right" download="{{realm.realm}}-{{client.name}}-metadata.xml">
+                    {{:: 'download-metadata' | translate}}
+                </a>
+            </div>
+            <!-- {{resourceUrl}}/themes/img/{{client.appType}}.svg -->
+        </div>
+    </div>
+</div>

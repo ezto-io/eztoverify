@@ -1,0 +1,46 @@
+---
+id: "6.0.0"
+title: "6.0.0"
+sidebar_label: "6.0.0"
+---
+
+import GifPlayer from "@site/src/components/changelogs/GifPlayer";
+
+### New Features
+
+- We've made **ezto verify** compatible with **Huawei** applications, making it easier for our **Huawei** users to access our services.
+
+- Introducing some handy new **Workflows**(formerly referred to as **Templates**):
+
+  - **Face Integration:** We've integrated face biometrics with two new **Workflows:** Face Register and Face Verify. These **Workflows** utilizes advanced face recognition technology to securely verify users. Uers can rely on this biometric solution integrated with **ezto verify** for enhanced security.
+
+  <GifPlayer name="6.0.0/face-register"/>
+  <GifPlayer name="6.0.0/face-verification"/>
+  
+  - [Selfie Registration:](/docs/EV/WorkflowModules/Liveness/SelfieRegistration) The **Selfie Registration** workflow enables users to securely store their facial template for future use during **Liveness** checks, ensuring a smooth and secure verification process.
+
+  <GifPlayer name="6.0.0/selfie-verification"/>
+
+  - [Proximity Verification (Beta):](/docs/EV/WorkflowModules/Device/ProximityVerification) Currently in Beta, **Proximity Verification** is designed for **Web to Device** interactions. During the verification process, the web interface prompts users to provide their location, storing the latitude and longitude. Subsequently, when the process transitions to mobile, it captures the mobile device's latitude and longitude, comparing it with the web data. If the distance between the two points falls within the predefined threshold set in the configuration, verification succeeds; otherwise, it fails.
+  
+  <GifPlayer name="6.0.0/proximity"/>
+  
+### Improvements
+
+- Renamed **Templates** to **Workflows** for clarity and consistency. 
+
+- We've now enabled the integration of live app store links directly into **Workflows.** This allows for easy access to required applications through downloadable links, ensuring an easy experience even when certain apps are unavailable.
+
+- Improvised UI for **Workflows** in the form of **GIFs.** These **GIFs** showcase the flow of the **Workflow,** making it easier than ever to understand and navigate. Simply head over to the application's **Workflows** section to explore this feature. Just make sure you've configured your workflows.
+
+-  We've implemented the option to enforce onboarding or verification flow from the API level, even for users who have already completed onboarding, if needed.
+
+- Creating applications is now a delight with our revamped UI. It's all about that user-friendly and visually appealing experience.
+
+- Several improvements have been made to enhance user liveness flow.
+
+- Users can now effortlessly jump from a workflows to the corresponding application, specifically for Web to Device workflow.
+
+- When a user declines consent, the reason for canceling will be provided in the result. This information enables the requester to take appropriate steps.
+
+- We've ensured backward compatibility for biometric verification, ensuring continued support and integration with older systems. This ensures that existing biometric verification processes remain functional and effective, even with newer enhancements implemented.

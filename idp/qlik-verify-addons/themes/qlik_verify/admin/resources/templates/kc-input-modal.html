@@ -1,0 +1,67 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{title}}</h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body">
+    <form>
+        <div>
+            <input type="hidden" name="defReg" id="defReg" value={{realm.defaultRegion}} />
+            <label class="control-label col-md-5 pr-0 pl-0" for="mobNum">{{:: 'mob-num' | translate}}<span class="required"> *</span></label>
+            <div class="pl-0 form-group">
+                <input class="form-control hide-input-arrow w-100" type="tel"  id="mobNum" inputmode="numeric" data-ng-model="mobData.mobNum">
+                <br>
+                <p id="error_msg"></p>
+            </div>
+        </div>
+    </form>
+    <div class="input-modal-msg-container d-flex align-items-center justify-content-sm-start flex-md-wrap alert-success" data-ng-if="stage === 3 || stage === 0" data-ng-class="stage === 0 && 'alert-danger'">
+        <div class="input-modal-msg d-flex">
+            <i class="os-icon os-icon-check-circle mr-3 font-size-normal" ng-show="stage === 3"></i>
+            <span ng-show="stage === 3" class="m-0">{{:: 'configuration-succeeded' | translate}}</span>
+            <i class="os-icon os-icon-cancel-circle mr-3 font-size-normal" ng-show="stage === 0"></i>
+            <span ng-show="stage === 0" class="m-0 font-weight-light">{{:: errMsg | translate}} </span>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button id="testphoneCancelBtn" type="button" data-ng-class="btns.cancel.cssClass" ng-click="cancel()">{{btns.cancel.label}}</button>
+    <button type="button" id="submitBtn" data-ng-class="btns.ok.cssClass" ng-click="ok()" disabled>
+        <span data-ng-if=" stage === 1 " >{{btns.ok.label}}</span>
+        <span data-ng-if=" stage === 3 " >{{:: 'test-again' | translate}}</span>
+        <span data-ng-if=" stage === 0 " >{{:: 'try-again' | translate}}</span>
+        <div data-ng-if=" stage === 2 ">
+            <kc-action-button-loading></kc-action-button-loading>
+        </div>
+    </button>
+</div>
+
+<script type="text/javascript">
+    document.querySelector("#mobNum").addEventListener("input",(event)=>{
+        event.target.value =  event.target.value.replace(/[^0-9]/g, '')
+        $("#submitBtn").prop("disabled",!event.target.value);
+    });
+
+    $("#mobNum").on("click",function() {
+        $("#error_msg").text("");
+    });
+    $("#submitBtn").on("click",function() {
+        if(intl.isValidNumber()){
+            $("#error_msg").text("");
+        } else {
+            $("#error_msg").text("Invalid Phone Number");
+        }
+    });
+    $(document).ready(function() {
+        let defRegion = $("#defReg").val();
+        window.intl = window.intlTelInput(document.querySelector("#mobNum"), {
+        initialCountry: defRegion,
+        utilsScript: "${resourceUrl}/themes/bower_components/tele-input/utils.js",
+        separateDialCode: false
+    });
+      setTimeout(function() {
+          $("#mobNum").focus();
+      }, 100);
+    });
+</script>

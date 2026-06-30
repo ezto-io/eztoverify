@@ -1,0 +1,29 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pd-left-10 pd-bottom-20">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/client-scopes/{{clientScope.id}}/mappers" id="backToScopeMappers">
+                            <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6' }} breadcrumb-back-icon"></i>
+                            {{ :: 'back-to-client-scope-mappers' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <h3 class="element-header role-detail-rolename" data-ng-show="model.create">
+                            {{ :: 'create-protocol-mapper' | translate }}
+                        </h3>
+                        <h3 class="general-heading word-break-word" data-ng-hide="model.create">{{model.mapper.name|capitalize}}<i class="pficon pficon-delete clickable" data-ng-show="!model.create && access.manageClients"
+                            data-ng-hide="model.changed" data-ng-click="remove()"></i></h3>
+                        <div class="element-box">
+                            <div ng-include="resourceUrl + '/partials/protocol-mapper-detail.html'"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>

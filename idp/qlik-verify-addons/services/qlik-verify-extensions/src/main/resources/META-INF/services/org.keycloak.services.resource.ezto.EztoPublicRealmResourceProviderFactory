@@ -1,0 +1,26 @@
+#
+# Copyright 2016 Red Hat, Inc. and/or its affiliates
+# and other contributors as indicated by the @author tags.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+com.qlikverify.extensions.admin.controllers.realm.RealmProviderFactory
+com.qlikverify.extensions.admin.controllers.marketplace.MarketplaceProviderFactory
+com.qlikverify.extensions.admin.controllers.subscription.SubscriptionProviderFactory
+com.qlikverify.extensions.admin.controllers.extension.BPluginExtensionProviderFactory
+com.qlikverify.extensions.admin.controllers.hook.HookExtensionProviderFactory
+com.qlikverify.extensions.admin.controllers.offline.OfflineProviderFactory
+com.qlikverify.extensions.admin.controllers.notification.NotifiationProviderFactory
+com.qlikverify.extensions.admin.controllers.webPush.WebPushProviderFactory
+com.qlikverify.extensions.admin.controllers.eztoverify.EztoVerifyProviderFactory

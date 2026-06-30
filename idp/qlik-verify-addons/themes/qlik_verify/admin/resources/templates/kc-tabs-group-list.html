@@ -1,0 +1,11 @@
+<div data-ng-controller="GroupTabCtrl" class="user-list-heading-container">
+  <h1 class="user-list-heading">
+    <span>{{:: 'user-groups' | translate}}</span>
+  </h1>
+  <div data-ng-hide="!lastSearch && (!groupList || groupList.length === 0)">
+    <button class="create-btn" ng-click="createGroup(tree.currentNode)" id="createGroupBtn">
+      <i class="os-icon os-icon-plus plus-icon"></i>
+      {{:: 'create-group' | translate}}
+    </button>
+  </div>
+</div>

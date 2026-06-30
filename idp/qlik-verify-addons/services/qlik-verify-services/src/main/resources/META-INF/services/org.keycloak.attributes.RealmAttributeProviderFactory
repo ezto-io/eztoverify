@@ -1,0 +1,4 @@
+com.qlikverify.services.realmattributes.SupportCustomToggleProvider
+com.qlikverify.services.realmattributes.SupportUrlAttributeProvider
+com.qlikverify.services.realmattributes.SupportEmailAttributeProvider
+com.qlikverify.services.realmattributes.SupportCustomMessageAttributeProvider

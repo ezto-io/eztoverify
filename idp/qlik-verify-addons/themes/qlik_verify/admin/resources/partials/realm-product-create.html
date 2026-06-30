@@ -1,0 +1,108 @@
+<kc-menu></kc-menu>
+<div class="position-relative"> 
+  <div class="position-absolute">
+    <kc-settings-menu class="position-fixed bo-setting-sidemenu" id="setting-sidebar"></kc-settings-menu>
+    <div class="bg-white p-2 bo-setting-sidemenu-icon" id="setting-sidebar-icon" data-ng-click="toggleSideBarShow()" >
+      <div id="setting-icon h1">
+        <i class="ti-angle-right cursor-pointer"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content-w bo-setting-menu-main-content">
+    <div class="content-i">
+        <div class="content-box">
+            <a href="#/realms/{{realm.realm}}/products" class="text-decoration-none text-dark" id="back-to-product-list">
+                <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6'}} breadcrumb-back-icon"></i>{{ :: 'back-to-products' | translate}}
+            </a>
+            <div class="element-box py-5 mt-4">
+                <!-- Header -->
+                <h6 class="mb-4">{{:: 'product-details' | translate}}</h6>
+                <hr class="mb-4"/>
+                <!-- Input Fields -->
+                <div class="form-group row">
+                    <label class="col-md-3 control-label" for="name">{{:: 'name' | translate}} <span class="text-danger">*</span></label>
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" id="name" data-ng-model="product.name" maxlength="40">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 control-label" for="external-id">{{:: 'external-id' | translate}} <span class="text-danger">*</span></label>
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" id="external-id" data-ng-model="product.externalId">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 control-label" for="image">{{:: 'Image' | translate}} <span class="text-danger">*</span></label>
+                    <div class="col-md-9">
+                        <div class="logo-container">
+                            <img id="productLogo" class="provider-image" data-ng-src="{{resourceUrl}}/img/cloud-upload.svg" alt="logo-img"> 
+                        </div>
+                        <input type="file" id="updateLogo" class="display-none" accept="image/png, image/jpeg, image/jpg" /> 
+                        <a id="changeLogo" class="form-control logo-change-container" data-ng-click="uploadImage()">{{ logoUploadTxt }}</a>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 control-label" for="description">{{:: 'description' | translate}} <span class="text-danger">*</span></label>
+                    <div class="col-md-9">
+                        <div class="row align-items-center">
+                            <div class="col-sm-3">
+                                <input class="form-control" type="text" placeholder="{{:: 'locale-code' | translate }}" id="newkey" data-ng-model="newDescription.languageCode">
+                            </div>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" placeholder="{{:: 'description' | translate }}" id="newdescription" data-ng-model="newDescription.description">
+                            </div>
+                            <div class="col-sm-2 text-center">
+                                <button class="btn btn-light" data-ng-click="addDescription()">{{:: 'add' | translate}}</button>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row align-items-center mt-2" ng-repeat="(key, value) in product.description">
+                            <div class="col-sm-3">
+                                <p class="mb-0 text-truncate">{{key}}</p>
+                            </div>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" id="description-{{key}}" data-ng-model="product.description[key]">
+                            </div>
+                            <div class="col-sm-2 text-center">
+                                <i class="os-icon os-icon-ui-15 plus-icon text-danger cursor-pointer bg-danger-lite px-2 py-1" id="remove-{{key}}" data-ng-click="removeDescription(key)"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 control-label" for="productType">{{:: 'pricing-type' | translate}} <span class="text-danger">*</span></label>
+                    <div class="col-md-9">
+                        <select id="productType" class="form-control" data-ng-model="product.productType">
+                            <option value="" disabled>{{:: 'selectOne' | translate}}</option>
+                            <option value="credit">{{:: 'credit' | translate}}</option>
+                            <option value="recuring">{{:: 'recuring' | translate}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 control-label" for="consider">{{:: 'consider' | translate}}</label>
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" id="consider" data-ng-model="product.consider">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 control-label" for="alternative">{{:: 'alternative' | translate}}</label>
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" id="alternative" data-ng-model="product.alternative">
+                    </div>
+                </div>
+                <!-- Save Button -->
+                <div class="col-md-12 d-flex flex-row-reverse pr-0 mt-5">
+                    <button kc-admin-save data-ng-disabled="!changed" id="details-saveBtn" class="ml-3 btn btn-primary" data-ng-click="saveRealmProduct()">
+                        <span ng-show="!saveInProgress">{{:: 'save' | translate}}</span>
+                        <div ng-show="saveInProgress">
+                            <kc-action-button-loading></kc-action-button-loading>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="modal-header">
+	<h5 class="modal-title">{{:: 'auth-details' | translate}}</h5>
+    <button type="button" class="close" ng-click="cancel()">
+        <span class="os-icon os-icon-close"></span>
+    </button>
+</div>
+<div class="modal-body pb-4">
+	<form>
+		<div class="code-preview-block">
+            <pre ng-bind = "{{event.details}} | json"></pre>
+		</div>
+	</form>
+	<h5 class="modal-title pt-2">{{:: 'error-details' | translate}}</h5>
+	<form>
+		<div>
+			<p ng-if="event.error" class="pt-2">{{:: event.error | translate}}</p>
+			<p ng-if="!event.error" class="pt-2">{{:: 'no-errors' | translate}}</p>
+		</div>
+	</form>
+</div>

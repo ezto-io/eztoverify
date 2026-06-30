@@ -1,0 +1,176 @@
+<div class="auth-config-container pb-3 ng-scope">
+    <div class="exec-logo-container">
+        <i class="os-icon os-icon-code font-weight-600 auth-panel-icon"> </i>
+    </div>
+    <div class="exec-title"> 
+        <p class="font-size-normal">{{:: action.alias || action.name | translate}}</p>
+    </div>
+    <div id="close" data-ng-click="dismissPanel()" class="mt-0">
+        <i class="os-icon os-icon-close"></i>
+    </div>
+</div>
+<div id="divisionthing"></div>
+<div class="sub-top-bar mt-4 config-nav box-shadow-none ng-scope">
+    <ul class="cursor-pointer">
+        <li ng-class="{active: isInfo}">
+            <a class="pl-0" data-ng-click="tabSelect('Info')" id="settings-info-tab">{{:: 'action-info-title' | translate}}</a>
+        </li>
+        <li ng-class="{active: isGeneral}">
+            <a class="pl-0" data-ng-click="tabSelect('General')" id="settings-general-tab">{{:: 'general' | translate}}</a>
+        </li>
+        <li data-ng-if= "isActionConfigurable" ng-class="{active: isConfig}">
+            <a data-ng-click="tabSelect('Config')" id="settings-config-tab">{{:: 'action-config-title' | translate}}</a>
+        </li>
+    </ul>
+</div>
+<form class="form-horizontal margin-top-30px" name="realmForm" novalidate>
+    <div class="proplist">
+        <div class="form-group margin-left-neg-10px" data-ng-if="isInfo">
+            <div class="col-md-12">
+                <div class="mb-4">
+                    <h6 class="">{{:: 'description-title' | translate}}</h6>
+                    <p class="font-size-small">{{ :: infoProps.description | translate }} </p>
+                </div>
+                <div>
+                    <h6 class="" ng-if="infoProps.gif">{{:: 'visual-representation-title' | translate}}</h6>
+                    <img ng-src={{infoProps.gif}} style="width:100%">
+                </div>
+            </div>
+        </div>
+        <div data-ng-if="isGeneral">
+            <div class="form-group row" data-ng-if="action.selectedPolicyType == 'ciba'">
+                <label class="col-md-3 control-label" for="displayName">{{ :: 'displayName' | translate}} <span class="text-danger">*</span></label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" id="displayName" maxlength="48" data-ng-model="action.name" />
+                </div>
+            </div>
+
+            <div class="form-group row" data-ng-if="action.selectedPolicyType == 'ciba'">
+                <label class="col-md-3 control-label" for="description">{{ :: 'description' | translate}}</label>
+                <div class="col-md-9">
+                    <textarea class="form-control" id="description" data-ng-model="action.description" rows="4" maxlength="300"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="enabled">{{:: 'enable-action-label' | translate}}</label>
+                <div class="col-md-9">
+                    <label data-ng-show="isParentValidatorEnabled">
+                        <div class="os-toggler-w" ng-class="{on: action.enabled}">
+                            <div class="os-toggler-i" id="enabled-toggle">
+                                <div class="os-toggler-pill" ng-model="action.enabled" name="enabled" id="enabled"
+                                    onoffswitch>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                    <div class="p-2 helper-text panel-config-info mt-0 warning-config" data-ng-show="!isParentValidatorEnabled">
+                        <span class="os-icon os-icon-alert-triangle panel-config-info-icon"></span>
+                        <div class="help-text">{{:: 'enable-parent-validator-helper-txt' | translate}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row" data-ng-if="showSkipOption">
+                <label class="col-md-3 control-label" for="skippable" >{{:: 'skip' | translate}}</label>
+                <div class="col-md-9">
+                    <label>
+                        <div class="os-toggler-w" ng-class="{on: action.skippable}">
+                            <div class="os-toggler-i" id="skippable-toggle">
+                                <div class="os-toggler-pill" ng-model="action.skippable" name="skippable" id="skippable"
+                                     onoffswitch>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group row" data-ng-if="action.selectedPolicyType == 'action' && action.hasPolicy && action.name == 'update-password'">
+                <label class="col-md-3 control-label" for="policyselector">{{ :: 'password-policy' | translate}}</label>
+                <div class="col-md-9" data-ng-if="passwordPolicies.length > 0">
+                    <select id="passwordPolicyselector" class="form-control" ng-model="action.passwordPolicy">
+                        <option value="" disabled> {{:: 'not-set' | translate}} </option>
+                        <option ng-repeat="p in passwordPolicies" value="{{p.id}}"> {{p.policyName}}</option>
+                    </select>
+                    <p class="helper-text" > {{ :: 'password-policy-hlp-txt' | translate }} </p>
+                </div>
+            </div>
+            
+            <div class="form-group row" data-ng-if="action.selectedPolicyType == 'action' && action.hasPolicy">
+                <label class="col-md-3 control-label" for="policyselector">{{ :: 'action-policy' | translate}} <span class="required">*</span></label>
+                <div class="col-md-9" data-ng-if="actionPolicies.length > 0">
+                    <select id="actionPolicyselector" class="form-control" ng-model="action.selectedPolicy">
+                        <option value="" disabled> {{:: 'not-set' | translate}} </option>
+                        <option ng-repeat="p in actionPolicies" value="{{p.id}}"> {{p.policyName}} </option>
+                    </select>
+                    <p class="helper-text" > {{ :: 'policy-input-help-text' | translate }} </p>
+                </div>
+                <div  class="col-md-9" data-ng-if="!actionPolicies.length">
+                    <p> {{ :: 'create-action-policy-msg' | translate }} <a href="#/realms/{{realm.realm}}/policies" id="actionPolicyClickHere">{{ :: 'click-here' | translate }}</a></p>
+                </div>
+            </div>
+            <div class="form-group row" data-ng-if="action.selectedPolicyType == 'ciba' && action.hasPolicy">
+                <label class="col-md-3 control-label" for="policyselector">{{ :: 'rule' | translate}}</label>
+                <div class="col-md-9" data-ng-if="cibaPolicies.length > 0">
+                    <select id="rulePolicyselector" class="form-control" ng-model="action.selectedPolicy">
+                        <option value="" selected> {{:: 'none' | translate}} </option>
+                        <option ng-repeat="p in cibaPolicies" value="{{p.id}}"> {{p.policyName}} </option>
+                    </select>
+                    <p class="helper-text" > {{ :: 'ciba-policy-input-help-text' | translate }} </p>
+                </div>
+                <div  class="col-md-9" data-ng-if="!cibaPolicies.length">
+                    <p> {{ :: 'create-ciba-policy-msg' | translate }} <a href="#/realms/{{realm.realm}}/policies" id="rulePolicyClickHere">{{ :: 'click-here' | translate }}</a></p>
+                </div>
+            </div>
+            <div class="form-buttons-w border-top-0 mb-4 pt-0">
+                <div class="col-md-12 d-flex flex-row-reverse pr-0">   
+                    <button data-ng-disabled="!genSaveEnabled" data-ng-click="save()" class="btn btn-primary" id="saveBtn">{{:: 'save' | translate}}</button>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="form-group margin-left-neg-10px" data-ng-if="isConfig">
+            <div>
+                <div class="form-group panel-responsive">  
+                    <kc-provider-config config="config.config" oldconfigvalue="oldCopy.config" properties="configProps" versions="versions" data-ng-show="isConfigLoader && !config.validator"></kc-provider-config>
+                    <kc-validator-config config="config.config" action="action" properties="configProps" data-ng-if="isConfigLoader && config.validator"></kc-validator-config>
+                    <div class="d-flex justify-content-center py-5" data-ng-show="!isConfigLoader" >
+                        <div class="spinner-border text-primary">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div> 
+                <div class="form-buttons-w border-top-0 mb-5 pb-2">
+                    <div class="col-md-12 d-flex flex-row-reverse pr-0"> 
+                        <button class="ml-3 btn btn-primary" id="saveConfigBtn" data-ng-disabled="!attrSaveEnabled" data-ng-click="save()">{{:: 'save' |
+                            translate}}</button>
+                        <button id="cancelBtn" kc-reset data-ng-disabled="!attrSaveEnabled">{{:: 'cancel' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+         
+    </div>
+    <!-- Danger Zone -->
+    <div data-ng-if="isGeneral" >
+        <div id="divisionthing"></div>
+        <p id="header2" class="pt-4">{{:: 'danger-zone' | translate}}</p>
+        <div>
+            <ul class="danger-zone-list">
+                <li>
+                    <div class="danger-zone-container">
+                        <div>
+                            <h4 class="danger-zone-title">{{:: 'delete-action' | translate}}</h4>
+                            <p>{{:: 'delete-action-content' | translate}}</p>
+                        </div>
+                        <div class="dz-pull-right">
+                            <button class="delete-btn" id="{{action.name.toLowerCase().replaceAll(' ','-')}}-delete-btn" type="submit" data-ng-click="removeRequiredAction(action)">{{:: 'delete' |
+                                translate}}</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</form>

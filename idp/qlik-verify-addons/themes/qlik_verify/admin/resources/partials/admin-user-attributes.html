@@ -1,0 +1,98 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <ol class="breadcrumb pl-2">
+                    <li>
+                        <a href="#/realms/{{realm.realm}}/dashboard-admins" id="back-to-admins-list">
+                        <i class="os-icon {{isRTL() ? 'os-icon-arrow-right7' : 'os-icon-arrow-left6'}} breadcrumb-back-icon"></i>{{ :: 'back-to-dashboard-admins' | translate}}
+                        </a>
+                    </li>
+                </ol>
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-admin-user></kc-tabs-admin-user>
+                        <div class="element-box element-box-medium" ng-show="showNoAttributeCard() && !allowAddAttribute  && noAttributesSaved()">
+                            <div class="no-attributes-svg">
+                                <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'add-attr.svg' : realm.mode === 'ciam' ? 'add-attr-ciam.svg' : 'add-attr-bo.svg' }}"  alt="no-attributes-svg" class="opacity-40 no-entry-display"/>
+                                <p class="no-results-msg no-entry-display">{{:: 'no-attr' | translate}}</p>
+                                <button class="create-btn no-entry-display" id="addAttributeBtn" ng-click="addAttributeButton()">
+                                    <i class="os-icon os-icon-plus plus-icon"></i>
+                                    {{:: 'add-attr' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="element-box py-5" ng-show="!showNoAttributeCard() || allowAddAttribute || !noAttributesSaved()">
+                            <div class="table-responsive-md">
+                                <table class="table table-light-bordered  mb-0">
+                                    <tr>
+                                        <td class="border-none pl-0 pb-0 w-40">
+                                            <input ng-model="newAttribute.key" class="form-control" placeholder="{{:: 'key' | translate}}" type="text" id="newAttributeKey" />
+                                        </td>
+                                        <td class="border-none pb-0  w-40">
+                                            <input ng-model="newAttribute.value" class="form-control" placeholder="{{:: 'value' | translate}}" type="text" id="newAttributeValue" /> 
+                                        </td>
+                                        <td class="border-none text-center pb-0 w-20">
+                                            <button class="add-btn" id="newAttribute-addBtn" data-ng-click="addAttribute()" data-ng-disabled="!newAttribute.key.length || !newAttribute.value.length || !isUserAttributesLoaded || isKeyExist">
+                                                <span data-ng-show="!isAddUserAttributeLoading">{{:: 'add' | translate}}</span>
+                                                <span data-ng-show="isAddUserAttributeLoading">
+                                                     <div class="spinner-border spinner-border-sm" role="status"></div>
+                                                     <span>{{:: 'add-btn-loader' | translate}}</span>
+                                                </span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p class="text-danger control-label p-2 py-0 my-0" data-ng-show="isKeyExist">{{:: 'attribute-key-exist' | translate}}</p>
+                            </div>
+                            <div class="table-responsive-md mt-3">
+                                <form class="form-horizontal" name="realmForm" novalidate kc-read-only="!user.access.manage">
+                                    <div ng-if="!showNoAttributeCard()">
+                                    <table class="table  table-light-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th class="px-4 w-40">{{:: 'key' | translate}}</th>
+                                            <th class="px-4 w-40">{{:: 'value' | translate}}</th>
+                                            <th class="text-center w-20">{{:: 'actions' | translate}}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <!--::KOBIL::START:-->
+                                        <!-- <tr ng-repeat="(key, value) in user.attributes | toOrderedMapSortedByKey">
+                                            <td>{{key}}</td>
+                                            <td><div class="" type="text" ng-style="key.indexOf('digitanium') > -1 && {'pointer-events':'none'}">{{user.attributes[key]}}</div></td>
+                                            <td><input ng-model="user.attributes[key]" class="form-control" type="text" ng-style="key.indexOf('digitanium') > -1 && {'pointer-events':'none'}" name="{{key}}" id="attribute-{{key}}" /></td>
+                                            <td ng-show="key.indexOf('digitanium') > -1" class="kc-action-cell" ng-style="key.indexOf('digitanium') > -1 && {'color': 'rgba(0, 0, 0, 0.3)', cursor: 'not-allowed'}">{{:: 'delete' | translate}}</td>
+                                            <td ng-show="key.indexOf('digitanium') == -1" class="kc-action-cell" ng-style="key.indexOf('digitanium') > -1 && {'pointer-events':'none', 'color': 'rgba(0, 0, 0, 0.3)'}" data-ng-click="removeAttribute(key)">
+                                                <button class="remove-btn" data-ng-click="removeAttribute(key)"><i class="os-icon os-icon-minus2 plus-icon"></i> {{ :: 'delete' | translate}}</button>
+                                            </td>
+                                        </tr> -->
+                                        <!--::KOBIL::END:-->
+                                        <tr ng-repeat="(key, value) in user.attributes | toOrderedMapSortedByKey" ng-hide=" key === 'qv_is_account_creator' " >
+                                            <td class="w-40"><input class="form-control readonly-key p-2" type="text" value="{{key}}" readonly /> </td>
+                                            <td class="w-40"><input class="form-control readonly-key p-2" type="text" value="{{value}}" readonly /> </td>
+                                            <td class="kc-action-cell delete-attr-icon d-flex justify-content-center align-items-center" id="{{key}}-deleteIcon">
+                                                <i data-ng-show="key!==selectedUserAttribute && isUserAttributesLoaded " class="os-icon os-icon-ui-15 del-icon px-0 " data-ng-click="isUserAttributesLoaded && removeAttribute(key)" ></i>
+                                                <i data-ng-show="key!==selectedUserAttribute && !isUserAttributesLoaded " class="os-icon os-icon-ui-15 del-icon icon-btn-disabled px-0" ></i>
+                                                <span class="spinner-border spinner-border-sm text-danger m-0 p-0 text-center" role="status" aria-hidden="true" data-ng-show="key === selectedUserAttribute"></span>
+                                            </td>
+                                        </tr>
+                                       
+                                        </tbody>
+                                    </table>
+                                    </div>                              
+                                </form>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //Dumb iti init to avoid undeclared var error on page reload
+    var iti = undefined;
+</script>

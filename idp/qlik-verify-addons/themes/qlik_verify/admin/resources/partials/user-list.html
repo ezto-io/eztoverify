@@ -1,0 +1,186 @@
+<kc-menu></kc-menu>
+<div class="content-w">
+    <div class="content-i">
+        <div class="content-box">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="element-wrapper">
+                        <kc-tabs-users></kc-tabs-users>
+                        <div class="user-role">
+                            <div class="controls-above-table d-flex pt-2 my-4">
+                                <div class="form-inline justify-content-end w-100" ng-show="!isUserListEmpty() || lastSearch">
+                                    <div class="element-search mr-auto">
+                                        <input class="form-control" type="text" id="userSearch-input"
+                                            placeholder="{{:: 'search-user-placeholder' | translate}}"
+                                            data-ng-model="query.search"
+                                            onkeydown="if (event.keyCode == 13) document.getElementById('userSearch').click()"
+                                            class="py-2">
+                                        <i class="os-icon os-icon-search2 search-icon" id="userSearch"
+                                            data-ng-click="searchQuery()"></i>
+                                    </div>
+                                    <div>
+                                        <select data-ng-model="query.max" ng-change="selectQuery()" id="pageUserCount"
+                                            data-ng-options="itemCount for itemCount in [5,10,50,100]"
+                                            data-ng-show="(users && users.length > 5 && pageCount===entries) || (entries > 5)"
+                                            class="form-control form-control-sm rounded bright events-admin-search w-auto select-arrow client-list-count-select">
+                                            <option data-ng-repeat="itemCount in [5,10,50,100]"
+                                                data-ng-selected="query.max === itemCount" data-ng-value="itemCount">
+                                                {{ itemCount }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="position-relative ml-4">
+                                        <div class="form-control filter mr-0 cursor-pointer" ng-click="showFilter=!showFilter">
+                                            <img ng-src="{{resourceUrl}}/img/filter.svg" class="pr-2">
+                                            <span>{{orderBy}}</span>
+                                        </div>
+                                        <ul ng-show="showFilter" class="position-absolute list-unstyled top-4 p-1 bg-white filter-list rounded d-flex flex-column gap-1" data-ng-class="realm.mode == 'bo' ? 'filter-list-bo' : 'filter-list-wiam'">
+                                            <li class="p-2 rounded" data-ng-class="query.orderBy=='asc' && 'active'" ng-click="setOrderBy('asc')">{{:: 'asc' | translate}}</li>
+                                            <li class="p-2 rounded" data-ng-class="query.orderBy=='desc' && 'active'" ng-click="setOrderBy('desc')">{{:: 'desc' | translate}}</li>
+                                            <li class="p-2 rounded" data-ng-class="query.orderBy=='last-updated' && 'active'" ng-click="setOrderBy('last-logged-in')" ng-if="realm.mode !== 'bo'">{{:: 'last-logged-in' | translate}}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-ng-show="isUserListEmpty() && searchLoaded">
+                                <div class="element-box element-box-medium">
+                                    <div class="no-entry-svg"
+                                        data-step='{{(searchLoaded && (users.length === 0 && !lastSearch)&& !searchQueryLoaded)?1:0}}'
+                                        data-title="{{:: 'intro-no-users-available-title' | translate}}"
+                                        data-intro="{{:: 'intro-no-users-available' | translate}}">
+                                        <img data-ng-src="{{resourceUrl}}/themes/img/{{realm.mode === 'wiam' ? 'no-users.svg' : realm.mode === 'ciam' ? 'no-users-ciam.svg' : 'no-users-bo.svg' }}" alt="no-users-svg"
+                                            class="opacity-40 no-entry-display" />
+                                        <p class="no-results-msg no-entry-display" data-ng-show="!lastSearch && !searchQueryLoaded">{{:: 'no-users-available' | translate}}</p>
+                                        <p class="no-results-msg no-entry-display" data-ng-show="lastSearch"> {{ :: 'no-users-found' | translate}}</p>
+                                        <a class="text-decoration-none create-btn no-entry-display" id="createUser"  data-ng-show="!lastSearch && !searchQueryLoaded && realm.mode !== 'bo'"
+                                            href="#/create/user/{{realm.realm}}">
+                                                <i class="os-icon os-icon-plus plus-icon"></i>
+                                                {{:: 'add-user' | translate}}
+                                        </a>
+                                        <button data-ng-show="lastSearch" id="clearSearchBtn" class="create-btn no-entry-display cursor-pointer" data-ng-click="clearSearch()">
+                                            <i class="os-icon os-icon-close mr-2"></i>
+                                            {{ ::  'clear-search' | translate}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-show="!isUserListEmpty()">
+                                <div class="table-responsive-md clients-list" ng-init="query.search = null;">
+                                    <table class="table table-light-bordered table-padded table-layout-fixed w-100 mb-0"
+                                        id="user-table">
+                                        <thead>
+                                            <tr class="position-relative fadeUp">
+                                                <th class="w-40">{{:: realm.mode === 'bo' ? 'user-id' : 'user-table-username' | translate}}</th>
+                                                <th class="w-40" data-ng-if="realm.mode !== 'bo'">{{:: 'email' | translate}}</th>
+                                                <th class="text-center w-20">
+                                                    {{:: 'actions' | translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr
+                                                data-ng-hide="(!searchLoaded && users && users.length < 5) || (users && users.length ===0)">
+                                                <td class="pl-0 pb-0" 
+                                                    data-ng-show="(users && users.length > 5 && pageCount===entries) || (entries > 5)">
+                                                    <p class="mt-1 mb-0">{{:: 'showing' | translate}} {{startCount}} - {{pageCount}} {{:: 'of' | translate}}
+                                                        {{entries}} {{:: 'users' | translate}}</p>
+                                                </td>
+                                                <td class="pr-0 pb-0" colspan="{{realm.mode !== 'bo' ? 2 : 1}}"
+                                                    data-ng-show="(users && users.length > 5 && pageCount === entries) || (entries > 5)">
+                                                    <div class="table-nav pull-right"
+                                                        data-ng-hide="(entries <= query.max)">
+                                                        <button class="btn btn-sm btn-outline-primary table-pagination"
+                                                            data-ng-click="firstPage()" class="first" id="firstPageBtn"
+                                                            ng-disabled="query.first === 0"
+                                                            data-ng-class="query.first === 0 && 'text-muted'">
+                                                            <i class="{{isRTL() ? 'ti-angle-double-right' : 'ti-angle-double-left' }} pagination-icon"></i>
+                                                            <i>{{:: 'first-page' | translate}} </i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-primary table-pagination"
+                                                            data-ng-click="previousPage()" class="prev" id="previousPageBtn"
+                                                            ng-disabled="query.first === 0"
+                                                            data-ng-class="query.first === 0 && 'text-muted'"><i
+                                                                class="{{isRTL() ? 'ti-angle-right' : 'ti-angle-left' }} pagination-icon"></i>
+                                                            <i> {{:: 'previous' | translate}} </i>
+                                                        </button>
+                                                        <button
+                                                            class="btn btn-sm btn-outline-primary table-pagination pr-0"
+                                                            data-ng-click="nextPage()" class="next" id="nextPageBtn"
+                                                            ng-disabled="pageCount === entries"
+                                                            data-ng-class="pageCount === entries && 'text-muted'">
+                                                            <i> {{:: 'next' | translate}} </i>
+                                                            <i class="{{isRTL() ? 'ti-angle-left' : 'ti-angle-right' }} pagination-icon"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                        </tfoot>
+
+                                        <tbody data-ng-hide="isUserListEmpty() && lastSearch">
+                                            <tr class="user-row position-relative fadeUp" ng-repeat="user in users">
+                                                <td class="cursor-pointer w-40" id="user-{{user.username.toLowerCase().replaceAll(' ','-')}}"
+                                                    kc-open="/realms/{{realm.realm}}/users/{{user.id}}/{{realm.mode === 'bo' ? 'user-transactions' : '' }}">
+                                                    <a class="text-decoration-none header-text-primary"
+                                                        href="#/realms/{{realm.realm}}/users/{{user.id}}/{{realm.mode === 'bo' ? 'user-transactions' : '' }}">
+                                                        <div ng-if="user.profPic" class=" d-flex">
+                                                            <div class="mr-3">
+                                                                <div class="img-container rounded-circle "><img
+                                                                        class="irs "
+                                                                        data-ng-src="{{getImage(user.profPic)}}"
+                                                                        alt="profile-pic" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="name-container align-items-center">
+                                                                <p class="overflow-ellipsis mb-0">{{user.username}}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div ng-if="!user.profPic" class=" d-flex">
+                                                            <div class="mr-3" data-ng-if="realm.mode !== 'bo'">
+                                                                <div class="img-container rounded-circle "><img
+                                                                        class="irs"
+                                                                        data-ng-src="data:image/png;base64,{{getProfilePicture(user.username, user.email)}}"
+                                                                        alt="profile-pic" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="name-container align-items-center">
+                                                                <p class="overflow-ellipsis mb-0">{{user.username}}</p>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </td>
+                                                <td class="overflow-ellipsis mb-0" data-ng-if="realm.mode !== 'bo'">{{user.email}}</td>
+                                                <td class="clip row-actions">
+                                                    <a class="danger" data-ng-click="removeUser(user)" data-ng-if="realm.mode === 'bo'" id="{{user.username.toLowerCase().replaceAll(' ','-')}}-delete" >
+                                                        <i class="os-icon os-icon-ui-15" tooltip="{{:: 'tooltip-delete-label' | translate}}" tooltip-placement="top"
+                                                        tooltip-trigger="hover mouseover mouseout"></i>
+                                                    </a>
+                                                    <div class="dropdown clearfix" data-ng-if="realm.mode !== 'bo'">
+                                                        <div class="dropdown">
+                                                            <button id="{{user.username}}-dLabel" class="dropdown-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-ng-click="toggleShow($index)">
+                                                                <i class="os-icon os-icon-more-horizontal"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+                                                                <li data-ng-if="realm.mode !== 'bo'"><a class="dropdown-item" kc-open="/realms/{{realm.realm}}/users/{{user.id}}" id="{{user.username.toLowerCase().replaceAll(' ','-')}}-edit">{{ ::'edit' | translate}}</a></li>
+                                                                <li data-ng-if="realm.mode !== 'bo'"><a class="dropdown-item" data-ng-click="addAdminRole(user)" id="{{user.username.toLowerCase().replaceAll(' ','-')}}-promote-user">{{ ::'promote-user' | translate}}</a></li>
+                                                                <li><a class="dropdown-item danger" data-ng-click="removeUser(user)" id="{{user.username.toLowerCase().replaceAll(' ','-')}}-delete">{{ ::'delete' | translate}}</a></li>
+                                                            </ul>
+                                                        </div> 
+                                                      </div>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!(searchLoaded)">
+                <kc-loader loadertype="loaderTypeName"></kc-loader>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
