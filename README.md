@@ -152,6 +152,19 @@ DOCS_URL / DOCS_LINK                               # self-hosted docs links (emp
 
 Verify: http://localhost:8080/auth/admin/
 
+> **Master-tenant onboarding is IP-gated.** Creating the first master-realm admin
+> (the welcome-page "create admin" step) is only allowed from IPs listed in
+> `ROOT_ACCESS_IP`. This gate applies **only to the master realm** and is never
+> reached again once onboarding completes.
+> - `ROOT_ACCESS_IP` **must be set** — an empty/unset value throws an NPE (HTTP 500
+>   on the welcome page). Matching is exact per IP; **no CIDR ranges**.
+> - **Plain compose (no proxy):** works out of the box — the idp sees the docker
+>   gateway IP, which `docker-compose.yml` already whitelists
+>   (`127.0.0.1,0.0.0.0,::1,172.20.0.1,192.168.65.1`).
+> - **Behind the nginx proxy overlay:** the idp reads the `X-Real-IP` header, so the
+>   value compared is your **real browser/public IP**, which is *not* in the default
+>   list. Add your IP to `ROOT_ACCESS_IP` or master onboarding will be blocked.
+
 ### Step 3: Supporting Services
 
 Start in any order once infra is up.
@@ -246,6 +259,10 @@ docker compose -f docker-compose.yml -f docker-compose.proxy.yml up -d
 
 See [nginx/README.md](./nginx/README.md) for details.
 
+> **Note:** behind this proxy, master-tenant onboarding sees your real browser IP
+> (via `X-Real-IP`), not a docker gateway. Add that IP to `ROOT_ACCESS_IP` before
+> onboarding or the "create master admin" step is blocked — see Step 2.
+
 ## Production Deployment
 
 For production, ensure:
@@ -265,6 +282,17 @@ cp .env.example .env
 ```
 
 > **Important:** Never commit actual credentials. The `.env.example` files contain only placeholders and are safe to commit.
+
+## Troubleshooting
+
+Common self-hosting issues and where they're covered in full:
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Welcome page returns **HTTP 500**; can't reach onboarding | `ROOT_ACCESS_IP` unset/empty → NPE in the master-realm gate | Set `ROOT_ACCESS_IP` (see [Step 2](#step-2-idp-verification--auth-core)). Never leave it blank. |
+| **"Create master admin" / onboarding blocked** (page loads, submit rejected) | Your client IP isn't in `ROOT_ACCESS_IP`. Behind the proxy the gate sees your real browser IP (`X-Real-IP`); direct compose sees the docker gateway | Add the right IP to `ROOT_ACCESS_IP` — [Step 2](#step-2-idp-verification--auth-core) / [Custom Domain](#custom-domain--https-optional). Exact IPs only, no CIDR. |
+| Master onboarding never re-prompts after first setup | The gate short-circuits once onboarding is complete (by design) | Not an error — reset onboarding state only if you intend to re-run it. |
+| **"HTTPS required"** on login/welcome over `http://localhost:8080` | Master realm is seeded with `sslRequired=external`, which rejects plain HTTP; Keycloak has no env for per-realm SSL | Handled automatically — the `idp-init` one-shot sets master `sslRequired=none` for the HTTP dev stack. If you removed it: `docker exec ezto-postgres psql -U admin -d eztoverify -c "update realm set ssl_required='NONE' where name='master';"` then `docker compose restart idp`. **Production:** don't set `none` — run the [HTTPS proxy overlay](#custom-domain--https-optional) (keeps `external`). |
 
 ## Hosting & Support
 

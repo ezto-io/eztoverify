@@ -1,0 +1,10 @@
+# Keep the build context small — Maven regenerates all of this in-image.
+build_*/
+build/
+**/target/
+**/*.iml
+**/.idea/
+.DS_Store
+.env
+.env.*
+!.env.example
