@@ -33,3 +33,9 @@ services:
       KC_HOSTNAME_STRICT: "true"
       KC_HOSTNAME_STRICT_HTTPS: "true"
       KC_PROXY: edge
+
+  # Serving real HTTPS: keep the master realm's Require-SSL at 'external' (the secure
+  # default) instead of the 'none' the base HTTP dev stack applies.
+  idp-init:
+    environment:
+      MASTER_SSL_REQUIRED: external

@@ -80,6 +80,7 @@ services:
   idp:
     build:
       context: ./idp
+    image: ezto-idp
     container_name: ezto-idp
     restart: unless-stopped
     depends_on:
@@ -149,6 +150,34 @@ services:
       timeout: 5s
       retries: 30
       start_period: 60s
+
+  # One-shot: relax the master realm's Require-SSL after the idp is up.
+  # Keycloak seeds the master realm with sslRequired=EXTERNAL (ApplianceBootstrap),
+  # which rejects plain HTTP for non-local client IPs -> the welcome/login pages show
+  # "HTTPS required" on the http://localhost:8080 quick-start. There is NO Keycloak env
+  # for per-realm sslRequired, so we set it via kcadm. Runs over the idp's own loopback
+  # (network_mode: service:idp) so the token call itself isn't blocked by the SSL policy.
+  # MASTER_SSL_REQUIRED defaults to 'none' for the HTTP dev stack; the nginx HTTPS proxy
+  # overlay (docker-compose.proxy.yml) overrides it back to 'external' for production.
+  idp-init:
+    image: ezto-idp
+    container_name: ezto-idp-init
+    depends_on:
+      idp: { condition: service_healthy }
+    network_mode: "service:idp"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      MASTER_SSL_REQUIRED: none
+    entrypoint:
+      - /bin/sh
+      - -c
+      - >
+        KC=/opt/keycloak/bin/kcadm.sh; CFG=/tmp/kcadm.config;
+        $$KC config credentials --config $$CFG --server http://localhost:8080/auth
+        --realm master --user "$$KEYCLOAK_ADMIN" --password "$$KEYCLOAK_ADMIN_PASSWORD" &&
+        $$KC update realms/master --config $$CFG -s sslRequired="$${MASTER_SSL_REQUIRED:-none}"
+    restart: "no"
 
   background:
     build:
