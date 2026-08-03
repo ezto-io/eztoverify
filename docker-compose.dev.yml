@@ -14,6 +14,11 @@
 # Databases eztoverify / jobrnr / urlshortner / socket are created on first start
 # (init-databases.sql). Replace the throwaway dev creds before any shared use.
 
+# Own project namespace: without this, volumes below would collide with the main
+# docker-compose.yml stack (same directory => same project => same pgdata/miniodata/
+# esdata volumes, so `down -v` here would wipe the HTTPS stack's data).
+name: ezto-dev
+
 services:
   postgres:
     image: postgres:14-alpine
