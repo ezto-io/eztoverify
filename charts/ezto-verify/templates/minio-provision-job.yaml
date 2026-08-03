@@ -1,0 +1,41 @@
+{{- if .Values.minio.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-minio-provision
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "minio-provision") | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    # Runs before idp-sslinit (weight "0" default) so the bucket exists before
+    # anything on the idp boot path needs it — mirrors compose's ordering.
+    helm.sh/hook-weight: "-1"
+spec:
+  backoffLimit: 6
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      labels:
+        {{- include "ezto-verify.selectorLabels" (dict "root" . "component" "minio-provision") | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: OnFailure
+      containers:
+        - name: minio-provision
+          image: "{{ .Values.minio.mcImage.repository }}:{{ .Values.minio.mcImage.tag }}"
+          imagePullPolicy: {{ include "ezto-verify.imagePullPolicy" (dict "root" . "policy" .Values.minio.mcImage.pullPolicy) }}
+          envFrom:
+            - secretRef:
+                name: {{ include "ezto-verify.fullname" . }}-minio
+          command:
+            - sh
+            - -c
+            - >-
+              mc alias set local {{ include "ezto-verify.minioUrl" . }} "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" &&
+              { mc mb -p local/{{ .Values.minio.bucket }} || true; } &&
+              { mc anonymous set download local/{{ .Values.minio.bucket }}/public || true; }
+{{- end }}

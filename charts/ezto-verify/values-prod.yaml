@@ -1,0 +1,35 @@
+# Example production overlay — copy and edit for your environment.
+# Registry paths, hostnames, and secrets below are placeholders; every
+# change_me_* value in values.yaml must still be rotated via --set or a
+# secrets-manager-backed values file, never committed in plaintext.
+
+idp:
+  image: { repository: registry.example.com/ezto/idp, tag: "0.1.0" }
+
+background:
+  image: { repository: registry.example.com/ezto/background, tag: "0.1.0" }
+
+socket:
+  image: { repository: registry.example.com/ezto/socket, tag: "0.1.0" }
+
+urlShortener:
+  image: { repository: registry.example.com/ezto/url-shortener, tag: "0.1.0" }
+
+liveness:
+  image: { repository: registry.example.com/ezto/liveness, tag: "0.1.0" }
+
+ingress:
+  enabled: true
+  className: nginx
+  host: verify.example.com
+  tls:
+    enabled: true
+    certManager: true
+    clusterIssuer: letsencrypt-prod
+
+elasticsearch:
+  enabled: false
+  external:
+    host: es.internal.example.com
+    port: 9200
+    scheme: http

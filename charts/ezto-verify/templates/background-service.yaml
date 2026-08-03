@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-background
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "background") | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "ezto-verify.selectorLabels" (dict "root" . "component" "background") | nindent 4 }}
+  ports:
+    - name: http
+      port: 8070
+      targetPort: 8070

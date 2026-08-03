@@ -1,0 +1,57 @@
+{{- $pgPort := include "ezto-verify.pgPort" . -}}
+{{- $kcHostname := "localhost" -}}
+{{- if .Values.ingress.enabled -}}
+{{- $kcHostname = .Values.ingress.host -}}
+{{- end -}}
+{{- $minioPublicUrl := "" -}}
+{{- if .Values.minio.enabled -}}
+{{- $minioPublicUrl = .Values.minio.publicUrl -}}
+{{- else -}}
+{{- $minioPublicUrl = .Values.minio.external.publicUrl -}}
+{{- end -}}
+{{- if not $minioPublicUrl -}}
+{{- $minioPublicUrl = printf "%s/minio/%s/public" (include "ezto-verify.publicUrl" .) .Values.minio.bucket -}}
+{{- end -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-idp
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "idp") | nindent 4 }}
+data:
+  KC_DB: postgres
+  KC_DB_URL_HOST: {{ include "ezto-verify.pgHost" . | quote }}
+  KC_DB_URL_PORT: {{ $pgPort | quote }}
+  KC_DB_URL_DATABASE: {{ .Values.idp.db.database | quote }}
+  KC_HOSTNAME_URL: {{ include "ezto-verify.idpUrl" . | quote }}
+  KC_HOSTNAME: {{ $kcHostname | quote }}
+  KC_HOSTNAME_STRICT: {{ .Values.ingress.enabled | quote }}
+  KC_HOSTNAME_STRICT_HTTPS: {{ .Values.ingress.tls.enabled | quote }}
+  KC_HTTP_ENABLED: "true"
+  {{- if .Values.ingress.enabled }}
+  KC_PROXY: edge
+  {{- end }}
+  IDP_HOST: http://{{ include "ezto-verify.fullname" . }}-idp:8080
+  ENV: {{ .Values.idp.envName | quote }}
+  # RealmManager.createRealm + the idp's .ftl templates call
+  # EnvironmentReader.getValue("VARIANT").equalsIgnoreCase(...) with no null guard —
+  # unset => NPE during master-realm bootstrap. MUST always render non-empty.
+  VARIANT: {{ required "idp.variant must not be empty" .Values.idp.variant | quote }}
+  DASHBOARD_URL: {{ .Values.idp.dashboardUrl | default (include "ezto-verify.publicUrl" .) | quote }}
+  DOCS_URL: {{ .Values.idp.docsUrl | quote }}
+  DOCS_LINK: {{ .Values.idp.docsLink | quote }}
+  # Welcome page isLocal() does ROOT_ACCESS_IP.split(",") with no null guard —
+  # unset => NPE => the catch rethrows as HTTP 500 on GET /auth/. Exact IPs
+  # only (no CIDR); must include the client IP performing master-tenant onboarding.
+  ROOT_ACCESS_IP: {{ required "idp.rootAccessIp must not be empty" .Values.idp.rootAccessIp | quote }}
+  BACKGROUND_JOB_URL: http://{{ include "ezto-verify.fullname" . }}-background:8070
+  SHORTENER_HTTPS_URL: http://{{ include "ezto-verify.fullname" . }}-url-shortener:3000
+  SHORTENER_HTTP_URL: http://{{ include "ezto-verify.fullname" . }}-url-shortener:3000
+  SOCKET_URL: http://{{ include "ezto-verify.fullname" . }}-socket:3001
+  LIVELINESS_URL: http://{{ include "ezto-verify.fullname" . }}-liveness:5000
+  MINIO_SERVER_URL: {{ include "ezto-verify.minioUrl" . | quote }}
+  MINIO_PUBLIC_URL: {{ $minioPublicUrl | quote }}
+  ES_HOST: {{ include "ezto-verify.esHost" . | quote }}
+  ES_PORT: {{ include "ezto-verify.esPort" . | quote }}
+  ES_SCHEME: {{ include "ezto-verify.esScheme" . | quote }}
+  APP_PUSH_VERSION: {{ .Values.idp.appPushVersion | quote }}

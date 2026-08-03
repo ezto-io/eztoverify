@@ -1,0 +1,39 @@
+{{- if and .Values.minio.publicIngress.enabled .Values.ingress.enabled .Values.minio.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-minio-public
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "minio-public") | nindent 4 }}
+  annotations:
+    # rewrite-target with capture groups implies regex paths on ingress-nginx
+    # >=0.22, but use-regex makes it explicit and version-proof.
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/proxy-body-size: 100m
+    {{- if .Values.ingress.tls.certManager }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.tls.clusterIssuer }}
+    {{- end }}
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /minio(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "ezto-verify.fullname" . }}-minio
+                port:
+                  number: 9000
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tls.secretName | default (printf "%s-idp-tls" (include "ezto-verify.fullname" .)) }}
+  {{- end }}
+{{- end }}
