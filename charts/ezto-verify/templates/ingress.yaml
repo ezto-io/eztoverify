@@ -1,0 +1,42 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-idp
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "idp") | nindent 4 }}
+  annotations:
+    # ingress-nginx overwrites inbound X-Forwarded-* headers by default
+    # (use-forwarded-headers: false in the controller ConfigMap) instead of
+    # trusting whatever a client sends, and generates its own before proxying
+    # to the idp. KC_PROXY=edge (set in configmap-idp.yaml) tells the idp to
+    # trust those controller-generated headers. Do NOT flip
+    # use-forwarded-headers on for the ingress-nginx controller — see the
+    # chart README for why that would let clients spoof their own IP/scheme.
+    nginx.ingress.kubernetes.io/proxy-body-size: 100m
+    {{- if .Values.ingress.tls.certManager }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.tls.clusterIssuer }}
+    {{- end }}
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "ezto-verify.fullname" . }}-idp
+                port:
+                  number: 8080
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tls.secretName | default (printf "%s-idp-tls" (include "ezto-verify.fullname" .)) }}
+  {{- end }}
+{{- end }}

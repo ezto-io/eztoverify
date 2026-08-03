@@ -1,0 +1,48 @@
+{{- if eq (include "ezto-verify.sslInitEnabled" .) "true" }}
+{{- $idpSvc := printf "%s-idp" (include "ezto-verify.fullname" .) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-idp-sslinit
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "idp-sslinit") | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: {{ .Values.idp.sslInitJob.backoffLimit }}
+  template:
+    metadata:
+      labels:
+        {{- include "ezto-verify.selectorLabels" (dict "root" . "component" "idp-sslinit") | nindent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: idp-sslinit
+          image: "{{ .Values.idp.image.repository }}:{{ .Values.idp.image.tag }}"
+          imagePullPolicy: {{ include "ezto-verify.imagePullPolicy" (dict "root" . "policy" .Values.idp.image.pullPolicy) }}
+          envFrom:
+            - secretRef:
+                name: {{ include "ezto-verify.fullname" . }}-idp
+          env:
+            - name: MASTER_SSL_REQUIRED
+              value: {{ .Values.idp.masterSslRequired | quote }}
+          # Pins the master realm's sslRequired the same way compose's idp-init
+          # one-shot does. Uses plain shell $VAR (not kubelet's $(VAR) form):
+          # kubelet does not expand $(VAR) for Secret/envFrom-sourced env inside
+          # a command string, so $KEYCLOAK_ADMIN etc. must be resolved by the
+          # shell itself at runtime, not by Kubernetes at pod-creation time.
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              until (echo > /dev/tcp/{{ $idpSvc }}/8080) 2>/dev/null; do
+                echo "waiting for idp"
+                sleep 2
+              done
+              KC=/opt/keycloak/bin/kcadm.sh
+              CFG=/tmp/kcadm.config
+              "$KC" config credentials --config "$CFG" --server http://{{ $idpSvc }}:8080/auth --realm master --user "$KEYCLOAK_ADMIN" --password "$KEYCLOAK_ADMIN_PASSWORD"
+              "$KC" update realms/master --config "$CFG" -s sslRequired="$MASTER_SSL_REQUIRED"
+{{- end }}

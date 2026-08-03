@@ -1,0 +1,73 @@
+{{- $pgPort := "5432" -}}
+{{- if not .Values.postgres.enabled -}}
+{{- $pgPort = .Values.postgres.external.port -}}
+{{- end -}}
+{{/* nc -z needs bare host+port; strip scheme/path off the minio URL helper. */}}
+{{- $minioHostPort := include "ezto-verify.minioUrl" . | trimPrefix "http://" | trimPrefix "https://" | splitList "/" | first -}}
+{{- $minioHostPortParts := splitList ":" $minioHostPort -}}
+{{- $minioHost := index $minioHostPortParts 0 -}}
+{{- $minioPort := index $minioHostPortParts 1 -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-idp
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "idp") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "ezto-verify.selectorLabels" (dict "root" . "component" "idp") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ezto-verify.labels" (dict "root" . "component" "idp") | nindent 8 }}
+    spec:
+      # Do NOT add a wait-for-background initContainer here: background depends on
+      # idp for auth, so waiting on it would deadlock the two Deployments.
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - until nc -z -w2 {{ include "ezto-verify.pgHost" . }} {{ $pgPort }}; do echo "waiting for postgres"; sleep 2; done
+        - name: wait-for-minio
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - until nc -z -w2 {{ $minioHost }} {{ $minioPort }}; do echo "waiting for minio"; sleep 2; done
+        {{- if .Values.elasticsearch.enabled }}
+        - name: wait-for-elasticsearch
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - until nc -z -w2 {{ include "ezto-verify.esHost" . }} {{ include "ezto-verify.esPort" . }}; do echo "waiting for elasticsearch"; sleep 2; done
+        {{- end }}
+      containers:
+        - name: idp
+          image: "{{ .Values.idp.image.repository }}:{{ .Values.idp.image.tag }}"
+          imagePullPolicy: {{ include "ezto-verify.imagePullPolicy" (dict "root" . "policy" .Values.idp.image.pullPolicy) }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "ezto-verify.fullname" . }}-idp
+            - secretRef:
+                name: {{ include "ezto-verify.fullname" . }}-idp
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.idp.resources | nindent 12 }}
