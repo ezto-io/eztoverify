@@ -94,6 +94,31 @@ MinIO base URL: bundled service, or external.url (required when not bundled).
 {{- end -}}
 
 {{/*
+Postgres port: bundled default 5432, or external.port.
+*/}}
+{{- define "ezto-verify.pgPort" -}}
+{{- if .Values.postgres.enabled -}}
+5432
+{{- else -}}
+{{- .Values.postgres.external.port -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+MinIO host:port (scheme stripped) for TCP-wait initContainers and any env var
+that wants a bare host:port form (e.g. liveness's MINIO_HOST). Fails fast if
+the URL has no explicit port — a scheme-default port cannot be TCP-waited on.
+*/}}
+{{- define "ezto-verify.minioHostPort" -}}
+{{- $hostPort := include "ezto-verify.minioUrl" . | trimPrefix "http://" | trimPrefix "https://" | splitList "/" | first -}}
+{{- $hostPortParts := splitList ":" $hostPort -}}
+{{- if lt (len $hostPortParts) 2 -}}
+{{- fail (printf "minio external URL %q must include an explicit port (host:port) — a scheme-default port cannot be TCP-waited on" (include "ezto-verify.minioUrl" .)) -}}
+{{- end -}}
+{{- $hostPort -}}
+{{- end -}}
+
+{{/*
 Elasticsearch host: bundled service name, or external.host (required when not bundled).
 */}}
 {{- define "ezto-verify.esHost" -}}

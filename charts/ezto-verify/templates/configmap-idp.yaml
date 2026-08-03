@@ -1,7 +1,4 @@
-{{- $pgPort := "5432" -}}
-{{- if not .Values.postgres.enabled -}}
-{{- $pgPort = .Values.postgres.external.port -}}
-{{- end -}}
+{{- $pgPort := include "ezto-verify.pgPort" . -}}
 {{- $kcHostname := "localhost" -}}
 {{- if .Values.ingress.enabled -}}
 {{- $kcHostname = .Values.ingress.host -}}
