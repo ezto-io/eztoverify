@@ -275,7 +275,7 @@ services to a Kubernetes cluster instead. Quick local flow:
 
 ```bash
 kind create cluster --name ezto
-./scripts/helm/build-and-load.sh kind ezto
+./scripts/helm/build-and-load.sh kind ezto --with-liveness
 helm install ezto charts/ezto-verify -f charts/ezto-verify/values-kind.yaml
 kubectl port-forward svc/ezto-ezto-verify-idp 8080:8080
 # browse http://localhost:8080/auth
@@ -284,7 +284,10 @@ kubectl port-forward svc/ezto-ezto-verify-idp 8080:8080
 A bare `helm install` with the chart's default values fails on purpose —
 Elasticsearch is external-by-default and `required`-guarded; the
 `values-kind.yaml`/`values-minikube.yaml` overlays used above bundle it for
-local use, and production deploys must point at a real cluster. See the
+local use, and production deploys must point at a real cluster. Both local
+overlays also force-enable the (heavy) liveness service, so `--with-liveness`
+is effectively required above — or add `--set liveness.enabled=false` to the
+`helm install` if you want to skip it. See the
 [chart README](./charts/ezto-verify/README.md) for the full values
 reference, the production (registry images, ingress + cert-manager)
 flow, the `idp` single-replica scaling note, and `ROOT_ACCESS_IP` onboarding

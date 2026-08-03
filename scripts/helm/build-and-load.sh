@@ -40,6 +40,10 @@ for arg in "$@"; do
     -h|--help)
       usage
       ;;
+    --*)
+      echo "error: unknown option '$arg'" >&2
+      usage
+      ;;
     *)
       if [ -z "$TARGET" ]; then
         echo "error: first argument must be 'kind' or 'minikube', got '$arg'" >&2

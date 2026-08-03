@@ -90,13 +90,19 @@ fall back to the chart-wide `image.pullPolicy`.
 # 1. Create a cluster (skip if you already have one)
 kind create cluster --name ezto
 
-# 2. Build service images and load them into the cluster's node cache
-./scripts/helm/build-and-load.sh kind ezto
-# add --with-liveness to also build the face-liveness image (heavy)
+# 2. Build service images and load them into the cluster's node cache.
+#    Both values-kind.yaml and values-minikube.yaml force liveness.enabled:
+#    true, so --with-liveness is effectively required here for a fully
+#    healthy cluster — without it, the liveness Deployment schedules with
+#    pullPolicy: Never and no matching image loaded, and sits in
+#    ErrImageNeverPull. If you don't need liveness locally, skip the flag
+#    and pass --set liveness.enabled=false at install time instead (step 3).
+./scripts/helm/build-and-load.sh kind ezto --with-liveness
 
 # 3. Install using the kind overlay (bundles Elasticsearch + MailDev,
 #    sets idp.masterSslRequired=none so plain HTTP works, pullPolicy: Never)
 helm install ezto charts/ezto-verify -f charts/ezto-verify/values-kind.yaml
+# to skip liveness instead of building it: add --set liveness.enabled=false
 
 # 4. Reach the idp
 kubectl port-forward svc/ezto-ezto-verify-idp 8080:8080
@@ -104,7 +110,7 @@ kubectl port-forward svc/ezto-ezto-verify-idp 8080:8080
 ```
 
 For minikube, swap step 1/2/3 for `minikube start -p ezto`,
-`./scripts/helm/build-and-load.sh minikube ezto`, and
+`./scripts/helm/build-and-load.sh minikube ezto --with-liveness`, and
 `-f charts/ezto-verify/values-minikube.yaml`.
 
 Before onboarding the master tenant through the browser at
