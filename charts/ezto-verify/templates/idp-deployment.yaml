@@ -5,6 +5,9 @@
 {{/* nc -z needs bare host+port; strip scheme/path off the minio URL helper. */}}
 {{- $minioHostPort := include "ezto-verify.minioUrl" . | trimPrefix "http://" | trimPrefix "https://" | splitList "/" | first -}}
 {{- $minioHostPortParts := splitList ":" $minioHostPort -}}
+{{- if lt (len $minioHostPortParts) 2 -}}
+{{- fail (printf "minio external URL %q must include an explicit port (host:port) — a scheme-default port cannot be TCP-waited on" (include "ezto-verify.minioUrl" .)) -}}
+{{- end -}}
 {{- $minioHost := index $minioHostPortParts 0 -}}
 {{- $minioPort := index $minioHostPortParts 1 -}}
 apiVersion: apps/v1
