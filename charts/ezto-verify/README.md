@@ -12,6 +12,46 @@ MinIO. Elasticsearch is **external-by-default** — see below.
 > Elasticsearch (`values-kind.yaml` / `values-minikube.yaml` both set
 > `elasticsearch.enabled: true`).
 
+## Prerequisites
+
+| Requirement | Notes |
+|---|---|
+| Kubernetes ≥ 1.25 | any conformant cluster (kind/minikube locally; managed clusters in production) |
+| Helm 3 (or 4) | chart uses `apiVersion: v2`, no Helm-4-only features |
+| kubectl | configured for the target cluster |
+| Container images | **no prebuilt images are published** — build from source. Locally: `scripts/helm/build-and-load.sh` builds + loads into kind/minikube. Real clusters: build, push to your registry, and override each `*.image.repository`/`tag` (see `values-prod.yaml`); private registries also need `imagePullSecrets` |
+| Default StorageClass | bundled PostgreSQL / MinIO / Elasticsearch claim PVCs; set `global.storageClass` to pick a specific one |
+| Elasticsearch 7.x | external endpoint (`elasticsearch.external.host`) unless an overlay bundles it — see [Elasticsearch](#elasticsearch) |
+| Ingress controller (optional) | `ingress.className: nginx` assumed for TLS/public exposure; keep `use-forwarded-headers` off (default) — see [ROOT_ACCESS_IP](#root_access_ip--master-tenant-onboarding) |
+| cert-manager (optional) | only when `ingress.tls.certManager: true`; otherwise provide `ingress.tls.secretName` |
+
+## Installing
+
+```bash
+# 1. Make images reachable by the cluster (see Prerequisites).
+
+# 2. Create your values file — start from an overlay:
+#    values-kind.yaml / values-minikube.yaml  (local: bundled ES+MailDev, local images)
+#    values-prod.yaml                         (example: registry images, ingress+TLS, external ES)
+cp charts/ezto-verify/values-prod.yaml my-values.yaml   # then edit — rotate every change_me_*
+
+# 3. Install (idp first boot is slow — allow 15m)
+helm install ezto charts/ezto-verify -f my-values.yaml --timeout 15m --wait
+
+# 4. Verify
+kubectl get pods                       # all Ready; hook Jobs self-delete on success
+helm status ezto                       # NOTES print the idp URL / port-forward hint
+
+# Upgrades / config changes
+helm upgrade ezto charts/ezto-verify -f my-values.yaml --timeout 15m
+
+# Uninstall (PVCs are kept by Kubernetes — delete them explicitly to wipe data)
+helm uninstall ezto
+```
+
+Step-by-step walkthroughs: [Local flow](#local-flow-kind-or-minikube) and
+[Production flow](#production-flow).
+
 ## Values
 
 Every top-level key in `values.yaml`, one line each. `image.*` fields shown
