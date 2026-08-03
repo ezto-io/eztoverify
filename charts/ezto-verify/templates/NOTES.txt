@@ -9,7 +9,7 @@ Ingress is disabled. Reach the idp locally with:
 
   kubectl port-forward svc/{{ include "ezto-verify.fullname" . }}-idp 8080:8080
 
-Then browse http://localhost:8080/auth/admin/
+Then browse {{ include "ezto-verify.idpUrl" . }}/admin/
 {{- end }}
 
 IMPORTANT:

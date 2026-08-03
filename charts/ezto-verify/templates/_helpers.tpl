@@ -144,6 +144,9 @@ auto-enabled when ingress TLS termination is not handling SSL for us.
 */}}
 {{- define "ezto-verify.sslInitEnabled" -}}
 {{- $v := .Values.idp.sslInitJob.enabled -}}
+{{/* `and` short-circuits (Go text/template ≥1.18), so `eq $v ""` is only
+     evaluated once $v is already known to be a string — safe against the
+     bool/string comparison panic when $v is a real boolean override. */}}
 {{- if and (kindIs "string" $v) (eq $v "") -}}
 {{- not .Values.ingress.tls.enabled -}}
 {{- else -}}
