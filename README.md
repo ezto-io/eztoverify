@@ -17,7 +17,7 @@ ezto Verify follows a microservices architecture. Unlike a stock Keycloak deploy
 
 | Service | Port | Description | Stack |
 |---------|------|-------------|-------|
-| [idp](./idp) | 8080 / 8443 | Verification & auth core — Keycloak 18 fork with verification SPIs, custom themes, and CIBA push-auth | Java 11, Quarkus, Maven |
+| [idp](./idp) | 8080 (internal; served via nginx 443) | Verification & auth core — Keycloak 18 fork with verification SPIs, custom themes, and CIBA push-auth | Java 11, Quarkus, Maven |
 | [services/background](./services/background) | 8070 | Background job runner — scheduled jobs and async processing | Java 21, Spring Boot, JobRunr |
 | [services/socket](./services/socket) | 3001 | Real-time push channel for web/mobile SDK delivery | Node.js, Socket.io |
 | [services/url-shortener](./services/url-shortener) | 3000 | Short-link service for verification links (with TTL) | Node.js, Express, Prisma |
@@ -53,7 +53,7 @@ ezto Verify follows a microservices architecture. Unlike a stock Keycloak deploy
                                  └──────────────────┘
 
   Dev only:  MailDev SMTP catcher (1025 / 1080 UI)
-  Optional:  nginx TLS reverse proxy (docker-compose.proxy.yml) fronting the idp
+  Compose:   nginx TLS reverse proxy (80/443) fronts the idp — the only published entry point
 ```
 
 ## Prerequisites
@@ -81,10 +81,19 @@ ezto Verify follows a microservices architecture. Unlike a stock Keycloak deploy
 
 ## Quick Start (Docker Compose)
 
-The fastest path. The full core stack is **built from source** on each run (no prebuilt images shipped):
+The fastest path. The full core stack is **built from source** on each run (no prebuilt images shipped) and served **over HTTPS** behind the bundled nginx TLS proxy. One-time setup — the stack refuses to start without a domain and certs:
 
 ```bash
-# Build + start everything (infra + idp + services)
+# 1. Domain
+cp .env.example .env                                   # set DOMAIN=verify.example.com
+
+# 2. TLS certs in nginx/certs/ (fullchain.pem + privkey.pem) — real CA cert,
+#    or a throwaway self-signed one for testing:
+DOMAIN=verify.example.com ./nginx/gen-self-signed.sh
+
+# 3. Point the domain at this host (DNS A record, or /etc/hosts -> 127.0.0.1 locally)
+
+# Build + start everything (infra + idp + services + nginx)
 docker compose up --build
 
 # Stop / wipe:
@@ -92,9 +101,11 @@ docker compose down            # stop
 docker compose down -v         # stop + wipe volumes
 ```
 
-The idp comes up at **http://localhost:8080/auth** (admin console `/auth/admin/`, default `admin` / `admin` — change before any non-local use). The idp build is heavy (compiles Keycloak + verification modules + themes); give Docker ample RAM/disk.
+The idp comes up at **https://\<your-domain\>/auth** (admin console `/auth/admin/`, default `admin` / `admin` — change before any non-local use). Missing `DOMAIN` fails at compose parse; missing certs fail the `certs-check` one-shot with instructions. The idp build is heavy (compiles Keycloak + verification modules + themes); give Docker ample RAM/disk.
 
 > Replace every `REPLACE_ME` / `change_me_*` value in `docker-compose.yml` before any non-local use.
+
+For plain-HTTP local development, use `docker-compose.dev.yml` (infra only — see Step 1 below) and run the app code locally.
 
 ## Step-by-Step Deployment Guide
 
@@ -158,12 +169,12 @@ Verify: http://localhost:8080/auth/admin/
 > reached again once onboarding completes.
 > - `ROOT_ACCESS_IP` **must be set** — an empty/unset value throws an NPE (HTTP 500
 >   on the welcome page). Matching is exact per IP; **no CIDR ranges**.
-> - **Plain compose (no proxy):** works out of the box — the idp sees the docker
->   gateway IP, which `docker-compose.yml` already whitelists
->   (`127.0.0.1,0.0.0.0,::1,172.20.0.1,192.168.65.1`).
-> - **Behind the nginx proxy overlay:** the idp reads the `X-Real-IP` header, so the
->   value compared is your **real browser/public IP**, which is *not* in the default
->   list. Add your IP to `ROOT_ACCESS_IP` or master onboarding will be blocked.
+> - The compose stack fronts the idp with nginx (`KC_PROXY=edge`), so the gate
+>   compares the `X-Real-IP` header. **Browser on the docker host:** works out of
+>   the box — nginx sees the docker gateway as the client, which is already
+>   whitelisted (`127.0.0.1,0.0.0.0,::1,172.20.0.1,192.168.65.1`).
+> - **Remote browser:** arrives with its **real public IP**, which is *not* in the
+>   default list. Add it to `ROOT_ACCESS_IP` or master onboarding will be blocked.
 
 ### Step 3: Supporting Services
 
@@ -241,32 +252,25 @@ KC_ADMIN_PASSWORD=<admin-pw> ./scripts/seed-realm-attributes.sh \
     --fido-android ./scripts/seed-data/assetlinks.json
 ```
 
-Each flag is optional; re-running overwrites only those keys. Needs `curl` + `jq`. Defaults target the local stack (`KC_BASE=http://localhost:8080/auth`, realm `master`, user `admin`); override via env for a remote deploy.
+Each flag is optional; re-running overwrites only those keys. Needs `curl` + `jq`. The default `KC_BASE=http://localhost:8080/auth` fits a locally-run idp (dev setup); for the compose stack set `KC_BASE=https://<your-domain>/auth` (realm `master`, user `admin` by default).
 
 > `firebase-json` is stored as a plaintext realm attribute (it lands in the DB and any realm export) — never commit realm exports of `master` to git.
 
-## Custom Domain + HTTPS (optional)
+## Custom Domain + HTTPS
 
-Front the stack with the nginx TLS reverse-proxy overlay to serve the idp at `https://<your-domain>/auth`:
+HTTPS is built into `docker-compose.yml` — the bundled nginx terminates TLS for
+`https://<your-domain>/auth` and is the stack's only published entry point. Setup
+(domain, certs, renewals, exposing extra services on the domain) is covered in the
+[Quick Start](#quick-start-docker-compose) and [nginx/README.md](./nginx/README.md).
 
-```bash
-cp .env.example .env                                   # set DOMAIN=verify.example.com
-# provide TLS certs in nginx/certs/ (fullchain.pem + privkey.pem); for local testing:
-DOMAIN=verify.example.com ./nginx/gen-self-signed.sh
-# point DOMAIN at this host (real DNS A record, or /etc/hosts -> 127.0.0.1 locally)
-docker compose -f docker-compose.yml -f docker-compose.proxy.yml up -d
-```
-
-See [nginx/README.md](./nginx/README.md) for details.
-
-> **Note:** behind this proxy, master-tenant onboarding sees your real browser IP
-> (via `X-Real-IP`), not a docker gateway. Add that IP to `ROOT_ACCESS_IP` before
-> onboarding or the "create master admin" step is blocked — see Step 2.
+> **Note:** master-tenant onboarding sees the `X-Real-IP` the proxy forwards. A
+> remote browser's real IP must be added to `ROOT_ACCESS_IP` before onboarding
+> or the "create master admin" step is blocked — see Step 2.
 
 ## Production Deployment
 
 For production, ensure:
-- TLS termination at the edge (the nginx overlay, or your own ingress/load balancer with `KC_PROXY=edge`).
+- TLS termination at the edge (the bundled nginx, or your own ingress/load balancer with `KC_PROXY=edge`).
 - Secrets managed via environment / a vault (e.g. HashiCorp Vault) — never commit real credentials.
 - Persistent volumes for PostgreSQL, MinIO and Elasticsearch.
 - A real email provider (configured per-realm), not MailDev.
@@ -292,7 +296,7 @@ Common self-hosting issues and where they're covered in full:
 | Welcome page returns **HTTP 500**; can't reach onboarding | `ROOT_ACCESS_IP` unset/empty → NPE in the master-realm gate | Set `ROOT_ACCESS_IP` (see [Step 2](#step-2-idp-verification--auth-core)). Never leave it blank. |
 | **"Create master admin" / onboarding blocked** (page loads, submit rejected) | Your client IP isn't in `ROOT_ACCESS_IP`. Behind the proxy the gate sees your real browser IP (`X-Real-IP`); direct compose sees the docker gateway | Add the right IP to `ROOT_ACCESS_IP` — [Step 2](#step-2-idp-verification--auth-core) / [Custom Domain](#custom-domain--https-optional). Exact IPs only, no CIDR. |
 | Master onboarding never re-prompts after first setup | The gate short-circuits once onboarding is complete (by design) | Not an error — reset onboarding state only if you intend to re-run it. |
-| **"HTTPS required"** on login/welcome over `http://localhost:8080` | Master realm is seeded with `sslRequired=external`, which rejects plain HTTP; Keycloak has no env for per-realm SSL | Handled automatically — the `idp-init` one-shot sets master `sslRequired=none` for the HTTP dev stack. If you removed it: `docker exec ezto-postgres psql -U admin -d eztoverify -c "update realm set ssl_required='NONE' where name='master';"` then `docker compose restart idp`. **Production:** don't set `none` — run the [HTTPS proxy overlay](#custom-domain--https-optional) (keeps `external`). |
+| **"HTTPS required"** on login/welcome | Master realm enforces `sslRequired=external` (the secure default, pinned by the `idp-init` one-shot) and the request reached the idp as plain HTTP from a non-local IP — e.g. the idp was accessed directly instead of through the nginx proxy | Use `https://<your-domain>/auth` through the bundled proxy. For a throwaway plain-HTTP experiment only: set `MASTER_SSL_REQUIRED=none` on `idp-init` and re-run it, or `docker exec ezto-postgres psql -U admin -d eztoverify -c "update realm set ssl_required='NONE' where name='master';"` then `docker compose restart idp`. Never in production. |
 
 ## Hosting & Support
 

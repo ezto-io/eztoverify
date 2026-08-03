@@ -1,11 +1,21 @@
-# Verify OSS — full core stack, one shot:  docker compose up --build
+# Verify OSS — full core stack over HTTPS, one shot:  docker compose up --build
 #
-# Brings up backing infra (postgres / minio / elasticsearch) plus the
-# idp and 4 services, each BUILT FROM SOURCE on every run (no prebuilt images).
+# Brings up backing infra (postgres / minio / elasticsearch) plus the idp and
+# 4 services, each BUILT FROM SOURCE on every run (no prebuilt images), fronted
+# by an nginx TLS proxy serving the idp at https://$DOMAIN/auth.
+#
+# One-time setup (the stack refuses to start without it):
+#   1. cp .env.example .env                       # set DOMAIN=verify.example.com
+#   2. TLS certs in nginx/certs/ (fullchain.pem + privkey.pem) — real CA cert,
+#      or for testing: DOMAIN=<your-domain> ./nginx/gen-self-signed.sh
+#   3. Point DOMAIN at this host (DNS A record, or /etc/hosts -> 127.0.0.1)
 #
 #   docker compose up --build         # build + start everything
 #   docker compose down               # stop
 #   docker compose down -v            # stop + wipe volumes
+#
+# Plain-HTTP local development (app code in your IDE against containerised
+# infra): use docker-compose.dev.yml instead — it is unaffected by this file.
 #
 # Replace every REPLACE_ME / change_me_* value before any non-local use.
 
@@ -89,7 +99,8 @@ services:
       minio-init: { condition: service_completed_successfully }
       elasticsearch: { condition: service_healthy }
       background: { condition: service_healthy }
-    ports: ["8080:8080", "8443:8443"]
+    # No published ports — nginx (80/443) is the only entry point. Internal
+    # traffic (nginx -> idp, idp-init) uses 8080 on the compose network.
     environment:
       KC_DB: postgres
       KC_DB_URL_HOST: postgres
@@ -100,18 +111,21 @@ services:
       # Master-realm admin (created on first boot / fresh DB). Change before non-local use.
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HOSTNAME_URL: http://localhost:8080/auth
-      KC_HOSTNAME: localhost
-      KC_HOSTNAME_STRICT: "false"
-      KC_HOSTNAME_STRICT_HTTPS: "false"
+      # Public-TLS edge mode: nginx terminates HTTPS and forwards plain HTTP
+      # with X-Forwarded-* headers; KC_PROXY=edge makes Keycloak trust them.
+      KC_HOSTNAME_URL: https://${DOMAIN}/auth
+      KC_HOSTNAME: ${DOMAIN}
+      KC_HOSTNAME_STRICT: "true"
+      KC_HOSTNAME_STRICT_HTTPS: "true"
       KC_HTTP_ENABLED: "true"
+      KC_PROXY: edge
       IDP_HOST: http://idp:8080
       ENV: dev
       # Runtime product discriminator. RealmManager.createRealm + .ftl templates call
       # EnvironmentReader.getValue("VARIANT").equalsIgnoreCase(...) with no null guard —
       # unset => NPE during master-realm bootstrap. "ezto verify" = the Verify offering.
       VARIANT: "ezto verify"
-      DASHBOARD_URL: http://localhost:8080
+      DASHBOARD_URL: https://${DOMAIN}
       # Admin-console "Docs" link target. Set to your self-hosted documentation URL.
       # Leave empty to show the bundled "documentation not configured" page instead.
       DOCS_URL: ""
@@ -120,11 +134,11 @@ services:
       DOCS_LINK: ""
       # Welcome page isLocal() does ROOT_ACCESS_IP.split(",") with no null guard —
       # unset => NPE => catch rethrows HTTP 500 on GET /auth/. Admin-route whitelist.
-      # Host->container traffic via published port arrives with the gateway source IP
-      # (no proxy set; remoteAddr = TCP peer). On Docker Desktop (Mac/Win) that is
-      # 192.168.65.1 (the Desktop host gateway); on a plain Linux bridge it is the
-      # bridge gateway 172.20.0.1. Both allowed so the master-tenant onboarding welcome
-      # page renders from the host browser. Adjust the gateway IP for other networks.
+      # Behind nginx (KC_PROXY=edge) the gate compares the X-Real-IP header. For a
+      # browser on THIS host that is the docker gateway nginx sees as its TCP peer:
+      # 192.168.65.1 on Docker Desktop (Mac/Win), 172.20.0.1 on a plain Linux
+      # bridge — both allowed below. A REMOTE browser arrives with its real
+      # public IP: add it here before master-tenant onboarding. Exact IPs, no CIDR.
       ROOT_ACCESS_IP: 127.0.0.1,0.0.0.0,::1,172.20.0.1,192.168.65.1
       BACKGROUND_JOB_URL: http://background:8070
       SHORTENER_HTTPS_URL: http://url-shortener:3000
@@ -151,14 +165,12 @@ services:
       retries: 30
       start_period: 60s
 
-  # One-shot: relax the master realm's Require-SSL after the idp is up.
-  # Keycloak seeds the master realm with sslRequired=EXTERNAL (ApplianceBootstrap),
-  # which rejects plain HTTP for non-local client IPs -> the welcome/login pages show
-  # "HTTPS required" on the http://localhost:8080 quick-start. There is NO Keycloak env
-  # for per-realm sslRequired, so we set it via kcadm. Runs over the idp's own loopback
-  # (network_mode: service:idp) so the token call itself isn't blocked by the SSL policy.
-  # MASTER_SSL_REQUIRED defaults to 'none' for the HTTP dev stack; the nginx HTTPS proxy
-  # overlay (docker-compose.proxy.yml) overrides it back to 'external' for production.
+  # One-shot: pin the master realm's Require-SSL after the idp is up.
+  # Keycloak seeds the master realm with sslRequired=EXTERNAL (ApplianceBootstrap);
+  # serving real HTTPS we keep that secure default explicitly. There is NO Keycloak
+  # env for per-realm sslRequired, so we set it via kcadm. Runs over the idp's own
+  # loopback (network_mode: service:idp) so the call bypasses the SSL policy.
+  # Override MASTER_SSL_REQUIRED=none only for throwaway plain-HTTP experiments.
   idp-init:
     image: ezto-idp
     container_name: ezto-idp-init
@@ -168,7 +180,7 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      MASTER_SSL_REQUIRED: none
+      MASTER_SSL_REQUIRED: external
     entrypoint:
       - /bin/sh
       - -c
@@ -176,8 +188,45 @@ services:
         KC=/opt/keycloak/bin/kcadm.sh; CFG=/tmp/kcadm.config;
         $$KC config credentials --config $$CFG --server http://localhost:8080/auth
         --realm master --user "$$KEYCLOAK_ADMIN" --password "$$KEYCLOAK_ADMIN_PASSWORD" &&
-        $$KC update realms/master --config $$CFG -s sslRequired="$${MASTER_SSL_REQUIRED:-none}"
+        $$KC update realms/master --config $$CFG -s sslRequired="$${MASTER_SSL_REQUIRED:-external}"
     restart: "no"
+
+  # Fail fast with a readable message when TLS certs are missing, instead of
+  # letting nginx crash-loop on an ssl_certificate load error.
+  certs-check:
+    image: alpine:3.20
+    container_name: ezto-certs-check
+    volumes:
+      - ./nginx/certs:/certs:ro
+    entrypoint:
+      - /bin/sh
+      - -c
+      - >
+        if [ ! -s /certs/fullchain.pem ] || [ ! -s /certs/privkey.pem ]; then
+        echo 'ERROR: TLS certs missing/empty in nginx/certs/ (need fullchain.pem + privkey.pem).' >&2;
+        echo '       Real deploy: drop your CA cert there (e.g. Let'\''s Encrypt).' >&2;
+        echo '       Local test: DOMAIN=<your-domain> ./nginx/gen-self-signed.sh' >&2;
+        exit 1;
+        fi
+    restart: "no"
+
+  # TLS edge: terminates HTTPS for https://$DOMAIN/auth, 80->443 redirect,
+  # proxies to idp:8080 with forwarded headers (see nginx/templates/).
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: ezto-nginx
+    restart: unless-stopped
+    depends_on:
+      certs-check: { condition: service_completed_successfully }
+      idp: { condition: service_started }
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env (e.g. verify.example.com) — see .env.example}
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
 
   background:
     build:
@@ -229,7 +278,7 @@ services:
       PORT: "3000"
       DATABASE_URL: postgresql://admin:admin@postgres:5432/urlshortner?schema=public
       VALID_API_KEYS: change_me_key
-      FALLBACK_URL: http://localhost:8080
+      FALLBACK_URL: https://${DOMAIN}
 
   liveness:
     # Face-match / liveness inference (Python + deepface/whisper). Only needed for biometric
