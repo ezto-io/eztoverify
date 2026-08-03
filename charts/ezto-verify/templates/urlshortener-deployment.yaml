@@ -1,0 +1,55 @@
+{{- $pgPort := "5432" -}}
+{{- if not .Values.postgres.enabled -}}
+{{- $pgPort = .Values.postgres.external.port -}}
+{{- end -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-url-shortener
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "url-shortener") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "ezto-verify.selectorLabels" (dict "root" . "component" "url-shortener") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ezto-verify.labels" (dict "root" . "component" "url-shortener") | nindent 8 }}
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - until nc -z -w2 {{ include "ezto-verify.pgHost" . }} {{ $pgPort }}; do echo "waiting for postgres"; sleep 2; done
+      containers:
+        - name: url-shortener
+          image: "{{ .Values.urlShortener.image.repository }}:{{ .Values.urlShortener.image.tag }}"
+          imagePullPolicy: {{ include "ezto-verify.imagePullPolicy" (dict "root" . "policy" .Values.urlShortener.image.pullPolicy) }}
+          envFrom:
+            - secretRef:
+                name: {{ include "ezto-verify.fullname" . }}-url-shortener
+          env:
+            - name: PORT
+              value: "3000"
+            - name: FALLBACK_URL
+              value: {{ include "ezto-verify.publicUrl" . | quote }}
+          ports:
+            - name: http
+              containerPort: 3000
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 10
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.urlShortener.resources | nindent 12 }}

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-socket
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "socket") | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "ezto-verify.selectorLabels" (dict "root" . "component" "socket") | nindent 4 }}
+  ports:
+    - name: http
+      port: 3001
+      targetPort: 3001

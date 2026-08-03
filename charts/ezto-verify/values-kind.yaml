@@ -19,6 +19,7 @@ urlShortener:
   image: { repository: ezto-url-shortener, tag: latest, pullPolicy: Never }
 
 liveness:
+  enabled: true
   image: { repository: ezto-liveness, tag: latest, pullPolicy: Never }
 
 elasticsearch:

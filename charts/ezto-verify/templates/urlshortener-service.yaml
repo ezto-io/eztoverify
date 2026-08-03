@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-url-shortener
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "url-shortener") | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "ezto-verify.selectorLabels" (dict "root" . "component" "url-shortener") | nindent 4 }}
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000

@@ -1,0 +1,61 @@
+{{- if .Values.liveness.enabled }}
+{{/* nc -z needs bare host+port; strip scheme/path off the minio URL helper. */}}
+{{- $minioHostPort := include "ezto-verify.minioUrl" . | trimPrefix "http://" | trimPrefix "https://" | splitList "/" | first -}}
+{{- $minioHostPortParts := splitList ":" $minioHostPort -}}
+{{- if lt (len $minioHostPortParts) 2 -}}
+{{- fail (printf "minio external URL %q must include an explicit port (host:port) — a scheme-default port cannot be TCP-waited on" (include "ezto-verify.minioUrl" .)) -}}
+{{- end -}}
+{{- $minioHost := index $minioHostPortParts 0 -}}
+{{- $minioPort := index $minioHostPortParts 1 -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-liveness
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "liveness") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "ezto-verify.selectorLabels" (dict "root" . "component" "liveness") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ezto-verify.labels" (dict "root" . "component" "liveness") | nindent 8 }}
+    spec:
+      initContainers:
+        - name: wait-for-minio
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - until nc -z -w2 {{ $minioHost }} {{ $minioPort }}; do echo "waiting for minio"; sleep 2; done
+      containers:
+        - name: liveness
+          image: "{{ .Values.liveness.image.repository }}:{{ .Values.liveness.image.tag }}"
+          imagePullPolicy: {{ include "ezto-verify.imagePullPolicy" (dict "root" . "policy" .Values.liveness.image.pullPolicy) }}
+          envFrom:
+            - secretRef:
+                name: {{ include "ezto-verify.fullname" . }}-liveness
+          env:
+            - name: MINIO_HOST
+              value: {{ $minioHostPort | quote }}
+            - name: FACE_TOLERANCE
+              value: {{ .Values.liveness.faceTolerance | quote }}
+          ports:
+            - name: http
+              containerPort: 5000
+          readinessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            failureThreshold: 20
+          livenessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 90
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.liveness.resources | nindent 12 }}
+{{- end }}
