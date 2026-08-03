@@ -1,0 +1,31 @@
+{{- if .Values.maildev.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-maildev
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "maildev") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "ezto-verify.selectorLabels" (dict "root" . "component" "maildev") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ezto-verify.labels" (dict "root" . "component" "maildev") | nindent 8 }}
+    spec:
+      containers:
+        - name: maildev
+          image: "{{ .Values.maildev.image.repository }}:{{ .Values.maildev.image.tag }}"
+          imagePullPolicy: {{ include "ezto-verify.imagePullPolicy" (dict "root" . "policy" .Values.maildev.image.pullPolicy) }}
+          ports:
+            - name: smtp
+              containerPort: 1025
+            - name: web
+              containerPort: 1080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 1080
+{{- end }}

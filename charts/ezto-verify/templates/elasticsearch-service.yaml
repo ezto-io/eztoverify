@@ -1,0 +1,16 @@
+{{- if .Values.elasticsearch.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ezto-verify.fullname" . }}-elasticsearch
+  labels:
+    {{- include "ezto-verify.labels" (dict "root" . "component" "elasticsearch") | nindent 4 }}
+spec:
+  clusterIP: None
+  selector:
+    {{- include "ezto-verify.selectorLabels" (dict "root" . "component" "elasticsearch") | nindent 4 }}
+  ports:
+    - name: http
+      port: 9200
+      targetPort: 9200
+{{- end }}
