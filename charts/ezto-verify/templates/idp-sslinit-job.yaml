@@ -48,6 +48,10 @@ spec:
           # IPv6-only pod networks) will have this Job's kcadm call rejected as
           # non-SSL — such clusters need idp.masterSslRequired handling (e.g.
           # "none") or a NetworkPolicy-era revisit of this assumption.
+          # Image contract: this Job reuses the idp image and requires bash
+          # (for the /dev/tcp wait) and /opt/keycloak/bin/kcadm.sh — both
+          # guaranteed by the fork's image (compose's idp healthcheck relies
+          # on the same bash /dev/tcp probe). A custom idp.image must keep them.
           command:
             - /bin/bash
             - -c
