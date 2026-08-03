@@ -20,12 +20,14 @@ as `repository/tag/pullPolicy`.
 | Key | Default | Description |
 |-----|---------|-------------|
 | `global.storageClass` | `""` | StorageClass for all PVCs; `""` = cluster default. |
+| `imagePullSecrets` | `[]` | Image pull secrets applied to every pod spec in the chart (e.g. `[{name: regcred}]` for a private registry). |
 | `image.pullPolicy` | `IfNotPresent` | Chart-wide default pull policy; each service's `image.pullPolicy` overrides it when non-empty. |
 | `idp.image` | `REPLACE_ME/ezto-idp:latest` | idp (Keycloak 18 fork) image. Set to `ezto-idp:latest` + `pullPolicy: Never` for local kind/minikube. |
 | `idp.resources` | `500m/1Gi` req, `2Gi` limit | idp container resources. |
 | `idp.localUrl` | `http://localhost:8080` | Public base URL used verbatim when `ingress.enabled: false` (local port-forward). Ignored when ingress is on — the URL is then derived from `ingress.host` + TLS state. |
 | `idp.admin.user` / `idp.admin.password` | `admin` / `change_me_admin` | Keycloak bootstrap admin credentials. Rotate before non-local use. |
-| `idp.db.database` / `idp.db.user` / `idp.db.password` | `eztoverify` / `admin` / `change_me_pg` | idp's Postgres database + credentials. |
+| `idp.db.database` | `eztoverify` | idp's Postgres database name. |
+| `idp.db.user` / `idp.db.password` | `""` / `""` | idp's Postgres credentials. `""` => inherit `postgres.user`/`postgres.password` — see "Credential coupling" below. |
 | `idp.variant` | `"ezto verify"` | `VARIANT` env var — must be non-empty or master-realm bootstrap NPEs. |
 | `idp.envName` | `dev` | `ENV` env var. |
 | `idp.dashboardUrl` | `""` | `""` => derived from the public URL. |
@@ -46,7 +48,7 @@ as `repository/tag/pullPolicy`.
 | `ingress.tls.secretName` | `""` | Non-empty => use this pre-existing TLS secret instead of cert-manager. |
 | `postgres.enabled` | `true` | Bundle a PostgreSQL StatefulSet. `false` requires `postgres.external.*`. |
 | `postgres.image` | `postgres:14-alpine` | Bundled Postgres image. |
-| `postgres.user` / `postgres.password` | `admin` / `change_me_pg` | Bundled Postgres superuser credentials. |
+| `postgres.user` / `postgres.password` | `admin` / `change_me_pg` | Bundled Postgres superuser credentials — also the *default* idp credentials (see "Credential coupling" below), and (with `postgres.enabled: false`) the credentials every service uses against the external host. |
 | `postgres.storage` | `8Gi` | Bundled Postgres PVC size. |
 | `postgres.resources` | `100m/256Mi` req, `1Gi` limit | Bundled Postgres resources. |
 | `postgres.external.host` / `postgres.external.port` | `""` / `5432` | Used when `postgres.enabled: false`; host is `required`-guarded. |
@@ -55,11 +57,12 @@ as `repository/tag/pullPolicy`.
 | `minio.rootUser` / `minio.rootPassword` | `minioadmin` / `change_me_minio` | Bundled MinIO root credentials. |
 | `minio.bucket` | `ezto-verify` | Bucket the provisioning Job creates and the idp uses. |
 | `minio.storage` | `10Gi` | Bundled MinIO PVC size. |
-| `minio.publicUrl` | `""` | `""` => derived as `<public URL>/minio/<bucket>/public`; set explicitly if MinIO is reachable at a different public path. |
+| `minio.publicUrl` | `""` | `""` => derived as `<public URL>/minio/<bucket>/public`. **Non-functional unless `minio.publicIngress.enabled: true`** (or you expose MinIO yourself) — see "MinIO public assets" below. |
+| `minio.publicIngress.enabled` | `false` | Create a second Ingress that routes `<ingress.host>/minio/*` to the bundled MinIO, making the derived `minio.publicUrl` above actually work. Requires `ingress.enabled: true` and an nginx-class ingress controller (uses `rewrite-target`). |
 | `minio.resources` | `100m/256Mi` req, `1Gi` limit | Bundled MinIO resources. |
 | `minio.external.url` / `.accessKey` / `.secretKey` / `.publicUrl` | `""` | Used when `minio.enabled: false`; `url` is `required`-guarded and must include an explicit port. |
 | `elasticsearch.enabled` | `false` | Bundle an Elasticsearch StatefulSet. **Default is external** — see the warning above. |
-| `elasticsearch.image` | `elasticsearch:7.17.18` | Bundled Elasticsearch image. |
+| `elasticsearch.image` | `docker.elastic.co/elasticsearch/elasticsearch:7.17.18` | Bundled Elasticsearch image. |
 | `elasticsearch.storage` | `8Gi` | Bundled Elasticsearch PVC size. |
 | `elasticsearch.javaOpts` | `-Xms512m -Xmx512m` | Bundled Elasticsearch JVM heap. |
 | `elasticsearch.resources` | `200m/1Gi` req, `1536Mi` limit | Bundled Elasticsearch resources. |
@@ -100,8 +103,12 @@ kind create cluster --name ezto
 ./scripts/helm/build-and-load.sh kind ezto --with-liveness
 
 # 3. Install using the kind overlay (bundles Elasticsearch + MailDev,
-#    sets idp.masterSslRequired=none so plain HTTP works, pullPolicy: Never)
-helm install ezto charts/ezto-verify -f charts/ezto-verify/values-kind.yaml
+#    sets idp.masterSslRequired=none so plain HTTP works, pullPolicy: Never).
+#    --timeout 15m: the idp's first boot (Keycloak fork bootstrapping the
+#    master realm) is slow, and the post-install hook Jobs (minio-provision,
+#    idp-sslinit) wait on it — the default 5m Helm timeout can trip before
+#    that finishes.
+helm install ezto charts/ezto-verify -f charts/ezto-verify/values-kind.yaml --timeout 15m
 # to skip liveness instead of building it: add --set liveness.enabled=false
 
 # 4. Reach the idp
@@ -182,3 +189,90 @@ External by default (`elasticsearch.enabled: false`). Set
 `elasticsearch.enabled: true` to bundle a single-node Elasticsearch
 StatefulSet for local/dev use (as the kind/minikube overlays do). The
 bundled StatefulSet is not a supported production configuration.
+
+## MinIO public assets
+
+`MINIO_PUBLIC_URL` (the URL browsers use to fetch public MinIO objects, e.g.
+avatars/documents) defaults to a *derived* value:
+`<public scheme+host>/minio/<bucket>/public`. **That derived URL is not
+functional out of the box** — the chart's main Ingress only routes `/` to
+the idp; nothing serves `/minio/*` unless you turn one of these on:
+
+- Set `minio.publicIngress.enabled: true` (also requires `ingress.enabled:
+  true` and an ingress-nginx-class controller, since it relies on
+  `nginx.ingress.kubernetes.io/rewrite-target`). This creates a second
+  Ingress that routes `<ingress.host>/minio/*` to the bundled MinIO, and
+  makes the default `MINIO_PUBLIC_URL` derivation above actually resolve.
+- Or expose MinIO yourself (a different Ingress/LoadBalancer/CDN in front of
+  it) and set `minio.publicUrl` (bundled MinIO) or
+  `minio.external.publicUrl` (external MinIO) explicitly to wherever that
+  is reachable.
+
+Until one of those is done, anything that renders `MINIO_PUBLIC_URL` links
+(e.g. avatar/document URLs) will point at a dead path.
+
+## Credential coupling
+
+`idp.db.user` / `idp.db.password` default to `""`, which means "inherit
+`postgres.user` / `postgres.password`". This isn't just a convenience
+default — with the bundled PostgreSQL, it's required: `files/init-databases.sql`
+only runs `CREATE DATABASE`, it never creates a separate role, so every
+database (`eztoverify`, `jobrnr`, `urlshortner`, `socket`) is only reachable
+as the one superuser Postgres was bootstrapped with. Set `idp.db.user`/
+`idp.db.password` explicitly only if you also arrange for that role to exist
+(e.g. via a custom `init-databases.sql`, or against an external Postgres
+where you manage roles yourself).
+
+With `postgres.enabled: false` (external Postgres), there is no separate
+"external credential" key — `postgres.user`/`postgres.password` are the
+credentials every service (idp, background, socket, url-shortener) uses to
+connect to `postgres.external.host`. Provision that role on the external
+server with exactly those values before pointing the chart at it.
+
+## Background bootstrap (idp -> background)
+
+At boot, the idp makes a one-time call to background to bootstrap its
+management-keys scheduler. That call is forked and its failure is swallowed
+by the idp, so it never blocks or fails idp startup — this is why the idp
+Deployment intentionally has no `wait-for-background` initContainer (see
+the comment in `templates/idp-deployment.yaml`). To confirm the bootstrap
+actually happened, check the background pod's logs for the idp's first
+callback shortly after the idp becomes ready; it's not otherwise surfaced
+in idp readiness/health.
+
+## Hook Jobs (minio-provision, idp-sslinit)
+
+Two post-install/post-upgrade hook Jobs run after the main workloads are
+created:
+
+- `minio-provision` (weight `-1`, `activeDeadlineSeconds: 300`) creates the
+  MinIO bucket and sets its public-download policy. It runs *before*
+  `idp-sslinit` so the bucket exists before anything on the idp boot path
+  needs it, mirroring the ordering compose gave for free.
+- `idp-sslinit` (default weight, `activeDeadlineSeconds: 600`) waits for the
+  idp to come up, then pins the `master` realm's `sslRequired` via `kcadm`
+  the same way compose's `idp-init` one-shot did.
+
+`idp-sslinit`'s `kcadm` call reaches the idp over the pod network, not
+loopback (compose's equivalent ran over loopback). Keycloak's
+`sslRequired=external` exempts loopback **and RFC1918 site-local**
+addresses from the HTTPS requirement, so this works as long as your
+cluster's pod CIDR is RFC1918 (which is the common case for kind/minikube
+and most on-prem/cloud CNIs). Clusters with a non-RFC1918 pod CIDR (e.g.
+carrier-grade NAT `100.64.0.0/10`, or IPv6-only pod networks) will see this
+Job's `kcadm` call rejected as non-SSL; such clusters need
+`idp.masterSslRequired` set to something that tolerates that (e.g. `none`)
+or a NetworkPolicy-era revisit of this assumption.
+
+If either Job doesn't reach `Completed` within its deadline, `helm
+install`/`upgrade` will report the release as failed — see also `--timeout
+15m` in the local-flow instructions above, since the idp's slow first boot
+is usually the bottleneck both Jobs are waiting behind.
+
+## MailDev (dev SMTP)
+
+With `maildev.enabled: true`, point each realm's SMTP settings at
+`<fullname>-maildev:1025` — no auth, no TLS. Browse caught mail at the
+MailDev web UI (`kubectl port-forward svc/<fullname>-maildev 1080:1080`,
+then `http://localhost:1080`). Dev/test only — never wire this up for real
+outbound mail.

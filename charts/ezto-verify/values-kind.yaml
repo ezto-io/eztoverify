@@ -1,6 +1,6 @@
 # Overlay for a local kind/minikube cluster. Build service images and load
 # them straight into the cluster's node image cache with
-# scripts/build-and-load.sh, then install with:
+# scripts/helm/build-and-load.sh, then install with:
 #   helm upgrade --install ezto-verify charts/ezto-verify -f charts/ezto-verify/values-kind.yaml
 # pullPolicy: Never means the kubelet never reaches for a registry — the
 # tag must already exist on every node or the pod stays Pending.

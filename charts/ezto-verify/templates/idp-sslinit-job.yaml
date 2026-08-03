@@ -11,11 +11,16 @@ metadata:
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
 spec:
   backoffLimit: {{ .Values.idp.sslInitJob.backoffLimit }}
+  activeDeadlineSeconds: 600
   template:
     metadata:
       labels:
         {{- include "ezto-verify.selectorLabels" (dict "root" . "component" "idp-sslinit") | nindent 8 }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: OnFailure
       containers:
         - name: idp-sslinit
@@ -32,6 +37,17 @@ spec:
           # kubelet does not expand $(VAR) for Secret/envFrom-sourced env inside
           # a command string, so $KEYCLOAK_ADMIN etc. must be resolved by the
           # shell itself at runtime, not by Kubernetes at pod-creation time.
+          #
+          # In compose, kcadm ran over the loopback interface, which Keycloak's
+          # sslRequired=external treats as exempt from the HTTPS requirement.
+          # Here the equivalent free pass is Keycloak's site-local exemption:
+          # sslRequired=external only requires TLS for requests whose source
+          # is NOT loopback/RFC1918 site-local, and this Job calls the idp Service
+          # from another pod on the (typically RFC1918) pod CIDR. Clusters whose
+          # pod CIDR is NOT RFC1918 (e.g. 100.64.0.0/10 carrier-grade NAT, or
+          # IPv6-only pod networks) will have this Job's kcadm call rejected as
+          # non-SSL — such clusters need idp.masterSslRequired handling (e.g.
+          # "none") or a NetworkPolicy-era revisit of this assumption.
           command:
             - /bin/bash
             - -c

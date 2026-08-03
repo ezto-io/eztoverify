@@ -21,8 +21,17 @@ spec:
       labels:
         {{- include "ezto-verify.labels" (dict "root" . "component" "idp") | nindent 8 }}
     spec:
-      # Do NOT add a wait-for-background initContainer here: background depends on
-      # idp for auth, so waiting on it would deadlock the two Deployments.
+      # Do NOT add a wait-for-background initContainer here. The only idp->background
+      # touchpoint is a one-time management-keys scheduler bootstrap call the idp
+      # makes to background at boot; the idp forks that call and swallows its
+      # failure, so it never blocks idp readiness. Making idp's steady-state
+      # readiness depend on background here would be wrong (and, since background
+      # itself waits on postgres before it can serve anything, would risk a slow
+      # startup ordering issue for no real benefit).
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
         - name: wait-for-postgres
           image: busybox:1.36

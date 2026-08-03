@@ -5,6 +5,8 @@
 global:
   storageClass: ""          # "" = cluster default
 
+imagePullSecrets: []        # e.g. [{ name: regcred }] for private registries
+
 image:                      # per-service override of these defaults
   pullPolicy: IfNotPresent
 
@@ -21,8 +23,8 @@ idp:
     password: change_me_admin
   db:
     database: eztoverify
-    user: admin
-    password: change_me_pg
+    user: ""                # empty = inherit postgres.user (required for bundled postgres — init SQL creates no separate role)
+    password: ""            # empty = inherit postgres.password (same reason)
   variant: "ezto verify"
   envName: dev
   dashboardUrl: ""          # "" => derived public URL
@@ -69,7 +71,14 @@ minio:
   rootPassword: change_me_minio
   bucket: ezto-verify
   storage: 10Gi
-  publicUrl: ""             # "" => derived: <public scheme+host>/minio/ezto-verify/public (document); set explicitly for real deploys
+  publicUrl: ""             # "" => derived: <public scheme+host>/minio/ezto-verify/public.
+                            # That derived URL is only reachable when publicIngress.enabled
+                            # is also true (below) — see chart README "MinIO public assets".
+  publicIngress:
+    enabled: false          # true => expose bundled MinIO at <main ingress host>/minio/* via
+                            # a separate Ingress (nginx path-rewrite). Requires ingress.enabled
+                            # and an nginx-class controller. Once enabled, the default
+                            # MINIO_PUBLIC_URL derivation above becomes a real, working URL.
   resources:
     requests: { cpu: 100m, memory: 256Mi }
     limits: { memory: 1Gi }
