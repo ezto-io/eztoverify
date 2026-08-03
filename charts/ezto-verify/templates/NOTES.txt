@@ -1,0 +1,19 @@
+ezto Verify has been deployed.
+
+Public URL:      {{ include "ezto-verify.idpUrl" . }}
+Admin console:    {{ include "ezto-verify.idpUrl" . }}/admin/
+
+{{- if not .Values.ingress.enabled }}
+
+Ingress is disabled. Reach the idp locally with:
+
+  kubectl port-forward svc/{{ include "ezto-verify.fullname" . }}-idp 8080:8080
+
+Then browse http://localhost:8080/auth/admin/
+{{- end }}
+
+IMPORTANT:
+  - Rotate every change_me_* value in your values file before using this
+    release for anything beyond local evaluation.
+  - idp.rootAccessIp must include the exact IP (no CIDR) of the client
+    performing master-tenant onboarding, or onboarding will be rejected.

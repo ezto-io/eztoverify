@@ -1,0 +1,28 @@
+# Overlay for a local kind/minikube cluster. Build service images and load
+# them straight into the cluster's node image cache with
+# scripts/build-and-load.sh, then install with:
+#   helm upgrade --install ezto-verify charts/ezto-verify -f charts/ezto-verify/values-kind.yaml
+# pullPolicy: Never means the kubelet never reaches for a registry — the
+# tag must already exist on every node or the pod stays Pending.
+
+idp:
+  image: { repository: ezto-idp, tag: latest, pullPolicy: Never }
+  masterSslRequired: none
+
+background:
+  image: { repository: ezto-background, tag: latest, pullPolicy: Never }
+
+socket:
+  image: { repository: ezto-socket, tag: latest, pullPolicy: Never }
+
+urlShortener:
+  image: { repository: ezto-url-shortener, tag: latest, pullPolicy: Never }
+
+liveness:
+  image: { repository: ezto-liveness, tag: latest, pullPolicy: Never }
+
+elasticsearch:
+  enabled: true
+
+maildev:
+  enabled: true

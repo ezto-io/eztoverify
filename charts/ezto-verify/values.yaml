@@ -1,0 +1,127 @@
+# ezto Verify chart values. Cluster-safe defaults: pull-if-not-present images,
+# bundled postgres+minio, EXTERNAL elasticsearch (set elasticsearch.external.*),
+# no ingress. Rotate every change_me_* value before real use.
+
+global:
+  storageClass: ""          # "" = cluster default
+
+image:                      # per-service override of these defaults
+  pullPolicy: IfNotPresent
+
+idp:
+  image: { repository: REPLACE_ME/ezto-idp, tag: latest, pullPolicy: "" }
+  resources:
+    requests: { cpu: 500m, memory: 1Gi }
+    limits: { memory: 2Gi }
+  # Public base URL parts. With ingress.enabled the scheme follows ingress.tls.enabled.
+  # Without ingress (local port-forward), localUrl is used verbatim.
+  localUrl: http://localhost:8080
+  admin:
+    user: admin
+    password: change_me_admin
+  db:
+    database: eztoverify
+    user: admin
+    password: change_me_pg
+  variant: "ezto verify"
+  envName: dev
+  dashboardUrl: ""          # "" => derived public URL
+  docsUrl: ""
+  docsLink: ""
+  # Exact-IP allowlist for master-tenant onboarding (NO CIDR). MUST stay non-empty.
+  rootAccessIp: "127.0.0.1,0.0.0.0,::1"
+  shortenerKey: change_me_key
+  appPushVersion: "9.3.1"
+  masterSslRequired: external
+  sslInitJob:
+    enabled: ""             # "" => auto: enabled when ingress.tls.enabled is false
+    backoffLimit: 3
+
+ingress:
+  enabled: false
+  className: nginx
+  host: verify.example.com
+  annotations: {}
+  tls:
+    enabled: false
+    certManager: false      # true => cert-manager.io/cluster-issuer annotation
+    clusterIssuer: letsencrypt-prod
+    secretName: ""          # non-empty => use this TLS secret instead
+
+postgres:
+  enabled: true
+  image: { repository: postgres, tag: 14-alpine, pullPolicy: "" }
+  user: admin
+  password: change_me_pg
+  storage: 8Gi
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits: { memory: 1Gi }
+  external:                 # used when enabled: false
+    host: ""
+    port: 5432
+
+minio:
+  enabled: true
+  image: { repository: minio/minio, tag: latest, pullPolicy: "" }
+  mcImage: { repository: minio/mc, tag: latest, pullPolicy: "" }
+  rootUser: minioadmin
+  rootPassword: change_me_minio
+  bucket: ezto-verify
+  storage: 10Gi
+  publicUrl: ""             # "" => derived: <public scheme+host>/minio/ezto-verify/public (document); set explicitly for real deploys
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits: { memory: 1Gi }
+  external:
+    url: ""                 # e.g. http://minio.internal:9000
+    accessKey: ""
+    secretKey: ""
+    publicUrl: ""
+
+elasticsearch:
+  enabled: false            # external-by-default
+  image: { repository: docker.elastic.co/elasticsearch/elasticsearch, tag: 7.17.18, pullPolicy: "" }
+  storage: 8Gi
+  javaOpts: "-Xms512m -Xmx512m"
+  resources:
+    requests: { cpu: 200m, memory: 1Gi }
+    limits: { memory: 1536Mi }
+  external:                 # REQUIRED when enabled: false
+    host: ""
+    port: 9200
+    scheme: http
+
+maildev:
+  enabled: false
+  image: { repository: maildev/maildev, tag: latest, pullPolicy: "" }
+
+background:
+  image: { repository: REPLACE_ME/ezto-background, tag: latest, pullPolicy: "" }
+  db: { database: jobrnr }
+  resources:
+    requests: { cpu: 100m, memory: 512Mi }
+    limits: { memory: 1Gi }
+
+socket:
+  image: { repository: REPLACE_ME/ezto-socket, tag: latest, pullPolicy: "" }
+  db: { database: socket }
+  resources:
+    requests: { cpu: 50m, memory: 128Mi }
+    limits: { memory: 256Mi }
+
+urlShortener:
+  image: { repository: REPLACE_ME/ezto-url-shortener, tag: latest, pullPolicy: "" }
+  db: { database: urlshortner }        # sic — matches init-databases.sql
+  apiKeys: change_me_key               # must equal idp.shortenerKey
+  resources:
+    requests: { cpu: 50m, memory: 128Mi }
+    limits: { memory: 256Mi }
+
+liveness:
+  enabled: false            # heavy face-match service, opt-in (compose profile parity)
+  image: { repository: REPLACE_ME/ezto-liveness, tag: latest, pullPolicy: "" }
+  faceTolerance: "0.68"
+  resources:
+    requests: { cpu: 500m, memory: 1Gi }
+    limits: { memory: 2Gi }

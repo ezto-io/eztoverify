@@ -1,0 +1,7 @@
+apiVersion: v2
+name: ezto-verify
+description: ezto Verify — open-source identity verification platform (Keycloak 18 fork + supporting services)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+kubeVersion: ">=1.25.0-0"
