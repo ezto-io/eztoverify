@@ -1,26 +1,23 @@
-# Overlay for a local kind/minikube cluster. Build service images and load
-# them straight into the cluster's node image cache with
-# scripts/helm/build-and-load.sh, then install with:
-#   helm upgrade --install ezto-verify charts/ezto-verify -f charts/ezto-verify/values-minikube.yaml
-# pullPolicy: Never means the kubelet never reaches for a registry — the
-# tag must already exist on every node or the pod stays Pending.
+# Local-development overlay for an existing minikube cluster. It sets cluster
+# behavior only and carries no image references: the chart ships no default
+# registry, so supply your own images. Liveness stays off because its image is
+# roughly 15 GB.
+#
+# Install with your own registry:
+#   helm upgrade --install ezto-verify charts/ezto-verify \
+#     -f charts/ezto-verify/values-minikube.yaml \
+#     --set idp.image.repository=docker.io/myorg/ezto-idp \
+#     --timeout 15m --wait   # repeat --set for background, socket, urlShortener
+#
+# scripts/install.sh asks for the registry once and writes those values for you.
+# To build from source instead, run scripts/helm/build-and-load.sh and layer
+# values-local-build.yaml over this file.
 
 idp:
-  image: { repository: ezto-idp, tag: latest, pullPolicy: Never }
   masterSslRequired: none
 
-background:
-  image: { repository: ezto-background, tag: latest, pullPolicy: Never }
-
-socket:
-  image: { repository: ezto-socket, tag: latest, pullPolicy: Never }
-
-urlShortener:
-  image: { repository: ezto-url-shortener, tag: latest, pullPolicy: Never }
-
 liveness:
-  enabled: true
-  image: { repository: ezto-liveness, tag: latest, pullPolicy: Never }
+  enabled: false
 
 elasticsearch:
   enabled: true

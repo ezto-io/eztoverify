@@ -1,3 +1,4 @@
+{{- if .Values.urlShortener.enabled }}
 {{- $pgPort := include "ezto-verify.pgPort" . -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -54,3 +55,4 @@ spec:
             periodSeconds: 20
           resources:
             {{- toYaml .Values.urlShortener.resources | nindent 12 }}
+{{- end }}

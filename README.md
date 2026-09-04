@@ -271,27 +271,31 @@ HTTPS is built into `docker-compose.yml` — the bundled nginx terminates TLS fo
 
 Docker Compose above is the fastest way to run everything on one host; a
 Helm chart at [`charts/ezto-verify`](./charts/ezto-verify) deploys the same
-services to a Kubernetes cluster instead. Quick local flow:
+services to any existing Kubernetes context. The guided installer asks for your
+image registry and which services to enable, then generates protected values:
 
 ```bash
-kind create cluster --name ezto
-./scripts/helm/build-and-load.sh kind ezto --with-liveness
-helm install ezto charts/ezto-verify -f charts/ezto-verify/values-kind.yaml
-kubectl port-forward svc/ezto-ezto-verify-idp 8080:8080
-# browse http://localhost:8080/auth
+./scripts/install.sh
 ```
 
-A bare `helm install` with the chart's default values fails on purpose —
-Elasticsearch is external-by-default and `required`-guarded; the
-`values-kind.yaml`/`values-minikube.yaml` overlays used above bundle it for
-local use, and production deploys must point at a real cluster. Both local
-overlays also force-enable the (heavy) liveness service, so `--with-liveness`
-is effectively required above — or add `--set liveness.enabled=false` to the
-`helm install` if you want to skip it. See the
-[chart README](./charts/ezto-verify/README.md) for the full values
-reference, the production (registry images, ingress + cert-manager)
-flow, the `idp` single-replica scaling note, and `ROOT_ACCESS_IP` onboarding
-details for the Kubernetes ingress path.
+For a non-interactive installation:
+
+```bash
+./scripts/install.sh --non-interactive --yes --context my-context \
+  --registry docker.io/myorg --image-tag 1.0.0
+```
+
+The chart ships no default image registry: every `image.repository` is a
+`REPLACE_ME/ezto-<service>` placeholder, so supply images you build or publish
+yourself. Liveness is skipped by default because its image is roughly 15 GB.
+Background, socket, and URL-shortener can be independently disabled;
+PostgreSQL, MinIO, and Elasticsearch are bundled by the installer's first
+version. To build from source instead, use `scripts/helm/build-and-load.sh`
+plus `values-local-build.yaml`.
+
+See the [chart README](./charts/ezto-verify/README.md) for manual Helm usage,
+the full values reference, production ingress/TLS configuration, the `idp`
+single-replica scaling note, and `ROOT_ACCESS_IP` onboarding details.
 
 ## Production Deployment
 

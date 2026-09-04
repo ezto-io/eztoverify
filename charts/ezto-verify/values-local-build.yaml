@@ -1,0 +1,20 @@
+# Opt-in source-build overlay for kind/minikube development. Run
+# scripts/helm/build-and-load.sh first, then layer this file over the relevant
+# local cluster overlay. Application pulls are disabled so only node-cached
+# images are used. Liveness remains off unless explicitly built and enabled.
+
+idp:
+  image: { repository: ezto-idp, tag: latest, pullPolicy: Never }
+
+background:
+  image: { repository: ezto-background, tag: latest, pullPolicy: Never }
+
+socket:
+  image: { repository: ezto-socket, tag: latest, pullPolicy: Never }
+
+urlShortener:
+  image: { repository: ezto-url-shortener, tag: latest, pullPolicy: Never }
+
+liveness:
+  enabled: false
+  image: { repository: ezto-liveness, tag: latest, pullPolicy: Never }

@@ -19,7 +19,7 @@ MinIO. Elasticsearch is **external-by-default** — see below.
 | Kubernetes ≥ 1.25 | any conformant cluster (kind/minikube locally; managed clusters in production) |
 | Helm 3 (or 4) | chart uses `apiVersion: v2`, no Helm-4-only features |
 | kubectl | configured for the target cluster |
-| Container images | **no prebuilt images are published** — build from source. Locally: `scripts/helm/build-and-load.sh` builds + loads into kind/minikube. Real clusters: build, push to your registry, and override each `*.image.repository`/`tag` (see `values-prod.yaml`); private registries also need `imagePullSecrets` |
+| Container images | The chart ships no default registry: every `image.repository` is `REPLACE_ME/ezto-<service>`, so an unconfigured install fails visibly instead of pulling an unknown image. Supply your own `linux/amd64` images — built with `scripts/helm/build-and-load.sh`, or published to a registry you control — and point each service's `image.repository`/`tag` at them (`scripts/install.sh` asks once and writes them for you). Private registries also need `imagePullSecrets`. |
 | Default StorageClass | bundled PostgreSQL / MinIO / Elasticsearch claim PVCs; set `global.storageClass` to pick a specific one |
 | Elasticsearch 7.x | external endpoint (`elasticsearch.external.host`) unless an overlay bundles it — see [Elasticsearch](#elasticsearch) |
 | Ingress controller (optional) | `ingress.className: nginx` assumed for TLS/public exposure; keep `use-forwarded-headers` off (default) — see [ROOT_ACCESS_IP](#root_access_ip--master-tenant-onboarding) |
@@ -27,26 +27,38 @@ MinIO. Elasticsearch is **external-by-default** — see below.
 
 ## Installing
 
+The guided installer uses an existing Kubernetes context, asks for your image
+registry and which services to enable, generates protected credentials, and
+validates the Helm render before touching the cluster. Liveness is skipped by
+default.
+
+Give the installer an image source one of three ways: `--registry PREFIX` for
+one repository per service (`PREFIX/ezto-idp:TAG`), `--image-repo REPO` for a
+single repository whose tags are the service names, or an explicit
+`--idp-image`/`--background-image`/`--socket-image`/`--url-shortener-image`.
+
 ```bash
-# 1. Make images reachable by the cluster (see Prerequisites).
+./scripts/install.sh
+```
 
-# 2. Create your values file — start from an overlay:
-#    values-kind.yaml / values-minikube.yaml  (local: bundled ES+MailDev, local images)
-#    values-prod.yaml                         (example: registry images, ingress+TLS, external ES)
-cp charts/ezto-verify/values-prod.yaml my-values.yaml   # then edit — rotate every change_me_*
+For automation, pass the context and confirmation explicitly:
 
-# 3. Install (idp first boot is slow — allow 15m)
-helm install ezto charts/ezto-verify -f my-values.yaml --timeout 15m --wait
+```bash
+./scripts/install.sh --non-interactive --yes --context my-context
+```
 
-# 4. Verify
-kubectl get pods                       # all Ready; hook Jobs self-delete on success
-helm status ezto                       # NOTES print the idp URL / port-forward hint
+Manual Helm remains supported:
 
-# Upgrades / config changes
-helm upgrade ezto charts/ezto-verify -f my-values.yaml --timeout 15m
+```bash
+# Local/dev overlay bundles Elasticsearch + MailDev and leaves liveness off.
+helm upgrade --install ezto-verify charts/ezto-verify \
+  -f charts/ezto-verify/values-kind.yaml --timeout 15m --wait
 
-# Uninstall (PVCs are kept by Kubernetes — delete them explicitly to wipe data)
-helm uninstall ezto
+kubectl get pods
+helm status ezto-verify
+
+# Uninstall keeps PVCs and the namespace.
+helm uninstall ezto-verify
 ```
 
 Step-by-step walkthroughs: [Local flow](#local-flow-kind-or-minikube) and
@@ -62,7 +74,7 @@ as `repository/tag/pullPolicy`.
 | `global.storageClass` | `""` | StorageClass for all PVCs; `""` = cluster default. |
 | `imagePullSecrets` | `[]` | Image pull secrets applied to every pod spec in the chart (e.g. `[{name: regcred}]` for a private registry). |
 | `image.pullPolicy` | `IfNotPresent` | Chart-wide default pull policy; each service's `image.pullPolicy` overrides it when non-empty. |
-| `idp.image` | `REPLACE_ME/ezto-idp:latest` | idp (Keycloak 18 fork) image. Set to `ezto-idp:latest` + `pullPolicy: Never` for local kind/minikube. |
+| `idp.image` | `REPLACE_ME/ezto-idp:latest` | idp (Keycloak 18 fork) image; the placeholder must be replaced. |
 | `idp.resources` | `500m/1Gi` req, `2Gi` limit | idp container resources. |
 | `idp.localUrl` | `http://localhost:8080` | Public base URL used verbatim when `ingress.enabled: false` (local port-forward). Ignored when ingress is on — the URL is then derived from `ingress.host` + TLS state. |
 | `idp.admin.user` / `idp.admin.password` | `admin` / `change_me_admin` | Keycloak bootstrap admin credentials. Rotate before non-local use. |
@@ -109,18 +121,21 @@ as `repository/tag/pullPolicy`.
 | `elasticsearch.external.host` / `.port` / `.scheme` | `""` / `9200` / `http` | **Required** when `elasticsearch.enabled: false` — `host` is `required`-guarded. |
 | `maildev.enabled` | `false` | Bundle a MailDev SMTP catcher (dev/test only, never for real mail). |
 | `maildev.image` | `maildev/maildev:latest` | MailDev image. |
-| `background.image` | `REPLACE_ME/ezto-background:latest` | Background job runner image. |
+| `background.enabled` | `true` | Render the background Deployment, Service, Secret, and idp endpoint. |
+| `background.image` | `REPLACE_ME/ezto-background:latest` | Background job runner image; the placeholder must be replaced. |
 | `background.db.database` | `jobrnr` | Background service's Postgres database name. |
 | `background.resources` | `100m/512Mi` req, `1Gi` limit | Background container resources. |
-| `socket.image` | `REPLACE_ME/ezto-socket:latest` | Realtime push channel image. |
+| `socket.enabled` | `true` | Render the socket Deployment, Service, Secret, and idp endpoint. |
+| `socket.image` | `REPLACE_ME/ezto-socket:latest` | Realtime push channel image; the placeholder must be replaced. |
 | `socket.db.database` | `socket` | Socket service's Postgres database name. |
 | `socket.resources` | `50m/128Mi` req, `256Mi` limit | Socket container resources. |
-| `urlShortener.image` | `REPLACE_ME/ezto-url-shortener:latest` | Short-link service image. |
+| `urlShortener.enabled` | `true` | Render the URL-shortener Deployment, Service, Secret, and idp endpoints. |
+| `urlShortener.image` | `REPLACE_ME/ezto-url-shortener:latest` | Short-link service image; the placeholder must be replaced. |
 | `urlShortener.db.database` | `urlshortner` | Database name (sic — matches `files/init-databases.sql`). |
 | `urlShortener.apiKeys` | `change_me_key` | Must equal `idp.shortenerKey`. |
 | `urlShortener.resources` | `50m/128Mi` req, `256Mi` limit | url-shortener container resources. |
 | `liveness.enabled` | `false` | Opt-in — heavy face-match service (dlib/face_recognition). Compose-profile parity. |
-| `liveness.image` | `REPLACE_ME/ezto-liveness:latest` | Liveness image. |
+| `liveness.image` | `REPLACE_ME/ezto-liveness:latest` | Liveness image reference; enabling liveness requires building or publishing this image first. |
 | `liveness.faceTolerance` | `0.68` | Face-match tolerance threshold passed to the service. |
 | `liveness.resources` | `500m/1Gi` req, `2Gi` limit | Liveness container resources. |
 
@@ -129,36 +144,35 @@ fall back to the chart-wide `image.pullPolicy`.
 
 ## Local flow (kind or minikube)
 
+Use any existing Kubernetes context. Both local overlays set cluster behavior
+only and carry no image references, so the images come from your registry (or
+from a local source build).
+
 ```bash
-# 1. Create a cluster (skip if you already have one)
-kind create cluster --name ezto
+# Guided path (select the existing context when prompted).
+./scripts/install.sh
 
-# 2. Build service images and load them into the cluster's node cache.
-#    Both values-kind.yaml and values-minikube.yaml force liveness.enabled:
-#    true, so --with-liveness is effectively required here for a fully
-#    healthy cluster — without it, the liveness Deployment schedules with
-#    pullPolicy: Never and no matching image loaded, and sits in
-#    ErrImageNeverPull. If you don't need liveness locally, skip the flag
-#    and pass --set liveness.enabled=false at install time instead (step 3).
-./scripts/helm/build-and-load.sh kind ezto --with-liveness
-
-# 3. Install using the kind overlay (bundles Elasticsearch + MailDev,
-#    sets idp.masterSslRequired=none so plain HTTP works, pullPolicy: Never).
-#    --timeout 15m: the idp's first boot (Keycloak fork bootstrapping the
-#    master realm) is slow, and the post-install hook Jobs (minio-provision,
-#    idp-sslinit) wait on it — the default 5m Helm timeout can trip before
-#    that finishes.
-helm install ezto charts/ezto-verify -f charts/ezto-verify/values-kind.yaml --timeout 15m
-# to skip liveness instead of building it: add --set liveness.enabled=false
-
-# 4. Reach the idp
-kubectl port-forward svc/ezto-ezto-verify-idp 8080:8080
+# Or install manually into the current context.
+helm upgrade --install ezto-verify charts/ezto-verify \
+  -f charts/ezto-verify/values-kind.yaml \
+  --set idp.image.repository=docker.io/myorg/ezto-idp \
+  --set background.image.repository=docker.io/myorg/ezto-background \
+  --set socket.image.repository=docker.io/myorg/ezto-socket \
+  --set urlShortener.image.repository=docker.io/myorg/ezto-url-shortener \
+  --timeout 15m --wait
+kubectl port-forward svc/ezto-verify-idp 8080:8080
 # browse http://localhost:8080/auth
 ```
 
-For minikube, swap step 1/2/3 for `minikube start -p ezto`,
-`./scripts/helm/build-and-load.sh minikube ezto --with-liveness`, and
-`-f charts/ezto-verify/values-minikube.yaml`.
+`values-minikube.yaml` behaves the same way. Both overlays bundle
+Elasticsearch + MailDev, set plain-HTTP local Keycloak behavior, and leave
+liveness disabled.
+
+Building from source is still available as an explicit developer workflow:
+run `scripts/helm/build-and-load.sh`, then add
+`-f charts/ezto-verify/values-local-build.yaml` after the kind/minikube
+overlay. Add `--with-liveness` and `--set liveness.enabled=true` only when a
+local liveness image is intentionally required.
 
 Before onboarding the master tenant through the browser at
 `http://localhost:8080/auth`, make sure the client IP is covered by
@@ -169,8 +183,7 @@ change is needed for the pure local flow above.
 
 ## Production flow
 
-- Build and push images to your registry, then point each service's
-  `image.repository`/`tag` at it (see `values-prod.yaml` for the shape).
+- Image repositories default to the `REPLACE_ME/ezto-<service>` placeholders. Set each service's `image.repository`/`tag` to your own registry and pinned version tags — never `latest` in production (see `values-prod.yaml` for the shape).
 - Set `ingress.enabled: true`, `ingress.host` to your real domain, and
   either:
   - `ingress.tls.certManager: true` + `ingress.tls.clusterIssuer` (cert-manager

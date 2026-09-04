@@ -44,11 +44,28 @@ data:
   # unset => NPE => the catch rethrows as HTTP 500 on GET /auth/. Exact IPs
   # only (no CIDR); must include the client IP performing master-tenant onboarding.
   ROOT_ACCESS_IP: {{ required "idp.rootAccessIp must not be empty" .Values.idp.rootAccessIp | quote }}
+  {{- if .Values.background.enabled }}
   BACKGROUND_JOB_URL: http://{{ include "ezto-verify.fullname" . }}-background:8070
+  {{- else }}
+  BACKGROUND_JOB_URL: ""
+  {{- end }}
+  {{- if .Values.urlShortener.enabled }}
   SHORTENER_HTTPS_URL: http://{{ include "ezto-verify.fullname" . }}-url-shortener:3000
   SHORTENER_HTTP_URL: http://{{ include "ezto-verify.fullname" . }}-url-shortener:3000
+  {{- else }}
+  SHORTENER_HTTPS_URL: ""
+  SHORTENER_HTTP_URL: ""
+  {{- end }}
+  {{- if .Values.socket.enabled }}
   SOCKET_URL: http://{{ include "ezto-verify.fullname" . }}-socket:3001
+  {{- else }}
+  SOCKET_URL: ""
+  {{- end }}
+  {{- if .Values.liveness.enabled }}
   LIVELINESS_URL: http://{{ include "ezto-verify.fullname" . }}-liveness:5000
+  {{- else }}
+  LIVELINESS_URL: ""
+  {{- end }}
   MINIO_SERVER_URL: {{ include "ezto-verify.minioUrl" . | quote }}
   MINIO_PUBLIC_URL: {{ $minioPublicUrl | quote }}
   ES_HOST: {{ include "ezto-verify.esHost" . | quote }}
