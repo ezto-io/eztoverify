@@ -106,6 +106,7 @@ maildev:
   image: { repository: maildev/maildev, tag: latest, pullPolicy: "" }
 
 background:
+  enabled: true
   image: { repository: REPLACE_ME/ezto-background, tag: latest, pullPolicy: "" }
   db: { database: jobrnr }
   resources:
@@ -113,6 +114,7 @@ background:
     limits: { memory: 1Gi }
 
 socket:
+  enabled: true
   image: { repository: REPLACE_ME/ezto-socket, tag: latest, pullPolicy: "" }
   db: { database: socket }
   resources:
@@ -120,6 +122,7 @@ socket:
     limits: { memory: 256Mi }
 
 urlShortener:
+  enabled: true
   image: { repository: REPLACE_ME/ezto-url-shortener, tag: latest, pullPolicy: "" }
   db: { database: urlshortner }        # sic — matches init-databases.sql
   apiKeys: change_me_key               # must equal idp.shortenerKey
@@ -128,7 +131,7 @@ urlShortener:
     limits: { memory: 256Mi }
 
 liveness:
-  enabled: false            # heavy face-match service, opt-in (compose profile parity)
+  enabled: false            # heavy (~15 GB) face-match service; explicit opt-in
   image: { repository: REPLACE_ME/ezto-liveness, tag: latest, pullPolicy: "" }
   faceTolerance: "0.68"
   resources:

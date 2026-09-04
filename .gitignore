@@ -93,3 +93,9 @@ docker-compose.*.local.yml
 *.log
 *.pid
 scheduled_tasks.lock
+
+# Interactive Helm installer output (contains generated credentials)
+.ezto-install/
+
+# Personal Helm image overlays (private registries, per-developer tags)
+charts/ezto-verify/values-*.local.yaml

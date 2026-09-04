@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Build ezto Verify service images locally and load them straight into a
-# kind or minikube node's image cache, so the cluster never needs to reach
-# a registry (pullPolicy: Never in values-kind.yaml / values-minikube.yaml).
+# Opt-in developer workflow: build ezto Verify service images locally and
+# load them into a kind or minikube node cache. Normal installs pull public
+# images directly and do not need this script. Layer values-local-build.yaml
+# after values-kind.yaml/values-minikube.yaml when using these local images.
 #
 # Usage:
 #   ./scripts/helm/build-and-load.sh kind|minikube [cluster-name] [--with-liveness]
@@ -113,5 +114,7 @@ echo "==> Done. Images loaded into '$CLUSTER_NAME': ${BUILT_IMAGES[*]}"
 echo ""
 echo "Install (or upgrade) the chart with:"
 echo ""
-echo "  helm upgrade --install ezto charts/ezto-verify -f charts/ezto-verify/values-${TARGET}.yaml"
+echo "  helm upgrade --install ezto charts/ezto-verify \\\"
+echo "    -f charts/ezto-verify/values-${TARGET}.yaml \\\"
+echo "    -f charts/ezto-verify/values-local-build.yaml"
 echo ""
