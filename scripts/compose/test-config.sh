@@ -235,6 +235,26 @@ else
   fail "the graph does not resolve with infra-postgres dropped"
 fi
 
+echo "== an unused liveness image does not have to be set =="
+# Compose interpolates before it filters by profile, so a required
+# LIVENESS_IMAGE would break every deployment that never enables liveness.
+live_env="$(mktemp)"
+full_env | grep -v '^LIVENESS_IMAGE=' > "$live_env"
+printf 'LIVENESS_IMAGE=\n' >> "$live_env"
+printf 'COMPOSE_PROFILES=%s\n' "$ALL_PROFILES" >> "$live_env"
+if ( cd "$REPO_ROOT" && docker compose --env-file "$live_env" -f "$COMPOSE_FILE" config >/dev/null 2>&1 ); then
+  pass "an empty LIVENESS_IMAGE resolves with the profile off"
+else
+  fail "an empty LIVENESS_IMAGE breaks the config even with the profile off"
+fi
+printf 'COMPOSE_PROFILES=%s,face-biometrics\n' "$ALL_PROFILES" >> "$live_env"
+if ( cd "$REPO_ROOT" && docker compose --env-file "$live_env" -f "$COMPOSE_FILE" config >/dev/null 2>&1 ); then
+  fail "an empty LIVENESS_IMAGE is accepted with the profile ON"
+else
+  pass "an empty LIVENESS_IMAGE is refused with the profile on"
+fi
+rm -f "$live_env"
+
 echo "== face liveness is off by default =="
 if run_config "$ALL_PROFILES" | grep -qE '^  liveness:$'; then
   fail "liveness runs without the face-biometrics profile"
@@ -338,8 +358,11 @@ else
   done
   pass "--help documents every documented flag"
   # Regression guards for the review findings.
+  # .env.example is tracked and passes the filename check, so this reaches the
+  # git-tracking guard. README.md would have failed on the filename alone,
+  # leaving the guard untested.
   if "$DEPLOY" --print-plan --non-interactive --domain d.example \
-      --env-out "$REPO_ROOT/README.md" --overwrite </dev/null >/dev/null 2>&1; then
+      --env-out "$REPO_ROOT/.env.example" --overwrite </dev/null >/dev/null 2>&1; then
     fail "the deployer accepted a tracked file as --env-out"
   else
     pass "the deployer refuses a tracked file as --env-out"
@@ -347,37 +370,50 @@ else
   # Three naming shapes are in real use; all three must resolve.
   plan_image() {
     "$DEPLOY" --print-plan --non-interactive --domain d.example \
-      --env-out "$sandbox/.env" "$@" </dev/null 2>&1 | grep -E '^Images:'
+      --env-out "$sandbox/.env" "$@" </dev/null 2>&1 \
+      | grep -oE 'idp=[^ ]+' | head -1
   }
-  if plan_image --registry eztovrfy --tag 1.0.0 | grep -q 'idp=eztovrfy/idp:1.0.0'; then
-    pass "--registry resolves to <prefix>/<service>:<tag>"
+  # Whole token, not a substring: 'idp=eztovrfy/idp:1.0.0/evil' contains the
+  # expected text and would pass a grep -q.
+  assert_image() {
+    local want="$1"; shift
+    local got; got="$(plan_image "$@")"
+    if [ "$got" = "idp=$want" ]; then
+      pass "resolves to $want"
+    else
+      fail "expected idp=$want, got '${got:-<nothing>}'"
+    fi
+  }
+  assert_image eztovrfy/idp:1.0.0            --registry eztovrfy --tag 1.0.0
+  assert_image docker.io/myorg/ezto-idp:1.0.0 --registry docker.io/myorg --image-prefix ezto- --tag 1.0.0
+  assert_image sarathgroot/ezto-oss:idp      --image-repo sarathgroot/ezto-oss
+  assert_image other/idp:9                   --registry eztovrfy --tag 1.0.0 --idp-image other/idp:9
+  assert_image localhost:5000/idp:1.0.0      --registry localhost:5000 --tag 1.0.0
+  # Trailing slashes are normalised away rather than producing 'registry///idp'.
+  assert_image registry/idp:1.0.0            --registry registry/// --tag 1.0.0
+
+  # A repository that already carries a tag would derive 'org/app:stable:idp'.
+  if "$DEPLOY" --print-plan --non-interactive --domain d.example \
+      --env-out "$sandbox/.env" --image-repo org/app:stable </dev/null >/dev/null 2>&1; then
+    fail "the deployer accepted an --image-repo that already carries a tag"
   else
-    plan_image --registry eztovrfy --tag 1.0.0 >&2
-    fail "--registry does not resolve to <prefix>/<service>:<tag>"
+    pass "the deployer rejects an --image-repo carrying a tag"
   fi
-  if plan_image --registry docker.io/myorg --image-prefix ezto- --tag 1.0.0 \
-      | grep -q 'idp=docker.io/myorg/ezto-idp:1.0.0'; then
-    pass "--image-prefix reproduces the chart's naming"
-  else
-    fail "--image-prefix does not reproduce the chart's naming"
-  fi
-  if plan_image --image-repo sarathgroot/ezto-oss | grep -q 'idp=sarathgroot/ezto-oss:idp'; then
-    pass "--image-repo resolves to <repo>:<service>"
-  else
-    plan_image --image-repo sarathgroot/ezto-oss >&2
-    fail "--image-repo does not resolve to <repo>:<service>"
-  fi
-  if plan_image --registry eztovrfy --tag 1.0.0 --idp-image other/idp:9 \
-      | grep -q 'idp=other/idp:9'; then
-    pass "an explicit --idp-image wins over the derived name"
-  else
-    fail "an explicit --idp-image does not win"
-  fi
+
   if "$DEPLOY" --non-interactive --yes --domain d.example --env-out "$sandbox/.env3" \
       </dev/null >/dev/null 2>&1; then
     fail "the deployer ran with no image source at all"
   else
     pass "the deployer refuses with no image source"
+  fi
+
+  # PostgreSQL and MinIO alone leave the admin password and shortener key to be
+  # regenerated, which locks the stack out of existing data just the same.
+  printf 'x\n' > "$sandbox/pw.txt"
+  if "$DEPLOY" --help 2>&1 | grep -q -- --shortener-key-file; then
+    pass "the adoption path exposes every credential file flag"
+  else
+    fail "--shortener-key-file is not documented"
   fi
 
   printf 'abc #def\n' > "$sandbox/bad.txt"

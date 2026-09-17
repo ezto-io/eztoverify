@@ -110,7 +110,7 @@ the address nginx saw.
 **Contributing** — build every service from source:
 
 ```bash
-cp .env.example .env    # fill in DOMAIN, REGISTRY, TAG and credentials
+cp .env.example .env    # fill in DOMAIN, the *_IMAGE references and credentials
 docker compose -f docker-compose.yml -f docker-compose.build.yml up --build
 ```
 

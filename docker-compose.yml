@@ -306,7 +306,11 @@ services:
     # face-liveness verification flows; the IdP does NOT depend on it to boot. Heavy/slow build,
     # so it is opt-in via a compose profile. Start it with:  docker compose --profile face-biometrics up -d
     profiles: ["face-biometrics"]
-    image: ${LIVENESS_IMAGE:?set LIVENESS_IMAGE in .env}
+    # Optional, not ${VAR:?}: Compose interpolates before it filters by profile,
+    # so a required value here would break every liveness-off deployment.
+    # With the profile on and no value, Compose refuses with 'neither an image
+    # nor a build context specified'.
+    image: ${LIVENESS_IMAGE:-}
     container_name: ezto-liveness
     logging: *logging
     restart: unless-stopped

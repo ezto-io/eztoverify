@@ -28,8 +28,8 @@ generates no certificate.
 
 ### Image naming
 
-Compose reads one fully resolved reference per service, so any registry layout works. Pick
-whichever matches how your images are published:
+Compose reads one fully resolved reference per service, so the registry layout is yours to
+choose. Pick whichever matches how your images are published:
 
 | Flags | Resolves to |
 |---|---|
@@ -41,6 +41,14 @@ whichever matches how your images are published:
 The deployer writes the resolved references into `.env` as `IDP_IMAGE`, `BACKGROUND_IMAGE`,
 `SOCKET_IMAGE`, `URL_SHORTENER_IMAGE`, and `LIVENESS_IMAGE`. Set them by hand if you prefer;
 `REGISTRY`, `IMAGE_PREFIX`, and `TAG` are recorded for provenance and Compose never reads them.
+
+`LIVENESS_IMAGE` is the one that may be left empty — face biometrics is off by default, and
+Compose interpolates before it filters by profile, so a required value there would break every
+deployment that never enables it. The other four must be set.
+
+A repository passed to `--image-repo` must carry no tag, since the service name becomes the
+tag. Trailing slashes on `--registry` are removed. Anything that would derive a malformed
+reference is refused before the stack starts rather than failing at pull time.
 
 Upgrading means changing the tag in those references — via `--tag` and `--overwrite`, or by
 editing `.env` directly.
@@ -124,9 +132,13 @@ support for it is a gap this version records rather than solves.
 
 ## Adopting an existing stack
 
-If this host already holds `pgdata`, `miniodata`, or `esdata` but has no `.env`, the deployer
-refuses to generate credentials: those volumes were written under the old values, and new ones
-would leave the stack unable to open its own data. Supply the existing values:
+If this host already holds `pgdata`, `miniodata`, or `esdata`, the deployer refuses to
+generate credentials: those volumes were written under the old values, and new ones would
+leave the stack unable to open its own data. This applies with `--overwrite` too.
+
+All four files are required. A partial set still regenerates the rest — a fresh
+`KEYCLOAK_ADMIN_PASSWORD` fails `idp-init` against the existing realm, and a fresh
+`SHORTENER_KEY` invalidates what the URL shortener already stored:
 
     ./scripts/deploy-compose.sh --domain ... --registry ... --tag ... \
       --postgres-password-file ./pg.txt \

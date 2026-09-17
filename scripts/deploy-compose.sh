@@ -197,9 +197,32 @@ csv_drop() {
 derive_image() {
   service="$1"; explicit="$2"
   if [ -n "$explicit" ]; then printf '%s' "$explicit"; return 0; fi
-  if [ -n "$IMAGE_REPO" ]; then printf '%s:%s' "${IMAGE_REPO%/}" "$service"; return 0; fi
-  if [ -n "$REGISTRY" ]; then printf '%s/%s%s:%s' "${REGISTRY%/}" "$IMAGE_PREFIX" "$service" "$TAG"; return 0; fi
+  if [ -n "$IMAGE_REPO" ]; then printf '%s:%s' "$IMAGE_REPO" "$service"; return 0; fi
+  if [ -n "$REGISTRY" ]; then printf '%s/%s%s:%s' "$REGISTRY" "$IMAGE_PREFIX" "$service" "$TAG"; return 0; fi
   printf ''
+}
+
+# '${x%/}' removes one trailing slash; 'registry///' needs all of them gone.
+strip_trailing_slashes() {
+  v="$1"
+  while [ "${v%/}" != "$v" ]; do v="${v%/}"; done
+  printf '%s' "$v"
+}
+
+# A registry host may carry a port (localhost:5000/idp:1.0), so only the part
+# after the last '/' is checked for a stray second colon.
+validate_image_ref() {
+  ref="$1"; who="$2"
+  case "$ref" in
+    *//*) echo "error: $who resolves to '$ref', which contains an empty path segment" >&2; exit 2 ;;
+    */|*:) echo "error: $who resolves to '$ref', which ends in '/' or ':'" >&2; exit 2 ;;
+  esac
+  tail_part="${ref##*/}"
+  case "${tail_part#*:}" in
+    *:*) echo "error: $who resolves to '$ref', which carries more than one tag" >&2
+         echo "       --image-repo takes a repository with no tag; the service name becomes the tag." >&2
+         exit 2 ;;
+  esac
 }
 
 image_plan() {
@@ -223,16 +246,22 @@ read_secret() {
   file="$1"
   if [ -n "$file" ]; then
     [ -f "$file" ] || { echo "error: secret file not found: $file" >&2; exit 2; }
-    value="$(tr -d '\r\n' < "$file")"
+    # $(cat) strips trailing newlines, so a single-line file equals its own
+    # first line. Anything else is multiline: joining it would deploy a
+    # credential that is not the one in the file.
+    value="$(cat "$file")"
     [ -n "$value" ] || { echo "error: secret file is empty: $file" >&2; exit 2; }
-    # Compose treats ' #' as an inline comment and re-interpolates '$', so an
-    # accepted-but-mangled secret would initialise a store with one value while
-    # the application reads another.
+    if [ "$value" != "$(head -n 1 "$file")" ]; then
+      echo "error: secret in $file spans multiple lines" >&2
+      exit 2
+    fi
+    value="${value%$(printf '\r')}"
+    # Compose re-interpolates '$', truncates at ' #', and strips a leading
+    # quote. Everything else, '#' included, survives unquoted.
     case "$value" in
-      *'$'*)  echo "error: secret in $file contains '\$'; Compose would re-interpolate it" >&2; exit 2 ;;
-      *'#'*)  echo "error: secret in $file contains '#'; Compose would treat it as a comment" >&2; exit 2 ;;
+      *'$'*) echo "error: secret in $file contains '\$'; Compose would re-interpolate it" >&2; exit 2 ;;
       *[[:space:]]*) echo "error: secret in $file contains whitespace; Compose would truncate it" >&2; exit 2 ;;
-      *\'*|*'"'*|*'\\'*) echo "error: secret in $file contains a quote or backslash; use [A-Za-z0-9._-]" >&2; exit 2 ;;
+      \'*|'"'*) echo "error: secret in $file starts with a quote; Compose would strip it" >&2; exit 2 ;;
     esac
     printf '%s' "$value"
   else
@@ -332,11 +361,24 @@ if csv_has url-shortener; then
 fi
 [ "$LIVENESS" = true ] && LIVELINESS_URL="http://liveness:5000"
 
+REGISTRY="$(strip_trailing_slashes "$REGISTRY")"
+IMAGE_REPO="$(strip_trailing_slashes "$IMAGE_REPO")"
+case "$IMAGE_REPO" in
+  *:*) echo "error: --image-repo must not carry a tag (got '$IMAGE_REPO'); the service name becomes the tag" >&2; exit 2 ;;
+esac
+
 IDP_IMAGE="$(derive_image idp "$IDP_IMAGE")"
 BACKGROUND_IMAGE="$(derive_image background "$BACKGROUND_IMAGE")"
 SOCKET_IMAGE="$(derive_image socket "$SOCKET_IMAGE")"
 URL_SHORTENER_IMAGE="$(derive_image url-shortener "$URL_SHORTENER_IMAGE")"
 LIVENESS_IMAGE="$(derive_image liveness "$LIVENESS_IMAGE")"
+
+[ -n "$IDP_IMAGE" ]            && validate_image_ref "$IDP_IMAGE" "the idp image"
+[ -n "$BACKGROUND_IMAGE" ]     && validate_image_ref "$BACKGROUND_IMAGE" "the background image"
+[ -n "$SOCKET_IMAGE" ]         && validate_image_ref "$SOCKET_IMAGE" "the socket image"
+[ -n "$URL_SHORTENER_IMAGE" ]  && validate_image_ref "$URL_SHORTENER_IMAGE" "the url-shortener image"
+[ -n "$LIVENESS_IMAGE" ]       && validate_image_ref "$LIVENESS_IMAGE" "the liveness image"
+true
 
 # --- Plan --------------------------------------------------------------------
 if [ "$PRINT_PLAN" = true ]; then
@@ -419,7 +461,8 @@ fi
 # .env or because --overwrite was given. Either way, generating fresh ones
 # against populated volumes leaves the stack unable to open its own data.
 CREDS_SUPPLIED=false
-if [ -n "$POSTGRES_PASSWORD_FILE" ] && [ -n "$MINIO_PASSWORD_FILE" ]; then
+if [ -n "$POSTGRES_PASSWORD_FILE" ] && [ -n "$MINIO_PASSWORD_FILE" ] \
+  && [ -n "$ADMIN_PASSWORD_FILE" ] && [ -n "$SHORTENER_KEY_FILE" ]; then
   CREDS_SUPPLIED=true
 fi
 
@@ -427,7 +470,8 @@ if [ "$VOLUMES_EXIST" = true ] && [ "$CREDS_SUPPLIED" = false ]; then
   echo "error: this host already holds ezto Verify data volumes (project '$PROJECT_NAME')." >&2
   echo "       They were written under the previous credentials, so generating new ones" >&2
   echo "       would leave the stack unable to open its own data." >&2
-  echo "       Supply the existing values:" >&2
+  echo "       Supply ALL FOUR existing values; a partial set regenerates the rest" >&2
+  echo "       and locks the stack out just the same:" >&2
   echo "         --postgres-password-file FILE" >&2
   echo "         --minio-password-file FILE" >&2
   echo "         --admin-password-file FILE" >&2
