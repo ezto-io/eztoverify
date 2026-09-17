@@ -34,6 +34,10 @@
 # Operations, upgrade, rollback, restore: docs/deployment-compose.md
 
 services:
+  # Every service caps its logs at 10 MB x 3 files. The daemon default is
+  # unbounded, so one noisy container can fill this host's disk and take the
+  # whole stack down with it.
+  #
   # Backing stores and internal services publish NO ports: they reach each other
   # over the compose network. Publishing one binds 0.0.0.0, which on a host with
   # a public address exposes the database, object storage, and an Elasticsearch
@@ -45,6 +49,11 @@ services:
     profiles: ["infra-postgres"]
     image: postgres:14-alpine
     container_name: ezto-postgres
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
@@ -62,6 +71,11 @@ services:
     profiles: ["infra-minio"]
     image: minio/minio
     container_name: ezto-minio
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     command: server /data --console-address ":9001"
     restart: unless-stopped
     environment:
@@ -78,6 +92,11 @@ services:
     profiles: ["infra-minio"]
     image: minio/mc
     container_name: ezto-minio-init
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     depends_on:
       minio:
         condition: service_healthy
@@ -101,6 +120,11 @@ services:
     profiles: ["infra-elasticsearch"]
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
     container_name: ezto-elasticsearch
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: unless-stopped
     environment:
       discovery.type: single-node
@@ -120,6 +144,11 @@ services:
   idp:
     image: ${REGISTRY:?set REGISTRY in .env}/ezto-idp:${TAG:?set TAG in .env}
     container_name: ezto-idp
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: unless-stopped
     # Stores and optional services may be excluded by profiles, so every such
     # dependency is declared non-required: Compose reduces an absent dependency
@@ -208,6 +237,11 @@ services:
   idp-init:
     image: ${REGISTRY:?}/ezto-idp:${TAG:?}
     container_name: ezto-idp-init
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     depends_on:
       idp: { condition: service_healthy }
     network_mode: "service:idp"
@@ -230,6 +264,11 @@ services:
   certs-check:
     image: alpine:3.20
     container_name: ezto-certs-check
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     volumes:
       - ./nginx/certs:/certs:ro
     entrypoint:
@@ -249,6 +288,11 @@ services:
   nginx:
     image: nginx:1.27-alpine
     container_name: ezto-nginx
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: unless-stopped
     depends_on:
       certs-check: { condition: service_completed_successfully }
@@ -266,6 +310,11 @@ services:
     profiles: ["background"]
     image: ${REGISTRY:?}/ezto-background:${TAG:?}
     container_name: ezto-background
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: unless-stopped
     depends_on:
       postgres: { condition: service_healthy, required: false }
@@ -287,6 +336,11 @@ services:
     profiles: ["socket"]
     image: ${REGISTRY:?}/ezto-socket:${TAG:?}
     container_name: ezto-socket
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: unless-stopped
     depends_on:
       postgres: { condition: service_healthy, required: false }
@@ -297,11 +351,24 @@ services:
       PGUSER: ${POSTGRES_USER:?}
       PGPASSWORD: ${POSTGRES_PASSWORD:?}
       PGDATABASE: socket
+    healthcheck:
+      # The image carries node but no curl; a node TCP probe confirms the port
+      # is accepting. Verified against the running container before being added.
+      test: ["CMD-SHELL", "node -e 'require(\"net\").connect(3001,\"127.0.0.1\").on(\"connect\",()=>process.exit(0)).on(\"error\",()=>process.exit(1))'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   url-shortener:
     profiles: ["url-shortener"]
     image: ${REGISTRY:?}/ezto-url-shortener:${TAG:?}
     container_name: ezto-url-shortener
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: unless-stopped
     depends_on:
       postgres: { condition: service_healthy, required: false }
@@ -311,6 +378,14 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:?}:${POSTGRES_PASSWORD:?}@${POSTGRES_HOST:?}:${POSTGRES_PORT:?}/urlshortner?schema=public
       VALID_API_KEYS: ${SHORTENER_KEY:?}
       FALLBACK_URL: https://${DOMAIN:?}
+    healthcheck:
+      # The image carries node but no curl; a node TCP probe confirms the port
+      # is accepting. Verified against the running container before being added.
+      test: ["CMD-SHELL", "node -e 'require(\"net\").connect(3000,\"127.0.0.1\").on(\"connect\",()=>process.exit(0)).on(\"error\",()=>process.exit(1))'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   liveness:
     # Face-match / liveness inference (Python + deepface/whisper). Only needed for biometric
@@ -319,6 +394,11 @@ services:
     profiles: ["face-biometrics"]
     image: ${REGISTRY:?}/ezto-liveness:${TAG:?}
     container_name: ezto-liveness
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: unless-stopped
     depends_on:
       minio: { condition: service_healthy, required: false }

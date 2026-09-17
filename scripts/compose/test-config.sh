@@ -244,6 +244,52 @@ else
   pass "liveness requires the face-biometrics profile"
 fi
 
+echo "== every long-running service restarts and caps its logs =="
+# Slices the rendered document into per-service blocks so a key found for one
+# service is never credited to its neighbour.
+service_block() {
+  printf '%s\n' "$2" | awk -v s="  $1:" '
+    $0 == s { inblock = 1; next }
+    /^  [a-z0-9_-]+:$/ { inblock = 0 }
+    inblock { print }
+  '
+}
+
+rendered_all="$(run_config "$ALL_PROFILES,face-biometrics")"
+for svc in postgres minio elasticsearch idp nginx background socket url-shortener liveness; do
+  block="$(service_block "$svc" "$rendered_all")"
+  if printf '%s\n' "$block" | grep -q 'restart: unless-stopped'; then
+    pass "$svc restarts unless stopped"
+  else
+    fail "$svc has no 'restart: unless-stopped'"
+  fi
+  if printf '%s\n' "$block" | grep -q 'max-size'; then
+    pass "$svc caps its log size"
+  else
+    fail "$svc does not cap its log size"
+  fi
+done
+
+echo "== one-shot jobs do not restart =="
+for svc in minio-init idp-init certs-check; do
+  block="$(service_block "$svc" "$rendered_all")"
+  if printf '%s\n' "$block" | grep -qE 'restart: "?no"?'; then
+    pass "$svc does not restart"
+  else
+    fail "$svc should declare restart: \"no\""
+  fi
+done
+
+echo "== every long-running application service reports health =="
+for svc in postgres minio elasticsearch background idp socket url-shortener; do
+  block="$(service_block "$svc" "$rendered_all")"
+  if printf '%s\n' "$block" | grep -q 'healthcheck:'; then
+    pass "$svc declares a healthcheck"
+  else
+    fail "$svc has no healthcheck"
+  fi
+done
+
 echo
 if [ "$FAILURES" -eq 0 ]; then
   echo "All compose config assertions passed."
