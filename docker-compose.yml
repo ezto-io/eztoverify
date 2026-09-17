@@ -28,6 +28,9 @@
 # Every credential is read from .env as ${VAR:?}: an unset value stops the
 # stack with a named error rather than silently falling back to a default.
 #
+# Requires Docker Compose >= 2.20.0 for `depends_on: required: false`, which
+# is what lets a store be dropped by profile without breaking the graph.
+#
 # Operations, upgrade, rollback, restore: docs/deployment-compose.md
 
 services:
@@ -39,6 +42,7 @@ services:
   # If you genuinely need one for debugging, bind it to loopback explicitly —
   # ports: ["127.0.0.1:5432:5432"] — and remove it again afterwards.
   postgres:
+    profiles: ["infra-postgres"]
     image: postgres:14-alpine
     container_name: ezto-postgres
     restart: unless-stopped
@@ -55,6 +59,7 @@ services:
       retries: 5
 
   minio:
+    profiles: ["infra-minio"]
     image: minio/minio
     container_name: ezto-minio
     command: server /data --console-address ":9001"
@@ -70,11 +75,13 @@ services:
       retries: 5
 
   minio-init:
+    profiles: ["infra-minio"]
     image: minio/mc
     container_name: ezto-minio-init
     depends_on:
       minio:
         condition: service_healthy
+        required: false
     # Credentials arrive through the environment rather than being interpolated
     # into the command string, so they never appear in the tracked file.
     environment:
@@ -91,6 +98,7 @@ services:
     restart: "no"
 
   elasticsearch:
+    profiles: ["infra-elasticsearch"]
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
     container_name: ezto-elasticsearch
     restart: unless-stopped
@@ -113,12 +121,15 @@ services:
     image: ${REGISTRY:?set REGISTRY in .env}/ezto-idp:${TAG:?set TAG in .env}
     container_name: ezto-idp
     restart: unless-stopped
+    # Stores and optional services may be excluded by profiles, so every such
+    # dependency is declared non-required: Compose reduces an absent dependency
+    # to a warning instead of failing the graph. Needs Compose >= 2.20.0.
     depends_on:
-      postgres: { condition: service_healthy }
-      minio: { condition: service_healthy }
-      minio-init: { condition: service_completed_successfully }
-      elasticsearch: { condition: service_healthy }
-      background: { condition: service_healthy }
+      postgres: { condition: service_healthy, required: false }
+      minio: { condition: service_healthy, required: false }
+      minio-init: { condition: service_completed_successfully, required: false }
+      elasticsearch: { condition: service_healthy, required: false }
+      background: { condition: service_healthy, required: false }
     # No published ports — nginx (80/443) is the only entry point. Internal
     # traffic (nginx -> idp, idp-init) uses 8080 on the compose network.
     environment:
@@ -252,11 +263,12 @@ services:
       - ./nginx/certs:/etc/nginx/certs:ro
 
   background:
+    profiles: ["background"]
     image: ${REGISTRY:?}/ezto-background:${TAG:?}
     container_name: ezto-background
     restart: unless-stopped
     depends_on:
-      postgres: { condition: service_healthy }
+      postgres: { condition: service_healthy, required: false }
     environment:
       JOB_DB_TYPE: psql
       JOB_DB_URL: jdbc:postgresql://${POSTGRES_HOST:?}:${POSTGRES_PORT:?}/jobrnr
@@ -272,11 +284,12 @@ services:
       start_period: 30s
 
   socket:
+    profiles: ["socket"]
     image: ${REGISTRY:?}/ezto-socket:${TAG:?}
     container_name: ezto-socket
     restart: unless-stopped
     depends_on:
-      postgres: { condition: service_healthy }
+      postgres: { condition: service_healthy, required: false }
     environment:
       PORT: "3001"
       PGHOST: ${POSTGRES_HOST:?}
@@ -286,11 +299,12 @@ services:
       PGDATABASE: socket
 
   url-shortener:
+    profiles: ["url-shortener"]
     image: ${REGISTRY:?}/ezto-url-shortener:${TAG:?}
     container_name: ezto-url-shortener
     restart: unless-stopped
     depends_on:
-      postgres: { condition: service_healthy }
+      postgres: { condition: service_healthy, required: false }
     environment:
       PORT: "3000"
       # The "urlshortner" spelling is intentional; it matches init-databases.sql.
@@ -307,7 +321,7 @@ services:
     container_name: ezto-liveness
     restart: unless-stopped
     depends_on:
-      minio: { condition: service_healthy }
+      minio: { condition: service_healthy, required: false }
     environment:
       MINIO_HOST: ${MINIO_SERVER_URL:?}
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:?}

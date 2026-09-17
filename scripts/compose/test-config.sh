@@ -179,6 +179,71 @@ else
   fail "nginx publishes '$nginx_ports', expected '80,443'"
 fi
 
+echo "== dropping a service profile removes it and blanks its advertised URL =="
+# The URL is blanked by the deployer writing an empty value, so the two are
+# asserted together the way a real deploy produces them.
+assert_service_dropped() {
+  local profile="$1" service="$2" var="$3"
+  local profiles out rc env_file
+  profiles="$(printf '%s' "$ALL_PROFILES" | tr ',' '\n' | grep -v "^${profile}$" | paste -sd, -)"
+  env_file="$(mktemp)"
+  full_env | grep -v "^${var}=" > "$env_file"
+  printf '%s=\n' "$var" >> "$env_file"
+  printf 'COMPOSE_PROFILES=%s\n' "$profiles" >> "$env_file"
+  out="$( cd "$REPO_ROOT" && docker compose --env-file "$env_file" -f "$COMPOSE_FILE" config 2>&1 )"
+  rc=$?
+  rm -f "$env_file"
+  if [ $rc -ne 0 ]; then
+    printf '%s\n' "$out" >&2
+    fail "the graph does not resolve with '$profile' dropped"
+    return
+  fi
+  if printf '%s\n' "$out" | grep -qE "^  ${service}:$"; then
+    fail "'$service' is still present with profile '$profile' dropped"
+  else
+    pass "'$service' is absent with profile '$profile' dropped"
+  fi
+  # Compose renders an empty value as `VAR: ""`, and older versions as a bare
+  # `VAR:`. Two patterns rather than one alternation with an empty branch,
+  # which BSD grep rejects outright ("empty (sub)expression").
+  if printf '%s\n' "$out" | grep -qE "^ +${var}: *(\"\"|'')$" \
+    || printf '%s\n' "$out" | grep -qE "^ +${var}: *$"; then
+    pass "$var is blank with '$service' off"
+  else
+    printf '%s\n' "$out" | grep -E "^ +${var}:" >&2
+    fail "$var is not blank with '$service' off"
+  fi
+}
+
+assert_service_dropped background     background     BACKGROUND_JOB_URL
+assert_service_dropped socket         socket         SOCKET_URL
+assert_service_dropped url-shortener  url-shortener  SHORTENER_HTTP_URL
+
+echo "== dropping a bundled store leaves the rest of the graph resolvable =="
+without_pg="$(printf '%s' "$ALL_PROFILES" | tr ',' '\n' | grep -v '^infra-postgres$' | paste -sd, -)"
+if out="$(run_config "$without_pg")"; then
+  if printf '%s\n' "$out" | grep -qE '^  postgres:$'; then
+    fail "'postgres' is still present with infra-postgres dropped"
+  else
+    pass "'postgres' is absent with infra-postgres dropped"
+  fi
+  if printf '%s\n' "$out" | grep -qE '^  idp:$'; then
+    pass "the idp still resolves against an external database"
+  else
+    fail "the idp vanished when infra-postgres was dropped"
+  fi
+else
+  printf '%s\n' "$out" >&2
+  fail "the graph does not resolve with infra-postgres dropped"
+fi
+
+echo "== face liveness is off by default =="
+if run_config "$ALL_PROFILES" | grep -qE '^  liveness:$'; then
+  fail "liveness runs without the face-biometrics profile"
+else
+  pass "liveness requires the face-biometrics profile"
+fi
+
 echo
 if [ "$FAILURES" -eq 0 ]; then
   echo "All compose config assertions passed."
