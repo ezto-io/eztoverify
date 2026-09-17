@@ -17,8 +17,11 @@ fail() { printf '  FAIL %s\n' "$1" >&2; FAILURES=$((FAILURES + 1)); }
 full_env() {
   cat <<'ENV'
 DOMAIN=verify.example.com
-REGISTRY=registry.example.com/ezto
-TAG=1.0.0
+IDP_IMAGE=registry.example.com/ezto/idp:1.0.0
+BACKGROUND_IMAGE=registry.example.com/ezto/background:1.0.0
+SOCKET_IMAGE=registry.example.com/ezto/socket:1.0.0
+URL_SHORTENER_IMAGE=registry.example.com/ezto/url-shortener:1.0.0
+LIVENESS_IMAGE=registry.example.com/ezto/liveness:1.0.0
 TLS_MODE=self-signed
 POSTGRES_USER=ezto
 POSTGRES_PASSWORD=pgpw
@@ -98,7 +101,7 @@ example_vars() {
   grep -oE '^[A-Z_][A-Z0-9_]*=' "$ENV_EXAMPLE" | sed 's/=$//' | sort -u
 }
 # Read by Compose or the deployer, never interpolated by the compose file.
-DEPLOYER_ONLY_VARS='^(COMPOSE_PROFILES|TLS_MODE)$'
+DEPLOYER_ONLY_VARS='^(COMPOSE_PROFILES|TLS_MODE|REGISTRY|TAG|IMAGE_PREFIX)$'
 missing="$(comm -23 <(compose_vars) <(example_vars))"
 if [ -n "$missing" ]; then
   printf '%s\n' "$missing" >&2
@@ -121,15 +124,21 @@ else
   pass "docker-compose.yml declares no build context"
 fi
 
-echo "== REGISTRY and TAG reach every service image =="
+echo "== every service resolves from its own image reference =="
 rendered="$(run_config "$ALL_PROFILES,face-biometrics")"
 for svc in idp background socket url-shortener liveness; do
-  if printf '%s' "$rendered" | grep -q "registry.example.com/ezto/ezto-${svc}:1.0.0"; then
-    pass "$svc resolves to REGISTRY/ezto-$svc:TAG"
+  if printf '%s' "$rendered" | grep -q "image: registry.example.com/ezto/${svc}:1.0.0"; then
+    pass "$svc resolves from its image reference"
   else
-    fail "$svc does not resolve from REGISTRY and TAG"
+    fail "$svc does not resolve from its image reference"
   fi
 done
+# idp-init runs kcadm from the IdP image and must never drift from it.
+if [ "$(printf '%s' "$rendered" | grep -c 'image: registry.example.com/ezto/idp:1.0.0')" -eq 2 ]; then
+  pass "idp-init shares the idp image"
+else
+  fail "idp-init does not share the idp image"
+fi
 
 echo "== the build overlay restores every contributor build context =="
 if [ ! -f "$BUILD_FILE" ]; then
@@ -320,7 +329,9 @@ else
   for flag in --domain --registry --tag --tls-mode --services --liveness \
               --root-access-ip --minio-public-url --external-postgres \
               --external-minio --external-elasticsearch --print-plan \
-              --uninstall --env-out --overwrite --non-interactive --yes; do
+              --uninstall --env-out --overwrite --non-interactive --yes \
+              --image-repo --image-prefix --idp-image --background-image \
+              --socket-image --url-shortener-image --liveness-image; do
     if printf '%s\n' "$help_out" | grep -q -- "$flag"; then :; else
       fail "--help does not document $flag"
     fi
@@ -333,6 +344,42 @@ else
   else
     pass "the deployer refuses a tracked file as --env-out"
   fi
+  # Three naming shapes are in real use; all three must resolve.
+  plan_image() {
+    "$DEPLOY" --print-plan --non-interactive --domain d.example \
+      --env-out "$sandbox/.env" "$@" </dev/null 2>&1 | grep -E '^Images:'
+  }
+  if plan_image --registry eztovrfy --tag 1.0.0 | grep -q 'idp=eztovrfy/idp:1.0.0'; then
+    pass "--registry resolves to <prefix>/<service>:<tag>"
+  else
+    plan_image --registry eztovrfy --tag 1.0.0 >&2
+    fail "--registry does not resolve to <prefix>/<service>:<tag>"
+  fi
+  if plan_image --registry docker.io/myorg --image-prefix ezto- --tag 1.0.0 \
+      | grep -q 'idp=docker.io/myorg/ezto-idp:1.0.0'; then
+    pass "--image-prefix reproduces the chart's naming"
+  else
+    fail "--image-prefix does not reproduce the chart's naming"
+  fi
+  if plan_image --image-repo sarathgroot/ezto-oss | grep -q 'idp=sarathgroot/ezto-oss:idp'; then
+    pass "--image-repo resolves to <repo>:<service>"
+  else
+    plan_image --image-repo sarathgroot/ezto-oss >&2
+    fail "--image-repo does not resolve to <repo>:<service>"
+  fi
+  if plan_image --registry eztovrfy --tag 1.0.0 --idp-image other/idp:9 \
+      | grep -q 'idp=other/idp:9'; then
+    pass "an explicit --idp-image wins over the derived name"
+  else
+    fail "an explicit --idp-image does not win"
+  fi
+  if "$DEPLOY" --non-interactive --yes --domain d.example --env-out "$sandbox/.env3" \
+      </dev/null >/dev/null 2>&1; then
+    fail "the deployer ran with no image source at all"
+  else
+    pass "the deployer refuses with no image source"
+  fi
+
   printf 'abc #def\n' > "$sandbox/bad.txt"
   if "$DEPLOY" --non-interactive --yes --domain d.example --registry r/x --tag 1 \
       --postgres-password-file "$sandbox/bad.txt" --minio-password-file "$sandbox/bad.txt" \

@@ -7,9 +7,9 @@ and `scripts/install.sh`.
 
 - Docker Engine with the Compose plugin, **Compose >= 2.20.0**. `depends_on: required: false`
   needs it, and the deployer refuses to run below it.
-- Published images reachable from this host: `ezto-idp`, `ezto-background`, `ezto-socket`,
-  `ezto-url-shortener`, and `ezto-liveness` under one registry prefix. This repository builds
-  none of them and ships no pipeline that does.
+- Published images reachable from this host for `idp`, `background`, `socket`, and
+  `url-shortener` (plus `liveness` if you enable face biometrics). This repository builds none
+  of them and ships no pipeline that does.
 - A domain resolving to this host, unless you accept a self-signed certificate.
 - For the bundled Elasticsearch, `vm.max_map_count` at or above `262144`:
 
@@ -21,10 +21,29 @@ and `scripts/install.sh`.
 
 ## Deploying
 
-    ./scripts/deploy-compose.sh --domain verify.example.com --registry docker.io/myorg --tag 1.0.0
+    ./scripts/deploy-compose.sh --domain verify.example.com --registry eztovrfy --tag 1.0.0
 
 Run it with `--print-plan` first. That mode makes no external call, writes no `.env`, and
 generates no certificate.
+
+### Image naming
+
+Compose reads one fully resolved reference per service, so any registry layout works. Pick
+whichever matches how your images are published:
+
+| Flags | Resolves to |
+|---|---|
+| `--registry eztovrfy --tag 1.0.0` | `eztovrfy/idp:1.0.0` |
+| `--registry myorg --image-prefix ezto- --tag 1.0.0` | `myorg/ezto-idp:1.0.0` (the Helm chart's naming) |
+| `--image-repo myorg/ezto-oss` | `myorg/ezto-oss:idp` (one repo, service as tag) |
+| `--idp-image other/idp:9` | exactly that, overriding any derivation |
+
+The deployer writes the resolved references into `.env` as `IDP_IMAGE`, `BACKGROUND_IMAGE`,
+`SOCKET_IMAGE`, `URL_SHORTENER_IMAGE`, and `LIVENESS_IMAGE`. Set them by hand if you prefer;
+`REGISTRY`, `IMAGE_PREFIX`, and `TAG` are recorded for provenance and Compose never reads them.
+
+Upgrading means changing the tag in those references — via `--tag` and `--overwrite`, or by
+editing `.env` directly.
 
 ## What is exposed
 
@@ -50,14 +69,14 @@ script ships here: your own tooling does that work, and we will not ship an unte
 
 ## Upgrade
 
-Set `TAG` in `.env`, then:
+Point the `*_IMAGE` references in `.env` at the new tag, then:
 
     docker compose pull
     docker compose up -d
 
 ## Rollback
 
-Set the previous `TAG` and `docker compose up -d`. Keycloak and service migrations are
+Point the `*_IMAGE` references back at the previous tag and `docker compose up -d`. Keycloak and service migrations are
 forward-only: an older tag does not undo a schema change. Rolling back across a migration
 requires restoring data from before the upgrade. Stated, not worked around.
 

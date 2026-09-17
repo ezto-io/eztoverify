@@ -9,7 +9,14 @@ COMPOSE_FILE="$REPO_ROOT/docker-compose.yml"
 
 DOMAIN=""
 REGISTRY=""
+IMAGE_PREFIX=""
+IMAGE_REPO=""
 TAG="latest"
+IDP_IMAGE=""
+BACKGROUND_IMAGE=""
+SOCKET_IMAGE=""
+URL_SHORTENER_IMAGE=""
+LIVENESS_IMAGE=""
 TLS_MODE="self-signed"
 SERVICES="background,socket,url-shortener"
 LIVENESS=false
@@ -48,13 +55,26 @@ usage() {
 Usage: scripts/deploy-compose.sh [options]
 
 Deploys ezto Verify onto this host with Docker Compose. Service images are
-pulled from a registry; nothing is built. The script generates a mode-600 .env
-holding every credential and then runs `docker compose up -d`.
+pulled; nothing is built. The script generates a mode-600 .env holding every
+credential and then runs `docker compose up -d`.
+
+An image source is required. Three naming shapes are supported:
+  --registry eztovrfy --tag 1.0.0          -> eztovrfy/idp:1.0.0
+  --registry myorg --image-prefix ezto-    -> myorg/ezto-idp:1.0.0   (chart naming)
+  --image-repo myorg/ezto-oss              -> myorg/ezto-oss:idp     (service as tag)
+An explicit --<service>-image always wins.
 
 Options:
   --domain NAME                  Public domain served over HTTPS (required)
-  --registry PREFIX              Registry prefix holding one repo per service
-  --tag TAG                      Image tag deployed across every service
+  --registry PREFIX              Registry prefix; images become PREFIX/<service>:TAG
+  --image-prefix STR             Inserted before each service name (chart uses "ezto-")
+  --image-repo REPO              One repository whose tag is the service name
+  --tag TAG                      Image tag used with --registry (default: latest)
+  --idp-image REF                Explicit idp image (wins over any derivation)
+  --background-image REF         Explicit background image
+  --socket-image REF             Explicit socket image
+  --url-shortener-image REF      Explicit URL-shortener image
+  --liveness-image REF           Explicit liveness image
   --tls-mode MODE                self-signed | files (default: self-signed)
   --services CSV                 background,socket,url-shortener (default: all)
   --liveness                     Enable face liveness (~15 GB image)
@@ -93,6 +113,13 @@ while [ "$#" -gt 0 ]; do
   case "$1" in
     --domain) need_arg "$@"; DOMAIN="$2"; shift 2 ;;
     --registry) need_arg "$@"; REGISTRY="$2"; shift 2 ;;
+    --image-prefix) need_arg "$@"; IMAGE_PREFIX="$2"; shift 2 ;;
+    --image-repo) need_arg "$@"; IMAGE_REPO="$2"; shift 2 ;;
+    --idp-image) need_arg "$@"; IDP_IMAGE="$2"; shift 2 ;;
+    --background-image) need_arg "$@"; BACKGROUND_IMAGE="$2"; shift 2 ;;
+    --socket-image) need_arg "$@"; SOCKET_IMAGE="$2"; shift 2 ;;
+    --url-shortener-image) need_arg "$@"; URL_SHORTENER_IMAGE="$2"; shift 2 ;;
+    --liveness-image) need_arg "$@"; LIVENESS_IMAGE="$2"; shift 2 ;;
     --tag) need_arg "$@"; TAG="$2"; shift 2 ;;
     --tls-mode) need_arg "$@"; TLS_MODE="$2"; shift 2 ;;
     --services) need_arg "$@"; SERVICES="$2"; shift 2 ;;
@@ -165,6 +192,25 @@ csv_drop() {
   SERVICES="$(printf '%s' "$SERVICES" | awk -v RS=, -v ORS=, -v skip="$1" '$0 != skip && $0 != "" {print}' | sed 's/,$//')"
 }
 
+# Explicit reference wins, then a single repo carrying service-name tags, then
+# a registry prefix. Prints nothing when no source was given.
+derive_image() {
+  service="$1"; explicit="$2"
+  if [ -n "$explicit" ]; then printf '%s' "$explicit"; return 0; fi
+  if [ -n "$IMAGE_REPO" ]; then printf '%s:%s' "${IMAGE_REPO%/}" "$service"; return 0; fi
+  if [ -n "$REGISTRY" ]; then printf '%s/%s%s:%s' "${REGISTRY%/}" "$IMAGE_PREFIX" "$service" "$TAG"; return 0; fi
+  printf ''
+}
+
+image_plan() {
+  printf 'idp=%s' "${IDP_IMAGE:-<none>}"
+  csv_has background && printf ' background=%s' "${BACKGROUND_IMAGE:-<none>}"
+  csv_has socket && printf ' socket=%s' "${SOCKET_IMAGE:-<none>}"
+  csv_has url-shortener && printf ' url-shortener=%s' "${URL_SHORTENER_IMAGE:-<none>}"
+  [ "$LIVENESS" = true ] && printf ' liveness=%s' "${LIVENESS_IMAGE:-<none>}"
+  printf '\n'
+}
+
 random_secret() {
   set +o pipefail
   # Alphanumeric only: `$` would be re-interpolated by Compose.
@@ -218,11 +264,10 @@ fi
 if [ "$NON_INTERACTIVE" = false ]; then
   DOMAIN="$(prompt_value "Public domain (HTTPS)" "$DOMAIN")"
   if [ -z "$REGISTRY" ]; then
-    echo "Service images are pulled, never built. Give the registry prefix holding" >&2
-    echo "one repository per service (ezto-idp, ezto-background, ezto-socket," >&2
-    echo "ezto-url-shortener, ezto-liveness)." >&2
+    echo "Service images are pulled, never built. Give the registry prefix; images" >&2
+    echo "become PREFIX/<service>:TAG (idp, background, socket, url-shortener)." >&2
   fi
-  REGISTRY="$(prompt_value "Image registry prefix (e.g. docker.io/myorg)" "$REGISTRY")"
+  REGISTRY="$(prompt_value "Image registry prefix (e.g. eztovrfy)" "$REGISTRY")"
   TAG="$(prompt_value "Image tag" "$TAG")"
   TLS_MODE="$(prompt_value "TLS mode (self-signed|files)" "$TLS_MODE")"
   csv_has background    || true
@@ -287,13 +332,17 @@ if csv_has url-shortener; then
 fi
 [ "$LIVENESS" = true ] && LIVELINESS_URL="http://liveness:5000"
 
+IDP_IMAGE="$(derive_image idp "$IDP_IMAGE")"
+BACKGROUND_IMAGE="$(derive_image background "$BACKGROUND_IMAGE")"
+SOCKET_IMAGE="$(derive_image socket "$SOCKET_IMAGE")"
+URL_SHORTENER_IMAGE="$(derive_image url-shortener "$URL_SHORTENER_IMAGE")"
+LIVENESS_IMAGE="$(derive_image liveness "$LIVENESS_IMAGE")"
+
 # --- Plan --------------------------------------------------------------------
 if [ "$PRINT_PLAN" = true ]; then
   cat <<EOF
 Domain:         $DOMAIN
-Registry:       ${REGISTRY:-<none given>}
-Tag:            $TAG
-TLS mode:       $TLS_MODE
+Images:         $(image_plan)TLS mode:       $TLS_MODE
 Services:       idp${SERVICES:+,$SERVICES}
 Liveness:       $LIVENESS
 Profiles:       $PROFILES
@@ -321,7 +370,15 @@ if [ "$(printf '%s\n2.20.0\n' "$COMPOSE_VERSION" | sort -V | head -n1)" != "2.20
   exit 3
 fi
 
-[ -n "$REGISTRY" ] || { echo "error: --registry is required; images are pulled, never built" >&2; exit 2; }
+if [ -z "$IDP_IMAGE" ]; then
+  echo "error: no image source was given; pass --registry, --image-repo, or --idp-image" >&2
+  exit 2
+fi
+csv_has background    && [ -z "$BACKGROUND_IMAGE" ]    && { echo "error: background is enabled but has no image" >&2; exit 2; }
+csv_has socket        && [ -z "$SOCKET_IMAGE" ]        && { echo "error: socket is enabled but has no image" >&2; exit 2; }
+csv_has url-shortener && [ -z "$URL_SHORTENER_IMAGE" ] && { echo "error: the URL shortener is enabled but has no image" >&2; exit 2; }
+[ "$LIVENESS" = true ] && [ -z "$LIVENESS_IMAGE" ] && { echo "error: liveness is enabled but has no image" >&2; exit 2; }
+true
 
 # Only meaningful when the daemon shares this kernel; Docker Desktop runs a VM.
 if [ "$BUNDLE_ELASTICSEARCH" = true ] && [ "$(uname -s)" = Linux ]; then
@@ -396,7 +453,13 @@ cat > "$ENV_OUT" <<EOF
 # Generated by scripts/deploy-compose.sh on $(date -u '+%Y-%m-%dT%H:%M:%SZ').
 # Mode 600. Holds every credential the stack uses — never commit it.
 DOMAIN=$DOMAIN
+IDP_IMAGE=$IDP_IMAGE
+BACKGROUND_IMAGE=$BACKGROUND_IMAGE
+SOCKET_IMAGE=$SOCKET_IMAGE
+URL_SHORTENER_IMAGE=$URL_SHORTENER_IMAGE
+LIVENESS_IMAGE=$LIVENESS_IMAGE
 REGISTRY=$REGISTRY
+IMAGE_PREFIX=$IMAGE_PREFIX
 TAG=$TAG
 TLS_MODE=$TLS_MODE
 POSTGRES_USER=$POSTGRES_USER

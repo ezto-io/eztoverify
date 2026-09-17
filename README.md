@@ -88,8 +88,12 @@ Single-host production path. Service images are **pulled** from a registry; noth
 so the host needs no toolchain.
 
 ```bash
-./scripts/deploy-compose.sh --domain verify.example.com --registry docker.io/myorg --tag 1.0.0
+./scripts/deploy-compose.sh --domain verify.example.com --registry eztovrfy --tag 1.0.0
 ```
+
+Images resolve as `<registry>/<service>:<tag>`. Two other layouts are supported:
+`--image-prefix ezto-` for the Helm chart's naming, and `--image-repo myorg/ezto-oss` for a
+single repository whose tag is the service name. An explicit `--<service>-image` always wins.
 
 The deployer generates a mode-600 `.env` holding every credential, checks the host
 preconditions, and starts the stack. Run it with `--print-plan` first to see what it would do

@@ -1,4 +1,5 @@
-# Verify OSS deployment stack. Images are PULLED from REGISTRY at TAG.
+# Verify OSS deployment stack. Each service pulls one resolved image reference
+# from .env, so any registry naming works. scripts/deploy-compose.sh derives them.
 #
 #   ./scripts/deploy-compose.sh --domain <domain> --registry <prefix> --tag <tag>
 #
@@ -101,7 +102,7 @@ services:
       retries: 10
 
   idp:
-    image: ${REGISTRY:?set REGISTRY in .env}/ezto-idp:${TAG:?set TAG in .env}
+    image: ${IDP_IMAGE:?set IDP_IMAGE in .env}
     container_name: ezto-idp
     logging: *logging
     restart: unless-stopped
@@ -173,7 +174,8 @@ services:
   # loopback (network_mode: service:idp) so the call bypasses the SSL policy.
   # Override MASTER_SSL_REQUIRED=none only for throwaway plain-HTTP experiments.
   idp-init:
-    image: ${REGISTRY:?}/ezto-idp:${TAG:?}
+    # Same image as the idp: idp-init runs kcadm.sh out of it.
+    image: ${IDP_IMAGE:?}
     container_name: ezto-idp-init
     logging: *logging
     depends_on:
@@ -234,7 +236,7 @@ services:
 
   background:
     profiles: ["background"]
-    image: ${REGISTRY:?}/ezto-background:${TAG:?}
+    image: ${BACKGROUND_IMAGE:?set BACKGROUND_IMAGE in .env}
     container_name: ezto-background
     logging: *logging
     restart: unless-stopped
@@ -256,7 +258,7 @@ services:
 
   socket:
     profiles: ["socket"]
-    image: ${REGISTRY:?}/ezto-socket:${TAG:?}
+    image: ${SOCKET_IMAGE:?set SOCKET_IMAGE in .env}
     container_name: ezto-socket
     logging: *logging
     restart: unless-stopped
@@ -279,7 +281,7 @@ services:
 
   url-shortener:
     profiles: ["url-shortener"]
-    image: ${REGISTRY:?}/ezto-url-shortener:${TAG:?}
+    image: ${URL_SHORTENER_IMAGE:?set URL_SHORTENER_IMAGE in .env}
     container_name: ezto-url-shortener
     logging: *logging
     restart: unless-stopped
@@ -304,7 +306,7 @@ services:
     # face-liveness verification flows; the IdP does NOT depend on it to boot. Heavy/slow build,
     # so it is opt-in via a compose profile. Start it with:  docker compose --profile face-biometrics up -d
     profiles: ["face-biometrics"]
-    image: ${REGISTRY:?}/ezto-liveness:${TAG:?}
+    image: ${LIVENESS_IMAGE:?set LIVENESS_IMAGE in .env}
     container_name: ezto-liveness
     logging: *logging
     restart: unless-stopped
