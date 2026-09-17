@@ -154,6 +154,31 @@ else
   fi
 fi
 
+echo "== only nginx publishes a port =="
+# `docker compose config` renders published ports as a `published:` key under
+# each service. Walk the rendered document and attribute every published entry
+# to the service whose block it appeared in.
+publishers="$(run_config "$ALL_PROFILES,face-biometrics" | awk '
+  /^  [a-z0-9_-]+:$/ { svc = $1; sub(/:$/, "", svc) }
+  /published:/       { gsub(/"/, "", $2); print svc "=" $2 }
+')"
+offenders="$(printf '%s\n' "$publishers" | grep -v '^nginx=' | grep -v '^$')"
+if [ -n "$offenders" ]; then
+  printf '%s\n' "$offenders" >&2
+  fail "a service other than nginx publishes a port"
+else
+  pass "nginx is the only service publishing a port"
+fi
+
+# Numeric sort, or 443 lexicographically precedes 80 and the comparison fails
+# on ordering rather than on the ports actually published.
+nginx_ports="$(printf '%s\n' "$publishers" | grep '^nginx=' | cut -d= -f2 | sort -n -u | paste -sd, -)"
+if [ "$nginx_ports" = "80,443" ]; then
+  pass "nginx publishes exactly 80 and 443"
+else
+  fail "nginx publishes '$nginx_ports', expected '80,443'"
+fi
+
 echo
 if [ "$FAILURES" -eq 0 ]; then
   echo "All compose config assertions passed."
