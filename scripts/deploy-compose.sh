@@ -208,7 +208,7 @@ image_plan() {
   csv_has socket && printf ' socket=%s' "${SOCKET_IMAGE:-<none>}"
   csv_has url-shortener && printf ' url-shortener=%s' "${URL_SHORTENER_IMAGE:-<none>}"
   [ "$LIVENESS" = true ] && printf ' liveness=%s' "${LIVENESS_IMAGE:-<none>}"
-  printf '\n'
+  true
 }
 
 random_secret() {
@@ -342,7 +342,8 @@ LIVENESS_IMAGE="$(derive_image liveness "$LIVENESS_IMAGE")"
 if [ "$PRINT_PLAN" = true ]; then
   cat <<EOF
 Domain:         $DOMAIN
-Images:         $(image_plan)TLS mode:       $TLS_MODE
+Images:         $(image_plan)
+TLS mode:       $TLS_MODE
 Services:       idp${SERVICES:+,$SERVICES}
 Liveness:       $LIVENESS
 Profiles:       $PROFILES
