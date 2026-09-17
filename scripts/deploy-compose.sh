@@ -126,6 +126,17 @@ done
 [ -n "$ENV_OUT" ] || ENV_OUT="$REPO_ROOT/.env"
 if [ ! -t 0 ]; then NON_INTERACTIVE=true; fi
 
+# --env-out names a file this script fills with credentials. Refuse a tracked
+# path: '--env-out README.md --overwrite' would put them in the working tree.
+if git -C "$REPO_ROOT" ls-files --error-unmatch "$ENV_OUT" >/dev/null 2>&1; then
+  echo "error: $ENV_OUT is tracked by git; refusing to write credentials into it" >&2
+  exit 2
+fi
+case "$(basename "$ENV_OUT")" in
+  .env|.env.*|*.env) : ;;
+  *) echo "error: --env-out must name a .env file (got '$(basename "$ENV_OUT")')" >&2; exit 2 ;;
+esac
+
 prompt_value() {
   label="$1"; default="$2"; reply=""
   printf '%s [%s]: ' "$label" "$default" >&2
@@ -168,8 +179,14 @@ read_secret() {
     [ -f "$file" ] || { echo "error: secret file not found: $file" >&2; exit 2; }
     value="$(tr -d '\r\n' < "$file")"
     [ -n "$value" ] || { echo "error: secret file is empty: $file" >&2; exit 2; }
+    # Compose treats ' #' as an inline comment and re-interpolates '$', so an
+    # accepted-but-mangled secret would initialise a store with one value while
+    # the application reads another.
     case "$value" in
-      *'$'*) echo "error: secret in $file contains '\$', which Compose would re-interpolate" >&2; exit 2 ;;
+      *'$'*)  echo "error: secret in $file contains '\$'; Compose would re-interpolate it" >&2; exit 2 ;;
+      *'#'*)  echo "error: secret in $file contains '#'; Compose would treat it as a comment" >&2; exit 2 ;;
+      *[[:space:]]*) echo "error: secret in $file contains whitespace; Compose would truncate it" >&2; exit 2 ;;
+      *\'*|*'"'*|*'\\'*) echo "error: secret in $file contains a quote or backslash; use [A-Za-z0-9._-]" >&2; exit 2 ;;
     esac
     printf '%s' "$value"
   else
@@ -323,7 +340,11 @@ elif [ "$BUNDLE_ELASTICSEARCH" = true ]; then
 fi
 
 # --- First install vs. adoption: existing volumes hold old credentials -------
-PROJECT_NAME="$(basename "$REPO_ROOT")"
+# Compose gives COMPOSE_PROJECT_NAME precedence over the directory name, so a
+# stack deployed with it set owns volumes this script would otherwise miss --
+# and would then generate new credentials against the old data.
+PROJECT_NAME="${COMPOSE_PROJECT_NAME:-$(basename "$REPO_ROOT")}"
+PROJECT_NAME="$(printf '%s' "$PROJECT_NAME" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9_-' '_')"
 VOLUMES_EXIST=false
 for vol in pgdata miniodata esdata; do
   if docker volume inspect "${PROJECT_NAME}_${vol}" >/dev/null 2>&1; then
@@ -331,27 +352,35 @@ for vol in pgdata miniodata esdata; do
   fi
 done
 
-if [ "$VOLUMES_EXIST" = true ] && [ ! -f "$ENV_OUT" ]; then
-  if [ -z "$POSTGRES_PASSWORD_FILE" ] || [ -z "$MINIO_PASSWORD_FILE" ]; then
-    echo "error: this host already holds ezto Verify data volumes, but $ENV_OUT is missing." >&2
-    echo "       Those volumes were written under the previous credentials, so generating" >&2
-    echo "       new ones would leave the stack unable to open its own data." >&2
-    echo "       Supply the existing values:" >&2
-    echo "         --postgres-password-file FILE" >&2
-    echo "         --minio-password-file FILE" >&2
-    echo "         --admin-password-file FILE" >&2
-    echo "         --shortener-key-file FILE" >&2
-    echo "       A stack deployed from an older revision of this repository used the" >&2
-    echo "       literals admin/admin and minioadmin/minioadmin123; see" >&2
-    echo "       docs/deployment-compose.md 'Adopting an existing stack'." >&2
-    exit 4
-  fi
-  echo "Adopting the existing data volumes with the credentials supplied." >&2
-fi
-
 if [ -e "$ENV_OUT" ] && [ "$OVERWRITE" = false ]; then
   echo "error: $ENV_OUT already exists (use --overwrite, or --env-out to choose another path)" >&2
   exit 2
+fi
+
+# Past this point credentials are (re)generated, whether because there is no
+# .env or because --overwrite was given. Either way, generating fresh ones
+# against populated volumes leaves the stack unable to open its own data.
+CREDS_SUPPLIED=false
+if [ -n "$POSTGRES_PASSWORD_FILE" ] && [ -n "$MINIO_PASSWORD_FILE" ]; then
+  CREDS_SUPPLIED=true
+fi
+
+if [ "$VOLUMES_EXIST" = true ] && [ "$CREDS_SUPPLIED" = false ]; then
+  echo "error: this host already holds ezto Verify data volumes (project '$PROJECT_NAME')." >&2
+  echo "       They were written under the previous credentials, so generating new ones" >&2
+  echo "       would leave the stack unable to open its own data." >&2
+  echo "       Supply the existing values:" >&2
+  echo "         --postgres-password-file FILE" >&2
+  echo "         --minio-password-file FILE" >&2
+  echo "         --admin-password-file FILE" >&2
+  echo "         --shortener-key-file FILE" >&2
+  echo "       A stack from an older revision used the literals admin/admin and" >&2
+  echo "       minioadmin/minioadmin123; see docs/deployment-compose.md" >&2
+  echo "       'Adopting an existing stack'." >&2
+  exit 4
+fi
+if [ "$VOLUMES_EXIST" = true ]; then
+  echo "Adopting the existing data volumes with the credentials supplied." >&2
 fi
 
 # --- Credentials -------------------------------------------------------------

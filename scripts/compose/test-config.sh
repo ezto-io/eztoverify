@@ -169,12 +169,14 @@ fi
 echo "== dropping a service profile removes it and blanks its advertised URL =="
 # Absence and blank URL asserted together, as a real deploy produces them.
 assert_service_dropped() {
-  local profile="$1" service="$2" var="$3"
-  local profiles out rc env_file
+  local profile="$1" service="$2"; shift 2
+  local vars=("$@")
+  local profiles out rc env_file v pattern
   profiles="$(printf '%s' "$ALL_PROFILES" | tr ',' '\n' | grep -v "^${profile}$" | paste -sd, -)"
   env_file="$(mktemp)"
-  full_env | grep -v "^${var}=" > "$env_file"
-  printf '%s=\n' "$var" >> "$env_file"
+  pattern="$(IFS='|'; printf '%s' "${vars[*]}")"
+  full_env | grep -vE "^(${pattern})=" > "$env_file"
+  for v in "${vars[@]}"; do printf '%s=\n' "$v" >> "$env_file"; done
   printf 'COMPOSE_PROFILES=%s\n' "$profiles" >> "$env_file"
   out="$( cd "$REPO_ROOT" && docker compose --env-file "$env_file" -f "$COMPOSE_FILE" config 2>&1 )"
   rc=$?
@@ -189,19 +191,22 @@ assert_service_dropped() {
   else
     pass "'$service' is absent with profile '$profile' dropped"
   fi
-  # Two patterns: BSD grep rejects an alternation with an empty branch.
-  if printf '%s\n' "$out" | grep -qE "^ +${var}: *(\"\"|'')$" \
-    || printf '%s\n' "$out" | grep -qE "^ +${var}: *$"; then
-    pass "$var is blank with '$service' off"
-  else
-    printf '%s\n' "$out" | grep -E "^ +${var}:" >&2
-    fail "$var is not blank with '$service' off"
-  fi
+  # EVERY URL advertising this service must be blank, not just the first one.
+  for v in "${vars[@]}"; do
+    # Two patterns: BSD grep rejects an alternation with an empty branch.
+    if printf '%s\n' "$out" | grep -qE "^ +${v}: *(\"\"|'')$" \
+      || printf '%s\n' "$out" | grep -qE "^ +${v}: *$"; then
+      pass "$v is blank with '$service' off"
+    else
+      printf '%s\n' "$out" | grep -E "^ +${v}:" >&2
+      fail "$v is not blank with '$service' off"
+    fi
+  done
 }
 
 assert_service_dropped background     background     BACKGROUND_JOB_URL
 assert_service_dropped socket         socket         SOCKET_URL
-assert_service_dropped url-shortener  url-shortener  SHORTENER_HTTP_URL
+assert_service_dropped url-shortener  url-shortener  SHORTENER_HTTP_URL SHORTENER_HTTPS_URL
 
 echo "== dropping a bundled store leaves the rest of the graph resolvable =="
 without_pg="$(printf '%s' "$ALL_PROFILES" | tr ',' '\n' | grep -v '^infra-postgres$' | paste -sd, -)"
@@ -321,6 +326,21 @@ else
     fi
   done
   pass "--help documents every documented flag"
+  # Regression guards for the review findings.
+  if "$DEPLOY" --print-plan --non-interactive --domain d.example \
+      --env-out "$REPO_ROOT/README.md" --overwrite </dev/null >/dev/null 2>&1; then
+    fail "the deployer accepted a tracked file as --env-out"
+  else
+    pass "the deployer refuses a tracked file as --env-out"
+  fi
+  printf 'abc #def\n' > "$sandbox/bad.txt"
+  if "$DEPLOY" --non-interactive --yes --domain d.example --registry r/x --tag 1 \
+      --postgres-password-file "$sandbox/bad.txt" --minio-password-file "$sandbox/bad.txt" \
+      --env-out "$sandbox/.env2" </dev/null >/dev/null 2>&1; then
+    fail "the deployer accepted a secret Compose would truncate at ' #'"
+  else
+    pass "the deployer rejects a secret Compose would truncate"
+  fi
   rm -rf "$sandbox"
 fi
 
