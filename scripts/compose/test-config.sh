@@ -13,9 +13,7 @@ FAILURES=0
 pass() { printf '  ok   %s\n' "$1"; }
 fail() { printf '  FAIL %s\n' "$1" >&2; FAILURES=$((FAILURES + 1)); }
 
-# A fully populated environment used by assertions that need the graph to
-# resolve. Deliberately NOT sourced from any .env on disk, so a developer's
-# local .env can never make this suite pass or fail.
+# Never sourced from a real .env: a local file must not affect the result.
 full_env() {
   cat <<'ENV'
 DOMAIN=verify.example.com
@@ -68,9 +66,7 @@ run_config() {
 ALL_PROFILES=infra-postgres,infra-minio,infra-elasticsearch,background,socket,url-shortener
 
 echo "== no literal credentials in the tracked compose file =="
-# Anchored to a YAML key at the start of a line. Without the anchor the
-# interpolation `${POSTGRES_PASSWORD:?}` matches itself — "PASSWORD" then ":"
-# then "?" — and the assertion fires on the very construct it is asking for.
+# Line-anchored, or `${POSTGRES_PASSWORD:?}` matches itself.
 CRED_LITERAL='^[[:space:]]+[A-Z_]*(PASSWORD|SECRET|ROOT_USER|VALID_API_KEYS|SHORTENER_KEY)[A-Z_]*:[[:space:]]*[^$[:space:]]'
 if grep -nE "$CRED_LITERAL" "$COMPOSE_FILE" >/dev/null; then
   grep -nE "$CRED_LITERAL" "$COMPOSE_FILE" >&2
@@ -94,20 +90,14 @@ fi
 
 echo "== .env.example and the compose file agree =="
 compose_vars() {
-  # Two things must be stripped before scanning, or the assertion reports
-  # defects that are not there:
-  #   - comments, which document interpolation using `${VAR:?}` as prose;
-  #   - `$$`, Compose's escape for a literal `$` handed to the container's own
-  #     shell, so `$${MASTER_SSL_REQUIRED:-external}` is NOT a Compose variable.
+  # Strip comments and `$$` escapes; neither is a Compose variable.
   sed -e 's/#.*$//' -e 's/\$\$//g' "$COMPOSE_FILE" \
     | grep -oE '\$\{[A-Z_][A-Z0-9_]*' | sed 's/^\${//' | sort -u
 }
 example_vars() {
   grep -oE '^[A-Z_][A-Z0-9_]*=' "$ENV_EXAMPLE" | sed 's/=$//' | sort -u
 }
-# Variables the deployer consumes but the compose file never interpolates.
-# COMPOSE_PROFILES is read by Compose itself; TLS_MODE only steers certificate
-# handling in scripts/deploy-compose.sh.
+# Read by Compose or the deployer, never interpolated by the compose file.
 DEPLOYER_ONLY_VARS='^(COMPOSE_PROFILES|TLS_MODE)$'
 missing="$(comm -23 <(compose_vars) <(example_vars))"
 if [ -n "$missing" ]; then
@@ -155,9 +145,7 @@ else
 fi
 
 echo "== only nginx publishes a port =="
-# `docker compose config` renders published ports as a `published:` key under
-# each service. Walk the rendered document and attribute every published entry
-# to the service whose block it appeared in.
+# Attribute each rendered `published:` key to its owning service.
 publishers="$(run_config "$ALL_PROFILES,face-biometrics" | awk '
   /^  [a-z0-9_-]+:$/ { svc = $1; sub(/:$/, "", svc) }
   /published:/       { gsub(/"/, "", $2); print svc "=" $2 }
@@ -170,8 +158,7 @@ else
   pass "nginx is the only service publishing a port"
 fi
 
-# Numeric sort, or 443 lexicographically precedes 80 and the comparison fails
-# on ordering rather than on the ports actually published.
+# Numeric sort: 443 lexicographically precedes 80.
 nginx_ports="$(printf '%s\n' "$publishers" | grep '^nginx=' | cut -d= -f2 | sort -n -u | paste -sd, -)"
 if [ "$nginx_ports" = "80,443" ]; then
   pass "nginx publishes exactly 80 and 443"
@@ -180,8 +167,7 @@ else
 fi
 
 echo "== dropping a service profile removes it and blanks its advertised URL =="
-# The URL is blanked by the deployer writing an empty value, so the two are
-# asserted together the way a real deploy produces them.
+# Absence and blank URL asserted together, as a real deploy produces them.
 assert_service_dropped() {
   local profile="$1" service="$2" var="$3"
   local profiles out rc env_file
@@ -203,9 +189,7 @@ assert_service_dropped() {
   else
     pass "'$service' is absent with profile '$profile' dropped"
   fi
-  # Compose renders an empty value as `VAR: ""`, and older versions as a bare
-  # `VAR:`. Two patterns rather than one alternation with an empty branch,
-  # which BSD grep rejects outright ("empty (sub)expression").
+  # Two patterns: BSD grep rejects an alternation with an empty branch.
   if printf '%s\n' "$out" | grep -qE "^ +${var}: *(\"\"|'')$" \
     || printf '%s\n' "$out" | grep -qE "^ +${var}: *$"; then
     pass "$var is blank with '$service' off"
@@ -245,8 +229,7 @@ else
 fi
 
 echo "== every long-running service restarts and caps its logs =="
-# Slices the rendered document into per-service blocks so a key found for one
-# service is never credited to its neighbour.
+# Per-service blocks, so a key is never credited to a neighbour.
 service_block() {
   printf '%s\n' "$2" | awk -v s="  $1:" '
     $0 == s { inblock = 1; next }
@@ -289,6 +272,57 @@ for svc in postgres minio elasticsearch background idp socket url-shortener; do
     fail "$svc has no healthcheck"
   fi
 done
+
+echo "== the deployer plans without credentials, an image source, or side effects =="
+DEPLOY="$REPO_ROOT/scripts/deploy-compose.sh"
+if [ ! -x "$DEPLOY" ]; then
+  fail "scripts/deploy-compose.sh is missing or not executable"
+else
+  sandbox="$(mktemp -d)"
+  if "$DEPLOY" --print-plan --env-out "$sandbox/.env" --domain verify.example.com \
+      </dev/null >"$sandbox/plan.out" 2>&1; then
+    pass "--print-plan succeeds with no image source and no credentials"
+  else
+    cat "$sandbox/plan.out" >&2
+    fail "--print-plan failed"
+  fi
+  if "$DEPLOY" --uninstall --print-plan --env-out "$sandbox/.env" \
+      </dev/null >"$sandbox/uninstall.out" 2>&1; then
+    pass "--uninstall --print-plan succeeds"
+  else
+    cat "$sandbox/uninstall.out" >&2
+    fail "--uninstall --print-plan failed"
+  fi
+  if [ -e "$sandbox/.env" ]; then
+    fail "--print-plan wrote an .env file"
+  else
+    pass "--print-plan left no .env behind"
+  fi
+  if grep -qiE '(password|secret|key)=[A-Za-z0-9]{8,}' "$sandbox/plan.out"; then
+    fail "--print-plan printed an unredacted credential"
+  else
+    pass "--print-plan redacts credentials"
+  fi
+  # CIDR must be rejected: the IdP compares with exact string equality.
+  if "$DEPLOY" --print-plan --non-interactive --domain verify.example.com \
+      --root-access-ip 192.168.0.0/24 --env-out "$sandbox/.env" \
+      </dev/null >"$sandbox/cidr.out" 2>&1; then
+    fail "the deployer accepted a CIDR range for --root-access-ip"
+  else
+    pass "the deployer rejects CIDR for --root-access-ip"
+  fi
+  help_out="$("$DEPLOY" --help 2>&1)"
+  for flag in --domain --registry --tag --tls-mode --services --liveness \
+              --root-access-ip --minio-public-url --external-postgres \
+              --external-minio --external-elasticsearch --print-plan \
+              --uninstall --env-out --overwrite --non-interactive --yes; do
+    if printf '%s\n' "$help_out" | grep -q -- "$flag"; then :; else
+      fail "--help does not document $flag"
+    fi
+  done
+  pass "--help documents every documented flag"
+  rm -rf "$sandbox"
+fi
 
 echo
 if [ "$FAILURES" -eq 0 ]; then

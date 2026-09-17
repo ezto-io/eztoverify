@@ -1,59 +1,31 @@
-# Verify OSS — the deployment stack. Service images are PULLED from REGISTRY at
-# TAG; nothing is built here, so a deployer needs no toolchain.
+# Verify OSS deployment stack. Images are PULLED from REGISTRY at TAG.
 #
-# Brings up backing infra (postgres / minio / elasticsearch) plus the idp and
-# its services, fronted by an nginx TLS proxy serving the idp at
-# https://$DOMAIN/auth.
-#
-# Deploying:
 #   ./scripts/deploy-compose.sh --domain <domain> --registry <prefix> --tag <tag>
-# It generates a mode-600 .env, checks host preconditions, and starts the stack.
 #
-# By hand:
-#   1. cp .env.example .env                       # fill in DOMAIN, REGISTRY, TAG, credentials
-#   2. TLS certs in nginx/certs/ (fullchain.pem + privkey.pem) — real CA cert,
-#      or for testing: DOMAIN=<your-domain> ./nginx/gen-self-signed.sh
-#   3. Point DOMAIN at this host (DNS A record, or /etc/hosts -> 127.0.0.1)
-#   4. docker compose up -d
+# By hand: cp .env.example .env, put certs in nginx/certs/, docker compose up -d.
+# Build from source: -f docker-compose.yml -f docker-compose.build.yml up --build.
+# Local dev against infra only: docker-compose.dev.yml.
 #
-#   docker compose down               # stop
-#   docker compose down -v            # stop + WIPE volumes (irreversible)
-#
-# Building from source (contributors) — restores every build context:
-#   docker compose -f docker-compose.yml -f docker-compose.build.yml up --build
-#
-# Plain-HTTP local development (app code in your IDE against containerised
-# infra): use docker-compose.dev.yml instead — it is unaffected by this file.
-#
-# Every credential is read from .env as ${VAR:?}: an unset value stops the
-# stack with a named error rather than silently falling back to a default.
-#
-# Requires Docker Compose >= 2.20.0 for `depends_on: required: false`, which
-# is what lets a store be dropped by profile without breaking the graph.
-#
+# Requires Docker Compose >= 2.20.0 (depends_on: required: false).
 # Operations, upgrade, rollback, restore: docs/deployment-compose.md
 
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
-  # Every service caps its logs at 10 MB x 3 files. The daemon default is
-  # unbounded, so one noisy container can fill this host's disk and take the
-  # whole stack down with it.
+  # Logs capped at 10MB x 3; the daemon default is unbounded.
   #
-  # Backing stores and internal services publish NO ports: they reach each other
-  # over the compose network. Publishing one binds 0.0.0.0, which on a host with
-  # a public address exposes the database, object storage, and an Elasticsearch
-  # running with security disabled. nginx is the only entry point.
-  #
-  # If you genuinely need one for debugging, bind it to loopback explicitly —
-  # ports: ["127.0.0.1:5432:5432"] — and remove it again afterwards.
+  # NOTHING but nginx publishes a port. Publishing binds 0.0.0.0 and would expose
+  # the database, object storage, and a security-disabled Elasticsearch.
+  # For debugging use loopback: ports: ["127.0.0.1:5432:5432"].
   postgres:
     profiles: ["infra-postgres"]
     image: postgres:14-alpine
     container_name: ezto-postgres
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
@@ -71,11 +43,7 @@ services:
     profiles: ["infra-minio"]
     image: minio/minio
     container_name: ezto-minio
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     command: server /data --console-address ":9001"
     restart: unless-stopped
     environment:
@@ -92,17 +60,12 @@ services:
     profiles: ["infra-minio"]
     image: minio/mc
     container_name: ezto-minio-init
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     depends_on:
       minio:
         condition: service_healthy
         required: false
-    # Credentials arrive through the environment rather than being interpolated
-    # into the command string, so they never appear in the tracked file.
+    # Via environment, not the command string: never in the tracked file.
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:?}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?}
@@ -120,11 +83,7 @@ services:
     profiles: ["infra-elasticsearch"]
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
     container_name: ezto-elasticsearch
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     restart: unless-stopped
     environment:
       discovery.type: single-node
@@ -144,15 +103,9 @@ services:
   idp:
     image: ${REGISTRY:?set REGISTRY in .env}/ezto-idp:${TAG:?set TAG in .env}
     container_name: ezto-idp
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     restart: unless-stopped
-    # Stores and optional services may be excluded by profiles, so every such
-    # dependency is declared non-required: Compose reduces an absent dependency
-    # to a warning instead of failing the graph. Needs Compose >= 2.20.0.
+    # required: false — a profile-excluded dependency warns instead of failing.
     depends_on:
       postgres: { condition: service_healthy, required: false }
       minio: { condition: service_healthy, required: false }
@@ -171,8 +124,7 @@ services:
       # Master-realm admin, created on first boot against a fresh database.
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:?set KEYCLOAK_ADMIN in .env}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set KEYCLOAK_ADMIN_PASSWORD in .env}
-      # Public-TLS edge mode: nginx terminates HTTPS and forwards plain HTTP
-      # with X-Forwarded-* headers; KC_PROXY=edge makes Keycloak trust them.
+      # nginx terminates TLS; KC_PROXY=edge trusts its X-Forwarded-* headers.
       KC_HOSTNAME_URL: https://${DOMAIN:?set DOMAIN in .env}/auth
       KC_HOSTNAME: ${DOMAIN:?}
       KC_HOSTNAME_STRICT: "true"
@@ -181,25 +133,15 @@ services:
       KC_PROXY: edge
       IDP_HOST: http://idp:8080
       ENV: prod
-      # Runtime product discriminator. RealmManager.createRealm + .ftl templates call
-      # EnvironmentReader.getValue("VARIANT").equalsIgnoreCase(...) with no null guard —
-      # unset => NPE during master-realm bootstrap. "ezto verify" = the Verify offering.
+      # Unset => NPE in master-realm bootstrap (no null guard).
       VARIANT: "ezto verify"
       DASHBOARD_URL: https://${DOMAIN:?}
-      # Admin-console "Docs" link target. Set to your self-hosted documentation URL.
-      # Leave empty to show the bundled "documentation not configured" page instead.
       DOCS_URL: ${DOCS_URL:-}
-      # "Docs" link in emails / welcome page / account console. Set to your self-hosted docs URL;
-      # leave empty to hide those links.
       DOCS_LINK: ${DOCS_LINK:-}
-      # Welcome page isLocal() does ROOT_ACCESS_IP.split(",") with no null guard —
-      # unset => NPE => catch rethrows HTTP 500 on GET /auth/. Admin-route whitelist.
-      # Behind nginx (KC_PROXY=edge) the gate compares the X-Real-IP header, which is
-      # the real address of the browser doing the onboarding — not this host's own
-      # address. Exact IPs, no CIDR.
+      # Unset => NPE => HTTP 500 on GET /auth/. Matched against X-Real-IP, so it
+      # needs the onboarding browser's real IP. Exact IPs, no CIDR.
       ROOT_ACCESS_IP: ${ROOT_ACCESS_IP:?set ROOT_ACCESS_IP in .env}
-      # Each URL must be empty when its service is not running, so the IdP does
-      # not advertise something absent. See .env.example.
+      # Empty when the service is off, or the IdP advertises something absent.
       BACKGROUND_JOB_URL: ${BACKGROUND_JOB_URL:-}
       SHORTENER_HTTPS_URL: ${SHORTENER_HTTPS_URL:-}
       SHORTENER_HTTP_URL: ${SHORTENER_HTTP_URL:-}
@@ -207,18 +149,14 @@ services:
       LIVELINESS_URL: ${LIVELINESS_URL:-}
       SHORTENER_KEY: ${SHORTENER_KEY:?set SHORTENER_KEY in .env}
       MINIO_SERVER_URL: ${MINIO_SERVER_URL:?}
-      # v1 deliberately gives the application MinIO ROOT credentials. A leaked
-      # .env therefore yields full MinIO root access rather than scoped bucket
-      # access; a dedicated application key pair is recorded follow-up work.
+      # v1 uses MinIO ROOT credentials; a scoped key pair is follow-up work.
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:?}
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:?}
       MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:?set MINIO_PUBLIC_URL in .env}
       ES_HOST: ${ES_HOST:?set ES_HOST in .env}
       ES_PORT: ${ES_PORT:?set ES_PORT in .env}
       ES_SCHEME: ${ES_SCHEME:?set ES_SCHEME in .env}
-      # SMTP is configured per-tenant in the onboarding wizard (real provider). For local
-      # email testing run the maildev catcher from docker-compose.dev.yml and set
-      # SMTP_HOST=localhost SMTP_PORT=1025.
+      # SMTP is configured per tenant in the onboarding wizard.
       APP_PUSH_VERSION: 9.3.1
     healthcheck:
       # temurin jre has no curl; a bash TCP probe confirms the HTTP port is accepting.
@@ -237,11 +175,7 @@ services:
   idp-init:
     image: ${REGISTRY:?}/ezto-idp:${TAG:?}
     container_name: ezto-idp-init
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     depends_on:
       idp: { condition: service_healthy }
     network_mode: "service:idp"
@@ -264,11 +198,7 @@ services:
   certs-check:
     image: alpine:3.20
     container_name: ezto-certs-check
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     volumes:
       - ./nginx/certs:/certs:ro
     entrypoint:
@@ -288,11 +218,7 @@ services:
   nginx:
     image: nginx:1.27-alpine
     container_name: ezto-nginx
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     restart: unless-stopped
     depends_on:
       certs-check: { condition: service_completed_successfully }
@@ -310,11 +236,7 @@ services:
     profiles: ["background"]
     image: ${REGISTRY:?}/ezto-background:${TAG:?}
     container_name: ezto-background
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     restart: unless-stopped
     depends_on:
       postgres: { condition: service_healthy, required: false }
@@ -336,11 +258,7 @@ services:
     profiles: ["socket"]
     image: ${REGISTRY:?}/ezto-socket:${TAG:?}
     container_name: ezto-socket
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     restart: unless-stopped
     depends_on:
       postgres: { condition: service_healthy, required: false }
@@ -352,8 +270,7 @@ services:
       PGPASSWORD: ${POSTGRES_PASSWORD:?}
       PGDATABASE: socket
     healthcheck:
-      # The image carries node but no curl; a node TCP probe confirms the port
-      # is accepting. Verified against the running container before being added.
+      # node but no curl in the image; TCP probe.
       test: ["CMD-SHELL", "node -e 'require(\"net\").connect(3001,\"127.0.0.1\").on(\"connect\",()=>process.exit(0)).on(\"error\",()=>process.exit(1))'"]
       interval: 10s
       timeout: 5s
@@ -364,11 +281,7 @@ services:
     profiles: ["url-shortener"]
     image: ${REGISTRY:?}/ezto-url-shortener:${TAG:?}
     container_name: ezto-url-shortener
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     restart: unless-stopped
     depends_on:
       postgres: { condition: service_healthy, required: false }
@@ -379,8 +292,7 @@ services:
       VALID_API_KEYS: ${SHORTENER_KEY:?}
       FALLBACK_URL: https://${DOMAIN:?}
     healthcheck:
-      # The image carries node but no curl; a node TCP probe confirms the port
-      # is accepting. Verified against the running container before being added.
+      # node but no curl in the image; TCP probe.
       test: ["CMD-SHELL", "node -e 'require(\"net\").connect(3000,\"127.0.0.1\").on(\"connect\",()=>process.exit(0)).on(\"error\",()=>process.exit(1))'"]
       interval: 10s
       timeout: 5s
@@ -394,11 +306,7 @@ services:
     profiles: ["face-biometrics"]
     image: ${REGISTRY:?}/ezto-liveness:${TAG:?}
     container_name: ezto-liveness
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
     restart: unless-stopped
     depends_on:
       minio: { condition: service_healthy, required: false }

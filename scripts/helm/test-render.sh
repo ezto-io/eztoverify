@@ -32,6 +32,14 @@ assert_has "$TMP/registry.yaml" 'image: "example.test/myorg/ezto-idp:latest"'
 assert_has "$TMP/registry.yaml" 'image: "example.test/myorg/ezto-url-shortener:latest"'
 assert_lacks "$TMP/registry.yaml" 'REPLACE_ME'
 
+# ... including when liveness is the service being enabled.
+helm template ezto-verify "$CHART" -f "$CHART/values-kind.yaml" \
+  --set liveness.enabled=true \
+  --set liveness.image.repository=example.test/myorg/ezto-liveness \
+  --set liveness.image.tag=2.1.0 > "$TMP/registry-liveness.yaml"
+assert_has "$TMP/registry-liveness.yaml" 'name: ezto-verify-liveness'
+assert_has "$TMP/registry-liveness.yaml" 'image: "example.test/myorg/ezto-liveness:2.1.0"'
+
 helm template ezto-verify "$CHART" -f "$CHART/values-kind.yaml" \
   --set background.enabled=false \
   --set socket.enabled=false \
@@ -48,10 +56,39 @@ helm template ezto-verify "$CHART" -f "$CHART/values-kind.yaml" \
 assert_has "$TMP/liveness.yaml" 'name: ezto-verify-liveness'
 assert_has "$TMP/liveness.yaml" 'image: "REPLACE_ME/ezto-liveness:latest"'
 
-helm template ezto-verify "$CHART" -f "$CHART/values-kind.yaml" \
-  -f "$CHART/values-local-build.yaml" > "$TMP/local-build.yaml"
-assert_has "$TMP/local-build.yaml" 'image: "ezto-idp:latest"'
-assert_has "$TMP/local-build.yaml" 'imagePullPolicy: Never'
+for overlay in kind minikube; do
+  helm template ezto-verify "$CHART" -f "$CHART/values-$overlay.yaml" \
+    -f "$CHART/values-local-build.yaml" > "$TMP/local-build-$overlay.yaml"
+  assert_has "$TMP/local-build-$overlay.yaml" 'image: "ezto-idp:latest"'
+  assert_has "$TMP/local-build-$overlay.yaml" 'imagePullPolicy: Never'
+  assert_lacks "$TMP/local-build-$overlay.yaml" 'REPLACE_ME'
+done
 
 helm lint "$CHART" >/dev/null
-printf 'PASS: placeholder, registry-override, optional-service, liveness, and local-build renders\n'
+
+# Installer plan checks. --print-plan reaches no cluster and writes no files.
+INSTALL="$ROOT/scripts/install.sh"
+
+# Removing a release must not demand an image source or credentials.
+"$INSTALL" --non-interactive --uninstall --context test-ctx --print-plan > "$TMP/uninstall-plan.txt"
+assert_has "$TMP/uninstall-plan.txt" "Would uninstall Helm release 'ezto-verify'"
+
+# Installing without any image source must refuse rather than guess.
+if "$INSTALL" --non-interactive --context test-ctx --print-plan > "$TMP/no-image.txt" 2>&1; then
+  fail "install.sh accepted an install with no image source"
+fi
+assert_has "$TMP/no-image.txt" 'no image source was given'
+
+# Both image layouts must resolve for every enabled service.
+"$INSTALL" --non-interactive --context test-ctx --registry example.test/myorg --image-tag 3.2.1 \
+  --print-plan > "$TMP/plan-registry.txt"
+assert_has "$TMP/plan-registry.txt" 'idp=example.test/myorg/ezto-idp:3.2.1'
+assert_has "$TMP/plan-registry.txt" 'url-shortener=example.test/myorg/ezto-url-shortener:3.2.1'
+
+"$INSTALL" --non-interactive --context test-ctx --image-repo example.test/myorg/ezto-oss \
+  --services socket --print-plan > "$TMP/plan-repo.txt"
+assert_has "$TMP/plan-repo.txt" 'idp=example.test/myorg/ezto-oss:idp'
+assert_has "$TMP/plan-repo.txt" 'socket=example.test/myorg/ezto-oss:socket'
+assert_lacks "$TMP/plan-repo.txt" 'background='
+
+printf 'PASS: chart renders (placeholder, registry override, liveness, optional services, both local-build overlays) and installer plans\n'
