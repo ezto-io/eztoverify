@@ -20,6 +20,10 @@ WORKDIR /src
 # Full idp source (themes + keycloak + qlik-verify-addons + build-tools + build.sh).
 # .dockerignore trims build outputs (build_*/target/node_modules) and dev cruft.
 COPY . .
+# Build-time options, baked by kc.sh build below. Must match the runtime values in
+# docker-compose.yml, or --auto-build re-augments the image on every boot.
+ENV KC_DB=postgres \
+    KC_HEALTH_ENABLED=true
 # build.sh -p true -> ./docker-keycloak (the assembled dist). Then kc.sh build augments
 # it (jlink needs the JDK present in this stage); http-relative-path=/auth lives in the
 # dist conf and is preserved by the augmentation.

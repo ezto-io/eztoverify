@@ -116,7 +116,10 @@ services:
     # No published ports — nginx (80/443) is the only entry point. Internal
     # traffic (nginx -> idp, idp-init) uses 8080 on the compose network.
     environment:
+      # Build-time options: keep in step with the ENV baked in idp/Dockerfile.
+      # Any drift, including leaving one unset, re-augments the image on every boot.
       KC_DB: postgres
+      KC_HEALTH_ENABLED: "true"
       KC_DB_URL_HOST: ${POSTGRES_HOST:?set POSTGRES_HOST in .env}
       KC_DB_URL_PORT: ${POSTGRES_PORT:?set POSTGRES_PORT in .env}
       KC_DB_USERNAME: ${POSTGRES_USER:?}
@@ -160,8 +163,15 @@ services:
       # SMTP is configured per tenant in the onboarding wizard.
       APP_PUSH_VERSION: 9.3.1
     healthcheck:
-      # temurin jre has no curl; a bash TCP probe confirms the HTTP port is accepting.
-      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/8080' 2>/dev/null || exit 1"]
+      # Keycloak's own readiness (datasource check); 404 means KC_HEALTH_ENABLED was
+      # not baked. temurin jre has no curl, so speak HTTP over bash's /dev/tcp — the
+      # folded scalar keeps \r\n literal for printf instead of letting YAML eat them.
+      test:
+        - CMD-SHELL
+        - >-
+          bash -c 'exec 3<>/dev/tcp/localhost/8080 &&
+          printf "GET /auth/health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 &&
+          head -1 <&3 | grep -q " 200 "'
       interval: 10s
       timeout: 5s
       retries: 30
