@@ -71,41 +71,59 @@ ezto Verify follows a microservices architecture. Unlike a stock Keycloak deploy
 
 ### Required Infrastructure
 
-| Service | Port | Purpose |
-|---------|------|---------|
+| Service | Internal port | Purpose |
+|---------|---------------|---------|
 | PostgreSQL 14+ | 5432 | Primary datastore (databases: `eztoverify`, `jobrnr`, `urlshortner`, `socket`) |
 | MinIO | 9000 / 9001 | S3-compatible object storage for selfie / document / biometric files |
 | Elasticsearch 7 | 9200 | Event / audit / transaction store (read by the idp) |
+
+> These ports are reachable only on the compose network. In the deployment stack nothing but
+> nginx (80/443) is published on a host interface.
 
 > **Email (dev only):** a MailDev SMTP catcher (1025 / 1080 UI) ships in `docker-compose.dev.yml` for local email-flow testing. Not part of the core stack — replace with a real provider (configured per-tenant in the onboarding wizard) in production.
 
 ## Quick Start (Docker Compose)
 
-The fastest path. The full core stack is **built from source** on each run (no prebuilt images shipped) and served **over HTTPS** behind the bundled nginx TLS proxy. One-time setup — the stack refuses to start without a domain and certs:
+Single-host production path. Service images are **pulled** from a registry; nothing is built,
+so the host needs no toolchain.
 
 ```bash
-# 1. Domain
-cp .env.example .env                                   # set DOMAIN=verify.example.com
-
-# 2. TLS certs in nginx/certs/ (fullchain.pem + privkey.pem) — real CA cert,
-#    or a throwaway self-signed one for testing:
-DOMAIN=verify.example.com ./nginx/gen-self-signed.sh
-
-# 3. Point the domain at this host (DNS A record, or /etc/hosts -> 127.0.0.1 locally)
-
-# Build + start everything (infra + idp + services + nginx)
-docker compose up --build
-
-# Stop / wipe:
-docker compose down            # stop
-docker compose down -v         # stop + wipe volumes
+./scripts/deploy-compose.sh --domain verify.example.com --registry eztovrfy --tag 1.0.0
 ```
 
-The idp comes up at **https://\<your-domain\>/auth** (admin console `/auth/admin/`, default `admin` / `admin` — change before any non-local use). Missing `DOMAIN` fails at compose parse; missing certs fail the `certs-check` one-shot with instructions. The idp build is heavy (compiles Keycloak + verification modules + themes); give Docker ample RAM/disk.
+Images resolve as `<registry>/<service>:<tag>`. Two other layouts are supported:
+`--image-prefix ezto-` for the Helm chart's naming, and `--image-repo myorg/ezto-oss` for a
+single repository whose tag is the service name. An explicit `--<service>-image` always wins.
 
-> Replace every `REPLACE_ME` / `change_me_*` value in `docker-compose.yml` before any non-local use.
+The deployer generates a mode-600 `.env` holding every credential, checks the host
+preconditions, and starts the stack. Run it with `--print-plan` first to see what it would do
+without changing anything. Full operations guide:
+[docs/deployment-compose.md](./docs/deployment-compose.md).
 
-For plain-HTTP local development, use `docker-compose.dev.yml` (infra only — see Step 1 below) and run the app code locally.
+The idp comes up at **https://\<your-domain\>/auth** (admin console `/auth/admin/`). The
+generated admin password is in `.env` as `KEYCLOAK_ADMIN_PASSWORD`.
+
+Master-tenant onboarding is restricted to the exact IPs in `ROOT_ACCESS_IP`, matched against
+the browser's real address. If it is rejected, check `docker compose logs nginx | tail -5` for
+the address nginx saw.
+
+**Contributing** — build every service from source:
+
+```bash
+cp .env.example .env    # fill in DOMAIN, the *_IMAGE references and credentials
+docker compose -f docker-compose.yml -f docker-compose.build.yml up --build
+```
+
+The idp build is heavy (compiles Keycloak + verification modules + themes); give Docker ample
+RAM and disk.
+
+```bash
+docker compose down            # stop
+docker compose down -v         # stop + WIPE volumes (irreversible)
+```
+
+For plain-HTTP local development, use `docker-compose.dev.yml` (infra only — see Step 1 below)
+and run the app code locally.
 
 ## Step-by-Step Deployment Guide
 
@@ -147,7 +165,7 @@ docker run -d --name ezto-elasticsearch \
 The idp is the Keycloak 18 fork. Build it from source via Docker (recommended — pins JDK 11):
 
 ```bash
-docker compose up --build idp
+docker compose -f docker-compose.yml -f docker-compose.build.yml up --build idp
 # or build the image standalone:
 docker build -t ezto-idp ./idp
 ```
@@ -261,7 +279,8 @@ Each flag is optional; re-running overwrites only those keys. Needs `curl` + `jq
 HTTPS is built into `docker-compose.yml` — the bundled nginx terminates TLS for
 `https://<your-domain>/auth` and is the stack's only published entry point. Setup
 (domain, certs, renewals, exposing extra services on the domain) is covered in the
-[Quick Start](#quick-start-docker-compose) and [nginx/README.md](./nginx/README.md).
+[Quick Start](#quick-start-docker-compose), [docs/deployment-compose.md](./docs/deployment-compose.md),
+and [nginx/README.md](./nginx/README.md).
 
 > **Note:** master-tenant onboarding sees the `X-Real-IP` the proxy forwards. A
 > remote browser's real IP must be added to `ROOT_ACCESS_IP` before onboarding

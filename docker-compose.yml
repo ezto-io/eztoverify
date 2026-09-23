@@ -1,51 +1,55 @@
-# Verify OSS — full core stack over HTTPS, one shot:  docker compose up --build
+# Verify OSS deployment stack. Each service pulls one resolved image reference
+# from .env, so any registry naming works. scripts/deploy-compose.sh derives them.
 #
-# Brings up backing infra (postgres / minio / elasticsearch) plus the idp and
-# 4 services, each BUILT FROM SOURCE on every run (no prebuilt images), fronted
-# by an nginx TLS proxy serving the idp at https://$DOMAIN/auth.
+#   ./scripts/deploy-compose.sh --domain <domain> --registry <prefix> --tag <tag>
 #
-# One-time setup (the stack refuses to start without it):
-#   1. cp .env.example .env                       # set DOMAIN=verify.example.com
-#   2. TLS certs in nginx/certs/ (fullchain.pem + privkey.pem) — real CA cert,
-#      or for testing: DOMAIN=<your-domain> ./nginx/gen-self-signed.sh
-#   3. Point DOMAIN at this host (DNS A record, or /etc/hosts -> 127.0.0.1)
+# By hand: cp .env.example .env, put certs in nginx/certs/, docker compose up -d.
+# Build from source: -f docker-compose.yml -f docker-compose.build.yml up --build.
+# Local dev against infra only: docker-compose.dev.yml.
 #
-#   docker compose up --build         # build + start everything
-#   docker compose down               # stop
-#   docker compose down -v            # stop + wipe volumes
-#
-# Plain-HTTP local development (app code in your IDE against containerised
-# infra): use docker-compose.dev.yml instead — it is unaffected by this file.
-#
-# Replace every REPLACE_ME / change_me_* value before any non-local use.
+# Requires Docker Compose >= 2.20.0 (depends_on: required: false).
+# Operations, upgrade, rollback, restore: docs/deployment-compose.md
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
 
 services:
+  # Logs capped at 10MB x 3; the daemon default is unbounded.
+  #
+  # NOTHING but nginx publishes a port. Publishing binds 0.0.0.0 and would expose
+  # the database, object storage, and a security-disabled Elasticsearch.
+  # For debugging use loopback: ports: ["127.0.0.1:5432:5432"].
   postgres:
+    profiles: ["infra-postgres"]
     image: postgres:14-alpine
     container_name: ezto-postgres
+    logging: *logging
     restart: unless-stopped
-    ports: ["5432:5432"]
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./init-databases.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   minio:
-    image: minio/minio
+    profiles: ["infra-minio"]
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
     container_name: ezto-minio
+    logging: *logging
     command: server /data --console-address ":9001"
     restart: unless-stopped
-    ports: ["9000:9000", "9001:9001"]
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin123
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER in .env}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env}
     volumes: ["miniodata:/data"]
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
@@ -54,24 +58,34 @@ services:
       retries: 5
 
   minio-init:
-    image: minio/mc
+    profiles: ["infra-minio"]
+    image: quay.io/minio/mc:RELEASE.2025-08-13T08-35-41Z
     container_name: ezto-minio-init
+    logging: *logging
     depends_on:
       minio:
         condition: service_healthy
+        required: false
+    # Via environment, not the command string: never in the tracked file.
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?}
+      MINIO_BUCKET: ${MINIO_BUCKET:?set MINIO_BUCKET in .env}
+      MINIO_SERVER_URL: ${MINIO_SERVER_URL:?set MINIO_SERVER_URL in .env}
     entrypoint: >
       /bin/sh -c "
-      mc alias set local http://minio:9000 minioadmin minioadmin123 &&
-      mc mb -p local/ezto-verify || true &&
-      mc anonymous set download local/ezto-verify/public || true
+      mc alias set local \"$$MINIO_SERVER_URL\" \"$$MINIO_ROOT_USER\" \"$$MINIO_ROOT_PASSWORD\" &&
+      mc mb -p \"local/$$MINIO_BUCKET\" || true &&
+      mc anonymous set download \"local/$$MINIO_BUCKET/public\" || true
       "
     restart: "no"
 
   elasticsearch:
+    profiles: ["infra-elasticsearch"]
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
     container_name: ezto-elasticsearch
+    logging: *logging
     restart: unless-stopped
-    ports: ["9200:9200"]
     environment:
       discovery.type: single-node
       xpack.security.enabled: "false"
@@ -88,78 +102,78 @@ services:
       retries: 10
 
   idp:
-    build:
-      context: ./idp
-    image: ezto-idp
+    image: ${IDP_IMAGE:?set IDP_IMAGE in .env}
     container_name: ezto-idp
+    logging: *logging
     restart: unless-stopped
+    # required: false — a profile-excluded dependency warns instead of failing.
     depends_on:
-      postgres: { condition: service_healthy }
-      minio: { condition: service_healthy }
-      minio-init: { condition: service_completed_successfully }
-      elasticsearch: { condition: service_healthy }
-      background: { condition: service_healthy }
+      postgres: { condition: service_healthy, required: false }
+      minio: { condition: service_healthy, required: false }
+      minio-init: { condition: service_completed_successfully, required: false }
+      elasticsearch: { condition: service_healthy, required: false }
+      background: { condition: service_healthy, required: false }
     # No published ports — nginx (80/443) is the only entry point. Internal
     # traffic (nginx -> idp, idp-init) uses 8080 on the compose network.
     environment:
+      # Build-time options: keep in step with the ENV baked in idp/Dockerfile.
+      # Any drift, including leaving one unset, re-augments the image on every boot.
       KC_DB: postgres
-      KC_DB_URL_HOST: postgres
-      KC_DB_URL_PORT: "5432"
-      KC_DB_USERNAME: admin
-      KC_DB_PASSWORD: admin
+      KC_HEALTH_ENABLED: "true"
+      KC_DB_URL_HOST: ${POSTGRES_HOST:?set POSTGRES_HOST in .env}
+      KC_DB_URL_PORT: ${POSTGRES_PORT:?set POSTGRES_PORT in .env}
+      KC_DB_USERNAME: ${POSTGRES_USER:?}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:?}
       KC_DB_URL_DATABASE: eztoverify
-      # Master-realm admin (created on first boot / fresh DB). Change before non-local use.
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-      # Public-TLS edge mode: nginx terminates HTTPS and forwards plain HTTP
-      # with X-Forwarded-* headers; KC_PROXY=edge makes Keycloak trust them.
-      KC_HOSTNAME_URL: https://${DOMAIN}/auth
-      KC_HOSTNAME: ${DOMAIN}
+      # Master-realm admin, created on first boot against a fresh database.
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:?set KEYCLOAK_ADMIN in .env}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set KEYCLOAK_ADMIN_PASSWORD in .env}
+      # nginx terminates TLS; KC_PROXY=edge trusts its X-Forwarded-* headers.
+      KC_HOSTNAME_URL: https://${DOMAIN:?set DOMAIN in .env}/auth
+      KC_HOSTNAME: ${DOMAIN:?}
       KC_HOSTNAME_STRICT: "true"
       KC_HOSTNAME_STRICT_HTTPS: "true"
       KC_HTTP_ENABLED: "true"
       KC_PROXY: edge
       IDP_HOST: http://idp:8080
-      ENV: dev
-      # Runtime product discriminator. RealmManager.createRealm + .ftl templates call
-      # EnvironmentReader.getValue("VARIANT").equalsIgnoreCase(...) with no null guard —
-      # unset => NPE during master-realm bootstrap. "ezto verify" = the Verify offering.
+      ENV: prod
+      # Realm holding the root account; empty falls back to "master".
+      ROOT_ACCOUNT_NAME: ${ROOT_ACCOUNT_NAME:-}
+      # Unset => NPE in master-realm bootstrap (no null guard).
       VARIANT: "ezto verify"
-      DASHBOARD_URL: https://${DOMAIN}
-      # Admin-console "Docs" link target. Set to your self-hosted documentation URL.
-      # Leave empty to show the bundled "documentation not configured" page instead.
-      DOCS_URL: ""
-      # "Docs" link in emails / welcome page / account console. Set to your self-hosted docs URL;
-      # leave empty to hide those links.
-      DOCS_LINK: ""
-      # Welcome page isLocal() does ROOT_ACCESS_IP.split(",") with no null guard —
-      # unset => NPE => catch rethrows HTTP 500 on GET /auth/. Admin-route whitelist.
-      # Behind nginx (KC_PROXY=edge) the gate compares the X-Real-IP header. For a
-      # browser on THIS host that is the docker gateway nginx sees as its TCP peer:
-      # 192.168.65.1 on Docker Desktop (Mac/Win), 172.20.0.1 on a plain Linux
-      # bridge — both allowed below. A REMOTE browser arrives with its real
-      # public IP: add it here before master-tenant onboarding. Exact IPs, no CIDR.
-      ROOT_ACCESS_IP: 127.0.0.1,0.0.0.0,::1,172.20.0.1,192.168.65.1
-      BACKGROUND_JOB_URL: http://background:8070
-      SHORTENER_HTTPS_URL: http://url-shortener:3000
-      SHORTENER_HTTP_URL: http://url-shortener:3000
-      SHORTENER_KEY: change_me_key
-      SOCKET_URL: http://socket:3001
-      LIVELINESS_URL: http://liveness:5000
-      MINIO_SERVER_URL: http://minio:9000
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin123
-      MINIO_PUBLIC_URL: http://localhost:9000/ezto-verify/public
-      ES_HOST: elasticsearch
-      ES_PORT: "9200"
-      ES_SCHEME: http
-      # SMTP is configured per-tenant in the onboarding wizard (real provider). For local
-      # email testing run the maildev catcher from docker-compose.dev.yml and set
-      # SMTP_HOST=localhost SMTP_PORT=1025.
+      DASHBOARD_URL: https://${DOMAIN:?}
+      DOCS_URL: ${DOCS_URL:-}
+      DOCS_LINK: ${DOCS_LINK:-}
+      # Unset => NPE => HTTP 500 on GET /auth/. Matched against X-Real-IP, so it
+      # needs the onboarding browser's real IP. Exact IPs, no CIDR.
+      ROOT_ACCESS_IP: ${ROOT_ACCESS_IP:?set ROOT_ACCESS_IP in .env}
+      # Empty when the service is off, or the IdP advertises something absent.
+      BACKGROUND_JOB_URL: ${BACKGROUND_JOB_URL:-}
+      SHORTENER_HTTPS_URL: ${SHORTENER_HTTPS_URL:-}
+      SHORTENER_HTTP_URL: ${SHORTENER_HTTP_URL:-}
+      SOCKET_URL: ${SOCKET_URL:-}
+      LIVELINESS_URL: ${LIVELINESS_URL:-}
+      SHORTENER_KEY: ${SHORTENER_KEY:?set SHORTENER_KEY in .env}
+      MINIO_SERVER_URL: ${MINIO_SERVER_URL:?}
+      # v1 uses MinIO ROOT credentials; a scoped key pair is follow-up work.
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:?}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:?}
+      MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:?set MINIO_PUBLIC_URL in .env}
+      ES_HOST: ${ES_HOST:?set ES_HOST in .env}
+      ES_PORT: ${ES_PORT:?set ES_PORT in .env}
+      ES_SCHEME: ${ES_SCHEME:?set ES_SCHEME in .env}
+      # SMTP is configured per tenant in the onboarding wizard.
       APP_PUSH_VERSION: 9.3.1
     healthcheck:
-      # temurin jre has no curl; a bash TCP probe confirms the HTTP port is accepting.
-      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/8080' 2>/dev/null || exit 1"]
+      # Keycloak's own readiness (datasource check); 404 means KC_HEALTH_ENABLED was
+      # not baked. temurin jre has no curl, so speak HTTP over bash's /dev/tcp — the
+      # folded scalar keeps \r\n literal for printf instead of letting YAML eat them.
+      test:
+        - CMD-SHELL
+        - >-
+          bash -c 'exec 3<>/dev/tcp/localhost/8080 &&
+          printf "GET /auth/health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 &&
+          head -1 <&3 | grep -q " 200 "'
       interval: 10s
       timeout: 5s
       retries: 30
@@ -172,14 +186,16 @@ services:
   # loopback (network_mode: service:idp) so the call bypasses the SSL policy.
   # Override MASTER_SSL_REQUIRED=none only for throwaway plain-HTTP experiments.
   idp-init:
-    image: ezto-idp
+    # Same image as the idp: idp-init runs kcadm.sh out of it.
+    image: ${IDP_IMAGE:?}
     container_name: ezto-idp-init
+    logging: *logging
     depends_on:
       idp: { condition: service_healthy }
     network_mode: "service:idp"
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:?}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?}
       MASTER_SSL_REQUIRED: external
     entrypoint:
       - /bin/sh
@@ -196,6 +212,7 @@ services:
   certs-check:
     image: alpine:3.20
     container_name: ezto-certs-check
+    logging: *logging
     volumes:
       - ./nginx/certs:/certs:ro
     entrypoint:
@@ -215,6 +232,7 @@ services:
   nginx:
     image: nginx:1.27-alpine
     container_name: ezto-nginx
+    logging: *logging
     restart: unless-stopped
     depends_on:
       certs-check: { condition: service_completed_successfully }
@@ -224,23 +242,25 @@ services:
       - "443:443"
     environment:
       DOMAIN: ${DOMAIN:?set DOMAIN in .env (e.g. verify.example.com) — see .env.example}
+      # Realm in the admin-console path /auth/ redirects to.
+      ROOT_ACCOUNT_NAME: ${ROOT_ACCOUNT_NAME:-master}
     volumes:
       - ./nginx/templates:/etc/nginx/templates:ro
       - ./nginx/certs:/etc/nginx/certs:ro
 
   background:
-    build:
-      context: ./services/background
+    profiles: ["background"]
+    image: ${BACKGROUND_IMAGE:?set BACKGROUND_IMAGE in .env}
     container_name: ezto-background
+    logging: *logging
     restart: unless-stopped
     depends_on:
-      postgres: { condition: service_healthy }
-    ports: ["8070:8070"]
+      postgres: { condition: service_healthy, required: false }
     environment:
       JOB_DB_TYPE: psql
-      JOB_DB_URL: jdbc:postgresql://postgres:5432/jobrnr
-      JOB_DB_USER: admin
-      JOB_DB_PASSWORD: admin
+      JOB_DB_URL: jdbc:postgresql://${POSTGRES_HOST:?}:${POSTGRES_PORT:?}/jobrnr
+      JOB_DB_USER: ${POSTGRES_USER:?}
+      JOB_DB_PASSWORD: ${POSTGRES_PASSWORD:?}
     healthcheck:
       # idp queries background at startup (management-keys scheduler) — wait for it.
       # temurin jre has bash but no curl; use a bash TCP probe on the HTTP port.
@@ -251,51 +271,69 @@ services:
       start_period: 30s
 
   socket:
-    build:
-      context: ./services/socket
+    profiles: ["socket"]
+    image: ${SOCKET_IMAGE:?set SOCKET_IMAGE in .env}
     container_name: ezto-socket
+    logging: *logging
     restart: unless-stopped
     depends_on:
-      postgres: { condition: service_healthy }
-    ports: ["3001:3001"]
+      postgres: { condition: service_healthy, required: false }
     environment:
       PORT: "3001"
-      PGHOST: postgres
-      PGPORT: "5432"
-      PGUSER: admin
-      PGPASSWORD: admin
+      PGHOST: ${POSTGRES_HOST:?}
+      PGPORT: ${POSTGRES_PORT:?}
+      PGUSER: ${POSTGRES_USER:?}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?}
       PGDATABASE: socket
+    healthcheck:
+      # node but no curl in the image; TCP probe.
+      test: ["CMD-SHELL", "node -e 'require(\"net\").connect(3001,\"127.0.0.1\").on(\"connect\",()=>process.exit(0)).on(\"error\",()=>process.exit(1))'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   url-shortener:
-    build:
-      context: ./services/url-shortener
+    profiles: ["url-shortener"]
+    image: ${URL_SHORTENER_IMAGE:?set URL_SHORTENER_IMAGE in .env}
     container_name: ezto-url-shortener
+    logging: *logging
     restart: unless-stopped
     depends_on:
-      postgres: { condition: service_healthy }
-    ports: ["3000:3000"]
+      postgres: { condition: service_healthy, required: false }
     environment:
       PORT: "3000"
-      DATABASE_URL: postgresql://admin:admin@postgres:5432/urlshortner?schema=public
-      VALID_API_KEYS: change_me_key
-      FALLBACK_URL: https://${DOMAIN}
+      # The "urlshortner" spelling is intentional; it matches init-databases.sql.
+      DATABASE_URL: postgresql://${POSTGRES_USER:?}:${POSTGRES_PASSWORD:?}@${POSTGRES_HOST:?}:${POSTGRES_PORT:?}/urlshortner?schema=public
+      VALID_API_KEYS: ${SHORTENER_KEY:?}
+      FALLBACK_URL: https://${DOMAIN:?}
+    healthcheck:
+      # node but no curl in the image; TCP probe.
+      test: ["CMD-SHELL", "node -e 'require(\"net\").connect(3000,\"127.0.0.1\").on(\"connect\",()=>process.exit(0)).on(\"error\",()=>process.exit(1))'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   liveness:
     # Face-match / liveness inference (Python + deepface/whisper). Only needed for biometric
     # face-liveness verification flows; the IdP does NOT depend on it to boot. Heavy/slow build,
     # so it is opt-in via a compose profile. Start it with:  docker compose --profile face-biometrics up -d
     profiles: ["face-biometrics"]
-    build:
-      context: ./services/liveness
+    # Optional, not ${VAR:?}: Compose interpolates before it filters by profile,
+    # so a required value here would break every liveness-off deployment.
+    # With the profile on and no value, Compose refuses with 'neither an image
+    # nor a build context specified'.
+    image: ${LIVENESS_IMAGE:-}
     container_name: ezto-liveness
+    logging: *logging
     restart: unless-stopped
     depends_on:
-      minio: { condition: service_healthy }
-    ports: ["5000:5000"]
+      minio: { condition: service_healthy, required: false }
     environment:
-      MINIO_HOST: minio:9000
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET: minioadmin123
+      MINIO_HOST: ${MINIO_SERVER_URL:?}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:?}
+      MINIO_SECRET: ${MINIO_ROOT_PASSWORD:?}
       FACE_TOLERANCE: "0.68"
 
 volumes:

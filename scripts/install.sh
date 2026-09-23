@@ -180,6 +180,9 @@ if [ "$NON_INTERACTIVE" = false ]; then
   CONTEXT="$(prompt_value "Kubernetes context" "$CONTEXT")"
   NAMESPACE="$(prompt_value "Namespace" "$NAMESPACE")"
   RELEASE="$(prompt_value "Helm release" "$RELEASE")"
+fi
+
+if [ "$NON_INTERACTIVE" = false ] && [ "$UNINSTALL" = false ]; then
   if [ -z "$IMAGE_REPO" ] && [ -z "$REGISTRY" ]; then
     echo "The chart ships no default image registry. Give the registry prefix holding" >&2
     echo "one repository per service (ezto-idp, ezto-background, ezto-socket," >&2
@@ -205,6 +208,27 @@ fi
 [ -n "$CONTEXT" ] || { echo "error: --context is required" >&2; exit 2; }
 case "$NAMESPACE" in ''|*[!a-z0-9-]*|-*|*-) echo "error: invalid namespace '$NAMESPACE'" >&2; exit 2 ;; esac
 case "$RELEASE" in ''|*[!a-z0-9-]*|-*|*-) echo "error: invalid release '$RELEASE'" >&2; exit 2 ;; esac
+
+# Removing a release needs a context, a namespace, and a release name -- not an
+# image source and not credentials. Handle it before either is resolved.
+if [ "$UNINSTALL" = true ]; then
+  if [ "$PRINT_PLAN" = true ]; then
+    echo "Would uninstall Helm release '$RELEASE' from namespace '$NAMESPACE' using context '$CONTEXT'."
+    exit 0
+  fi
+  command -v helm >/dev/null 2>&1 || { echo "error: helm is required" >&2; exit 3; }
+  command -v kubectl >/dev/null 2>&1 || { echo "error: kubectl is required" >&2; exit 3; }
+  if [ "$YES" = false ]; then
+    if [ "$NON_INTERACTIVE" = true ] || ! prompt_yes_no "Uninstall release '$RELEASE'? PVCs and namespace will remain" false; then
+      echo "Cancelled; no changes were made."
+      exit 5
+    fi
+  fi
+  helm --kube-context "$CONTEXT" uninstall "$RELEASE" --namespace "$NAMESPACE"
+  echo "Release removed. PVCs, namespace, and cluster were intentionally retained."
+  exit 0
+fi
+
 case "$ROOT_ACCESS_IP" in ''|*/*|*[!0-9a-fA-F:.,]*) echo "error: root access IPs must be exact comma-separated IPs; CIDR is unsupported" >&2; exit 2 ;; esac
 
 for service in $(printf '%s' "$SERVICES" | tr ',' ' '); do
@@ -247,10 +271,7 @@ image_plan() {
 }
 
 if [ "$PRINT_PLAN" = true ]; then
-  if [ "$UNINSTALL" = true ]; then
-    echo "Would uninstall Helm release '$RELEASE' from namespace '$NAMESPACE' using context '$CONTEXT'."
-  else
-    cat <<EOF
+  cat <<EOF
 Context:    $CONTEXT
 Namespace:  $NAMESPACE
 Release:    $RELEASE
@@ -261,7 +282,6 @@ MailDev:    $MAILDEV
 Values:     $VALUES_OUT (would be generated with credentials redacted)
 Command:    helm upgrade --install $RELEASE $CHART --namespace $NAMESPACE --create-namespace -f $VALUES_OUT --wait --timeout $TIMEOUT
 EOF
-  fi
   exit 0
 fi
 
@@ -298,24 +318,6 @@ ADMIN_PASSWORD="$(read_secret "$ADMIN_PASSWORD_FILE")"
 POSTGRES_PASSWORD="$(read_secret "$POSTGRES_PASSWORD_FILE")"
 MINIO_PASSWORD="$(read_secret "$MINIO_PASSWORD_FILE")"
 SHORTENER_KEY="$(read_secret "$SHORTENER_KEY_FILE")"
-
-if [ "$UNINSTALL" = true ]; then
-  if [ "$PRINT_PLAN" = true ]; then
-    echo "Would uninstall Helm release '$RELEASE' from namespace '$NAMESPACE' using context '$CONTEXT'."
-    exit 0
-  fi
-  command -v helm >/dev/null 2>&1 || { echo "error: helm is required" >&2; exit 3; }
-  command -v kubectl >/dev/null 2>&1 || { echo "error: kubectl is required" >&2; exit 3; }
-  if [ "$YES" = false ]; then
-    if [ "$NON_INTERACTIVE" = true ] || ! prompt_yes_no "Uninstall release '$RELEASE'? PVCs and namespace will remain" false; then
-      echo "Cancelled; no changes were made."
-      exit 5
-    fi
-  fi
-  helm --kube-context "$CONTEXT" uninstall "$RELEASE" --namespace "$NAMESPACE"
-  echo "Release removed. PVCs, namespace, and cluster were intentionally retained."
-  exit 0
-fi
 
 VALUES_DIR="$(dirname "$VALUES_OUT")"
 if [ ! -d "$VALUES_DIR" ]; then
