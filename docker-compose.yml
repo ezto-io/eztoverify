@@ -42,7 +42,7 @@ services:
 
   minio:
     profiles: ["infra-minio"]
-    image: minio/minio
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
     container_name: ezto-minio
     logging: *logging
     command: server /data --console-address ":9001"
@@ -59,7 +59,7 @@ services:
 
   minio-init:
     profiles: ["infra-minio"]
-    image: minio/mc
+    image: quay.io/minio/mc:RELEASE.2025-08-13T08-35-41Z
     container_name: ezto-minio-init
     logging: *logging
     depends_on:
@@ -137,6 +137,8 @@ services:
       KC_PROXY: edge
       IDP_HOST: http://idp:8080
       ENV: prod
+      # Realm holding the root account; empty falls back to "master".
+      ROOT_ACCOUNT_NAME: ${ROOT_ACCOUNT_NAME:-}
       # Unset => NPE in master-realm bootstrap (no null guard).
       VARIANT: "ezto verify"
       DASHBOARD_URL: https://${DOMAIN:?}
@@ -240,6 +242,8 @@ services:
       - "443:443"
     environment:
       DOMAIN: ${DOMAIN:?set DOMAIN in .env (e.g. verify.example.com) — see .env.example}
+      # Realm in the admin-console path /auth/ redirects to.
+      ROOT_ACCOUNT_NAME: ${ROOT_ACCOUNT_NAME:-master}
     volumes:
       - ./nginx/templates:/etc/nginx/templates:ro
       - ./nginx/certs:/etc/nginx/certs:ro
