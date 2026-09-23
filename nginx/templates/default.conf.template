@@ -30,6 +30,11 @@ server {
     # Match idp QUARKUS_HTTP_LIMITS_MAX_BODY_SIZE=100M (selfie/doc uploads).
     client_max_body_size 100m;
 
+    # Landing page goes straight to the admin console (exact match only, so
+    # every other /auth/* path still proxies normally).
+    location = /auth  { return 302 /auth/admin/${ROOT_ACCOUNT_NAME}/console/; }
+    location = /auth/ { return 302 /auth/admin/${ROOT_ACCOUNT_NAME}/console/; }
+
     location / {
         proxy_pass http://idp:8080;
         proxy_http_version 1.1;
@@ -46,6 +51,12 @@ server {
         # WebSocket upgrade (harmless for plain HTTP, needed if WS endpoints are used).
         proxy_set_header Upgrade    $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
+
+        # The OIDC auth endpoint sets several session cookies at once, which
+        # overflows the 4k/8k default and returns 502. Raise the header buffer.
+        proxy_buffer_size       32k;
+        proxy_buffers        8  32k;
+        proxy_busy_buffers_size 64k;
 
         proxy_read_timeout 300s;
     }
