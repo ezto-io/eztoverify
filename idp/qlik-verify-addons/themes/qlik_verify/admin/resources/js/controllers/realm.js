@@ -592,7 +592,7 @@ module.controller('RealmTopNavCtrl', function ($scope, Realm, User, Current, Aut
     } );
 
     $scope.getMessageJson = function (changeDir) {
-        loadResourceBundle(consoleBaseUrl + 'messages.json?lang='+ locale ,function (data) {
+        loadResourceBundle(consoleBaseUrl + 'messages.json?lang=' + encodeURIComponent(toServerLocale(locale)), function (data) {
             $scope.preferredLanguage = locale;
             isLocaleChange = true;
             resourceBundle = data;
