@@ -12,6 +12,11 @@ var module = angular.module('keycloak', ['keycloak.services', 'keycloak.loaders'
 var resourceRequests = 0;
 var loadingTimer = -1;
 
+// The messages endpoint parses this value as a Java locale and rejects the
+// hyphenated IETF form with HTTP 500 ("Ill-formed language: zh-CN"), so the
+// console must send zh_CN, not zh-CN.
+var toServerLocale = (l) => String(l || 'en').replace('-', '_');
+
 var loadResourceBundle = (url, success, error) => {
     var req = new XMLHttpRequest();
     req.open('GET', url, true);
@@ -84,10 +89,26 @@ angular.element(document).ready(function () {
         };
 
         auth.refreshPermissions(function () {
-            module.factory('Auth', function ($translate) {
-                locale = auth.user?.locale;
-                loadResourceBundle(consoleBaseUrl + 'messages.json?lang='+ auth.user?.locale,function (data) {
-                    resourceBundle = data;
+            // Start the console. Deliberately NOT inside a factory body: a
+            // factory only runs when Angular injects it, which happens during
+            // bootstrap, so bootstrapping from inside one waits on a callback
+            // that can never fire. module.config() applies `locale` and
+            // `resourceBundle` — both populated before this runs — so one-time
+            // bindings ({{:: 'key' | translate}}) resolve on first render.
+            var startConsole = function () {
+                module.factory('Auth', function () {
+                    return auth;
+                });
+                angular.bootstrap(document, ["keycloak"]);
+            };
+
+            // A user with no locale attribute (the default when realm
+            // internationalisation is off) previously produced the literal
+            // string "undefined" in this URL, so the server returned a bundle
+            // without the console's own keys.
+            locale = auth.user?.locale || 'en';
+            loadResourceBundle(consoleBaseUrl + 'messages.json?lang=' + encodeURIComponent(toServerLocale(locale)), function (data) {
+                resourceBundle = data;
                     const style = document.createElement("link");
                     style.rel = "stylesheet"
                     style.id = 'dashboard-rtl-style-sheet'
@@ -113,13 +134,13 @@ angular.element(document).ready(function () {
                         $('#launcher-frame').css('left', '22px');
                         $('#launcher-frame').css('right', 'initial');
                     }
-                    translateProvider.preferredLanguage(locale);
-                    translateProvider.translations(locale, resourceBundle);
-                    $translate.use(locale);
-                });
-                return auth;
+                startConsole();
+            }, function () {
+                // The bundle could not be fetched. Start the console
+                // untranslated rather than never starting it at all.
+                resourceBundle = {};
+                startConsole();
             });
-            var injector = angular.bootstrap(document, ["keycloak"]);
         });
     }).error(function () {
         window.location.reload();
