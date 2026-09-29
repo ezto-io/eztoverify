@@ -42,7 +42,9 @@ services:
 
   minio:
     profiles: ["infra-minio"]
-    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    # MinIO's own registries need credentials, so the default is a public build.
+    # Point MINIO_IMAGE at your own mirror to pin an exact release.
+    image: ${MINIO_IMAGE:-chainguard/minio:latest}
     container_name: ezto-minio
     logging: *logging
     command: server /data --console-address ":9001"
@@ -60,7 +62,7 @@ services:
   minio-init:
     profiles: ["infra-minio"]
     # The server image ships mc, so the init job runs on the same image.
-    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    image: ${MINIO_MC_IMAGE:-${MINIO_IMAGE:-chainguard/minio:latest}}
     container_name: ezto-minio-init
     logging: *logging
     depends_on:
