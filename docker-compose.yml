@@ -42,7 +42,9 @@ services:
 
   minio:
     profiles: ["infra-minio"]
-    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    # MinIO's own registries need credentials, so the default is a public build.
+    # Point MINIO_IMAGE at your own mirror to pin an exact release.
+    image: ${MINIO_IMAGE:-chainguard/minio:latest}
     container_name: ezto-minio
     logging: *logging
     command: server /data --console-address ":9001"
@@ -59,7 +61,8 @@ services:
 
   minio-init:
     profiles: ["infra-minio"]
-    image: quay.io/minio/mc:RELEASE.2025-08-13T08-35-41Z
+    # The server image ships mc, so the init job runs on the same image.
+    image: ${MINIO_MC_IMAGE:-${MINIO_IMAGE:-chainguard/minio:latest}}
     container_name: ezto-minio-init
     logging: *logging
     depends_on:
@@ -82,7 +85,8 @@ services:
 
   elasticsearch:
     profiles: ["infra-elasticsearch"]
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
+    # esdata is written in 8.x format; an older major cannot open it.
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
     container_name: ezto-elasticsearch
     logging: *logging
     restart: unless-stopped
@@ -213,16 +217,23 @@ services:
     image: alpine:3.20
     container_name: ezto-certs-check
     logging: *logging
+    environment:
+      SSL_CERT_FILE: ${SSL_CERT_FILE:-/etc/nginx/certs/fullchain.pem}
+      SSL_KEY_FILE: ${SSL_KEY_FILE:-/etc/nginx/certs/privkey.pem}
+    # Mounted at the same path as in nginx, so both read the same two variables.
     volumes:
-      - ./nginx/certs:/certs:ro
+      - ${CERTS_DIR:-./nginx/certs}:/etc/nginx/certs:ro
     entrypoint:
       - /bin/sh
       - -c
       - >
-        if [ ! -s /certs/fullchain.pem ] || [ ! -s /certs/privkey.pem ]; then
-        echo 'ERROR: TLS certs missing/empty in nginx/certs/ (need fullchain.pem + privkey.pem).' >&2;
-        echo '       Real deploy: drop your CA cert there (e.g. Let'\''s Encrypt).' >&2;
-        echo '       Local test: DOMAIN=<your-domain> ./nginx/gen-self-signed.sh' >&2;
+        if [ ! -s "$$SSL_CERT_FILE" ] || [ ! -s "$$SSL_KEY_FILE" ]; then
+        echo "ERROR: TLS certificate not found." >&2;
+        echo "       looked for: $$SSL_CERT_FILE and $$SSL_KEY_FILE" >&2;
+        echo "       inside the directory set by CERTS_DIR (default ./nginx/certs)." >&2;
+        echo "       Let's Encrypt: CERTS_DIR=/etc/letsencrypt and set SSL_CERT_FILE/SSL_KEY_FILE" >&2;
+        echo "                      to /etc/nginx/certs/live/<domain>/fullchain.pem and privkey.pem" >&2;
+        echo "       Self-signed:   DOMAIN=<your-domain> ./nginx/gen-self-signed.sh" >&2;
         exit 1;
         fi
     restart: "no"
@@ -244,9 +255,13 @@ services:
       DOMAIN: ${DOMAIN:?set DOMAIN in .env (e.g. verify.example.com) — see .env.example}
       # Realm in the admin-console path /auth/ redirects to.
       ROOT_ACCOUNT_NAME: ${ROOT_ACCOUNT_NAME:-master}
+      SSL_CERT_FILE: ${SSL_CERT_FILE:-/etc/nginx/certs/fullchain.pem}
+      SSL_KEY_FILE: ${SSL_KEY_FILE:-/etc/nginx/certs/privkey.pem}
     volumes:
       - ./nginx/templates:/etc/nginx/templates:ro
-      - ./nginx/certs:/etc/nginx/certs:ro
+      # CERTS_DIR is the host directory holding the certificates. Point it at
+      # /etc/letsencrypt to serve a CA cert without copying anything.
+      - ${CERTS_DIR:-./nginx/certs}:/etc/nginx/certs:ro
 
   background:
     profiles: ["background"]

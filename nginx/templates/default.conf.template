@@ -22,18 +22,80 @@ server {
     http2 on;
     server_name ${DOMAIN};
 
-    ssl_certificate     /etc/nginx/certs/fullchain.pem;
-    ssl_certificate_key /etc/nginx/certs/privkey.pem;
+    ssl_certificate     ${SSL_CERT_FILE};
+    ssl_certificate_key ${SSL_KEY_FILE};
     ssl_protocols       TLSv1.2 TLSv1.3;
     ssl_ciphers         HIGH:!aNULL:!MD5;
 
     # Match idp QUARKUS_HTTP_LIMITS_MAX_BODY_SIZE=100M (selfie/doc uploads).
     client_max_body_size 100m;
 
+    # Docker's embedded DNS. The routes below put the upstream in a variable so
+    # nginx resolves it per request instead of at startup — without that, a
+    # profile-excluded service (socket, url-shortener, minio are all optional)
+    # would stop nginx from starting at all.
+    resolver 127.0.0.11 valid=30s ipv6=off;
+
     # Landing page goes straight to the admin console (exact match only, so
     # every other /auth/* path still proxies normally).
     location = /auth  { return 302 /auth/admin/${ROOT_ACCOUNT_NAME}/console/; }
     location = /auth/ { return 302 /auth/admin/${ROOT_ACCOUNT_NAME}/console/; }
+
+    # Short links sent by SMS and push: https://${DOMAIN}/s/<id>
+    # Read-only on purpose — the IdP creates links over the internal network,
+    # so the create API must not be reachable from outside.
+    location ~ ^/s/(.*)$ {
+        limit_except GET HEAD { deny all; }
+        set $shortener http://url-shortener:3000;
+        proxy_pass $shortener/$1$is_args$args;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Realtime channel. socket.io always connects to /socket.io/ regardless of
+    # the base URL it is given — a path segment in that URL is treated as a
+    # namespace, not a transport path — so the route must live here at the root.
+    location /socket.io/ {
+        set $socketsvc http://socket:3001;
+        proxy_pass $socketsvc$request_uri;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade    $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 300s;
+    }
+
+    # Server-side push endpoint of the same service.
+    location /send {
+        set $socketpush http://socket:3001;
+        proxy_pass $socketpush$request_uri;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Scan-status callback of the same service. The mobile apps POST
+    # <socket url>/status?key=<requestId> right after scanning a QR code; without
+    # this route the call falls through to the IdP (404) and the app aborts the
+    # transaction with internetConnectionError before biometrics start.
+    location = /status {
+        set $socketstatus http://socket:3001;
+        proxy_pass $socketstatus$request_uri;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Public objects: agent downloads, marketplace assets, public bucket files.
+    # This is the path MINIO_PUBLIC_URL points at. Read-only — not a management
+    # endpoint, and the MinIO console is never exposed.
+    location ~ ^/storage/(.*)$ {
+        limit_except GET HEAD { deny all; }
+        set $objectstore http://minio:9000;
+        proxy_pass $objectstore/$1$is_args$args;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
 
     location / {
         proxy_pass http://idp:8080;
