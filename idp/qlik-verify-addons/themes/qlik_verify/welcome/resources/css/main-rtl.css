@@ -1,69 +1,53 @@
 @charset "UTF-8";
 
 @font-face {
-  font-family: "CircularStd";
-  src: url("../fonts/text-font/CircularStd-Black.eot");
-  src: url("../fonts/text-font/CircularStd-Black.eot?#iefix") format("embedded-opentype"), url("../fonts/text-font/CircularStd-Black.woff") format("woff"), url("../fonts/text-font/CircularStd-Black.ttf") format("truetype"), url("../fonts/text-font/CircularStd-Black.svg#bcc26993292869431e54c666aafa8fcd") format("svg");
+  font-family: "Inter";
+  src: url("../fonts/inter/Inter-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/inter/Inter-ExtraBold.ttf") format("truetype");
   font-weight: 800;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
-  font-family: "CircularStd";
-  src: url("../fonts/text-font/CircularStd-BlackItalic.eot");
-  src: url("../fonts/text-font/CircularStd-BlackItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/text-font/CircularStd-BlackItalic.woff") format("woff"), url("../fonts/text-font/CircularStd-BlackItalic.ttf") format("truetype"), url("../fonts/text-font/CircularStd-BlackItalic.svg#bcc26993292869431e54c666aafa8fcd") format("svg");
-  font-weight: 800;
-  font-style: italic;
+  font-family: "Inter";
+  src: url("../fonts/inter/Inter-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
-/*-----------------------------
-  CircularStd-Bold
------------------------------*/
 @font-face {
-  font-family: "CircularStd";
-  src: url("../fonts/text-font/CircularStd-Bold.eot");
-  src: url("../fonts/text-font/CircularStd-Bold.eot?#iefix") format("embedded-opentype"), url("../fonts/text-font/CircularStd-Bold.woff") format("woff"), url("../fonts/text-font/CircularStd-Bold.ttf") format("truetype"), url("../fonts/text-font/CircularStd-Bold.svg#bcc26993292869431e54c666aafa8fcd") format("svg");
+  font-family: "Inter";
+  src: url("../fonts/inter/Inter-SemiBold.ttf") format("truetype");
   font-weight: 600;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
-  font-family: "CircularStd";
-  src: url("../fonts/text-font/CircularStd-BoldItalic.eot");
-  src: url("../fonts/text-font/CircularStd-BoldItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/text-font/CircularStd-BoldItalic.woff") format("woff"), url("../fonts/text-font/CircularStd-BoldItalic.ttf") format("truetype"), url("../fonts/text-font/CircularStd-BoldItalic.svg#bcc26993292869431e54c666aafa8fcd") format("svg");
-  font-weight: 600;
-  font-style: italic;
-}
-/*-----------------------------
-  CircularStd-Medium
------------------------------*/
-@font-face {
-  font-family: "CircularStd";
-  src: url("../fonts/text-font/CircularStd-Medium.eot");
-  src: url("../fonts/text-font/CircularStd-Medium.eot?#iefix") format("embedded-opentype"), url("../fonts/text-font/CircularStd-Medium.woff") format("woff"), url("../fonts/text-font/CircularStd-Medium.ttf") format("truetype"), url("../fonts/text-font/CircularStd-Medium.svg#bcc26993292869431e54c666aafa8fcd") format("svg");
+  font-family: "Inter";
+  src: url("../fonts/inter/Inter-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
-  font-family: "CircularStd";
-  src: url("../fonts/text-font/CircularStd-MediumItalic.eot");
-  src: url("../fonts/text-font/CircularStd-MediumItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/text-font/CircularStd-MediumItalic.woff") format("woff"), url("../fonts/text-font/CircularStd-MediumItalic.ttf") format("truetype"), url("../fonts/text-font/CircularStd-MediumItalic.svg#bcc26993292869431e54c666aafa8fcd") format("svg");
-  font-weight: 500;
-  font-style: italic;
-}
-/*-----------------------------
-  CircularStd-Book
------------------------------*/
-@font-face {
-  font-family: "CircularStd";
-  src: url("../fonts/text-font/CircularStd-Book.eot");
-  src: url("../fonts/text-font/CircularStd-Book.eot?#iefix") format("embedded-opentype"), url("../fonts/text-font/CircularStd-Book.woff") format("woff"), url("../fonts/text-font/CircularStd-Book.ttf") format("truetype"), url("../fonts/text-font/CircularStd-Book.svg#bcc26993292869431e54c666aafa8fcd") format("svg");
+  font-family: "Inter";
+  src: url("../fonts/inter/Inter-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 @font-face {
-  font-family: "CircularStd";
-  src: url("../fonts/text-font/CircularStd-BookItalic.eot");
-  src: url("../fonts/text-font/CircularStd-BookItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/text-font/CircularStd-BookItalic.woff") format("woff"), url("../fonts/text-font/CircularStd-BookItalic.ttf") format("truetype"), url("../fonts/text-font/CircularStd-BookItalic.svg#bcc26993292869431e54c666aafa8fcd") format("svg");
-  font-weight: 400;
-  font-style: italic;
+  font-family: "Inter";
+  src: url("../fonts/inter/Inter-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
 }
 body {
   width: 100%;
@@ -74,7 +58,7 @@ body {
   -o-font-smoothing: antialiased !important;
   -ms-font-smoothing: antialiased !important;
   font-smoothing: antialiased !important;
-  font-family: "CircularStd", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 16px;
   color: #0b2238;
   -webkit-transition: 0.3s ease-in-out !important;
@@ -5065,7 +5049,7 @@ header .navbar .navbar-collapse .nav_account.btn_demo3 .btn_sm_primary {
   z-index: 2;
 }
 .banner_app_three .banner_title h1 {
-  font-family: "CircularStd", sans-serif !important;
+  font-family: "Inter", sans-serif !important;
   font-weight: 700 !important;
   color: #0b2238 !important;
 }

@@ -389,7 +389,6 @@ public class BrandingAdapter implements BrandingModel, JpaModel<BrandingEntity> 
             add("Segoe UI");
             add("Roboto");
             add("Helvetica Neue");
-            add("CircularStd");
             add("Arial");
             add("Inter");
         }});
