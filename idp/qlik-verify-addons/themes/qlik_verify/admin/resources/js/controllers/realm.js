@@ -4586,7 +4586,7 @@ module.controller('RealmBrandingDetailCtrl', function ($scope, Current, Realm, r
                 $scope.branding.attributes.bodyFont = fontFamily.replace(/\+/g, ' ');
             }
         } else if($scope.branding.attributes.fontPreference == "default"){
-            var availableDefaultFonts = ['Avenir Next W01', 'Proxima Nova W01', 'Rubik', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'CircularStd', 'Arial', 'Inter'];
+            var availableDefaultFonts = ['Avenir Next W01', 'Proxima Nova W01', 'Rubik', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Inter'];
             if(!availableDefaultFonts.includes($scope.branding.attributes.bodyFont)){
                 $scope.branding.attributes.bodyFont = '';
             }
