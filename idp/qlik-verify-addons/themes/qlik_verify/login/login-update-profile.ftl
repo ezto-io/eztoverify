@@ -7,7 +7,6 @@
         <!-- Phone Number Library CSS -->
         <link rel="stylesheet" href="${url.resourcesPath}/js/tele-input/tele-input.min.css?version=${serverVersion}" type="text/css"/>
         
-    </#if>
     <#elseif section = "form">
         <form id="kc-update-profile-form" class="${properties.kcFormClass!}" action="${url.loginAction}" method="post">
         <input name="isUpdateProfile" value="true" type="hidden">

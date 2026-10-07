@@ -66,8 +66,8 @@
           --body-bg-image-opacity : ${bodyBgImageOpacity};
           --body-bg : var(--darkred);
         <#else>
-          --body-bg-img : url( '../img/workspace/bg-about.png' );
-          --body-bg-sm:  url( '../img/workspace/bg-about.png' );
+          --body-bg-img : url( '../img/oss/backdrop.svg' );
+          --body-bg-sm:  url( '../img/oss/backdrop.svg' );
           --body-bg-image-opacity : ${bodyBgImageOpacity};
           --body-bg : var(--darkred);
         </#if>

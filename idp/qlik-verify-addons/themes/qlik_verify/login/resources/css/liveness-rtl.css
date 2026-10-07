@@ -1,131 +1,59 @@
-.form-body{
-    min-height: calc(75vh - 8rem);
-    width: 100%;
-    overflow:hidden;
-    transition: 0.5s ease-in-out;
-}
-.liveness-video-containter{
-    position: relative;
-    height: 100%;
-    width: 100%;
-    flex-direction: column;
-}
-.liveness-instruction-text{
-    color: white;
-    font-weight: 700;
-}
-.liveness-intro-title{
-    font-size: 22px;
-    font-weight: 500;
-    line-height: normal;
-    text-align: center;
-}
-.liveness-intro-sub-title{
-    font-size: 1.15rem;
-    font-weight: 600;
-}
-.video-inner-element {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    right: 0;
-    left: 0;
-} 
-.shadow-overlay {
-    position: absolute;
-    top: 50%;
-    right: 50%;
-    transform: translate(50%, -50%);
-    width: 16rem;
-    height: 20rem;
-    box-shadow: 0px 0px 0px 400px #0000008a; 
-    border-radius: 50%;
-    z-index: 2;
-}
-.face-success-border {
-    border: 2px solid #38BD48;
+/*!
+ * EztoVerify login theme - OSS liveness layer (served as liveness-rtl.min.css)
+ * RTL variant: loaded instead of liveness.css on right-to-left pages (theme.properties
+ * stylesRtl / template.ftl). Identical rules: the stylesheet uses logical
+ * properties and [dir="rtl"] / --oss-dir, so no mirrored copy is needed.
+ * Keep this file in sync with liveness.css (copy).
+ *
+ * Part of the EztoVerify project, AGPL-3.0. Written for the OSS theme.
+ *
+ * Loaded by template.ftl after the theme stylesheets on liveness / selfie
+ * pages: the card loses its side and bottom padding so the camera view can
+ * use the full width, and the face-detection states get coloured frames.
+ * Logical properties: liveness-rtl.css is the same stylesheet.
+ */
+
+:root {
+  --oss-live-ok: #34b84a;
+  --oss-live-fail: #f24e4c;
+  --oss-live-chip: rgba(128, 128, 128, 0.5);
 }
 
-.face-failure-border {
-    border: 2px solid #FA4C4B;
+.form-body {
+  inline-size: 100%;
+  min-block-size: calc(80vh - 8rem);
+  overflow: hidden;
+  transition: min-height 0.5s ease-in-out, height 0.5s ease-in-out;
 }
 
-.video-element {
-    z-index: 1;
-}
-.video-element video{
-    height: 100%;
-    object-fit: cover;
-    transform: scaleX(-1);
-    width: 100%;
- }
-.info-element {
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items:center; 
-}
-.flow-status-card{
-    background-color: #80808080;
-    border-radius: 12px;
-    padding: 5px;
-    margin: 5px ;
-}
-.signup_full .form_signup_one .item_group {
-    padding-right: 0 !important;
-    padding-left: 0 !important;
-    padding-bottom: 0 !important;
-} 
-.ev-logo{
-    padding: 0px 24px !important;
-}
-.ev-locale-selector{
-    padding: 0px 24px !important;
-}
-.signup_full .form_signup_one .item_group.form-prop {
-    border: none;
-}
-.selfie-preview-image{
-    height: calc(75vh - 16rem);
-    object-fit: cover;
-    transform: scaleX(-1);
-}
-@keyframes fadeInOut {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-.fade-in-out {
-  animation: fadeInOut 3s infinite ease-in-out;
+.face-success-border { border: 2px solid var(--oss-live-ok); }
+.face-failure-border { border: 2px solid var(--oss-live-fail); }
+
+.flow-status-card {
+  margin: 0.25rem;
+  padding: 0.25rem;
+  font-size: 0.85rem;
+  background-color: var(--oss-live-chip);
+  border-radius: 0.5rem;
 }
 
-.modal-loading-card{
-    background-color: #b7d0ffe6;
-
+/* the card: full-bleed content, no frame */
+.form_signup_one .item_group {
+  padding-inline: 0 !important;
+  padding-block-end: 0 !important;
 }
+.form_signup_one .form-prop { border: 0; }
+.ev-logo { padding-inline: 1.5rem !important; }
+.section-prop { padding: 1.875rem; }
 
 @media (max-width: 576px) {
-    .shadow-overlay {
-        width: 18rem;
-        height: 22rem;
-    }
-   .form-body{
-        height: 85vh;
-        position:absolute;
-        bottom:0;
-        overflow-y: auto;
-    }
-    .height-80vh{
-        height: 80vh !important;
-    }
-    .selfie-preview-image{
-        height: 55vh;
-    }
+  .form-body {
+    position: absolute;
+    inset-block-end: 0;
+    height: 85vh;
+    overflow: hidden auto;
+  }
+  .height-80vh { height: 80vh !important; }
+  .ev-logo { width: 100%; }
+  .section-prop { padding: 0; }
 }
