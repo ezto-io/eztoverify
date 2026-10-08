@@ -7,6 +7,7 @@
         <!-- Select2 CSS -->
         <link rel="preload stylesheet" as="style" href="/auth/assets/css/select2.min.css?version=${serverVersion}"/>
         <link rel="preload stylesheet" as="style" href="/auth/assets/css/dynamic-form.min.css?version=${serverVersion}"/>
+        <link rel="preload stylesheet" as="style" href="/auth/assets/css/backoffice.min.css?version=${serverVersion}"/>
         <!-- Select2 JS -->
         <script defer src="/auth/assets/js/select2.min.js?version=${serverVersion}"></script>
         <script defer src="/auth/assets/js/flatpickr.min.js?version=${serverVersion}" type="text/javascript"></script>

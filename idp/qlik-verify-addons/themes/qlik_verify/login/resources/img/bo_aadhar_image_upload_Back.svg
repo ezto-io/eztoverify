@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="375" height="282" viewBox="0 0 375 282" fill="none">
+<!-- AI-generated (IPTC DigitalSourceType trainedAlgorithmicMedia) with Claude (Anthropic) via the asset-author agent; rendered by the FTL migration harness [claude-code]. Released under the GNU AGPL-3.0 as part of the EztoVerify OSS theme. AI-generated from a text description, without access to the asset it replaces; reviewed by a person before use. -->
+<metadata id="ezto-provenance"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/" xmlns:Iptc4xmpExt="http://iptc.org/std/Iptc4xmpExt/2008-02-29/" xmlns:ezto="https://ezto.io/ns/oss-theme/1.0/" Iptc4xmpExt:DigitalSourceType="http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia" xmp:CreatorTool="Claude (Anthropic) via the asset-author agent; rendered by the FTL migration harness [claude-code]" xmp:CreateDate="2026-10-07" ezto:license="AGPL-3.0" ezto:run="migration/assets/runs/20261007-160957"><dc:title><rdf:Alt><rdf:li xml:lang="x-default">bo_aadhar_image_upload_Back.svg</rdf:li></rdf:Alt></dc:title><dc:description><rdf:Alt><rdf:li xml:lang="x-default">An instruction illustration of the back of a generic ID card inside blue camera framing corners, with grey address bars, a QR-like block of squares, phone and mail glyphs and a masked number.</rdf:li></rdf:Alt></dc:description><dc:creator><rdf:Seq><rdf:li>EztoVerify OSS theme contributors</rdf:li></rdf:Seq></dc:creator><dc:rights><rdf:Alt><rdf:li xml:lang="x-default">Released under the GNU AGPL-3.0 as part of the EztoVerify OSS theme</rdf:li></rdf:Alt></dc:rights><xmpRights:UsageTerms><rdf:Alt><rdf:li xml:lang="x-default">Released under the GNU AGPL-3.0 as part of the EztoVerify OSS theme</rdf:li></rdf:Alt></xmpRights:UsageTerms></rdf:Description></rdf:RDF></metadata>
+  <!-- soft backdrop -->
+  <rect x="0" y="0" width="375" height="282" rx="16" fill="#f1f5fe"/>
+
+  <!-- camera framing guides -->
+  <g stroke="#1c64eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M28 56 V40 Q28 34 34 34 H50"/>
+    <path d="M325 34 H341 Q347 34 347 40 V56"/>
+    <path d="M28 226 V242 Q28 248 34 248 H50"/>
+    <path d="M325 248 H341 Q347 248 347 242 V226"/>
+  </g>
+
+  <!-- card shadow and body -->
+  <rect x="40" y="50" width="295" height="190" rx="14" fill="#1d2433" opacity="0.08"/>
+  <rect x="40" y="46" width="295" height="190" rx="14" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5"/>
+
+  <!-- header band -->
+  <path d="M40.75 80 V60 A13.25 13.25 0 0 1 54 46.75 H321 A13.25 13.25 0 0 1 334.25 60 V80 Z" fill="#1c64eb"/>
+  <rect x="58" y="59" width="47" height="7" rx="3.5" fill="#ffffff" opacity="0.5"/>
+  <rect x="205" y="58" width="112" height="9" rx="4.5" fill="#ffffff" opacity="0.9"/>
+
+  <!-- address block: pin glyph, label bar, value bars -->
+  <path d="M63 108.5 C59.2 104.3 57.5 101.6 57.5 99 A5.5 5.5 0 0 1 68.5 99 C68.5 101.6 66.8 104.3 63 108.5 Z" fill="#1c64eb"/>
+  <circle cx="63" cy="99" r="2" fill="#ffffff"/>
+  <rect x="74" y="96.5" width="44" height="5" rx="2.5" fill="#d1d5db"/>
+  <g fill="#9ca3af">
+    <rect x="58" y="114" width="168" height="8" rx="4"/>
+    <rect x="58" y="127" width="146" height="8" rx="4"/>
+    <rect x="58" y="140" width="158" height="8" rx="4"/>
+    <rect x="58" y="153" width="92" height="8" rx="4"/>
+  </g>
+
+  <!-- QR-like block of squares -->
+  <rect x="245" y="90" width="78" height="78" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1.5"/>
+  <g transform="translate(251 96)" fill="#1d2433">
+    <rect x="0" y="0" width="18" height="18" rx="2"/>
+    <rect x="48" y="0" width="18" height="18" rx="2"/>
+    <rect x="0" y="48" width="18" height="18" rx="2"/>
+    <g fill="#ffffff">
+      <rect x="3" y="3" width="12" height="12" rx="1"/>
+      <rect x="51" y="3" width="12" height="12" rx="1"/>
+      <rect x="3" y="51" width="12" height="12" rx="1"/>
+    </g>
+    <rect x="6" y="6" width="6" height="6" rx="0.5"/>
+    <rect x="54" y="6" width="6" height="6" rx="0.5"/>
+    <rect x="6" y="54" width="6" height="6" rx="0.5"/>
+    <rect x="24" y="0" width="12" height="6"/>
+    <rect x="24" y="6" width="6" height="6"/>
+    <rect x="36" y="6" width="6" height="12"/>
+    <rect x="24" y="12" width="6" height="6"/>
+    <rect x="24" y="18" width="18" height="6"/>
+    <rect x="0" y="24" width="6" height="6"/>
+    <rect x="12" y="24" width="12" height="6"/>
+    <rect x="42" y="24" width="6" height="6"/>
+    <rect x="54" y="24" width="6" height="6"/>
+    <rect x="0" y="30" width="24" height="6"/>
+    <rect x="30" y="30" width="6" height="6"/>
+    <rect x="48" y="30" width="6" height="6"/>
+    <rect x="60" y="30" width="6" height="12"/>
+    <rect x="0" y="36" width="12" height="6"/>
+    <rect x="18" y="36" width="12" height="6"/>
+    <rect x="36" y="36" width="12" height="6"/>
+    <rect x="48" y="42" width="6" height="6"/>
+    <rect x="24" y="48" width="6" height="6"/>
+    <rect x="36" y="48" width="18" height="6"/>
+    <rect x="36" y="54" width="6" height="12"/>
+    <rect x="60" y="54" width="6" height="6"/>
+    <rect x="48" y="60" width="6" height="6"/>
+  </g>
+
+  <!-- contact row: neutral phone and mail glyphs with bars -->
+  <g stroke="#1c64eb" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="58.8" y="171.8" width="9" height="14" rx="2"/>
+    <path d="M61.8 183 H64.8"/>
+    <rect x="148.8" y="173.3" width="14.5" height="11" rx="1.8"/>
+    <path d="M149.5 174.5 L156 179.6 L162.5 174.5"/>
+  </g>
+  <g fill="#d1d5db">
+    <rect x="74" y="175" width="58" height="7" rx="3.5"/>
+    <rect x="169" y="175" width="62" height="7" rx="3.5"/>
+  </g>
+
+  <!-- divider -->
+  <rect x="58" y="194" width="259" height="1.5" rx="0.75" fill="#e5e7eb"/>
+
+  <!-- masked number -->
+  <text x="187.5" y="222" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="3" fill="#1d2433">XXXX XXXX XXXX</text>
+</svg>
