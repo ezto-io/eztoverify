@@ -613,18 +613,9 @@ video {
   font-style: normal;
 }
 
-@font-face {
-  font-family: 'password';
-
-  font-style: normal;
-
-  font-weight: 400;
-
-  src: url("../fonts/password.ttf");
-}
-
+/* masks the secret-key inputs (dots) without a font file */
 input.key {
-  font-family: 'password';
+  -webkit-text-security: disc;
 }
 
 .custom-select{
