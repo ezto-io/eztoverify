@@ -39,15 +39,16 @@ it requires human review (see the migration known-issues record).
 ## Fonts
 - **Inter** (The Inter Project Authors), SIL Open Font License 1.1. It is served from
   `services/qlik-verify-services/src/main/resources/META-INF/resources/assets/fonts/text-font/inter/`, and the licence text
-  is in `OFL.txt` in that folder.
+  is in `OFL.txt` in that folder. The login theme's own copy (`resources/fonts/text-font/inter/`) has the same `OFL.txt`.
 
 ## Images and icons
 The origin, licence and decision for every image the theme references, and the evidence behind each decision, are kept in
 the OSS migration proof bundle (`evidence/5-ip-and-assets/`), outside this repository. In short:
 - **Icon-set matches:**
   - `camera.svg`: Bootstrap Icons (MIT, Copyright The Bootstrap Authors);
-  - `upload.svg`: Unicons by IconScout. The licence of the icon set requires verification; the Iconscout/unicons repository states Apache-2.0;
   - `retry.svg`: System UIcons (Unlicense).
+  - `upload.svg` matched Unicons by IconScout, whose licence could not be confirmed for this copy: it is replaced with an
+    AI-generated drawing (below), 2026-10-09.
 - **AI-generated images** (drawn for this theme, AGPL-3.0): each carries IPTC/XMP `DigitalSourceType` =
   `trainedAlgorithmicMedia` in its metadata, and they are listed in the proof bundle's `ASSETS.md`. This includes the neutral
   replacements for images that showed government emblems or official logos, and for two icons of unknown origin
