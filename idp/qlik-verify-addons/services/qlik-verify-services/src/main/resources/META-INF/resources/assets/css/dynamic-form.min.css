@@ -1,1 +1,156 @@
-.select2-container--default .select2-selection--multiple .select2-selection__choice{background-color:#ebeffd!important;border:none!important;color:var(--primary)}.select2-container--default .select2-selection--multiple .select2-selection__choice__remove{border:none!important;color:var(--primary)!important}.select2-container--default .select2-selection--multiple.select2-selection--clearable{padding:.625rem!important}.select2-container--default .select2-selection--multiple .select2-selection__clear{display:none}.select2-container--default .select2-selection--multiple .select2-selection__choice{margin-top:0!important}.select2-container--default .select2-selection--multiple{background-color:var(--form-input-bg-clr)!important;border:1px solid #d1d5db!important;border-radius:.5rem!important;color:var(--form-input-text-clr)!important;padding:.5rem .5rem .8rem!important}.select2-results__option--highlighted{background-color:#f2f2f2;color:#fff}.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable{background-color:var(--primary)!important}.select2-selection{background-image:linear-gradient(45deg,transparent 50%,gray 0),linear-gradient(135deg,gray 50%,transparent 0),linear-gradient(90deg,#ccc,#ccc)!important;background-image:none;background-position:calc(100% - 20px) calc(1em + 2px),calc(100% - 15px) calc(1em + 2px),calc(100% - 2.5em) .5em!important;background-repeat:no-repeat!important;background-size:5px 5px,5px 5px,0 0!important;border:.125rem solid #dde2ec;border-radius:.25rem;padding:.075rem 1.8rem .075rem 0}.select2-container--default .select2-search--inline .select2-search__field{padding-left:10px}.select2-container--default .select2-search--inline .select2-search__field::placeholder{color:#000;font-size:16px;font-weight:500}.select2-container .select2-search--inline .select2-search__field{height:25px!important}.select2-selection .select2-selection--multiple:focus{border:var(--primary) solid}.select2{width:100%!important}.selection:before{content:none}.file-upload-wrapper{overflow:hidden;position:relative}.file-upload-button{align-items:center;background-color:var(--form-input-bg-clr);border-radius:4px;color:var(--form-input-text-clr)!important;cursor:pointer;display:flex;flex-wrap:nowrap;height:fit-content;justify-content:center;padding:8px 14px;width:100%;width:fit-content}.file-upload-input{cursor:pointer;height:100%;left:0;opacity:0;position:absolute;top:0;width:100%}.file-upload-button svg{height:20px;margin-right:8px;width:20px}.file-name-text{overflow:hidden;text-overflow:ellipsis}.file-name-text,.text-nowrap{white-space:nowrap}.remove-btn{color:#bf1313;cursor:pointer;margin-left:6px}.font-size-14px,.remove-btn{font-size:14px}.height-12px{height:12px!important}.line-height-1{line-height:1!important}.dynamic-form-capture-placholder{background-color:#efeded;display:flex;flex-direction:column;height:15rem}
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice {
+  background-color: #ebeffd !important;
+  color: var(--primary);
+  border: none !important;
+}
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice__remove {
+  color: var(--primary) !important;
+  border: none !important;
+}
+.select2-container--default
+  .select2-selection--multiple.select2-selection--clearable {
+  padding: 0.625rem !important;
+}
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__clear {
+  display: none;
+}
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice {
+  margin-top: 0px !important;
+}
+.select2-container--default .select2-selection--multiple {
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem !important;
+  padding: 0.5rem !important;
+  padding-bottom: 0.8rem !important;
+  background-color: var(--form-input-bg-clr) !important;
+  color: var(--form-input-text-clr) !important;
+}
+.select2-results__option--highlighted {
+  background-color: #f2f2f2;
+  color: white;
+}
+.select2-container--default
+  .select2-results__option--highlighted.select2-results__option--selectable {
+  background-color: var(--primary) !important;
+}
+
+.select2-selection {
+  background-image: linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    linear-gradient(to right, #ccc, #ccc) !important;
+  background-position: calc(100% - 20px) calc(1em + 2px),
+    calc(100% - 15px) calc(1em + 2px), calc(100% - 2.5em) 0.5em !important;
+  background-size: 5px 5px, 5px 5px, 0 0 !important;
+  background-repeat: no-repeat !important;
+}
+
+.select2-selection {
+  border: 0.125rem solid #dde2ec;
+  border-radius: 0.25rem;
+  background-image: none;
+  padding: 0.075rem 1.8rem 0.075rem 0;
+}
+
+.select2-container--default .select2-search--inline .select2-search__field {
+  padding-left: 10px;
+}
+
+.select2-container--default
+  .select2-search--inline
+  .select2-search__field::placeholder {
+  font-size: 16px;
+  color: #000;
+  font-weight: 500;
+}
+
+
+.select2-container .select2-search--inline .select2-search__field {
+  height: 25px !important;
+}
+
+.select2-selection .select2-selection--multiple:focus {
+  border: var(--primary) solid;
+}
+
+.select2 {
+  width: 100% !important;
+}
+
+.selection:before {
+  content: none;
+}
+
+.file-upload-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+.file-upload-button {
+  width: 100%;
+  width: fit-content;
+  height: fit-content;
+  padding: 8px 14px;
+  background-color: var(--form-input-bg-clr);
+  color: var(--form-input-text-clr) !important;
+  cursor: pointer;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+.file-upload-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.file-upload-button svg {
+  margin-right: 8px;
+  width: 20px;
+  height: 20px;
+}
+.file-name-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.text-nowrap {
+  white-space: nowrap;
+}
+
+.remove-btn {
+  margin-left: 6px;
+  color: rgb(191, 19, 19);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.font-size-14px {
+  font-size: 14px;
+}
+
+.height-12px {
+  height: 12px !important;
+}
+
+.line-height-1 {
+  line-height: 1 !important;
+}
+
+.dynamic-form-capture-placholder {
+  background-color: #efeded;
+  flex-direction: column;
+  height: 15rem;
+  display: flex;
+}

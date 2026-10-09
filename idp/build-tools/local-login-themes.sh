@@ -14,10 +14,7 @@ else
   echo "Folder '$asset_folder' created successfully."
 fi
 
-npx purgecss --css ../login/resources/css/main.dev.css --content ../../../**/*.ftl  --output ../login/resources/css/main.css
-npx purgecss --css ../login/resources/css/main-rtl.dev.css --content  ../../../**/*.ftl  --output ../login/resources/css/main-rtl.css
-#npx purgecss --css ../login/resources/css/bootstrap.min.css --content ../login/*.ftl --output ../login/resources/css/bootstrap.css
-#npx purgecss --css ../login/resources/css/bootstrap-rtl.min.css --content ../login/*.ftl --output ../login/resources/css/bootstrap-rtl.css
+# main.css / main-rtl.css are the OSS theme's own stylesheets (written directly, no main.dev.css to purge from)
 
 
 npx uglifyjs-folder ../login/resources/js -eo ../assets/js
