@@ -12,6 +12,8 @@
   --oss-live-ok: #34b84a;
   --oss-live-fail: #f24e4c;
   --oss-live-chip: rgba(128, 128, 128, 0.5);
+  --oss-live-vignette: rgba(0, 0, 0, 0.54);
+  --oss-live-loading-bg: rgba(183, 208, 255, 0.9);
 }
 
 .form-body {
@@ -21,8 +23,66 @@
   transition: min-height 0.5s ease-in-out, height 0.5s ease-in-out;
 }
 
+/* the camera view: a fixed-height stage, the live <video> filling it, a circular
+   vignette cut out over the face target, and the instruction text/flow chips
+   floating on top. Mirrored like a real mirror, since it's a front camera. */
+.liveness-video-containter {
+  position: relative;
+  inline-size: 100%;
+  block-size: 30rem;
+  flex-direction: column;
+}
+
+.video-inner-element {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.video-element { z-index: 1; }
+.video-element video,
+.selfie-preview-image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.shadow-overlay {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+  inline-size: 16rem;
+  block-size: 20rem;
+  border-radius: 50%;
+  box-shadow: 0 0 0 400px var(--oss-live-vignette);
+  z-index: 2;
+}
+
 .face-success-border { border: 2px solid var(--oss-live-ok); }
 .face-failure-border { border: 2px solid var(--oss-live-fail); }
+
+/* two rows over the video: the instruction line, then the flow chips pinned to
+   the bottom. Grid rather than flex so the chip row keeps its own height
+   instead of growing to share space with the instruction line. */
+.info-element {
+  z-index: 3;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  justify-items: center;
+}
+
+.liveness-instruction-text { color: var(--oss-paper, #fff); font-weight: 700; }
+
+.liveness-intro-title {
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: normal;
+  text-align: center;
+}
+.liveness-intro-sub-title { font-size: 1.15rem; font-weight: 600; }
 
 .flow-status-card {
   margin: 0.25rem;
@@ -31,6 +91,18 @@
   background-color: var(--oss-live-chip);
   border-radius: 0.5rem;
 }
+
+/* selfie preview (selfie.ftl, before upload): a still frame, not live video,
+   so it keeps the same mirrored object-fit treatment but a shorter stage. */
+.selfie-preview-image { block-size: calc(75vh - 16rem); }
+
+.modal-loading-card { background-color: var(--oss-live-loading-bg); }
+
+@keyframes oss-live-fade {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.fade-in-out { animation: oss-live-fade 3s ease-in-out infinite; }
 
 /* the card: full-bleed content, no frame */
 .form_signup_one .item_group {
@@ -49,6 +121,19 @@
     overflow: hidden auto;
   }
   .height-80vh { height: 80vh !important; }
+  .shadow-overlay { inline-size: 18rem; block-size: 22rem; }
+  .selfie-preview-image { block-size: 55vh; }
   .ev-logo { width: 100%; }
   .section-prop { padding: 0; }
 }
+
+/* ---- Spacing utilities the liveness / selfie markup uses (liveness.ftl, selfie.ftl): the intro and
+        loader cards (p-4, py-4, pb-4, px-4), the instruction line and flow list (px-2, pt-3, mb-5).
+        Scoped to this stylesheet, which only these two pages load. Scale: 1 = 0.25rem ... 5 = 3rem. ---- */
+.px-2 { padding-inline: 0.5rem !important; }
+.px-4 { padding-inline: 1.5rem !important; }
+.py-4 { padding-block: 1.5rem !important; }
+.p-4 { padding: 1.5rem !important; }
+.pt-3 { padding-block-start: 1rem !important; }
+.pb-4 { padding-block-end: 1.5rem !important; }
+.mb-5 { margin-block-end: 3rem !important; }

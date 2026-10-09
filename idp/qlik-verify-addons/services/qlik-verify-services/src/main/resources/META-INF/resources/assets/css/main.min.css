@@ -885,10 +885,13 @@ small.helper-text { font-size: 0.875rem; }
 .font-s-14,
 .font-size-14px { font-size: 0.875rem !important; }
 .font-w-400 { font-weight: 400 !important; }
-.font-w-500 { font-weight: 500 !important; }
+.font-w-500,
+.font-500 { font-weight: 500 !important; }
 
 .rounded-8 { border-radius: var(--oss-r) !important; }
 .rounded-16 { border-radius: var(--oss-r-lg) !important; }
+.rounded-12 { border-radius: 0.75rem !important; }
+.border { border: 1px solid #dee2e6 !important; } /* number-prompt.ftl's code card */
 .border-1 { border: 1px solid var(--oss-line) !important; }
 .z-index-0 { z-index: 0; }
 .z-index-1 { z-index: 1; }

@@ -89,6 +89,27 @@
   background-color: var(--oss-paper);
 }
 
+/* ---- Retake overlay (bo_card_face.ftl, bo_ocr_template.ftl): a pill floating over the
+        captured-image preview that re-opens the camera for that side. ---- */
+
+.ciba-template-retakeIcon {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 6rem;
+  position: absolute;
+  inset-block-start: 1rem;
+  inset-inline-end: 0.7rem;
+  cursor: pointer;
+  background-color: var(--oss-paper);
+  color: #ff4557;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: var(--oss-r);
+  border: none;
+  z-index: 10;
+}
+
 /* ---- Capture steps (bo_card_face.ftl): one track per card side; the current side has a fill whose width
         ocrTemplate.js sets (30% -> 80% -> 100%) while the photo is processed. ---- */
 
@@ -129,4 +150,19 @@
   .ciba-template-widget-pending {
     transition: none;
   }
+}
+
+/* ---- Spacing utilities of the back-office markup (bo-json-based-form.ftl, bo_card_face.ftl,
+        the verify_*_photo / bo_ocr_template pages): gaps between the capture-step tracks (mx-1),
+        the document list and error lines (px-2, pt-2, mt-0), the form's action spacing (m-2, mr-5). ---- */
+.m-2 { margin: 0.5rem !important; }
+.mx-1 { margin-inline: 0.25rem !important; }
+.mt-0 { margin-block-start: 0 !important; }
+.mr-5 { margin-inline-end: 3rem !important; }
+.px-2 { padding-inline: 0.5rem !important; }
+.pt-2 { padding-block-start: 0.5rem !important; }
+.text-nowrap { white-space: nowrap !important; }
+/* the camera field of bo-json-based-form.ftl (a "capture" field) keeps a margin on phones */
+@media (max-width: 576px) {
+  .camera-form-group { inline-size: 80% !important; }
 }

@@ -1,9 +1,9 @@
 <#import "template.ftl" as layout>
 <@layout.registrationLayout displayMessage=!messagesPerField.existsError('username','email','firstName','lastName'); section>
-      <#if section = "header">
+      <#if section = "head">
         <!-- Phone Number Library Scripts  -->
-        <script defer src="${url.resourcesPath}/js/tele-input/tele-input.min.js?version=${serverVersion}" type="text/javascript"></script>
-        <script defer src="${url.resourcesPath}/js/tele-input/utils.js?version=${serverVersion}" type="text/javascript"></script>
+        <script src="${url.resourcesPath}/js/tele-input/tele-input.js?version=${serverVersion}" type="text/javascript"></script>
+        <script src="${url.resourcesPath}/js/tele-input/utils.js?version=${serverVersion}" type="text/javascript"></script>
         <!-- Phone Number Library CSS -->
         <link rel="stylesheet" href="${url.resourcesPath}/js/tele-input/tele-input.min.css?version=${serverVersion}" type="text/css"/>
         
@@ -104,7 +104,6 @@
                 </div>
             </div>
         </form>
-    </#if>
     <script>
         const Configuration = {
             EmailRegex: /^(([^<>!%&*#$()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,63}))$/,
@@ -175,6 +174,7 @@
             }
         </#if>
         
-      }    
+      }
     </script>
+    </#if>
 </@layout.registrationLayout>
