@@ -1,0 +1,9 @@
+angular-translate-loader-url 2.18.2 (MIT)
+Source: https://registry.npmjs.org/angular-translate-loader-url/-/angular-translate-loader-url-2.18.2.tgz
+Used in: resources/themes/js/main_vendors.js
+
+[The npm package has no licence file; this is the licence header of its file angular-translate-loader-url.js:]
+
+angular-translate - v2.18.2 - 2020-01-04
+
+Copyright (c) 2020 The angular-translate team, Pascal Precht; Licensed MIT

@@ -1,0 +1,4 @@
+angular.treeview (eu81273, GitHub only)
+Used in: resources/themes/js/main_vendors.js
+
+Not published on npm; the bundled copy is customised. Licence of the original project could not be confirmed from a package release: requires human review.

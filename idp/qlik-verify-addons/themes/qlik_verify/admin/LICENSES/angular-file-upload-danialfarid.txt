@@ -1,0 +1,4 @@
+angular-file-upload 1.x (danialfarid)
+Used in: resources/themes/js/main_vendors.js
+
+The 1.x line predates its npm successor ng-file-upload (MIT, Danial Farid); the exact bundled version is unknown: requires human review.

@@ -1,0 +1,9 @@
+autofill-event 0.0.1 (MIT)
+Source: https://registry.npmjs.org/autofill-event/-/autofill-event-0.0.1.tgz
+Used in: resources/themes/js/vendors.js
+
+[The npm package has no licence file; this is the licence header of its file autofill-event.js:]
+
+Autofill event polyfill ##version:1.0.0##
+(c) 2014 Google, Inc.
+License: MIT

@@ -1,0 +1,4 @@
+angular-slideout-panel
+Used in: resources/themes/js/vendors.js, resources/themes/css/vendors.css
+
+Not on npm; licence could not be confirmed: requires human review.
