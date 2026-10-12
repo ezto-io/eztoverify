@@ -1,0 +1,4 @@
+flatpickr 4.6.13 from https://registry.npmjs.org/flatpickr/-/flatpickr-4.6.13.tgz
+(npm integrity sha512-97PMG/aywoYpB4IvbvUJi0RQi8vearvU0oov1WW3k0WZPBMrTQVqekSX5CjSG/M4Q3i6A/0FKXC7RyAoAUUSPw==);
+dist/flatpickr.min.js, dist/flatpickr.min.css and LICENSE.md (MIT, Copyright (c) 2017 Gregory Petrosyan) copied unchanged.
+The same files cdn.jsdelivr.net served for the previous unpinned URLs (byte-identical, checked 2026-10-12).

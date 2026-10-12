@@ -1,0 +1,11 @@
+bootstrap-daterangepicker 2.1.27 (MIT)
+Source: https://registry.npmjs.org/bootstrap-daterangepicker/-/bootstrap-daterangepicker-2.1.27.tgz
+Used in: resources/themes/js/vendors.js
+
+[The npm package has no licence file; this is the licence header of its file daterangepicker.js:]
+
+@version: 2.1.27
+@author: Dan Grossman http://www.dangrossman.info/
+@copyright: Copyright (c) 2012-2017 Dan Grossman. All rights reserved.
+@license: Licensed under the MIT license. See http://www.opensource.org/licenses/mit-license.php
+@website: http://www.daterangepicker.com/

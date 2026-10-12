@@ -19,8 +19,8 @@
         <link href="${resourceUrl}/themes/css/roles-group-tree.css?version=${serverVersion}" rel="stylesheet" id="tree-view-style-sheet">
         <link href="${resourceUrl}/themes/css/main.css?version=${serverVersion}" rel="stylesheet" id="dashboard-style-sheet">
         <link href="${resourceUrl}/themes/css/icon-fonts.css?version=${serverVersion}" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <link rel="stylesheet" href="${resourceUrl}/themes/vendor/flatpickr-4.6.13/flatpickr.min.css?version=${serverVersion}">
+        <script src="${resourceUrl}/themes/vendor/flatpickr-4.6.13/flatpickr.min.js?version=${serverVersion}"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/iso-639-1@3.1.2/build/index.min.js"></script>
         <script type="text/javascript">

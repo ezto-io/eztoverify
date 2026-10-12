@@ -1,0 +1,13 @@
+resources/themes/js/region-helper.js
+
+Postal address metadata (stateList): derived from Google's address data service for libaddressinput
+(https://github.com/google/libaddressinput; data at https://chromium-i18n.appspot.com/ssl-address/data),
+Copyright Google Inc. The libaddressinput README states: "Data licensed under the CC-BY 4.0".
+Licence: Creative Commons Attribution 4.0 International, https://creativecommons.org/licenses/by/4.0/legalcode
+Modified: captured around 2020-2022, reshaped (field names, sub_labels, sub_latin_names); the regions AS, CC, CU, CX,
+FM, HM, IR, KP, MH, MP, NF, PW, SD, SY, UM, VI and some subdivisions (Crimea, Sevastopol, Donetsk, Luhansk) removed.
+
+Country names (countryList): English region names from Unicode CLDR (https://cldr.unicode.org),
+Copyright (c) 1991-2026 Unicode, Inc., under the Unicode License (Unicode-License-V3.txt in this folder).
+
+How the file entered the project and why the regions were removed require human review.

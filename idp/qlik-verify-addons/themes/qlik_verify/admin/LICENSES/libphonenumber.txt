@@ -1,0 +1,4 @@
+libphonenumber (Google), as built into intl-tel-input utils.js
+Used in: resources/themes/js/vendors.js
+
+Apache License 2.0 (see Apache-2.0.txt). Copyright Google LLC.

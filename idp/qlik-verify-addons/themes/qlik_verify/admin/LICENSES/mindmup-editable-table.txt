@@ -1,0 +1,4 @@
+mindmup-editable-table (editableTableWidget)
+Used in: resources/themes/js/vendors.js
+
+Not on npm; upstream licence (MIT per the original repository, unverified): requires human review.

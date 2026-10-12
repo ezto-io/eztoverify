@@ -1,0 +1,11 @@
+Angular UI Bootstrap (bundled 0.11 / 0.12; licence from the first npm release) 0.12.1 (MIT)
+Source: https://registry.npmjs.org/angular-ui-bootstrap/-/angular-ui-bootstrap-0.12.1.tgz
+Used in: resources/themes/js/main_vendors.js
+
+[The npm package has no licence file; this is the licence header of its file ui-bootstrap.js:]
+
+angular-ui-bootstrap
+http://angular-ui.github.io/bootstrap/
+
+Version: 0.12.1 - 2015-02-20
+License: MIT
