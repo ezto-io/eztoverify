@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500" data-frames="24" data-duration-ms="1200">
+<!-- AI-generated: AI-generated (IPTC DigitalSourceType trainedAlgorithmicMedia) with Claude (Anthropic) via the asset-author agent; rendered by the FTL migration harness [chat subagent asset-author, Claude Opus 5.5 (claude-opus-5-5)]. Released under the GNU AGPL-3.0 as part of the EztoVerify OSS theme. AI-generated from a text description, without access to the asset it replaces; reviewed by a person before use. -->
+<metadata id="ezto-provenance"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/" xmlns:Iptc4xmpExt="http://iptc.org/std/Iptc4xmpExt/2008-02-29/" xmlns:ezto="https://ezto.io/ns/oss-theme/1.0/" Iptc4xmpExt:DigitalSourceType="http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia" xmp:CreatorTool="Claude (Anthropic) via the asset-author agent; rendered by the FTL migration harness [chat subagent asset-author, Claude Opus 5.5 (claude-opus-5-5)]" xmp:CreateDate="2026-10-07" ezto:license="AGPL-3.0" ezto:run="migration/assets/runs/20261007-092637"><dc:title><rdf:Alt><rdf:li xml:lang="x-default">circular-loader.gif</rdf:li></rdf:Alt></dc:title><dc:description><rdf:Alt><rdf:li xml:lang="x-default">A looping circular loader: a blue arc that rotates and stretches along a light grey ring on a transparent background.</rdf:li></rdf:Alt></dc:description><dc:creator><rdf:Seq><rdf:li>EztoVerify OSS theme contributors</rdf:li></rdf:Seq></dc:creator><dc:rights><rdf:Alt><rdf:li xml:lang="x-default">Released under the GNU AGPL-3.0 as part of the EztoVerify OSS theme</rdf:li></rdf:Alt></dc:rights><xmpRights:UsageTerms><rdf:Alt><rdf:li xml:lang="x-default">Released under the GNU AGPL-3.0 as part of the EztoVerify OSS theme</rdf:li></rdf:Alt></xmpRights:UsageTerms></rdf:Description></rdf:RDF></metadata>
+  <style>
+    .spin {
+      transform-box: view-box;
+      transform-origin: 250px 250px;
+      animation: spin 1200ms linear infinite;
+    }
+    .arc {
+      animation: stretch 1200ms ease-in-out infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes stretch {
+      0% { stroke-dasharray: 12 88; }
+      50% { stroke-dasharray: 38 62; }
+      100% { stroke-dasharray: 12 88; }
+    }
+  </style>
+  <circle cx="250" cy="250" r="214" fill="none" stroke="#e5e7eb" stroke-width="20"/>
+  <g class="spin">
+    <circle class="arc" cx="250" cy="250" r="214" fill="none" stroke="#1c64eb" stroke-width="20"
+            stroke-linecap="round" pathLength="100" stroke-dasharray="12 88"
+            transform="rotate(-90 250 250)"/>
+  </g>
+</svg>

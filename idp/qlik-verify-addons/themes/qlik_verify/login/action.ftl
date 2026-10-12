@@ -9,7 +9,7 @@
             <div class="form-group mt-4">
                 <p class="text-center">${msg("${actionMessage}")}</p>
             </div>
-            <#list act in action.actions>
+            <#list action.actions as act>
                 <button id="${act.name}" name="${act.name}" value="${act.name}" type="submit" class="btn w-100 mt-2 btn_account bg-orange-red">
                     ${act.text}
                 </button>

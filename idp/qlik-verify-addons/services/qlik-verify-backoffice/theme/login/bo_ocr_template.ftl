@@ -4,6 +4,7 @@
             <script defer src="/auth/assets/js/socket.min.js?version=${serverVersion}" type="text/javascript"></script>
             <script defer src="/auth/assets/js/ocrTemplate.min.js?version=${serverVersion}" type="text/javascript"></script>
             <script defer src="/auth/assets/js/common.min.js?version=${serverVersion}" type="text/javascript"></script>
+            <link rel="preload stylesheet" as="style" href="/auth/assets/css/backoffice.min.css?version=${serverVersion}"/>
         </#if>
         <#include "bo_card_face.ftl" />
         <#if isBothSide?? && isBothSide == true >

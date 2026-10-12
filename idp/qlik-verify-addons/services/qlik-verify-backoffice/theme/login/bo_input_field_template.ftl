@@ -2,6 +2,7 @@
 <@layout.registrationLayout; section>
     <#if section = "head">
         <script defer src="/auth/assets/js/inputFieldTemplate.min.js?version=${serverVersion}" type="text/javascript"></script>
+        <link rel="preload stylesheet" as="style" href="/auth/assets/css/backoffice.min.css?version=${serverVersion}"/>
     </#if>
     <#if section = "form">
         <form id="${title}-form" action="${url.loginAction}" class="d-flex flex-column justify-content-between ciba-template-height" method="post">

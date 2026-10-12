@@ -1,1 +1,139 @@
-.form-body{min-height:calc(80vh - 8rem);overflow:hidden;transition:.5s ease-in-out;width:100%}.liveness-video-containter{flex-direction:column;height:30rem;position:relative;width:100%}.liveness-instruction-text{color:#fff;font-weight:700}.liveness-intro-title{font-size:22px;font-weight:500;line-height:normal;text-align:center}.liveness-intro-sub-title{font-size:1.15rem;font-weight:600}.video-inner-element{height:100%;left:0;position:absolute;right:0;width:100%}.shadow-overlay{border-radius:50%;box-shadow:0 0 0 400px #0000008a;height:20rem;left:50%;position:absolute;top:50%;transform:translate(-50%,-50%);width:16rem;z-index:2}.face-success-border{border:2px solid #38bd48}.face-failure-border{border:2px solid #fa4c4b}.video-element{z-index:1}.video-element video{height:100%;object-fit:cover;transform:scaleX(-1);width:100%}.info-element{align-items:center;display:flex;flex-direction:column;justify-content:space-between;z-index:3}.flow-status-card{background-color:#80808080;border-radius:8px;font-size:.85rem;margin:4px;padding:4px}.signup_full .form_signup_one .item_group{padding-bottom:0!important;padding-left:0!important;padding-right:0!important}.ev-locale-selector,.ev-logo{padding:0 24px!important}.signup_full .form_signup_one .item_group.form-prop{border:none}.selfie-preview-image{height:calc(75vh - 16rem);object-fit:cover;transform:scaleX(-1)}@keyframes fadeInOut{0%{opacity:1}50%{opacity:.5}to{opacity:1}}.fade-in-out{animation:fadeInOut 3s ease-in-out infinite}.modal-loading-card{background-color:#b7d0ffe6}.section-prop{padding:1.875rem}@media (max-width:576px){.shadow-overlay{height:22rem;width:18rem}.form-body{bottom:0;height:85vh;overflow-y:auto;position:absolute}.height-80vh{height:80vh!important}.selfie-preview-image{height:55vh}.ev-logo{width:100%}.section-prop{padding:0}}
+/*!
+ * EztoVerify login theme - OSS liveness layer (served as liveness.min.css)
+ * Part of the EztoVerify project, AGPL-3.0. Written for the OSS theme.
+ *
+ * Loaded by template.ftl after the theme stylesheets on liveness / selfie
+ * pages: the card loses its side and bottom padding so the camera view can
+ * use the full width, and the face-detection states get coloured frames.
+ * Logical properties: liveness-rtl.css is the same stylesheet.
+ */
+
+:root {
+  --oss-live-ok: #34b84a;
+  --oss-live-fail: #f24e4c;
+  --oss-live-chip: rgba(128, 128, 128, 0.5);
+  --oss-live-vignette: rgba(0, 0, 0, 0.54);
+  --oss-live-loading-bg: rgba(183, 208, 255, 0.9);
+}
+
+.form-body {
+  inline-size: 100%;
+  min-block-size: calc(80vh - 8rem);
+  overflow: hidden;
+  transition: min-height 0.5s ease-in-out, height 0.5s ease-in-out;
+}
+
+/* the camera view: a fixed-height stage, the live <video> filling it, a circular
+   vignette cut out over the face target, and the instruction text/flow chips
+   floating on top. Mirrored like a real mirror, since it's a front camera. */
+.liveness-video-containter {
+  position: relative;
+  inline-size: 100%;
+  block-size: 30rem;
+  flex-direction: column;
+}
+
+.video-inner-element {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.video-element { z-index: 1; }
+.video-element video,
+.selfie-preview-image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.shadow-overlay {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+  inline-size: 16rem;
+  block-size: 20rem;
+  border-radius: 50%;
+  box-shadow: 0 0 0 400px var(--oss-live-vignette);
+  z-index: 2;
+}
+
+.face-success-border { border: 2px solid var(--oss-live-ok); }
+.face-failure-border { border: 2px solid var(--oss-live-fail); }
+
+/* two rows over the video: the instruction line, then the flow chips pinned to
+   the bottom. Grid rather than flex so the chip row keeps its own height
+   instead of growing to share space with the instruction line. */
+.info-element {
+  z-index: 3;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  justify-items: center;
+}
+
+.liveness-instruction-text { color: var(--oss-paper, #fff); font-weight: 700; }
+
+.liveness-intro-title {
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: normal;
+  text-align: center;
+}
+.liveness-intro-sub-title { font-size: 1.15rem; font-weight: 600; }
+
+.flow-status-card {
+  margin: 0.25rem;
+  padding: 0.25rem;
+  font-size: 0.85rem;
+  background-color: var(--oss-live-chip);
+  border-radius: 0.5rem;
+}
+
+/* selfie preview (selfie.ftl, before upload): a still frame, not live video,
+   so it keeps the same mirrored object-fit treatment but a shorter stage. */
+.selfie-preview-image { block-size: calc(75vh - 16rem); }
+
+.modal-loading-card { background-color: var(--oss-live-loading-bg); }
+
+@keyframes oss-live-fade {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.fade-in-out { animation: oss-live-fade 3s ease-in-out infinite; }
+
+/* the card: full-bleed content, no frame */
+.form_signup_one .item_group {
+  padding-inline: 0 !important;
+  padding-block-end: 0 !important;
+}
+.form_signup_one .form-prop { border: 0; }
+.ev-logo { padding-inline: 1.5rem !important; }
+.section-prop { padding: 1.875rem; }
+
+@media (max-width: 576px) {
+  .form-body {
+    position: absolute;
+    inset-block-end: 0;
+    height: 85vh;
+    overflow: hidden auto;
+  }
+  .height-80vh { height: 80vh !important; }
+  .shadow-overlay { inline-size: 18rem; block-size: 22rem; }
+  .selfie-preview-image { block-size: 55vh; }
+  .ev-logo { width: 100%; }
+  .section-prop { padding: 0; }
+}
+
+/* ---- Spacing utilities the liveness / selfie markup uses (liveness.ftl, selfie.ftl): the intro and
+        loader cards (p-4, py-4, pb-4, px-4), the instruction line and flow list (px-2, pt-3, mb-5).
+        Scoped to this stylesheet, which only these two pages load. Scale: 1 = 0.25rem ... 5 = 3rem. ---- */
+.px-2 { padding-inline: 0.5rem !important; }
+.px-4 { padding-inline: 1.5rem !important; }
+.py-4 { padding-block: 1.5rem !important; }
+.p-4 { padding: 1.5rem !important; }
+.pt-3 { padding-block-start: 1rem !important; }
+.pb-4 { padding-block-end: 1.5rem !important; }
+.mb-5 { margin-block-end: 3rem !important; }
