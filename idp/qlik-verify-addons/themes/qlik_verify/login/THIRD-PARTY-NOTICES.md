@@ -5,36 +5,40 @@ The OSS login theme (`themes/qlik_verify/login`, the back-office pages deployed 
 This is a technical inventory for review, not legal advice.
 
 ## JavaScript libraries
-Shipped unchanged: the migration rules lock JavaScript byte-identical to the previous theme.
+Shipped as released (verified against the npm releases, migration record `migration/js/analysis/libraries.json` in the
+harness); where a shipped copy differs from the release, the difference is noted.
 
 | File (`resources/js/`) | Component | Version | Licence |
 |---|---|---|---|
-| `jquery.js`, `jquery-migrate.js` | jQuery, jQuery Migrate | 3.7.1 | MIT |
+| `jquery.js` | jQuery | 3.7.1 | MIT |
+| `jquery-migrate.js` | jQuery Migrate (re-minified, with `jQuery.migrateMute` set to silence its console warnings) | 3.0.1 | MIT |
 | `bootstrap.js` | Bootstrap (JavaScript) | 4.5.0 | MIT |
-| `popper.js` | Popper.js (Federico Zivolo) | 1.x, 2019 | MIT |
+| `popper.js` | Popper.js (Federico Zivolo) | 1.14.7 | MIT |
 | `select2.js` | Select2 | 4.1.0-rc.0 | MIT |
 | `flatpickr.js`, `flatpickr.min.js` | flatpickr | 4.6.13 | MIT |
-| `quill.js` | Quill | 2.0.2 | BSD-3-Clause |
+| `quill.js` | Quill (its default link `quilljs.com` changed to `ezto.io`) | 2.0.1 | BSD-3-Clause |
 | `socket.js` | Socket.IO client | 4.3.2 | MIT |
-| `pdf.js` | PDF.js (pdfjs-dist, Mozilla) | 2.5.3 | Apache-2.0 |
+| `pdf.js` | PDF.js (pdfjs-dist, Mozilla) | 2.0.385 | Apache-2.0 |
 | `tele-input/tele-input.js`, `tele-input/tele-input.min.css`, `tele-input/flags*.png` | intl-tel-input | 17.0.0 | MIT |
 | `tele-input/utils.js` | libphonenumber (Google), as bundled by intl-tel-input | n/a | Apache-2.0 |
-| `iso.js` | iso-639-1 | n/a | MIT |
+| `iso.js` | iso-639-1 | 3.1.2 | MIT |
 | `base64url.js` | adapted from rfc4648.js (William Swanson) | n/a | MIT |
+| `/auth/assets/js/video-kyc.min.js` | VideoSDK prebuilt meeting SDK (`@videosdk.live/rtc-js-prebuilt`, videosdk.live), with EztoVerify's branding options added | 0.3.42 - 0.3.43 | MIT (as declared by its npm package; the package ships no licence file) |
 
 Loaded at run time from CDNs (not shipped):
 - jQuery 3.7.1 slim (code.jquery.com), MIT;
 - MediaPipe Tasks Vision 0.10.18 (cdn.jsdelivr.net, used by `detector.js`), Apache-2.0.
 
 EztoVerify's own code: `main.js`, `ezto.js`, `liveness.js`, `selfieRegister.js`, `detector.js`, `dynamicForm.js`,
-`ocrTemplate.js`, `otpTemplate.js`, `inputFieldTemplate.js`, `common.js`. `main.js` also contains template-style code;
-it requires human review (see the migration known-issues record).
+`ocrTemplate.js`, `otpTemplate.js`, `inputFieldTemplate.js`, `common.js`. The purchased template's script code that
+`main.js` and some pages carried was removed or rewritten before the OSS release (JS migration record in the harness).
 
 ## Stylesheets
 - `normalize.css` 8.0.1, MIT.
 - `flatpickr.css`, `select2.css`, `quill.snow.css`: from the libraries above, under the same licences.
-- `main*.css`, `bootstrap*.css`, `icons.css`, `liveness*.css`, `backoffice.css`, `dynamic-form.css`: written for the OSS
-  theme (AGPL-3.0). The previous purchased template stylesheets and icon font were removed.
+- `main*.css`, `bootstrap*.css`, `icons.css`, `liveness*.css`, `backoffice.css`: written for the OSS theme (AGPL-3.0).
+- `dynamic-form.css`: EztoVerify's own stylesheet for the dynamic forms (AGPL-3.0).
+- The previous purchased template stylesheets and icon font were removed.
 
 ## Fonts
 - **Inter** (The Inter Project Authors), SIL Open Font License 1.1. It is served from

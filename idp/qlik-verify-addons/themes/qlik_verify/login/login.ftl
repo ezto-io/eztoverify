@@ -331,18 +331,6 @@
                 $('#kc-login').attr('disabled', 'disabled');
             }
         }
-        function togglePasswordView(){
-            if ($('#show_hide_password input').attr("type") == "text") {
-                $('#show_hide_password input').attr('type', 'password');
-                $('#show_hide_password .hide_show span').addClass("hidden_outlined");
-                $('#show_hide_password .hide_show span').removeClass("visible_outlined");
-            } else if ($('#show_hide_password input').attr("type") == "password") {
-                $('#show_hide_password input').attr('type', 'text');
-                $('#show_hide_password .hide_show span').removeClass("hidden_outlined");
-                $('#show_hide_password .hide_show span').addClass("visible_outlined");
-            }
-            $('#inputPassword').focus();
-        }
     </script>
 
 </@layout.registrationLayout>

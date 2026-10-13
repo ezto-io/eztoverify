@@ -116,28 +116,6 @@
         </form>
     </#if>
     <script>
-        function showPass() {
-            if ($('#inputPassword input').attr("type") == "text") {
-                $('#inputPassword input').attr('type', 'password');
-                $('#inputPassword .hide_show span').addClass("hidden_outlined");
-                $('#inputPassword .hide_show span').removeClass("visible_outlined");
-            } else if ($('#inputPassword input').attr("type") == "password") {
-                $('#inputPassword input').attr('type', 'text');
-                $('#inputPassword .hide_show span').removeClass("hidden_outlined");
-                $('#inputPassword .hide_show span').addClass("visible_outlined");
-            }
-        }
-        function showNewPass() {
-            if ($('#inputConfirmPassword input').attr("type") == "text") {
-                $('#inputConfirmPassword input').attr('type', 'password');
-                $('#inputConfirmPassword .hide_show span').addClass("hidden_outlined");
-                $('#inputConfirmPassword .hide_show span').removeClass("visible_outlined");
-            } else if ($('#inputConfirmPassword input').attr("type") == "password") {
-                $('#inputConfirmPassword input').attr('type', 'text');
-                $('#inputConfirmPassword .hide_show span').removeClass("hidden_outlined");
-                $('#inputConfirmPassword .hide_show span').addClass("visible_outlined");
-            }
-        }
         function updatePolicy(){
             var password = $("#password").val();
             <#list policy as p>
