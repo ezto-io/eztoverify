@@ -2202,7 +2202,6 @@ module.controller('RealmDetailCtrl', function ($scope, $modal, $timeout, $docume
     let iti = window.intlTelInput(input, {
         initialCountry: $scope.realm.defaultRegion,
         allowDropdown: true,
-        utilsScript: "${resourceUrl}/themes/bower_components/tele-input/utils.js",
         separateDialCode: false,
         customPlaceholder: function (selectedCountryPlaceholder, selectedCountryData) {
             if (ctr !== 0) {
@@ -8002,7 +8001,6 @@ module.controller('BlackListCtrl', function ($scope, realm, $route, Notification
         var input = document.querySelector("#mobileNum");
         $scope.iti = window.intlTelInput(input, {
             initialCountry: "in",
-            utilsScript: "${resourceUrl}/themes/bower_components/tele-input/utils.js",
             separateDialCode: false
         });
     });
