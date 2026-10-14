@@ -68,19 +68,6 @@
         </form>
         <script>
             var isTransactionFlowSkipped = false;
-            function togglePasswordView(){
-                if ($('#show_hide_password input').attr("type") == "text") {
-                    $('#show_hide_password input').attr('type', 'password');
-                    $('#show_hide_password .hide_show span').addClass("hidden_outlined");
-                    $('#show_hide_password .hide_show span').removeClass("visible_outlined");
-                } else if ($('#show_hide_password input').attr("type") == "password") {
-                    $('#show_hide_password input').attr('type', 'text');
-                    $('#show_hide_password .hide_show span').removeClass("hidden_outlined");
-                    $('#show_hide_password .hide_show span').addClass("visible_outlined");
-                }
-                $('#inputPassword').focus();
-            }
-
             function validateApanLength(){
                 $('#template-error').css('display', 'none');
                 $("#inputUsername").val($("#inputUsername").val().replace(/[^0-9A-Za-z]/g,'').toUpperCase())
