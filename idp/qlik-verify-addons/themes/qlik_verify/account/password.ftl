@@ -66,17 +66,20 @@
             </div>
         </form>
         <script defer type="text/javascript">
+            // Eye icon next to a password field: a click shows the typed password, the next click hides it again.
+            // `option` names the field's wrapper (#<option>_show_hide_password); its icon carries os-icon-eye while the
+            // password is shown and os-icon-eye-off while it is hidden. Fields of any other type are left as they are.
             function hideShowPassword(option) {
-                if ($("#"+option+"_show_hide_password input").attr("type") === "text") {
-                    $("#"+option+"_show_hide_password input").attr('type', 'password');
-                    $("#"+option+"_show_hide_password .hide_show i").addClass("os-icon-eye-off");
-                    $("#"+option+"_show_hide_password .hide_show i").removeClass("os-icon-eye");
-                } else if ($("#"+option+"_show_hide_password input").attr("type") === "password") {
-                    $("#"+option+"_show_hide_password input").attr('type', 'text');
-                    $("#"+option+"_show_hide_password .hide_show i").removeClass("os-icon-eye-off");
-                    $("#"+option+"_show_hide_password .hide_show i").addClass("os-icon-eye");
+                var wrapper = '#' + option + '_show_hide_password';
+                var fields = $(wrapper + ' input');
+                var current = fields.attr('type');
+                if (current !== 'password' && current !== 'text') {
+                    return;
                 }
-            } 
+                var reveal = current === 'password';
+                fields.attr('type', reveal ? 'text' : 'password');
+                $(wrapper + ' .hide_show i').toggleClass('os-icon-eye', reveal).toggleClass('os-icon-eye-off', !reveal);
+            }
         </script>
     </div>
 
