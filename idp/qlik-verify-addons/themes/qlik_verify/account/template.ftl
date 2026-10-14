@@ -319,6 +319,8 @@
     <script>
     const selectElement = document.getElementById("locale-select");
     const createLocaleSelect = () => {
+        // The selector is only rendered when showLanguageSelector is on.
+        if (!selectElement) return;
         let option;
         <#list locales as locale>
             option = document.createElement('option');
