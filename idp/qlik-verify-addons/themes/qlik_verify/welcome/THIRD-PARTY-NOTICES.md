@@ -5,10 +5,11 @@ each under its own licence. These are technical records for review, not legal ad
 font decision is kept in the OSS migration proof bundle (`evidence/5-ip-and-assets/`), outside this repository.
 
 ## JavaScript and CSS shipped in this theme
-- **Alpine.js 3.10.0** (`resources/js/alpine.min.js`), MIT, Copyright Caleb Porzio and contributors.
+- **Alpine.js 3.10.2** (`resources/js/alpine.min.js`), MIT, Copyright Caleb Porzio and contributors.
 - **Alpine.js 2.8.2, IE11 build** (`resources/js/alpine.ie11.min.js`, minified by jsDelivr), MIT, Copyright Caleb Porzio and contributors.
   It bundles a Polymer Project polyfill (BSD-3-Clause, "Copyright (c) 2016 The Polymer Project Authors. All rights reserved.";
-  licence: http://polymer.github.io/LICENSE.txt), whose notice is kept in the file.
+  licence: http://polymer.github.io/LICENSE.txt), whose notice is kept in the file; classList.js (Eli Grey, public domain,
+  The Unlicense; its source note is kept in the file); and core-js 3.8.3 (MIT, Copyright Denis Pushkarev).
 - **intl-tel-input 17.0.0** (`resources/js/tele-input/tele-input.min.js`, `tele-input.min.css`, `flags.png`, `flags@2x.png`),
   MIT, Copyright Jack O'Connor.
 - **libphonenumber, intl-tel-input utilities build** (`resources/js/tele-input/utils.js`), Apache-2.0, Copyright Google Inc.
